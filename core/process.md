@@ -40,40 +40,129 @@ Implementation gate: Phase 4 starts only when the Phase 2 contract surface is fi
 Binding. Phases are named and ordered; specialists within a phase run in parallel; phases overlap wherever a contract surface decouples them. Each phase: **Goal · Acceptance**.
 
 ### Phase 1 — Analysis
-- **Goal.** Bound scope; identify touched domains. Read TODO line + relevant architecture sections + mockup + code. Surface ambiguities; decide Phase 2 dispatches.
-- **Acceptance.** Scope bounded enough to plan Phase 2 dispatches. ≤ 1 unresolved scope question outstanding.
+
+- **Goal.** Bound scope; identify touched domains.
+- **Reads.** TODO line + relevant architecture sections + mockup + code.
+- **Output.** Phase 2 dispatch plan; surfaced ambiguities.
+- **Acceptance.** Scope bounded enough to plan Phase 2. ≤ 1 unresolved scope question.
 
 ### Phase 2 — Design & architecture
-- **Goal.** Lock contracts (system, API, visual, work breakdown) before any code. `solution-architect` ratifies the API contract before Phase 3; doc / mockup / wire-contract edits route to the owning role per `local/bindings.md`. Parallel where independent.
-- **Acceptance.** Fixed wire shape + fixed mockup behaviour + fixed work breakdown. Visual / contract harness green (where one exists). Cross-references resolved. Artefacts presentable as a coherent whole.
+
+- **Goal.** Lock contracts before any code — system, API, visual, work breakdown.
+- **Dispatch.** Owning role per `local/bindings.md`:
+
+  | Surface | Owner |
+  |---|---|
+  | Architecture doc, API contract ratification | `solution-architect` |
+  | Mockup | mockup-owning role |
+  | Wire contract | service-owning role |
+  | Work breakdown | each engineer contributes their slice |
+
+  Parallel where independent.
+- **Acceptance.**
+  - Fixed wire shape + mockup behaviour + work breakdown.
+  - Visual / contract harness green (where one exists).
+  - Cross-references resolved.
+  - Artefacts presentable as a coherent whole.
 
 ### Phase 3 — Design review
-- **Goal.** Synchronous gate: explicit user approval of Phase 2 design before implementation effort is spent. Orchestrator MUST present Phase 2 artefacts (architecture-doc diff, mockup link, API contract, work-breakdown). Remarks loop back to Phase 2. Distinct from Phase 8 (closes TODO line) and the TODO-workflow checkpoint (sits before Phase 1).
+
+- **Goal.** Synchronous gate — explicit user approval of Phase 2 before implementation.
+- **Action.** Orchestrator MUST present: architecture-doc diff + mockup link + API contract + work-breakdown.
+- **Outcomes.**
+  - Approval → Phase 4 dispatches.
+  - Remarks → loop back to Phase 2.
+- **Distinct from.** Phase 8 (closes TODO); TODO-workflow checkpoint (sits before Phase 1).
 - **Acceptance.** Explicit user approval. Without it, Phase 4 does not start.
 - **In automatic mode.** Elided when Phase 2 produces no user-visible behaviour change. Forced back to interactive per `core/automatic-mode.md § Forced-interactive triggers`.
 
 ### Phase 4 — Implementation
-- **Goal.** Working code mirroring approved Phase 2 contracts. Each engineering role implements its part in its owned paths (per `local/bindings.md`); Phase 5 overlaps once Phase 3 passes; parallel where independent. Runs under `### Iteration protocol`.
-- **Acceptance.** Compiles / builds clean. Per-project unit tests pass. No new lint or type errors.
+
+- **Goal.** Working code mirroring approved Phase 2 contracts.
+- **Rules.**
+  - Each engineering role implements its part in its owned paths (`local/bindings.md`).
+  - Parallel where independent.
+  - Phase 5 overlaps once Phase 3 passes.
+  - Runs under `### Iteration protocol`.
+- **Acceptance.**
+  - Compiles / builds clean.
+  - Per-project unit tests pass.
+  - No new lint or type errors.
 
 ### Phase 5 — Testing
-- **Goal.** Verify implementation against contracts via executable suites + manual smoke against the running solution.
-- **Scope — change-scoped by default.** Run only tests covering changed surfaces: new/modified functional / API / e2e / harness / script scenarios for touched code paths; per-project unit specs in modified files; any pre-existing scenario whose covered contract was edited in Phase 2 or 4. **Full regression is opt-in** — only when the user explicitly asks; `project-manager` may remind it's available (wide-reach refactors, infra changes, risky touches) and MUST warn of significant wall-clock + token cost. Tests reference contracts, not implementation internals. Oracles TIGHT per § Test oracles can be wrong. Manual smoke runs against the running solution (project's local-dev startup command), NOT against design artefacts. Runs under `### Iteration protocol`. Opt-in full regression runs after change-scoped pass is green and is reported separately (pass/fail per suite, wall-clock + approximate token cost).
-- **Acceptance.** Change-scoped suite green; oracles accurately reflect correctness for touched surfaces. Manual-smoke report recorded (caveat if not run, e.g. headless). Failures route to Phase 6. Opt-in full regression, when requested, is its own pass — not a precondition.
+
+- **Goal.** Verify implementation against contracts: executable suites + manual smoke against the running solution.
+- **Scope — change-scoped by default.** Run only:
+
+  | Layer | What runs |
+  |---|---|
+  | New / modified scenarios | functional / API / e2e / harness / script for touched code paths |
+  | Per-project unit specs | in modified files |
+  | Pre-existing scenarios | only if their covered contract was edited in Phase 2 or 4 |
+
+- **Full regression — opt-in only.**
+  - User must explicitly request it.
+  - `project-manager` MAY remind it's available (wide-reach refactor / infra change / risky touch).
+  - `project-manager` MUST warn of significant wall-clock + token cost.
+  - Runs separately AFTER change-scoped pass is green.
+  - Reports: pass/fail per suite + wall-clock + approximate token cost.
+- **Discipline.**
+  - Tests reference contracts, not implementation internals.
+  - Oracles TIGHT per `### Test oracles can be wrong`.
+  - Manual smoke against the running solution (project's local-dev startup command), NOT design artefacts.
+  - Runs under `### Iteration protocol`.
+- **Acceptance.**
+  - Change-scoped suite green.
+  - Oracles reflect correctness for touched surfaces.
+  - Manual-smoke report recorded (caveat if not run, e.g. headless).
+  - Failures → Phase 6.
+  - Opt-in full regression is its own pass — not a precondition.
 
 ### Phase 6 — Bug fixing
-- **Goal.** Resolve defects from Phase 5 (or manual smoke) until all change-scoped oracles are green. Owning engineer fixes the failing surface; QA exercises other scenarios in parallel — a bug fix never freezes the test run. Routes back to the specific Phase 4 surface, not a full Phase 4 rerun. Runs under `### Iteration protocol`.
-- **Acceptance.** Change-scoped oracles green; no regression in touched surfaces. Manual smoke re-run if a user-visible surface was touched. Opt-in full regression is part of that opt-in pass — not a Phase 6 gate.
+
+- **Goal.** Resolve defects from Phase 5 (or manual smoke) until all change-scoped oracles are green.
+- **Rules.**
+  - Owning engineer fixes the failing surface.
+  - QA exercises other scenarios in parallel — a fix never freezes the test run.
+  - Routes back to the specific Phase 4 surface, not a full Phase 4 rerun.
+  - Runs under `### Iteration protocol`.
+- **Acceptance.**
+  - Change-scoped oracles green.
+  - No regression in touched surfaces.
+  - Manual smoke re-run if a user-visible surface was touched.
+  - Opt-in full regression is part of that opt-in pass — not a Phase 6 gate.
 
 ### Phase 7 — SA review
-- **Goal.** `solution-architect` confirms compliance with architecture invariants, requirements, and mockup behavioural contracts. Verifies Phase 5 manual-smoke section was actually written (empty = REJECT, return to Phase 5). Sign-off; no code edits. Runs under `### Iteration protocol` when follow-up architecture-doc edits exceed 15 min.
-- **Acceptance.** APPROVE (with or without pending additive architecture-doc edits) or RETURN-TO-engineer with specific findings.
+
+- **Goal.** `solution-architect` confirms compliance with architecture invariants, requirements, mockup behavioural contracts.
+- **Checks.**
+  - Architecture invariants honoured.
+  - Mockup behavioural contract honoured.
+  - Phase 5 manual-smoke section was actually written (empty = REJECT, return to Phase 5).
+- **Constraint.** Sign-off only; no code edits.
+- **Iteration.** Runs under `### Iteration protocol` when follow-up architecture-doc edits exceed 15 min.
+- **Acceptance.**
+  - APPROVE (with or without pending additive architecture-doc edits), OR
+  - RETURN-TO-engineer with specific findings.
 
 ### Phase 8 — User approval
-- **Goal.** User confirms delivered work satisfies the TODO line. Orchestrator surfaces per the Task model; if manual smoke wasn't run (e.g. headless), asks the user to run it. User picks "Yes — mark complete" or "No — needs more work" (loops back to Phase 6 with feedback).
-- **Acceptance.** User selects "Yes — mark complete". On accept: TODO line `☐` → `☒`, project-progress refresh (if used), commit only when the user explicitly asks.
-- **In automatic mode.** Realized as the **delivery handoff** per `core/automatic-mode.md § Delivery handoff`. User-approval invariant preserved (single explicit accept); three actions — Accept / Feedback / Reject — replace yes/no.
-- **Post-acceptance doc optimization hook.** If the task touched any documentation (project-instruction files, architecture docs, role definitions, ADRs, CRs, READMEs), orchestrator MUST dispatch `ai-engineer` to run `### Iteration protocol` scoped to the doc diff. Polish step, not a gate. If first proposal batch returns "no productive proposals", hook completes immediately. No user permission required; user sees the cumulative optimization diff in the final report and may accept or revert as a unit.
+
+- **Goal.** User confirms delivered work satisfies the TODO line.
+- **Action.** Orchestrator surfaces per the Task model. If manual smoke wasn't run (e.g. headless), asks the user to run it.
+- **User choices.**
+  - "Yes — mark complete" → see Acceptance below.
+  - "No — needs more work" → loop back to Phase 6 with feedback.
+- **Acceptance.**
+  - TODO line `☐` → `☒`.
+  - Project-progress refresh (if used).
+  - Commit only when the user explicitly asks.
+- **In automatic mode.** Realized as the **delivery handoff** per `core/automatic-mode.md § Delivery handoff`. User-approval invariant preserved (single explicit accept); Accept / Feedback / Reject replace yes/no.
+- **Post-acceptance doc-optimization hook.** If the task touched any documentation (project-instruction files, architecture docs, role definitions, ADRs, CRs, READMEs):
+  - Orchestrator MUST dispatch `ai-engineer` to run `### Iteration protocol` scoped to the doc diff.
+  - Polish step, not a gate.
+  - First proposal batch returns "no productive proposals" → hook completes immediately.
+  - No user permission required to invoke.
+  - User sees the cumulative optimization diff in the final report; may accept or revert as a unit.
 
 ### Cross-phase rule
 
@@ -111,7 +200,13 @@ Never as literals inside controllers, components, scripts, or test specs.
 
 ### Test oracles can be wrong
 
-A test that passes against broken software is a defect in the oracle, not a green light. When test results contradict observed behaviour, trust the observed behaviour and route to the test owner to tighten the assertion. Examples: harness anchored to wrapper not inner element; POST asserting status without response shape; UI element opened without exercising its action. Tightening is `qa-engineer`'s job; respecting that signal is everyone's.
+- A passing test against broken software = defect in the oracle, not a green light.
+- Test results contradict observed behaviour → trust observed behaviour; route to test owner to tighten assertion.
+- Examples of weak oracles:
+  - Harness anchored to wrapper, not inner element.
+  - POST asserting status without response shape.
+  - UI element opened without exercising its action.
+- Tightening is `qa-engineer`'s job; respecting the signal is everyone's.
 
 ## Documentation style — structure over prose
 
@@ -129,9 +224,11 @@ Applies to **all** written artefacts: project-instruction files, role definition
 
 ## Coordination protocol
 
-- Every PR description cites the requirement / NFR / section of the architecture doc — or the mockup section — implemented or validated. (See `core/templates/pr-description.md`.)
-- Wire-contract breaking changes (API shape, event format, env var names) → flag in PR title; service-owning role, client-owning role, and devops all confirm before merge.
-- Cost-relevant changes (new resource, larger SKU) → fresh estimate vs. project cost cap in PR description; `devops-engineer` owns this.
+| Trigger | Rule |
+|---|---|
+| Any PR | Cite requirement / NFR / architecture-doc section / mockup section implemented or validated. Template: `core/templates/pr-description.md`. |
+| Wire-contract breaking change (API shape, event format, env-var names) | Flag in PR title. Service-owning role + client-owning role + `devops-engineer` all confirm before merge. |
+| Cost-relevant change (new resource, larger SKU) | Fresh estimate vs. project cost cap in PR description. `devops-engineer` owns. |
 
 ### Strict-domain rule — no specialist works outside its domain
 
@@ -171,16 +268,18 @@ Generalized loop for **all team work in Phases 4–7** (Implementation, Testing,
 
 Each iteration under `### Iteration protocol` must leave the system in a valid, resumable state:
 
-- Engineers do not leave half-written code that breaks the build, fails type-check, or fails per-project unit tests.
-- QA does not leave partial test runs that pollute fixtures, leave seeded data behind, or leave the local stack in a non-reproducible state.
-- Bug fixes do not half-apply (e.g. service half of a contract change landed, client half pending — gate behind a feature flag or stage the contract change behind a no-op default).
-- Doc edits do not leave broken cross-references or orphaned sections.
+| Role | What "stoppable" means |
+|---|---|
+| Engineers | No half-written code that breaks build, type-check, or per-project unit tests. |
+| QA | No partial test runs that pollute fixtures, leave seeded data behind, or leave local stack non-reproducible. |
+| Bug fixes | No half-applied contract changes (e.g. service half landed, client half pending) — gate behind feature flag or stage behind no-op default. |
+| Doc edits | No broken cross-references or orphaned sections. |
 
-User can stop the team at any iteration boundary. Orchestrator's stop report includes:
+**User stops at any iteration boundary.** Orchestrator's stop report:
 
-- **Done** — sub-tasks completed, with files touched.
-- **In-progress** — sub-task interrupted, with partial state recorded and concrete resume instructions (same partial-result format as `### Timeframe-bounded autonomous work`).
-- **Not-started** — sub-tasks remaining in the approved batch, with original estimates intact.
+- **Done.** Sub-tasks completed, with files touched.
+- **In-progress.** Sub-task interrupted, with partial state recorded + concrete resume instructions (same partial-result format as `### Timeframe-bounded autonomous work`).
+- **Not-started.** Sub-tasks remaining in the approved batch, with original estimates intact.
 
 Continuation from the recorded state must require zero rework.
 
@@ -203,18 +302,29 @@ When a bug spans 2+ domains, work follows a four-phase model (contract change �
 
 When a specialist discovers a root cause **outside** their domain while working on their own task:
 
-1. **Diagnose fully; do NOT fix.** Cross-domain patches cause silent contract drift. Write up: failing command, verbatim error, file + line, chain of reasoning. (Template: `core/templates/hand-off-note.md`.)
-2. **Hand off** to the owning specialist (project routing table in `local/bindings.md`). Package: symptom, verified root cause with evidence, what the discoverer tried and ruled out, any local workaround in place + whether to remove it once the proper fix lands.
-3. **Both specialists stay engaged.** Owner fixes; discoverer reviews and removes any workaround. Not throw-over-the-wall.
-4. **Workarounds are temporary, labelled as such.** Stay only until the owning specialist lands the proper fix; both specialists acknowledge in reports.
-5. **Out-of-competence fixes are disallowed** — see `local/bindings.md` → "Project role boundaries" for the complete forbidden list.
+1. **Diagnose fully; do NOT fix.** Cross-domain patches cause silent contract drift.
+   - Write up: failing command, verbatim error, file + line, chain of reasoning.
+   - Template: `core/templates/hand-off-note.md`.
+2. **Hand off** to the owning specialist (routing in `local/bindings.md`). Package contents:
+   - Symptom.
+   - Verified root cause with evidence.
+   - What the discoverer tried and ruled out.
+   - Any local workaround in place + whether to remove it once the proper fix lands.
+3. **Both specialists stay engaged.** Owner fixes; discoverer reviews and removes workaround. Not throw-over-the-wall.
+4. **Workarounds are temporary, labelled as such.** Stay only until owner lands proper fix; both specialists acknowledge in reports.
+5. **Out-of-competence fixes are disallowed** — see `local/bindings.md` → "Project role boundaries".
 
-Main thread orchestrates the hand-off — when a specialist flags a root cause outside their domain in their final report, dispatch the owning specialist next with the prior diagnosis verbatim.
+Orchestrator dispatches the owning specialist next with the prior diagnosis verbatim when a specialist flags a cross-domain root cause in their final report.
 
-**Doc updates always route through the doc's owner.**
-- Architecture doc / project-instruction files / process docs / ADRs → `solution-architect`.
-- Mockup → mockup-owning role for HTML/CSS/JS/SVG edits; `solution-architect` for governance review only.
-- Engineers outside the owning domain never edit these files directly.
+**Doc updates route through the doc's owner:**
+
+| Doc class | Owner |
+|---|---|
+| Architecture doc / project-instruction files / process docs / ADRs | `solution-architect` |
+| Mockup (HTML / CSS / JS / SVG edits) | mockup-owning role |
+| Mockup (governance review only) | `solution-architect` |
+
+Engineers outside the owning domain never edit these directly.
 
 ## Task model
 
