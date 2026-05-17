@@ -75,6 +75,14 @@ if (Test-Path $frameworkDir) {
     Remove-Item -Recurse -Force (Join-Path $frameworkDir 'core'),
                                 (Join-Path $frameworkDir 'adapters'),
                                 (Join-Path $frameworkDir 'extras') -ErrorAction SilentlyContinue
+    # Fetch fresh upstream content into a temp clone, then copy the three upstream-owned dirs into place
+    $tmpClone = Join-Path ([System.IO.Path]::GetTempPath()) "et-clone-$([guid]::NewGuid().Guid)"
+    git clone --depth 1 --branch $Ref $RepoUrl $tmpClone
+    foreach ($d in 'core','adapters','extras') {
+      $src = Join-Path $tmpClone $d
+      if (Test-Path $src) { Copy-Item -Recurse $src (Join-Path $frameworkDir $d) }
+    }
+    Remove-Item -Recurse -Force $tmpClone
   } else {
     Write-Error "Framework already installed at $frameworkDir. Use -UpdateOnly to refresh core/+adapters/+extras/ (local/ is preserved)."
   }

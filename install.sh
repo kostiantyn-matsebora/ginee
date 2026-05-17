@@ -76,6 +76,15 @@ if [ -d "$FRAMEWORK_DIR" ]; then
       cp -r "$FRAMEWORK_DIR/local" "$LOCAL_BACKUP"
     fi
     rm -rf "$FRAMEWORK_DIR/core" "$FRAMEWORK_DIR/adapters" "$FRAMEWORK_DIR/extras"
+    # Fetch fresh upstream content into a temp clone, then copy the three upstream-owned dirs into place
+    TMP_CLONE="$(mktemp -d)"
+    git clone --depth 1 --branch "$REF" "$REPO_URL" "$TMP_CLONE"
+    for d in core adapters extras; do
+      if [ -d "$TMP_CLONE/$d" ]; then
+        cp -r "$TMP_CLONE/$d" "$FRAMEWORK_DIR/$d"
+      fi
+    done
+    rm -rf "$TMP_CLONE"
   else
     echo "Framework already installed at $FRAMEWORK_DIR. Use --update-only to refresh core/+adapters/+extras/ (local/ preserved)." >&2
     exit 1
