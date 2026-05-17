@@ -223,9 +223,9 @@ Step 1 of every Phase 3 design review:
 
 **Mode 1 (branch + PR):**
 
-- Phase 4 start: compute slug → `git checkout -b <slug>`. Confirm to user.
+- Phase 4 start: compute slug. For issue-sourced tasks, use `gh issue develop <N> --name <slug> --checkout` (or GraphQL `createLinkedBranch`) to create the branch on origin + link it to the issue. For TODO / freeform, use `git checkout -b <slug>`. Confirm to user.
 - Phase 4 per batch: standard commits on the branch.
-- Phase 8: `git push -u origin <branch>` → `gh pr create` (or MCP) with body from `core/templates/pr-description.md` + `Closes #<N>` (issue-sourced).
+- Phase 8: `git push -u origin <branch>` (no-op if `gh issue develop` already pushed) → `gh pr create` (or MCP) with body from `core/templates/pr-description.md` + `Closes #<N>` (issue-sourced).
 
 **Mode 2 (working-tree only):**
 

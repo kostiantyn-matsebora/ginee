@@ -78,8 +78,14 @@ Phase 2 design ready. Delivery mode: branch+PR (per `delivery.default-mode` in f
    - Issue-sourced → `issue-<N>-<short-slug-from-title>`.
    - TODO-sourced → `todo-<short-slug>`.
    - Freeform → `task-<short-slug>`.
-2. `git checkout -b <slug>` (or `git switch -c <slug>`).
-3. Confirm to user: "Working on branch `<slug>`."
+2. Create the branch — tool priority depends on task source:
+
+   | Source | Command | Why |
+   |---|---|---|
+   | GitHub issue | `gh issue develop <N> --name <slug> --checkout` (or GraphQL `createLinkedBranch` mutation) | Creates the branch on origin AND establishes the GitHub *linkedBranch* relationship visible in the issue's Development sidebar. Pure `git checkout -b` skips the linkage. |
+   | TODO / freeform | `git checkout -b <slug>` (or `git switch -c <slug>`) | No issue to link; local branch is sufficient. |
+
+3. Confirm to user: "Working on branch `<slug>` (linked to issue #<N>)" / "Working on branch `<slug>` (local)."
 
 **Phase 4 per batch:**
 
@@ -98,6 +104,7 @@ Phase 2 design ready. Delivery mode: branch+PR (per `delivery.default-mode` in f
 - Never push to a branch the user didn't approve at Phase 3.
 - Never force-push.
 - Never open a PR without the user's Phase 8 acceptance.
+- For issue-sourced tasks, never use plain `git checkout -b` — always go through `gh issue develop` (or the GraphQL `createLinkedBranch` mutation) so the branch is linked to the issue in GitHub's Development panel.
 
 ### Mode 2 — working-tree only
 
