@@ -73,6 +73,68 @@ When a split produces new files, you MAY group them in a subdirectory rather tha
 - Negation lists scattered across sections.
 - Skill / prompt bundling N concerns into one file.
 
+## Project-doc extraction recipes
+
+You own the project-doc index under `local/index/`. Full protocol: `core/index-protocol.md`. `.idx` grammar: `core/index-syntax.md`. Templates: `core/templates/index/`.
+
+### Recipe table
+
+| Source doc | Recipe id | Extracted to | Recipe + extraction tips |
+|---|---|---|---|
+| Architecture doc (`docs/architecture.md`, `docs/sad.md`) | `builtin:architecture` | `architecture.idx`, `architecture-fr.idx`, `api-matrix.yaml`, `ui-states.yaml`, `constraints.yaml`, `glossary.idx` | <ul><li>FR table → `architecture-fr.idx` (id + title + 1-line summary + source anchor).</li><li>NFR table → `constraints.yaml` keyed by category (latency, cost, retention, availability, statelessness, security, ...); record budget + source-anchor + per-role-impact bullets.</li><li>API contract → `api-matrix.yaml` (endpoints × method × status with wire-shape-ref + fixture-ref).</li><li>UI-state enumeration → `ui-states.yaml` (name + wire-shape + visual + fixture-ref + source-anchor).</li><li>Domain glossary → `glossary.idx`.</li><li>Top-level sections + component map → `architecture.idx` (kind=section or kind=component).</li><li>Grab: identifiers, one-line statements, anchors. Leave behind: prose explanations, motivation, rejected alternatives.</li></ul> |
+| Mockup (HTML/CSS/JS, single file or directory) | `builtin:mockup` | `mockup-index.idx`, `ui-states.yaml` | <ul><li>Per documented section → row in `mockup-index.idx` (section name + invariant + `file:line` location + source anchor).</li><li>Each documented UI-state example payload → `ui-states.yaml` entry (cross-link with architecture-doc state where one exists).</li><li>Grab: section names, invariants, required-field lists, state sets, file:line refs. Leave behind: CSS rules, full markup, styling commentary.</li></ul> |
+| ADR directory (`docs/adr/*.md`) | `builtin:adr` | `adr-index.idx` (also reusable for RFC, design-decision, any-decision-record class) | <ul><li>Per ADR file → row (id + title + status + 1-line decision summary + source path).</li><li>Body NOT copied.</li><li>Grab: id, title, status, one-line "we decided X". Leave behind: motivation, alternatives, full consequences narrative.</li></ul> |
+| CR directory (`docs/cr/*.md`) | `builtin:cr` | `cr-index.idx` | <ul><li>Per CR file → row (id + title + status + target FR/NFR comma-list + source path).</li><li>Grab: id, title, status, what FRs/NFRs it changes. Leave behind: full diff, full justification.</li></ul> |
+| Scenario directory (`docs/scenarios/*.md`, `tests/scenarios/*.md`) | `builtin:scenario` | `scenario-index.idx` | <ul><li>Per scenario file → row (id + feature label + FR/NFR cited + mockup anchor + fixture path + source).</li><li>Grab: identifiers, feature label, cross-references. Leave behind: step-by-step Gherkin body.</li></ul> |
+| Novel class (RFC variant, runbook, threat-model, data-dictionary, feature-spec, model-card, eval-report, incident-report, playbook, compliance-doc, prompt-library, skill-catalog, release-note, ...) | `inline:<class>` | `<class>-index.idx` (flat records) OR `<class>.yaml` (nested) — new template authored by you | See § Novel-class recipe below. |
+| Project-instruction file (`CLAUDE.md` etc.) | — | — | Not indexed (small, already loaded by adapter pointer). |
+| Diagrams (binary images, drawio, mermaid) | — | — | Not indexed (binary; path-only in `local/framework.config.yaml`). |
+
+### Novel-class recipe
+
+When you encounter an adopter doc class not covered by a built-in recipe (or the user pre-declared `template: novel` in `framework.config.yaml § index.classes`):
+
+1. **Sample 3–5 files** in the class. Read the full body of each.
+2. **Identify signal structure:**
+   - What fields repeat across files?
+   - What's the unit of indexing — per-file, per-section, per-row?
+   - Are values flat strings or nested sub-trees?
+3. **Pick the format:**
+   - Flat-record uniform shape (every "thing" has the same fields) → `.idx` per `core/index-syntax.md`.
+   - Genuinely nested (sub-trees with arrays/maps) → YAML.
+4. **Propose a per-record schema** of 3–7 fields max — typically `id | title | status | key-signal | source` for flat records. Prefer fewer fields; add only what at least one consumer role will read.
+5. **Emit two files:**
+   - Template at `core/templates/index/<class>-index.<ext>` (header block + 1–2 example rows showing shape + brief recipe comment + lossless rule).
+   - Populated index at `local/index/<class>-index.<ext>`.
+6. **Record the recipe inline** in `local/index/manifest.yaml § indexed[]`:
+   ```yaml
+   - class: <class>
+     template: novel
+     recipe: |
+       <one-paragraph description of what to extract per file>
+     source-glob: <glob>
+     file-count: <N>
+     sha256-by-file: { ... }
+     indexed-on: <date>
+     index-files: [<class>-index.<ext>]
+   ```
+
+Bodies are NOT copied. Source path + anchor cited per row.
+
+### Lossless sample-and-check
+
+After every extraction or re-extraction:
+
+1. Pick **5 random items per affected index file** (or all items if the file has < 5 entries).
+2. Open the cited source path at the cited anchor.
+3. Verify the source still has the item (FR / NFR / endpoint / state / ADR / CR / scenario / record) at that location.
+4. **On any miss** → revert the affected index file(s) and re-plan. Do not commit partial extractions.
+
+Special checks:
+
+- Glob sources → confirm `file-count` in manifest matches actual file count.
+- SHA-256 values → recompute and compare with what you wrote.
+
 ## Process integration
 
 Invoked **between** lifecycle phases when:

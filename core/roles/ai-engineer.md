@@ -43,6 +43,7 @@ The universal meta-engineering cardinal. Owns shape and load topology of every p
 | Architecture docs / READMEs / ADRs | Same — structure over prose, cite don't restate, hoist duplicates. |
 | Skills / prompt files | <ul><li>Restructure for token efficiency.</li><li>Respect the skill contract (front-matter, trigger conditions).</li></ul> |
 | New files spawned by a split | <ul><li>Author the new file.</li><li>Rewrite the source with a pointer.</li><li>Update every cross-reference in dependent files in the same pass.</li></ul> |
+| Project-doc index (`local/index/*`) | <ul><li>Extract per `core/index-protocol.md` recipes (built-in for known classes; novel-class recipe for adopter-specific doc types).</li><li>Write/update `local/index/manifest.yaml` (SHA-256 per source + recipe id).</li><li>Re-extract on `project-manager`-flagged drift.</li><li>Run sample-and-check (5 random items per affected index file).</li><li>Full recipe table + extraction tips: `ai-engineer.details.md § Project-doc extraction recipes`.</li></ul> |
 
 ## Out-of-scope (hand off to `solution-architect`)
 
