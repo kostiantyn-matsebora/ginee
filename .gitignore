@@ -1,0 +1,23 @@
+# Build / release artefacts (created by .github/workflows/release.yml)
+_dist/
+_stage/
+
+# OS / editor cruft
+**/.DS_Store
+**/Thumbs.db
+**/.vs/
+**/.vscode/
+**/.idea/
+**/*.swp
+**/*.swo
+
+# Local development scratch
+.scratch/
+
+# Local project artefacts (the framework's own dogfood — when used to build itself)
+# Each adopting project has its own engineering-team/local/ which is per-project; here we
+# intentionally keep local/.gitkeep and local/roles/.gitkeep tracked so the structure is visible.
+local/**
+!local/.gitkeep
+!local/roles/
+!local/roles/.gitkeep

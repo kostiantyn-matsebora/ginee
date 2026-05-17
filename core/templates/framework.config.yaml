@@ -1,0 +1,111 @@
+# engineering-team — framework.config.yaml template
+#
+# This file is per-project. Lives at local/framework.config.yaml, NOT in core/.
+# project-manager writes it during the discovery flow; maintain it as the project evolves.
+#
+# Role: maps abstract concepts to concrete project file paths. Roles read this config
+# at runtime to find the architecture doc, mockup, ADRs, etc. Renaming a project doc
+# requires editing ONE line here — no edits to core/ or to role definitions.
+#
+# Principle: reference, never copy. (Decision D5 / G5 in the framework plan.)
+#
+# Replace example values. Leave commented-out concepts when the project doesn't have
+# the artefact — do NOT invent paths.
+
+# --- Source of truth ----------------------------------------------------------
+
+# The Solution Architecture Document — requirements, constraints, components,
+# data model, API contract, decisions. Owned by solution-architect.
+architecture-doc: docs/architecture.md
+
+# The design mockup — visual + behavioural contract for the client. Owned by
+# frontend-engineer; reviewed (not edited) by solution-architect.
+# Comment out if the project has no mockup.
+mockup: docs/mockup.html
+
+# Standalone API contract document, when separated from the architecture doc.
+# Comment out if the API contract lives inside the architecture doc.
+# api-contract: docs/api.md
+
+# Operational work-breakdown document — per-phase items, milestones.
+# Comment out if the project tracks WBS elsewhere (TODO file, issue tracker).
+work-breakdown-doc: docs/WBS.md
+
+# CI/CD integration guide — operational companion to the architecture doc.
+# Comment out if the project doesn't have one.
+# ci-cd-integration-doc: docs/ci-cd-integration.md
+
+# --- Change governance --------------------------------------------------------
+
+# Directory for Architecture Decision Records.
+adr-directory: docs/adr/
+
+# Directory for Change Requests.
+cr-directory: docs/cr/
+
+# Directory for architecture diagrams (C4 / sequence / deployment).
+diagrams-directory: docs/diagrams/
+
+# --- Task & workflow ----------------------------------------------------------
+
+# Repo-root TODO file (the user-curated open-items list).
+todo: TODO
+
+# Glob pattern for nested per-component TODO files.
+# Set to null if the project doesn't use nested TODOs.
+nested-todos-glob: "**/TODO"
+
+# Project-instruction file (the always-loaded surface for the LLM client).
+# Path depends on which adapter the project uses:
+#   claude:   CLAUDE.md
+#   copilot:  .github/copilot-instructions.md
+#   cursor:   .cursor/rules/*.mdc
+#   codex:    AGENTS.md (or the codex-specific file)
+#   generic:  INSTRUCTIONS.md (single-file fallback)
+project-instruction-file: CLAUDE.md
+
+# --- Repository structure -----------------------------------------------------
+
+# Where the project's deployable / library code lives, by tier.
+# Used by project-manager to attribute paths to roles.
+server-tier-path: backend/
+client-tier-path: frontend/
+infrastructure-path: infrastructure/
+local-dev-path: dev_env/
+testing-path: testing/
+ci-workflows-path: .github/workflows/
+
+# --- Stack identity (declarative summary; full detail in local/project-profile.md) ----
+
+stack:
+  server-language: <e.g. C# / TypeScript / Python / Go>
+  server-framework: <e.g. ASP.NET Core / Express / FastAPI / Spring Boot>
+  client-framework: <e.g. Angular / React / Vue / Svelte>
+  data-store: <e.g. PostgreSQL / MongoDB / DynamoDB>
+  real-time-mechanism: <SSE / WebSocket / change-stream / push>
+  iac-tool: <Terraform / Pulumi / Bicep / none>
+  ci-tool: <GitHub Actions / GitLab CI / Azure Pipelines / Jenkins / none>
+  container-runtime: <Docker / Podman / none>
+
+# --- Hard constraints (mirror of local/bindings.md → "Hard constraints") ------
+
+constraints:
+  hosting-cloud: <e.g. Azure / AWS / GCP / none>
+  cost-cap-usd-per-month: <number or null>
+  retention-days-minimum: <number or null>
+  internal-only: <true | false>
+  stateless-backend: <true | false>
+
+# --- Tooling commands ---------------------------------------------------------
+
+# Documented local-dev startup command. project-manager surfaces this in reports
+# when asking the user to verify a manual smoke.
+local-dev-startup-command: pwsh -NoProfile -File dev_env/start.ps1
+
+# Documented test-runner entry points (when standardized via QA's thin-runner
+# pattern, per core/roles/qa-engineer.md § Zero-setup rule for test runners).
+test-runners:
+  functional: testing/functional/run-tests.ps1
+  e2e: testing/e2e/run-tests.ps1
+  smoke: testing/smoke/run-smoke.ps1
+  script-suite: testing/pester/run-pester.ps1

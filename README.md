@@ -1,0 +1,200 @@
+# engineering-team
+
+[![Latest Release](https://img.shields.io/github/v/release/PLACEHOLDER-OWNER/engineering-team?label=release&color=0969da)](https://github.com/PLACEHOLDER-OWNER/engineering-team/releases/latest)
+[![License](https://img.shields.io/badge/license-TBD-lightgrey)](LICENSE)
+
+[![Claude Code](https://img.shields.io/badge/Claude%20Code-tier--1-D97757?logo=anthropic&logoColor=white)](adapters/claude/README.md)
+[![GitHub Copilot CLI](https://img.shields.io/badge/Copilot%20CLI-tier--1-000?logo=githubcopilot&logoColor=white)](adapters/copilot-cli/README.md)
+[![AGENTS.md](https://img.shields.io/badge/AGENTS.md-tier--2-0969da)](adapters/agents-md/README.md)
+[![Generic](https://img.shields.io/badge/Generic-tier--3-lightgrey)](adapters/generic/README.md)
+
+**A 7-cardinal AI engineering team for any LLM coding tool.**
+
+You're running AI coding agents across projects. Each tool has its own quirks, prompts,
+agent files, slash commands. The team works differently in every repo. Phases get
+skipped. Roles overlap. Long tasks crash with nothing to resume from. You re-explain
+the same governance every single time.
+
+**engineering-team makes the team portable, the process deterministic, and your project the source of truth.**
+
+> Drop the framework into a repo, prompt `@project-manager run initial discovery`,
+> and you have a 7-role engineering team that works the same way on Claude Code,
+> Copilot CLI, Cursor, Codex, Windsurf, and anything that reads `AGENTS.md`.
+
+---
+
+## Why engineering-team?
+
+```
+engineering-team
+├── 👥 WORKS LIKE A REAL TEAM
+│   ├── roles dispatch each other, hand off, and review each other's work
+│   ├── strict-domain rule — no role works outside its lane; mockup edits go to frontend,
+│   │   architecture to SA, infra to devops, even when "while I'm in the area" is tempting
+│   ├── cross-domain bugs use a propose → implement → verify cycle, not single-agent guessing
+│   └── doc co-ownership pattern — solution-architect owns semantics, ai-engineer owns shape
+│
+├── ☐ TODO-DRIVEN WORKFLOW
+│   ├── reads root TODO, nested per-component TODOs, or just your direct instruction
+│   ├── flips ☐ → ☒ only on user approval; never auto-adds; honours "skip TODO" cues
+│   └── post-acceptance hook — if docs changed, ai-engineer proposes optimization automatically
+│
+├── 🎯 DETERMINISTIC
+│   ├── same phased lifecycle, same dispatch rules, same gates
+│   └── from one project to the next — no re-teaching the process
+│
+├── 🤖 CLIENT-AGNOSTIC
+│   ├── Claude Code (tier-1) · Copilot CLI (tier-1) · AGENTS.md (tier-2) · generic (tier-3)
+│   └── one set of role definitions; per-client renderings are pointer files only
+│
+├── 🔎 SELF-LEARNING
+│   ├── zero stack/domain opinions baked in — project-manager learns your project on first run
+│   ├── discovers tech stack, architecture, SDLC artefacts, TODO conventions
+│   └── scans external catalogs (awesome-copilot) for additional specialist agents
+│
+├── 📚 REFERENCE-NOT-COPY
+│   ├── project docs (architecture, mockups, diagrams) stay where they are
+│   └── doc changes propagate instantly — framework never duplicates content
+│
+├── ⏱️ ITERATION PROTOCOL
+│   ├── work > 15 min runs in 3–5 min stoppable batches with visible intermediate results
+│   └── interrupt anytime; resume next day with zero rework
+│
+├── 🧱 EXTENSIBLE
+│   ├── 5 pre-built specialists (security · ml · mobile · sre · data)
+│   ├── plus author your own under local/roles/
+│   └── plus auto-discover + translate agents from awesome-copilot catalog
+│
+├── 🔄 UPDATE-SAFE
+│   ├── core/, adapters/, extras/ replaced on update
+│   └── local/ (your bindings, custom roles) survives every upgrade
+│
+└── 📦 ZERO TOOLING
+    ├── markdown only — copy-paste install always works
+    └── shell installer + GitHub Releases for convenience
+```
+
+---
+
+## Quick Start
+
+### 1. Get the framework into your project
+
+**Claude Code** — local copy + install via shell:
+
+```powershell
+.\install.ps1 -Adapter claude
+```
+
+```bash
+./install.sh --adapter claude
+```
+
+**Copilot CLI** — same installer, different adapter:
+
+```powershell
+.\install.ps1 -Adapter copilot-cli
+```
+
+```bash
+./install.sh --adapter copilot-cli
+```
+
+**Cursor / Codex / Windsurf / Amp / Devin / Factory / Jules / Copilot IDE** — cross-tool `AGENTS.md`:
+
+```bash
+./install.sh --adapter agents-md
+```
+
+**Anything else** — instructions-only fallback:
+
+```bash
+./install.sh --adapter generic
+```
+
+> Copy-paste is the canonical baseline. The installer is a convenience: drop the `engineering-team/` directory anywhere in your project and run the install steps in [`adapters/<your-client>/install.md`](adapters/) manually.
+
+### 2. Run discovery
+
+Open your client in the project, then prompt:
+
+```
+@project-manager run initial discovery
+```
+
+(or `act as project-manager and run initial discovery` for tier-2/3 clients without `@mention` routing)
+
+`project-manager` writes `local/project-profile.md`, `local/bindings.md`, `local/framework.config.yaml`, scans external catalogs for additional candidates, and reports recommended specialists for your approval.
+
+### 3. Work
+
+Dispatch tasks by mentioning the role that owns the surface:
+
+```
+@frontend-engineer add a dark-mode toggle to the header
+@solution-architect this needs a new FR — write the CR
+@qa-engineer cover the new toggle with scenarios + a visual smoke
+```
+
+The orchestrator (`project-manager`) routes ambiguous scope. For long tasks the iteration protocol kicks in: 3–5 min batches with visible intermediate results and a stop-anywhere contract.
+
+---
+
+## How it works
+
+> The framework ships **process**; your project ships **everything else**.
+
+Every adopter project has:
+
+```
+your-project/
+├── engineering-team/           ← framework (replaced on update; local/ survives)
+│   ├── core/                   ← process spec + 7 cardinal role definitions + templates
+│   ├── adapters/<client>/      ← per-client renderings (pointer files only)
+│   ├── extras/roles/           ← pre-built specialists (opt-in)
+│   └── local/                  ← YOUR bindings + custom roles (never replaced)
+│       ├── project-profile.md
+│       ├── bindings.md
+│       ├── framework.config.yaml
+│       └── roles/              ← your custom roles
+│
+├── .claude/agents/             ← (Claude adopters) thin pointers to engineering-team/core/roles/
+├── AGENTS.md                   ← (AGENTS.md adopters) one pointer file
+└── ... (your code, docs, mockups, tests — untouched)
+```
+
+The 7 cardinals:
+
+| Role | Owns | Generic alias |
+|---|---|---|
+| `project-manager` | Dispatch routing, lifecycle gates, discovery, post-acceptance hook | orchestrator |
+| `solution-architect` | Architecture doc semantics, SAD freeze + CR/ADR governance | architect |
+| `ai-engineer` | AI-asset + doc context economy, file-splitting, load topology | context-engineer |
+| `frontend-engineer` | Client / UI engineering | client-engineer |
+| `backend-engineer` | Server / API engineering | service-engineer |
+| `devops-engineer` | Infra, CI/CD, containers, cloud, secrets | platform-engineer |
+| `qa-engineer` | Functional / e2e / visual / scenario testing + thin runners | quality-engineer |
+
+Plus 5 opt-in specialists in `extras/roles/` (security · ml · mobile · sre · data) and unlimited custom roles in `local/roles/`.
+
+---
+
+## Where to next
+
+- **[PLAN.md](PLAN.md)** — design document + 11 locked decisions + verification plan.
+- **[CLAUDE.md](CLAUDE.md)** — orientation for working ON the framework itself (the project dogfoods its own process).
+- **[core/process.md](core/process.md)** — vendor-neutral team process spec (lifecycle, dispatch, iteration, coordination).
+- **[core/roles/](core/roles/)** — 7 cardinal role definitions.
+- **[adapters/](adapters/)** — per-client installation guides:
+  - [Claude Code](adapters/claude/install.md) — tier-1, native subagents
+  - [Copilot CLI](adapters/copilot-cli/install.md) — tier-1, native subagents + `/fleet` parallel
+  - [AGENTS.md cross-tool](adapters/agents-md/install.md) — tier-2, persona model
+  - [Generic fallback](adapters/generic/install.md) — tier-3, manual instructions
+- **[extras/roles/](extras/roles/)** — pre-built specialist library.
+- **[core/templates/role-authoring-template.md](core/templates/role-authoring-template.md)** — author your own custom role.
+
+---
+
+## License
+
+TBD — see [LICENSE](LICENSE).
