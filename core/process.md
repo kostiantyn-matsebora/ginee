@@ -298,6 +298,19 @@ Applies to **all** written artefacts:
 | Wire-contract breaking change (API shape, event format, env-var names) | Flag in PR title. Service-owning role + client-owning role + `devops-engineer` all confirm before merge. |
 | Cost-relevant change (new resource, larger SKU) | Fresh estimate vs. project cost cap in PR description. `devops-engineer` owns. |
 
+### Project-doc index — local/index/
+
+Heavy project docs (architecture, mockup, ADRs, CRs, scenarios, plus any adopter-specific doc class) are extracted to lightweight summaries under `local/index/`. Roles read the index first; originals only when an index entry points to a section needing verbatim consumption. Full spec + extraction recipes + staleness mechanism: **`core/index-protocol.md`**. `.idx` DSL grammar: **`core/index-syntax.md`**.
+
+**Load triggers:**
+
+- `project-manager` enumerates classes during initial discovery or `rediscover`.
+- `project-manager` detects SHA-256 drift in `local/index/manifest.yaml` pre-dispatch.
+- `ai-engineer` is dispatched to extract or re-extract.
+- Role's "Source of truth" lookup pointed at `local/index/<file>` and the role needs the protocol contract (rare).
+
+Default short tasks do not load these specs.
+
 ### Strict-domain rule — no specialist works outside its domain
 
 - A bug in domain X is fixed by the engineer who owns X.

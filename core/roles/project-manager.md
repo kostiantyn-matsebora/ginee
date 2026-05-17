@@ -48,8 +48,18 @@ You:
   1. Read `local/project-profile.md`.
   2. Glance at the current task's paths/patterns.
   3. On files/patterns not in the profile → flag staleness in your first response and offer `rediscover` or a targeted profile update.
+  4. For each source doc the dispatched task may consume, compute current SHA-256 and compare with `local/index/manifest.yaml`:
+     - Bash: `sha256sum <file>`.
+     - PowerShell: `Get-FileHash -Algorithm SHA256 <file>`.
+     - On mismatch → flag staleness; offer `@ai-engineer reindex <source>` (targeted) or `@project-manager rediscover` (full). **Never auto-reindex.**
+     - Full procedure: `core/index-protocol.md § Pre-dispatch staleness check`.
 
   Examples: `project-manager.details.md § Auto-flag staleness`.
+
+- **Index dispatch — re-extract on drift** — when the staleness check flags drift and the user picks `@ai-engineer reindex <source>` (or targeted re-extraction is otherwise warranted):
+  - Dispatch `ai-engineer` with the changed source(s) and the recorded recipe id from `manifest.yaml`.
+  - `ai-engineer` re-extracts, updates affected `local/index/*` files + manifest, runs sample-and-check.
+  - See `core/index-protocol.md § Re-extraction`.
 
 ## Dispatch routing
 

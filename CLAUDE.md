@@ -87,6 +87,7 @@ Canonical in the plan file. Summary:
 | D10 | Custom-role extension: both pre-built library + free-form authoring under `local/roles/` |
 | D11 | Public name: `engineering-team` |
 | D12 | Automatic mode (added 2026-05-17) — per-task opt-in (`auto:` prefix or PM-proposed-then-user-accepted); elides Phase 3 + iteration intermediate gates; falls back to interactive on defined triggers (material UX, repeated defect, cross-domain cycle, wrong oracle, budget/time overrun, destructive actions); replaces Phase 8 with a delivery handoff (Accept/Feedback/Reject); never commits or pushes silently |
+| D13 | Project-doc index in `local/index/` (added 2026-05-17) — heavy adopter docs (architecture, mockup, ADRs, CRs, scenarios, custom doc classes) extracted to lightweight summaries with SHA-256 staleness tracking in `local/index/manifest.yaml`; roles read index first, originals on demand; `ai-engineer` owns extraction + re-extraction (built-in recipes for common classes + novel-class recipe for adopter-specific doc types); `project-manager` checks SHA-256 drift pre-dispatch and dispatches `ai-engineer` to re-index; full spec `core/index-protocol.md` |
 
 ## Stack — non-negotiable
 

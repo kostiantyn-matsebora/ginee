@@ -82,10 +82,29 @@ Steps:
 7. **Detect TODO conventions.**
    - Find the project's `TODO` file (root + nested).
    - Note path(s).
-8. **Write three artefacts.** Use the templates in `core/templates/`:
+8a. **Write three artefacts.** Use the templates in `core/templates/`:
    - `local/project-profile.md` ← `core/templates/project-profile.md`
    - `local/bindings.md` ← `core/templates/bindings.md`
    - `local/framework.config.yaml` ← `core/templates/framework.config.yaml`
+
+8b. **Enumerate doc classes + dispatch `ai-engineer` for index extraction.** Full spec: `core/index-protocol.md`.
+   1. Enumerate classes to index in this priority order:
+      1. **Adopter-declared** — `local/framework.config.yaml § index.classes` (highest priority; overrides auto-detection).
+      2. **Built-in matched by heuristics** — globs against the templates in `core/templates/index/`:
+         - architecture (`docs/architecture*.md`, `docs/sad*.md`)
+         - adr (`docs/adr/*.md`)
+         - cr (`docs/cr/*.md`)
+         - scenario (`docs/scenarios/*.md`, `tests/scenarios/*.md`)
+         - mockup (`docs/mockup*.html`, mockup directory)
+         - constraints, glossary, api-matrix, ui-states → derived from the architecture doc itself.
+      3. **Novel** — any unmatched doc directory or doc-class hint. List as `template: novel` for `ai-engineer`.
+   2. Dispatch `ai-engineer` with the enumerated class list. `ai-engineer`:
+      - Applies built-in recipes for known templates.
+      - Authors new templates + inline recipes for novel classes.
+      - Populates `local/index/*` files.
+      - Writes `local/index/manifest.yaml` (SHA-256 per source).
+      - Runs sample-and-check (5 random items per affected index file).
+
 9. **Report.**
    - Use `core/templates/discovery-report.md` shape.
    - Surface to user.
@@ -136,3 +155,26 @@ Examples that should flag:
 - Task mentions a `mobile/` directory but profile says "web only".
 - Task references a `ml-pipeline/` script but profile lists no ML stack.
 - Task references a new top-level docs directory not in the profile.
+
+## Pre-dispatch staleness check (index)
+
+Before dispatching a specialist whose task may consume any indexed source doc, verify the index isn't stale. Full spec: `core/index-protocol.md § Pre-dispatch staleness check`.
+
+1. **Identify candidate sources.** From `local/index/manifest.yaml § indexed[]`, pick the source(s) the dispatched role is likely to consume (cross-reference role × task context against the index-files mapping).
+2. **Compute current SHA-256:**
+   - Bash: `sha256sum <file>` or `find <glob> -type f -exec sha256sum {} +`
+   - PowerShell: `Get-FileHash -Algorithm SHA256 <file>`
+3. **Compare with manifest:**
+   - Single-source class → compare `sha256`.
+   - Globbed class → compare per-file entries under `sha256-by-file:`.
+4. **On any mismatch:**
+   - Flag staleness in your first response (which source(s) drifted; which index files are affected).
+   - Offer the user two paths:
+
+     | Option | Effect |
+     |---|---|
+     | `@ai-engineer reindex <source>` | Targeted re-extraction; cheapest. |
+     | `@project-manager rediscover` | Full re-discovery + re-extraction; use when class membership itself changed. |
+
+   - **Never auto-reindex.** User decides.
+5. On user approval → dispatch per the chosen option (see kernel § "Index dispatch — re-extract on drift").
