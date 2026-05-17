@@ -126,12 +126,18 @@ test-runners:
 # TODO files + direct instructions, file new issues from user requests,
 # and promote discussions to issues. Full spec: core/github-integration.md.
 #
-# repo:
-#   - Defaults to inference from `git remote get-url origin`.
-#   - Uncomment + set when origin isn't the right target (forks, mirrors).
+# Two repos:
+#   repo            — primary (this adopter project). Defaults to `git remote get-url origin`.
+#   framework-repo  — upstream engineering-team framework. Lets adopters file feedback
+#                     against the framework with `@project-manager file framework-bug`
+#                     / `file framework-feature` / `pick up framework#<N>`.
+#                     Set during install (curl/tarball script populates it from the
+#                     install source); override for forks.
+#                     Leave unset to disable framework-targeted operations entirely.
 # Labels are configurable; PM creates missing ones on first use (default color).
 github:
   # repo: <owner>/<repo>
+  # framework-repo: <owner>/engineering-team
   ready-label: engineering-team:ready
   in-progress-label: engineering-team:in-progress
   blocked-label: engineering-team:blocked
