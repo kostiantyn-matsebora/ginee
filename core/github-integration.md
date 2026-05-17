@@ -28,14 +28,51 @@ Framework spec is tool-agnostic. Roles use whichever GitHub access is available 
 
 Commands referenced below use `gh` syntax. Substitute equivalents as needed; never invent a third mechanism.
 
-## Repo discovery
+## Repo discovery — two repos
 
-Priority order:
+Framework tracks two repo handles:
 
-1. **Override.** `local/framework.config.yaml § github.repo: <owner>/<repo>` wins when set.
-2. **Inference.** `git remote get-url origin` → strip trailing `.git` → map to `<owner>/<repo>`.
-3. **Multi-remote.** Use `origin` unless overridden.
-4. **No remote / detached.** PM surfaces the gap; offers to add the override key.
+| Handle | Purpose | Source |
+|---|---|---|
+| **primary** (`github.repo`) | Adopter's own project. Default target for issue ops. | Inferred from `git remote get-url origin`; override in `local/framework.config.yaml § github.repo`. |
+| **framework** (`github.framework-repo`) | Upstream engineering-team framework. Lets adopters file feedback against the framework. | Set at install time by the curl/tarball script (or hand-set after copy-paste install). Leave unset to disable framework-targeted ops. |
+
+Resolution rules:
+
+1. **Primary repo.**
+   - `github.repo` override wins.
+   - Else infer from `git remote get-url origin` (strip `.git`).
+   - Multi-remote: use `origin` unless overridden.
+   - No remote / detached: PM surfaces the gap; offers to add the override key.
+2. **Framework repo.**
+   - `github.framework-repo` value wins if set.
+   - Absent → framework-targeted operations are disabled. PM surfaces this and offers to populate the key.
+3. **Same-repo case.** When working IN the framework repo (rare for the framework's own development), primary == framework. Target-based template selection (see below) naturally picks framework templates. Explicit `framework-` prefix on commands is accepted but redundant.
+
+## Command targeting — primary vs framework
+
+Default target is the primary repo. The `framework-` prefix routes the same operation to the framework repo:
+
+| Default (primary) | Framework-targeted variant |
+|---|---|
+| `@project-manager file bug <title>` | `@project-manager file framework-bug <title>` |
+| `@project-manager file feature <title>` | `@project-manager file framework-feature <title>` |
+| `@project-manager pick up #<N>` | `@project-manager pick up framework#<N>` |
+| `@project-manager triage` | `@project-manager triage framework` |
+| `@project-manager promote discussion #<N>` | `@project-manager promote discussion framework#<N>` |
+
+If `github.framework-repo` is unset, framework-targeted commands fail fast with a one-line "framework-repo not configured" message + an offer to populate the key. No silent fallback to primary.
+
+## Template selection
+
+Driven by **target repo**, not command shape:
+
+| Target | Bug template | Feature template |
+|---|---|---|
+| primary repo | `core/templates/issues/bug-report.md` | `core/templates/issues/feature-request.md` |
+| framework repo | `core/templates/issues/framework-bug-report.md` | `core/templates/issues/framework-feature-request.md` |
+
+When working IN the framework repo (primary == framework), the framework-* templates apply for every file/pick-up — no special command needed.
 
 ## Label scheme (configurable)
 
@@ -61,12 +98,10 @@ PM creates any missing label on first use via `gh label create <name>` (default 
 
 ## Outbound — file an issue
 
-Trigger: `@project-manager file bug <title>` / `@project-manager file feature <title>` / explicit user ask to create an issue.
+Trigger: `@project-manager file bug <title>` / `file feature <title>` (→ primary) or `file framework-bug <title>` / `file framework-feature <title>` (→ framework upstream).
 
-1. PM picks the template:
-   - Bug → `core/templates/issues/bug-report.md`.
-   - Feature → `core/templates/issues/feature-request.md`.
-2. PM drafts the body — populates structured sections (`## Summary` / `## Steps to reproduce` / `## Affected area` / `## FR / NFR cited` / `## Acceptance criteria` / `## Out of scope`) from user input + project context.
+1. PM resolves target repo (primary unless `framework-` prefix) and picks the template per § Template selection.
+2. PM drafts the body — populates the template's structured sections from user input + project context.
 3. **PM surfaces the draft to the user for approval.** Issue creation is externally visible — per `core/process.md § Executing actions with care`, always confirm before publishing.
 4. On approval, PM runs:
    ```
@@ -77,11 +112,11 @@ Trigger: `@project-manager file bug <title>` / `@project-manager file feature <t
 
 ## Inbound — pick up an issue
 
-Trigger: `@project-manager pick up #<N>`. **Never auto-picks.**
+Trigger: `@project-manager pick up #<N>` (→ primary) or `@project-manager pick up framework#<N>` (→ framework upstream). **Never auto-picks.**
 
-1. Fetch:
+1. Resolve target repo (primary unless `framework#` prefix on the issue id). Fetch:
    ```
-   gh issue view <N> --repo <repo> --json title,body,labels,state,comments
+   gh issue view <N> --repo <target-repo> --json title,body,labels,state,comments
    ```
 2. Validate:
    - State must be `OPEN`.
@@ -109,11 +144,11 @@ Trigger: `@project-manager pick up #<N>`. **Never auto-picks.**
 
 ## Triage — list ready issues
 
-Trigger: `@project-manager triage`.
+Trigger: `@project-manager triage` (→ primary) or `@project-manager triage framework` (→ framework upstream).
 
-1. List:
+1. Resolve target repo. List:
    ```
-   gh issue list --repo <repo> --label <ready-label> --state open --json number,title,labels,createdAt
+   gh issue list --repo <target-repo> --label <ready-label> --state open --json number,title,labels,createdAt
    ```
 2. Surface as a table — number / title / age / labels.
 3. Propose a pickup order based on:
@@ -126,11 +161,11 @@ Triage **never picks**. It only enumerates and proposes.
 
 ## Promote — discussion → issue
 
-Trigger: `@project-manager promote discussion #<N>`.
+Trigger: `@project-manager promote discussion #<N>` (→ primary) or `@project-manager promote discussion framework#<N>` (→ framework upstream).
 
-1. Fetch the discussion:
+1. Resolve target repo. Fetch the discussion:
    ```
-   gh api repos/<owner>/<repo>/discussions/<N>
+   gh api repos/<target-repo>/discussions/<N>
    ```
    (or MCP Discussions API equivalent).
 2. Read body + top comments — extract:

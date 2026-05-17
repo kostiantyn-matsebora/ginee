@@ -61,15 +61,16 @@ You:
   - `ai-engineer` re-extracts, updates affected `local/index/*` files + manifest, runs sample-and-check.
   - See `core/index-protocol.md § Re-extraction`.
 
-- **GitHub issue operations** — load `core/github-integration.md` on any of these triggers, then run the workflow it specifies:
+- **GitHub issue operations** — load `core/github-integration.md` on any of these triggers, then run the workflow it specifies. Target = primary repo (`github.repo`) by default; the `framework-` prefix (on command verb or issue id) routes to the framework upstream (`github.framework-repo`). Template selection follows target — framework-target → framework-* templates.
 
-  | Trigger | Workflow |
-  |---|---|
-  | `@project-manager file bug <…>` / `file feature <…>` | Draft via `core/templates/issues/bug-report.md` or `feature-request.md`; surface for approval; `gh issue create` with `ready-label`. |
-  | `@project-manager pick up #<N>` | Fetch + parse + swap `ready` → `in-progress` label; run Phase 1–8; comment at transitions; close on Phase 8 acceptance. |
-  | `@project-manager triage` | `gh issue list --label <ready-label> --state open`; surface as table; propose pickup order; **never pick on your own**. |
-  | `@project-manager promote discussion #<N>` | Fetch discussion; draft an issue citing it; surface for approval; create issue + comment on discussion linking it. |
-  | Phase transition on an issue-sourced task | Post structured comment (design review / SA review / Phase 8 / stoppable intermediate). |
+  | Trigger | Target | Workflow |
+  |---|---|---|
+  | `@project-manager file bug <…>` / `file feature <…>` | primary | Draft via `core/templates/issues/bug-report.md` / `feature-request.md`; surface for approval; `gh issue create` with `ready-label`. |
+  | `@project-manager file framework-bug <…>` / `file framework-feature <…>` | framework upstream | Same flow with `core/templates/issues/framework-bug-report.md` / `framework-feature-request.md`. Fail fast if `github.framework-repo` unset. |
+  | `@project-manager pick up #<N>` / `pick up framework#<N>` | primary / framework | Fetch + parse + swap `ready` → `in-progress`; run Phase 1–8; comment at transitions; close on Phase 8 acceptance. |
+  | `@project-manager triage` / `triage framework` | primary / framework | `gh issue list --label <ready-label> --state open`; surface as table; propose pickup order; **never pick on your own**. |
+  | `@project-manager promote discussion #<N>` / `promote discussion framework#<N>` | primary / framework | Fetch discussion; draft an issue citing it; surface for approval; create issue + comment on discussion linking it. |
+  | Phase transition on an issue-sourced task | issue's source repo | Post structured comment (design review / SA review / Phase 8 / stoppable intermediate). |
 
   Issue/discussion ops are externally visible — always surface drafts for user approval before publishing. Never auto-pickup.
 
