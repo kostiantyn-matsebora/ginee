@@ -26,6 +26,8 @@
 
 Bindings may NOT override generic process.
 
+**Invocation notation.** This spec uses `@<role>` as vendor-neutral shorthand for "dispatch to that role." The literal `@<agent>` syntax works in some clients (Cursor) but not others (Claude Code). Per-client invocation surfaces (AgentSkills, natural-language routing, etc.) ship via the adapters — see `adapters/<x>/install.md § How to invoke`. Framework workflows (discovery / file / pick-up / triage / promote / reindex) auto-activate as Skills in any AgentSkills-compatible client; specialist dispatches route via subagent description match.
+
 ## Dispatch & parallelism rules
 
 | Rule | Action |
