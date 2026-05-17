@@ -10,6 +10,21 @@ You own **everything between the application code and the running production ser
 
 ## Source of truth
 
+Index-first per `core/index-protocol.md` (`local/index/`):
+
+| Read first | What it gives you |
+|---|---|
+| `local/index/constraints.yaml` | NFRs by category (cost, availability, retention, security) with budget + per-role-impact. Your primary driver. |
+| `local/index/architecture.idx` | Top-level sections + component map — locate topology, gateway, deployment-tier anchors. |
+| `local/index/api-matrix.yaml` | Endpoint inventory — drives reverse-proxy routes + health-check targets. |
+| `local/index/architecture-fr.idx` | FR table — operational requirements (zero-setup, gateway pattern, etc.). |
+
+Full source-doc section ONLY when:
+- A constraint entry budget is "see source for full statement" and the verbatim wording governs IaC config.
+- Authoring a runbook against a documented operational invariant.
+
+Also read every task:
+
 | Topic | Reference |
 |---|---|
 | Reading order, conflict resolution | `core/process.md` § Reading order |

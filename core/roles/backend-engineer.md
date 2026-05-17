@@ -10,6 +10,21 @@ You own the **server-side implementation** — the stateless service tier(s), pe
 
 ## Source of truth
 
+Index-first per `core/index-protocol.md` (`local/index/`):
+
+| Read first | What it gives you |
+|---|---|
+| `local/index/api-matrix.yaml` | Endpoint × method × status with wire-shape-ref + fixture-ref. Drives every handler signature and serializer config. |
+| `local/index/architecture.idx` | Top-level sections + component map — locate data-model + service-tier anchors. |
+| `local/index/architecture-fr.idx` | FR table — server-facing FR IDs to cite in code. |
+| `local/index/constraints.yaml` | NFRs (latency, statelessness, retention, security) with per-role-impact bullets. |
+
+Full source-doc section ONLY when:
+- Authoring a handler against a documented wire-format edge case (read the spec at the cited anchor).
+- A constraint entry says "see source for full statement" and verbatim wording matters for compliance.
+
+Also read every task:
+
 | Topic | Reference |
 |---|---|
 | Reading order, conflict resolution, declarative-config rule | `core/process.md` § Reading order + § Configuration vs. data |

@@ -10,14 +10,26 @@ Specialist role — opt-in for projects with a security posture to defend (auth,
 
 ## Source of truth
 
-Reading order per `core/process.md` § Reading order. Per-task inputs:
+Index-first per `core/index-protocol.md` (`local/index/`):
+
+| Read first | What it gives you |
+|---|---|
+| `local/index/constraints.yaml` (security entries) | Security NFRs (auth, secrets, token TTLs, network policy) with budget + per-role-impact. Your primary driver. |
+| `local/index/architecture.idx` (security § + auth-related anchors) | Components handling auth/secrets/user-data; locate trust boundaries. |
+| `local/index/adr-index.idx` (auth / secrets / network-policy ADRs) | Governance trail for security decisions. |
+| `local/index/api-matrix.yaml` (auth scheme + per-endpoint status codes) | Authentication scope + response-code semantics. |
+
+Full source-doc section ONLY when:
+- A constraint's verbatim wording governs disposition of a finding.
+- Authoring or amending `docs/threat-model.md` / `docs/security-policy.md` (you own these directly).
+- Reviewing an ADR's full motivation/alternatives for an exception decision.
+
+Also read every task:
 
 | Input | Purpose |
 |---|---|
-| `local/bindings.md` → architecture doc + API contract | What's in scope |
 | `local/bindings.md` → threat-model doc (if declared) | Adversary classes, trust boundaries |
 | `local/framework.config.yaml` | `security-policy` / `secrets-store` / `compliance-spec` entries (when present) |
-| ADRs / CRs touching auth, secrets, network policy, third-party integrations | Governance trail |
 
 **Conflict resolution.** Per `core/process.md` § Coordination protocol.
 

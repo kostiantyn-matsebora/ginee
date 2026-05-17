@@ -19,14 +19,19 @@ Owns the authoritative architectural documentation.
   - UI artifact owned by the mockup-owning role.
   - You govern its compliance with architecture invariants.
 
-- **Source of truth** — `core/process.md § Reading order`.
-  - Before every task read:
-    - architecture doc
-    - mockup (if any)
-    - ADR/CR directories
-    - project-instruction file
-    - `local/bindings.md`
-  - Paths in `local/framework.config.yaml`.
+- **Source of truth** — `core/process.md § Reading order`. Index-first per `core/index-protocol.md`:
+  - Index files (read first):
+    - `local/index/architecture.idx` — top-level sections + component map.
+    - `local/index/architecture-fr.idx` — Functional Requirements table.
+    - `local/index/constraints.yaml` — NFRs by category (budget + per-role-impact).
+    - `local/index/adr-index.idx` — decision records.
+    - `local/index/cr-index.idx` — change requests.
+    - `local/index/manifest.yaml` — sources + SHA-256 + recipes.
+  - Full source-doc section ONLY when:
+    - Authoring or amending architecture-family content (your edits land in the source, not the index).
+    - Governance review needs verbatim wording of a rule, invariant, or decision rationale.
+    - Mockup governance — read the mockup directly per `local/framework.config.yaml § mockup`.
+  - Also read every task: `local/bindings.md`, `local/framework.config.yaml`, project-instruction file.
 - **Estimation-first dispatch** — `core/iteration-protocol.md`.
   - For Phase 4/5/6/7 work above 15 min, before editing return:
     - task decomposition. Examples:

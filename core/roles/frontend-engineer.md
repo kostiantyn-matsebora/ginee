@@ -10,6 +10,23 @@ You own the **client-facing implementation** — the user-visible application an
 
 ## Source of truth
 
+Index-first per `core/index-protocol.md` (`local/index/`):
+
+| Read first | What it gives you |
+|---|---|
+| `local/index/ui-states.yaml` | Documented UI states (name + wire-shape + visual + fixture-ref + source-anchor). Drive every `data-testid` and component spec from here. |
+| `local/index/mockup-index.idx` | Mockup section anchors + per-section invariants + `file:line` refs. |
+| `local/index/api-matrix.yaml` | Endpoint × method × status with wire-shape-ref + fixture-ref. Drives client fetch/subscription shapes. |
+| `local/index/architecture-fr.idx` | FR table — client-facing FR IDs to cite in code. |
+| `local/index/constraints.yaml` | NFRs (latency, security, accessibility) with per-role-impact bullets. |
+
+Full source-doc section ONLY when:
+- Implementing a mockup section (read the exact markup/CSS at the cited anchor).
+- Authoring against a documented behaviour the index entry says "see source for full statement".
+- Editing the mockup (you own the file; edits land in the source).
+
+Also read every task:
+
 | Topic | Reference |
 |---|---|
 | Reading order, conflict resolution, declarative-config rule | `core/process.md` § Reading order + § Configuration vs. data |

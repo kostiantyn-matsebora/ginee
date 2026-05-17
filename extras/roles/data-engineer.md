@@ -10,14 +10,26 @@ Specialist role — opt-in for projects with non-trivial data movement / transfo
 
 ## Source of truth
 
-Reading order per `core/process.md` § Reading order. Per-task inputs:
+Index-first per `core/index-protocol.md` (`local/index/`):
+
+| Read first | What it gives you |
+|---|---|
+| `local/index/architecture.idx` (data-tier anchors + component map) | Warehouse / lake / orchestrator / catalog topology, dataset boundaries. |
+| `local/index/glossary.idx` (data terms) | Canonical domain definitions — disambiguate dataset names, business terms. |
+| `local/index/constraints.yaml` (retention + freshness + cost entries) | Per-dataset retention windows, freshness SLO budgets, warehouse-cost caps. |
+| `local/index/adr-index.idx` (data-model / schema / ingestion ADRs) | Governance trail for schema-evolution + retention decisions. |
+| `local/index/<class>-index.idx` for adopter-specific data-tier classes (data-dictionary, dataset-card, pipeline-spec — if present as novel classes) | Per-record metadata for the project's data-doc set. |
+
+Full source-doc section ONLY when:
+- Authoring or amending data-model docs / data-catalog entries / pipeline specs (you own these directly).
+- An ADR's verbatim wording governs a current schema-evolution or retention decision.
+
+Also read every task:
 
 | Input | Purpose |
 |---|---|
-| `local/bindings.md` | Architecture doc + data-tier topology |
+| `local/bindings.md` | Data-tier topology + stack |
 | `local/framework.config.yaml` | `data-warehouse` / `lake-root` / `pipeline-orchestrator` / `data-catalog` entries |
-| Existing schema docs, pipeline definitions, data-quality reports | Current state |
-| ADRs / CRs touching data model, schema evolution, ingestion sources, retention policy | Governance trail |
 
 **Conflict resolution.** Per `core/process.md` § Coordination protocol.
 

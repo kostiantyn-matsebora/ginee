@@ -10,6 +10,23 @@ You own **all testing concerns** outside individual component unit tests: functi
 
 ## Source of truth
 
+Index-first per `core/index-protocol.md` (`local/index/`):
+
+| Read first | What it gives you |
+|---|---|
+| `local/index/scenario-index.idx` | Existing scenario inventory (id + feature + FR cited + mockup anchor + fixture + source). Locate coverage gaps without reading every file. |
+| `local/index/ui-states.yaml` | Documented UI states — first-class test fixtures + assertion targets. |
+| `local/index/api-matrix.yaml` | Endpoint × method × status — every documented status code is a test case. |
+| `local/index/architecture-fr.idx` | FR table — drives the "one scenario per user-visible FR" minimum. |
+| `local/index/constraints.yaml` | NFRs with budgets — drives latency/availability assertions. |
+
+Full source-doc section ONLY when:
+- Authoring a new scenario file (you create the source content).
+- The scenario-index entry points you at the source for verbatim Given/When/Then wording.
+- Reviewing a mockup section to author harness assertions against documented invariants.
+
+Also read every task:
+
 | Topic | Reference |
 |---|---|
 | Reading order, conflict resolution | `core/process.md` § Reading order |

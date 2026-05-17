@@ -10,14 +10,26 @@ Specialist role — opt-in for projects with a machine-learning surface (trainin
 
 ## Source of truth
 
-Reading order per `core/process.md` § Reading order. Per-task inputs:
+Index-first per `core/index-protocol.md` (`local/index/`):
+
+| Read first | What it gives you |
+|---|---|
+| `local/index/architecture.idx` (ML § + serving-tier anchors) | ML-component map, serving topology, training-pipeline boundaries. |
+| `local/index/api-matrix.yaml` (inference endpoints) | Serving wire contract, request/response shape, status codes. |
+| `local/index/constraints.yaml` (eval thresholds + latency + cost) | Model-quality gates, inference latency budgets, training-cost caps. |
+| `local/index/adr-index.idx` (ML-related ADRs) | Model-architecture / training-data / deployment-policy governance. |
+| `local/index/<class>-index.idx` for adopter-specific ML doc classes (model-card, eval-report, feature-spec — if present as novel classes) | Per-record metadata for the project's ML doc set. |
+
+Full source-doc section ONLY when:
+- Authoring or amending a model card / eval report / feature spec (you own these directly).
+- An ADR's verbatim wording governs a current deployment-gate decision.
+
+Also read every task:
 
 | Input | Purpose |
 |---|---|
-| `local/bindings.md` | Architecture doc + ML surface declaration |
+| `local/bindings.md` | ML surface declaration + stack |
 | `local/framework.config.yaml` | `model-registry` / `feature-store` / `training-data` / `serving-endpoint` entries (when present) |
-| Existing model cards + evaluation reports under declared model-registry | Current state |
-| ADRs / CRs touching model architecture, training data, evaluation thresholds, deployment policy | Governance trail |
 
 **Conflict resolution.** Per `core/process.md` § Coordination protocol.
 

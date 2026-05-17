@@ -10,14 +10,23 @@ Specialist role — opt-in for projects with a mobile app surface (native iOS, n
 
 ## Source of truth
 
-Reading order per `core/process.md` § Reading order. Per-task inputs:
+Index-first per `core/index-protocol.md` (`local/index/`):
 
-| Input | Purpose |
+| Read first | What it gives you |
 |---|---|
-| `local/bindings.md` | Mobile-app source paths + platform matrix (iOS versions, Android API levels) |
-| `local/framework.config.yaml` | `api-contract` (backend), `design-system` (frontend parity), `store-listing` (release artefacts) |
-| Existing CRs / ADRs touching mobile-specific surfaces (deep links, push tokens, offline sync) | Governance trail |
-| Platform UX guidelines (Apple HIG / Material) | Externally referenced, not duplicated in project |
+| `local/index/api-matrix.yaml` | Endpoint × method × status for the mobile-consumed backend. Drives every fetch / push / sync wire shape. |
+| `local/index/ui-states.yaml` | Documented UI states — adapt to native platform conventions while preserving behaviour. |
+| `local/index/architecture.idx` (mobile-tier anchors) | Mobile-app boundary, design-system parity points, offline/sync architecture. |
+| `local/index/constraints.yaml` (mobile NFRs: binary size, offline behaviour, accessibility) | Per-platform budgets. |
+| `local/index/cr-index.idx` + `adr-index.idx` (mobile-touching records) | Governance trail for deep links, push tokens, offline sync. |
+
+Full source-doc section ONLY when:
+- Implementing a documented UI state on native — read the source for visual reference at the cited anchor.
+- An ADR's verbatim wording governs a current native-implementation choice.
+
+Platform UX guidelines (Apple HIG / Material) — externally referenced, never indexed.
+
+Also read every task: `local/bindings.md` (mobile-app paths + platform matrix); `local/framework.config.yaml` (`api-contract` / `design-system` / `store-listing`).
 
 **Conflict resolution.** Per `core/process.md` § Coordination protocol.
 

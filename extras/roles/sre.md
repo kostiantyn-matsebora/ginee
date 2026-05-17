@@ -15,14 +15,27 @@ Distinct from `devops-engineer`:
 
 ## Source of truth
 
-Reading order per `core/process.md` § Reading order. Per-task inputs:
+Index-first per `core/index-protocol.md` (`local/index/`):
+
+| Read first | What it gives you |
+|---|---|
+| `local/index/constraints.yaml` (reliability + availability entries) | SLO budgets, error-budget targets, latency budgets, retention. Your primary driver. |
+| `local/index/architecture.idx` (topology + component map) | Service tier inventory + dependency boundaries for incident scoping. |
+| `local/index/api-matrix.yaml` (status codes + auth scope) | Endpoint inventory for SLI selection + alert routing. |
+| `local/index/adr-index.idx` (reliability + observability ADRs) | Governance trail for SLO changes, observability-stack picks, incident process. |
+| `local/index/<class>-index.idx` for adopter-specific reliability classes (runbook, postmortem, slo — if present as novel classes) | Per-record metadata for the project's SRE doc set. |
+
+Full source-doc section ONLY when:
+- Authoring or amending an SLO doc, runbook, or postmortem (you own these directly).
+- An ADR's verbatim wording governs a current incident-response decision.
+- Reviewing an architecture section to scope an incident.
+
+Also read every task:
 
 | Input | Purpose |
 |---|---|
-| `local/bindings.md` | Architecture doc + infra topology |
+| `local/bindings.md` | Infra topology + observability stack |
 | `local/framework.config.yaml` | `slo-policy` / `dashboards-root` / `runbooks-root` / `oncall-rotation` entries |
-| Existing SLO docs, runbooks, postmortems | Current state |
-| ADRs / CRs touching reliability commitments, observability stack, incident process | Governance trail |
 
 **Conflict resolution.** Per `core/process.md` § Coordination protocol.
 
