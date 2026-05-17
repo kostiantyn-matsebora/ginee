@@ -136,6 +136,37 @@ Task spans two roles → dispatch in parallel per `core/process.md` § Dispatch 
 | `ai-engineer` | Rules / invariants / routing / requirements (semantics → `solution-architect`); production code; test code; IaC; CI workflows. |
 | `project-manager` | Everything except `local/*` written during discovery. Never edits production surfaces. |
 
+## Project-specific index citations
+
+<!--
+  Scope:
+  - Per-project; wires novel-class index files to cardinal role baselines
+    without editing upstream `core/roles/*.md` kernels (those are
+    framework-owned and replaced on upgrade).
+  - Read by `project-manager` at dispatch time + `ai-engineer` at
+    dormant-index audit time (per `core/index-protocol.md § Consumer coupling`
+    + `§ Dormant-index audit`).
+  Rule:
+  - Every entry in `local/index/*` that is NOT cited by a cardinal role's
+    `## Source of truth` table MUST be listed here with at least one
+    consuming role; otherwise the class is dormant and surfaces in the
+    discovery report.
+  Effect:
+  - Listed class's `consumed-by` is updated in `manifest.yaml`.
+  - Listed role's baseline reads extend to include the index file(s)
+    on every dispatch.
+  Cardinal-role overrides allowed:
+  - This table can ALSO promote a built-in class to additional cardinal
+    roles beyond the kernel default (e.g. project where backend-engineer
+    consumes mockup-index.idx for API + UI co-design).
+-->
+
+| Index file (or class) | Consumed by | Why this project needs it |
+|---|---|---|
+| `local/index/<class>-index.<ext>` | `<cardinal-role>` | `<one-line — what signal the role reads from it>` |
+
+Empty table → no novel-class citations declared. Discovery will surface any unwired novel class extracted by `ai-engineer` as dormant.
+
 ## Out of scope (do not implement)
 
 - `<e.g. "Triggering or managing deployments — system is read-only.">`

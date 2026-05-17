@@ -96,6 +96,8 @@ indexed:
     source-bytes: 48230
     index-bytes: 6420                    # sum across index-files
     compression: 0.13                     # index-bytes / source-bytes; ≥ 0.5 = failed (see § Compression floor)
+    consumed-by: [solution-architect, backend-engineer, frontend-engineer, qa-engineer, devops-engineer]
+                                          # roles whose kernel baselines cite at least one of index-files
 
   - class: scenario
     category: doc
@@ -156,6 +158,7 @@ indexed:
     sha256-by-file: { ... }
     indexed-on: 2026-05-17
     index-files: [runbook-index.idx]
+    consumed-by: [sre, devops-engineer]   # REQUIRED for novel classes; see § Consumer coupling
 ```
 
 - **Single-file sources** record one `sha256`.
@@ -163,6 +166,39 @@ indexed:
 - **`category`** — `doc` (D13) or `code` (D15). Drives heuristic-detection mapping during discovery.
 - **`recipe`** — either a built-in id (`builtin:<recipe>`) or an inline recipe block (for novel classes).
 - **`source-bytes`** + **`index-bytes`** + **`compression`** — byte-size accounting; surfaces compression ratio so adopters and `ai-engineer` see when a recipe is over-extracting (`compression` ≥ 0.5 → failed; see `§ Compression floor`). `index-bytes` = sum across all `index-files` entries.
+- **`consumed-by`** — list of roles whose baseline reads at least one of the entry's `index-files`. **Required for novel classes** (else extraction is skipped per `§ Consumer coupling`). Auto-populated for built-in classes by scanning cardinal role kernels' `Source of truth` tables + `local/bindings.md § Project-specific index citations`.
+
+## Consumer coupling
+
+Every extracted class MUST have at least one consumer role. Extracting an index file no role reads is pure waste — disk + staleness-check + extraction-time cost for no observable benefit.
+
+**Built-in classes.** Cardinal role kernels (`core/roles/*.md § Source of truth`) cite specific built-in index files. `ai-engineer` auto-populates each manifest entry's `consumed-by` by scanning kernel citations + `local/bindings.md § Project-specific index citations` (adopter overrides). A built-in class with zero matches across both sources is a framework bug — surface it; do not extract.
+
+**Novel classes.** Adopter must declare the consumer **before** extraction. Three declaration paths:
+
+1. **`local/framework.config.yaml § index.classes[].consumed-by: [<role>...]`** — pre-declared in config; preferred for adopter-known classes (e.g. `runbook → [sre, devops-engineer]`).
+2. **`local/bindings.md § Project-specific index citations`** — adopter-side citation table that wires a novel class to a cardinal role's baseline without editing upstream kernels. `project-manager` reads this at dispatch time and extends the role's baseline accordingly.
+3. **Interactive during discovery** — `project-manager` detects a novel class without declared consumer; surfaces to the user: *"Detected novel class `<X>` (~`<N>` source files). Which role consumes it?  [role-options] / [skip extraction]."* User answer recorded in `local/framework.config.yaml § index.classes` for future runs.
+
+**Skip-extraction default.** A novel class with NO consumer declared after all three paths exhaust → `ai-engineer` skips extraction; manifest does NOT gain an entry; discovery report logs the skipped class with the heuristic that detected it. Cost: zero. Adopter can wire later via path 1 or 2 + invoke `@ai-engineer extract <class>`.
+
+## Dormant-index audit
+
+`ai-engineer` runs after every extraction or re-extraction:
+
+1. For each `manifest.yaml § indexed[]` entry, verify `consumed-by` is non-empty.
+2. Cross-check that every role listed in `consumed-by` actually cites at least one of `index-files` in its kernel (or `local/bindings.md § Project-specific index citations` for adopter-side wiring).
+3. Any class with empty `consumed-by` OR with citations that don't resolve → dormant. Emit in the discovery report:
+
+   ```
+   Dormant index files (extracted but unread):
+     - <class>: <index-files> (<size KB>) — no consumer cites these. Remedies:
+       (a) Wire in local/bindings.md § Project-specific index citations
+       (b) Skip extraction: remove from local/framework.config.yaml § index.classes
+       (c) Reframe as a built-in class via PR to engineering-team upstream
+   ```
+
+Adopter decides per class. No silent removal — dormancy is a signal, not an auto-pruner.
 
 ## Lifecycle
 
@@ -176,13 +212,15 @@ indexed:
       - **Doc:** architecture / adr / cr / scenario / mockup / constraints / glossary.
       - **Code:** stack / topology / commands / conventions / runtime-facts / repo-map.
    3. Novel classes — any unmatched doc directory or code/config source the framework doesn't pre-recognize.
-2. **Dispatch `ai-engineer`** with the enumerated class list.
-3. `ai-engineer`:
-   - For built-in classes → applies the built-in recipe.
-   - For novel classes → authors a new template at `core/templates/index/<class>-index.<ext>` (or directly populates `local/index/<class>-index.<ext>` without a sibling template if it's a one-off) AND records the inline recipe in `manifest.yaml`.
+2. **For each novel class, resolve consumer** per `§ Consumer coupling`. No consumer → skip the class.
+3. **Dispatch `ai-engineer`** with the enumerated + consumer-resolved class list.
+4. `ai-engineer`:
+   - For built-in classes → applies the built-in recipe; auto-populates `consumed-by` from kernel scan.
+   - For novel classes → authors a new template at `core/templates/index/<class>-index.<ext>` (or directly populates `local/index/<class>-index.<ext>` without a sibling template if it's a one-off) AND records the inline recipe + `consumed-by` in `manifest.yaml`.
    - Computes SHA-256 per source.
    - Writes `local/index/manifest.yaml`.
-4. `ai-engineer` runs the **lossless self-check** (see below).
+5. `ai-engineer` runs the **lossless self-check** (existence + compression — see § Lossless rule).
+6. `ai-engineer` runs the **dormant-index audit** (see § Dormant-index audit) and reports findings.
 
 ### Pre-dispatch staleness check
 
