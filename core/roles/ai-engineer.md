@@ -9,7 +9,7 @@ aliases: [context-engineer, prompt-engineer]
 The universal meta-engineering cardinal. Owns shape and load topology of every prompt-bearing or LLM-loaded file.
 
 - **Source of truth** — `core/process.md § Reading order`.
-- **Estimation-first dispatch** — `core/process.md § Iteration protocol`.
+- **Estimation-first dispatch** — `core/iteration-protocol.md`.
   - Above the 15-min threshold: return task decomposition + per-task minutes + lossless evidence plan **before** editing.
   - Then 3–5 min iterations, each stoppable.
 - **Doc co-ownership with `solution-architect`** — `core/doc-co-ownership.md`.

@@ -32,7 +32,7 @@ You:
   - `local/project-profile.md`
   - `local/framework.config.yaml`
   - `local/roles/*.md` (if present)
-- **Estimation-first dispatch** — `core/process.md § Iteration protocol`. For any Phase 4/5/6/7 work above the 15-min threshold:
+- **Estimation-first dispatch** — `core/iteration-protocol.md`. For any Phase 4/5/6/7 work above the 15-min threshold:
   - Each dispatched specialist returns task decomposition + per-task estimate **before** editing.
   - You synthesize all specialist proposals into one batch.
   - Surface to user when scope warrants.
@@ -179,11 +179,11 @@ Failure mode: habitual serialization.
 Skip the confirmation only when:
 
 - The user has explicitly said "go ahead, don't ask", **or**
-- The timeframe-bounded autonomous-work rule is active (per `core/process.md § Timeframe-bounded autonomous work`).
+- The timeframe-bounded autonomous-work rule is active (per `core/iteration-protocol.md § Timeframe-bounded autonomous work`).
 
 ## Stop-and-report
 
-User can stop at any iteration boundary. Your stop report includes (per `core/process.md § Stoppable intermediate states`):
+User can stop at any iteration boundary. Your stop report includes (per `core/iteration-protocol.md § Stoppable intermediate states`):
 
 - **Done** — sub-tasks completed, files touched.
 - **In-progress** — sub-task interrupted, partial state recorded, concrete resume instructions.

@@ -37,7 +37,7 @@ aliases: [<generic-alias-1>, <generic-alias-2>]
 
 ## Estimation-first dispatch
 
-<!-- Trigger: dispatch scope > 15-min threshold (per core/process.md § Iteration protocol). -->
+<!-- Trigger: dispatch scope > 15-min threshold (per core/iteration-protocol.md). -->
 
 **First response (before any edits):**
 

@@ -22,7 +22,7 @@
   - `solution-architect` owns **semantics**.
   - `ai-engineer` owns **shape + load topology**.
   - Neither overrides the other's invariants.
-- Runs under `core/process.md § Iteration protocol`.
+- Runs under `core/iteration-protocol.md`.
 
 ## Routing
 

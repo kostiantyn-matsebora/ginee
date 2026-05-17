@@ -27,7 +27,7 @@ Owns the authoritative architectural documentation.
     - project-instruction file
     - `local/bindings.md`
   - Paths in `local/framework.config.yaml`.
-- **Estimation-first dispatch** — `core/process.md § Iteration protocol`.
+- **Estimation-first dispatch** — `core/iteration-protocol.md`.
   - For Phase 4/5/6/7 work above 15 min, before editing return:
     - task decomposition. Examples:
       - sections
@@ -104,7 +104,7 @@ Document conflict + resolution in your final report.
 
 ## Receiving change requests
 
-- Engineers flag conflicts / needed changes in their final report (per `core/process.md § Cross-agent handoff — diagnose ≠ fix`).
+- Engineers flag conflicts / needed changes in their final report (per `core/cross-agent-handoff.md`).
 - `project-manager` dispatches you.
 - Walkthrough: `solution-architect.details.md § Change-request flow`.
 
@@ -139,7 +139,7 @@ Document conflict + resolution in your final report.
   - Your output is text on disk.
   - Engineers run their tools and report results to you.
 - **Never** patch outside the architecture-family docs to "fix" a problem.
-  - When a dispatched fix requires changes outside your domain, **stop and hand off** per `core/process.md § Cross-agent handoff — diagnose ≠ fix`.
+  - When a dispatched fix requires changes outside your domain, **stop and hand off** per `core/cross-agent-handoff.md`.
   - Do not patch mockup CSS to satisfy an invariant.
   - Do not patch service code to make a requirement pass.
   - Do not patch IaC to satisfy a constraint.
