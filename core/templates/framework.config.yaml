@@ -105,3 +105,18 @@ test-runners:
   e2e: testing/e2e/run-tests.ps1
   smoke: testing/smoke/run-smoke.ps1
   script-suite: testing/pester/run-pester.ps1
+
+# --- Project-doc index (D13) ---
+# Adopter-declared index classes — pre-declare doc classes that the index
+# layer should handle. Takes precedence over auto-detection. Full spec:
+# core/index-protocol.md § Extension.
+# Uncomment + adjust for your project's adopter-specific doc types.
+# index:
+#   dir: local/index
+#   classes:
+#     - name: rfc
+#       source-glob: docs/rfcs/*.md
+#       template: adr-index.idx           # reuse ADR template shape
+#     - name: runbook
+#       source-glob: ops/runbooks/*.md
+#       template: novel                   # ai-engineer authors a new template

@@ -94,6 +94,25 @@
 | `<e.g. sre>` | `<e.g. project declares uptime SLO in `<file>`>` |
 | `<e.g. data-engineer>` | `<e.g. project contains ETL pipelines / data warehouse references>` |
 
+## Indexed docs (`local/index/`)
+
+<!--
+  Produced by ai-engineer per core/index-protocol.md.
+  Every detected doc class has an entry. SHA-256 + recipe + index-file list
+  recorded canonically in local/index/manifest.yaml; this section is a
+  human-readable view of that manifest at discovery time.
+-->
+
+| Class | Source(s) | Recipe | Index file(s) | SHA-256 |
+|---|---|---|---|---|
+| `<e.g. architecture>` | `<docs/architecture.md>` | `builtin:architecture` | `architecture.idx, architecture-fr.idx, api-matrix.yaml, ui-states.yaml, constraints.yaml, glossary.idx` | `<sha256-hex or 'per-file in manifest'>` |
+| `<e.g. adr>` | `<docs/adr/*.md>` | `builtin:adr` | `adr-index.idx` | `<per-file in manifest>` |
+| `<e.g. scenario>` | `<docs/scenarios/*.md>` | `builtin:scenario` | `scenario-index.idx` | `<per-file in manifest>` |
+| `<e.g. rfc — adopter-declared>` | `<docs/rfcs/*.md>` | `builtin:adr` (reused shape) | `rfc-index.idx` | `<per-file in manifest>` |
+| `<e.g. runbook — novel class>` | `<ops/runbooks/*.md>` | `inline (see manifest)` | `runbook-index.idx` | `<per-file in manifest>` |
+
+Canonical record: `local/index/manifest.yaml`. Pre-dispatch staleness checks compute current SHA-256 and compare against this entry — see `core/index-protocol.md § Pre-dispatch staleness check`.
+
 ## Artefacts written
 
 | Path (absolute) | Source template |
@@ -101,6 +120,7 @@
 | `local/project-profile.md` | `core/templates/project-profile.md` |
 | `local/bindings.md` | `core/templates/bindings.md` |
 | `local/framework.config.yaml` | `core/templates/framework.config.yaml` |
+| `local/index/manifest.yaml` + per-class index files | `core/templates/index/*` |
 
 ## Next step for the user
 
