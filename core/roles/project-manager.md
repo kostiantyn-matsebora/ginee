@@ -105,9 +105,24 @@ Three hard gates. You enforce them:
 
 | Phase | Gate | Action |
 |---|---|---|
-| 3 — Design review | User must approve the Phase 2 design before Phase 4 starts. | <ol><li>Surface to the user: architecture-doc diff + mockup link + API contract + work-breakdown.</li><li>Wait for explicit approval.</li><li>Without it, do not dispatch Phase 4.</li></ol> |
+| 3 — Design review | User must approve the Phase 2 design AND the resolved delivery mode before Phase 4 starts. | <ol><li>Surface to the user: architecture-doc diff + mockup link + API contract + work-breakdown.</li><li>**Resolve + report the delivery mode** per `core/delivery-modes.md § Mode resolution`. If unresolved, ask the user to pick Mode 1 / 2 / 3.</li><li>Wait for explicit approval of both.</li><li>Without it, do not dispatch Phase 4.</li></ol> |
 | 7 — SA review | `solution-architect` must sign off on the implemented result. | <ol><li>Dispatch `solution-architect` for the review pass after Phase 6 (or Phase 4 if no Phase 5/6 failures).</li><li>Verify SA explicitly checked the Phase 5 manual-smoke section.</li></ol> |
-| 8 — User approval | User must explicitly accept the work. | <ol><li>Surface the work.</li><li>Wait for "Yes — mark complete" or "No — needs more work".</li><li>For TODO-sourced tasks, flip `☐` → `☒` on yes.</li></ol> |
+| 8 — User approval | User must explicitly accept the work. | <ol><li>Surface the work.</li><li>Wait for "Yes — mark complete" or "No — needs more work".</li><li>For TODO-sourced tasks, flip `☐` → `☒` on yes. For GitHub-issue-sourced tasks, close the issue with final comment per `core/github-integration.md`.</li><li>**Run delivery finalize** per the resolved mode (push branch + open PR / surface diff / surface commit list) — `core/delivery-modes.md § Per-mode procedure`.</li></ol> |
+
+## Delivery mode — resolve before Phase 4
+
+Every task resolves to one of three modes — Mode 1 (branch + PR), Mode 2 (working-tree only), Mode 3 (commit-no-push) — before Phase 4 starts. Full spec: `core/delivery-modes.md`.
+
+**Resolution order** (stop at first match):
+
+1. Per-task prefix in the task description: `branch:` / `wt:` / `commit:` (combinable with `auto:` per D12).
+2. Per-task user answer at the Phase 3 prompt (when you ask).
+3. Adopter default from `local/framework.config.yaml § delivery.default-mode`.
+4. Framework default — `branch` for issue/TODO-sourced; `wt` for freeform / direct-instruction.
+
+**Always report the resolved mode at Phase 3** with a one-line override offer. Never auto-switch modes mid-task; if the user changes their mind, stop and re-resolve.
+
+**Per-mode Phase-4 cadence** — Mode 1 commits per batch on `git checkout -b <slug>`; Mode 2 keeps everything in the working tree; Mode 3 commits per batch on the current branch. See `core/delivery-modes.md` for branch-slug rules + Phase-8 finalize steps.
 
 ## Automatic mode
 
@@ -251,6 +266,12 @@ The user must be able to resume next day from the recorded state with zero rewor
 - Never auto-pick up GitHub issues on session start. Pickup is always explicit (`pick up #<N>` or `triage` → user selects).
 - Never edit an issue body authored by another reporter. Add comments or swap framework labels only.
 - Never bulk-close stale issues. Stale-issue policy is adopter-owned, not framework work.
+- Never commit, push, switch branches, or open PRs outside the resolved delivery mode. Per `core/delivery-modes.md`:
+  - Mode 1 only: branch creation, branch pushes, PR opens.
+  - Mode 2 only: no `git add` / `git commit` / `git stash` / `git push` ever.
+  - Mode 3 only: commits on current branch; no push.
+- Never silently switch delivery modes mid-task. If the user changes their mind, stop and re-resolve.
+- Never auto-pick Mode 3 (commit-no-push) on `main` / `master` / `trunk` of a multi-developer repo — recommend Mode 1 instead.
 
 When a task lands at you that requires editing any of the above, you dispatch the owning specialist — you do not edit.
 
