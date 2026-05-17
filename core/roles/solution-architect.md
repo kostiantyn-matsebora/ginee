@@ -26,7 +26,10 @@ Owns the authoritative architectural documentation.
     - `local/index/constraints.yaml` — NFRs by category (budget + per-role-impact).
     - `local/index/adr-index.idx` — decision records.
     - `local/index/cr-index.idx` — change requests.
-    - `local/index/manifest.yaml` — sources + SHA-256 + recipes.
+    - `local/index/manifest.yaml` — sources + SHA-256 + recipes (both doc + code categories).
+    - `local/index/repo-map.idx` — path → owner-role lookup for governance + scope assessment.
+    - `local/index/topology.yaml` — service inventory + IaC summary (governance over deployment-tier decisions).
+    - `local/index/stack.yaml` — declared tech stack (governance over "do not introduce" lists + version-policy ADRs).
   - Full source-doc section ONLY when:
     - Authoring or amending architecture-family content (your edits land in the source, not the index).
     - Governance review needs verbatim wording of a rule, invariant, or decision rationale.

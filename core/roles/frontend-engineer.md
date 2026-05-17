@@ -19,6 +19,9 @@ Index-first per `core/index-protocol.md` (`local/index/`):
 | `local/index/api-matrix.yaml` | Endpoint × method × status with wire-shape-ref + fixture-ref. Drives client fetch/subscription shapes. |
 | `local/index/architecture-fr.idx` | FR table — client-facing FR IDs to cite in code. |
 | `local/index/constraints.yaml` | NFRs (latency, security, accessibility) with per-role-impact bullets. |
+| `local/index/stack.yaml` (client tier) | Client framework + state lib + styling + direct deps. Drives version-compat for any new dep. |
+| `local/index/conventions.yaml` | Formatter (indent/line-length) + active lint rules + commit-message convention. |
+| `local/index/commands.yaml` (build / test / lint) | Client build + unit-test + lint invocations. |
 
 Full source-doc section ONLY when:
 - Implementing a mockup section (read the exact markup/CSS at the cited anchor).

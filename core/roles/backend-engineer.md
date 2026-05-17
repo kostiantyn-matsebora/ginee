@@ -18,6 +18,9 @@ Index-first per `core/index-protocol.md` (`local/index/`):
 | `local/index/architecture.idx` | Top-level sections + component map — locate data-model + service-tier anchors. |
 | `local/index/architecture-fr.idx` | FR table — server-facing FR IDs to cite in code. |
 | `local/index/constraints.yaml` | NFRs (latency, statelessness, retention, security) with per-role-impact bullets. |
+| `local/index/stack.yaml` (server tier) | Server language + runtime + framework + ORM + DB + direct deps. Drives migration-compat checks and dep-bumping. |
+| `local/index/runtime-facts.yaml` | Declared env-vars consumed by server services + secrets-store + config-validation approach. |
+| `local/index/commands.yaml` (build / test) | Server build + unit-test invocations to run locally. |
 
 Full source-doc section ONLY when:
 - Authoring a handler against a documented wire-format edge case (read the spec at the cited anchor).

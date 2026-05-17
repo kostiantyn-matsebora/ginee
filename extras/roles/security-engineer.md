@@ -18,6 +18,9 @@ Index-first per `core/index-protocol.md` (`local/index/`):
 | `local/index/architecture.idx` (security § + auth-related anchors) | Components handling auth/secrets/user-data; locate trust boundaries. |
 | `local/index/adr-index.idx` (auth / secrets / network-policy ADRs) | Governance trail for security decisions. |
 | `local/index/api-matrix.yaml` (auth scheme + per-endpoint status codes) | Authentication scope + response-code semantics. |
+| `local/index/runtime-facts.yaml` | Env-var inventory with `secret: true` classification + secrets-store (local-dev vs cloud) + config-validation. **Primary code-side surface for secrets review.** |
+| `local/index/stack.yaml` + `lockfiles` (referenced) | Declared dep inventory for CVE cross-reference; transitive deps come from lockfiles on demand. |
+| `local/index/conventions.yaml` (security-lint rules) | Active eslint/pylint/etc. security rules + pre-commit hooks. |
 
 Full source-doc section ONLY when:
 - A constraint's verbatim wording governs disposition of a finding.

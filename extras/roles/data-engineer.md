@@ -19,6 +19,9 @@ Index-first per `core/index-protocol.md` (`local/index/`):
 | `local/index/constraints.yaml` (retention + freshness + cost entries) | Per-dataset retention windows, freshness SLO budgets, warehouse-cost caps. |
 | `local/index/adr-index.idx` (data-model / schema / ingestion ADRs) | Governance trail for schema-evolution + retention decisions. |
 | `local/index/<class>-index.idx` for adopter-specific data-tier classes (data-dictionary, dataset-card, pipeline-spec — if present as novel classes) | Per-record metadata for the project's data-doc set. |
+| `local/index/stack.yaml` (data tier) | Warehouse + lake + orchestrator + transformation + streaming + catalog declarations + direct deps. |
+| `local/index/topology.yaml` | Pipeline-infra service inventory (compute clusters, scheduler infra). |
+| `local/index/commands.yaml` (deploy / dev for pipelines) | Pipeline orchestrator + transformation-tool entry points. |
 
 Full source-doc section ONLY when:
 - Authoring or amending data-model docs / data-catalog entries / pipeline specs (you own these directly).
