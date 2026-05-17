@@ -57,6 +57,19 @@
 - Write the doc update first, OR
 - Flag the gap.
 
+## Issue linkage
+
+<!--
+  Required when this PR resolves a GitHub-issue-sourced task (per D14 / core/github-integration.md).
+  GitHub auto-closes referenced issues on merge when one of: Closes / Fixes / Resolves precedes the #.
+  Use Fixes for bug-report issues; Closes for feature-request issues.
+  Drop this section when the task originated from a TODO line or direct instruction.
+-->
+
+- Closes #`<N>` — `<one-line issue title>`
+- Fixes #`<N>` — `<one-line issue title>` (bug)
+- Related #`<N>` — `<no auto-close, just context>`
+
 ## Domain breakdown (for cross-domain PRs)
 
 | Domain | Role | Files touched (top-level) | Verification |
