@@ -123,6 +123,9 @@ case "$ADAPTER" in
     mkdir -p "$TARGET/.claude/agents"
     cp "$FRAMEWORK_DIR"/adapters/_shared/agents/*.md "$TARGET/.claude/agents/"
     echo "Copied 7 cardinal subagents to .claude/agents/"
+    mkdir -p "$TARGET/.claude/skills"
+    cp -r "$FRAMEWORK_DIR"/core/skills/ginee-* "$TARGET/.claude/skills/"
+    echo "Copied 10 ginee-* skills to .claude/skills/"
     echo "NEXT: append CLAUDE-pointer.md to your project's CLAUDE.md (see $INSTALL_NOTE)"
     ;;
   copilot-cli)
@@ -132,6 +135,9 @@ case "$ADAPTER" in
       cp "$f" "$TARGET/.github/agents/${name}.agent.md"
     done
     echo "Copied 7 cardinal subagents to .github/agents/*.agent.md"
+    mkdir -p "$TARGET/.github/skills"
+    cp -r "$FRAMEWORK_DIR"/core/skills/ginee-* "$TARGET/.github/skills/"
+    echo "Copied 10 ginee-* skills to .github/skills/"
     ;;
   agents-md)
     cp "$FRAMEWORK_DIR/adapters/agents-md/AGENTS.md" "$TARGET/AGENTS.md"

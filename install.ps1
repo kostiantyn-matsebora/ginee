@@ -110,6 +110,10 @@ switch ($Adapter) {
     New-Item -ItemType Directory -Force $agentsDir | Out-Null
     Copy-Item (Join-Path $frameworkDir 'adapters\_shared\agents\*.md') $agentsDir
     Write-Host "Copied 7 cardinal subagents to .claude/agents/" -ForegroundColor Green
+    $skillsDir = Join-Path $Target '.claude\skills'
+    New-Item -ItemType Directory -Force $skillsDir | Out-Null
+    Copy-Item -Recurse (Join-Path $frameworkDir 'core\skills\ginee-*') $skillsDir
+    Write-Host "Copied 10 ginee-* skills to .claude/skills/" -ForegroundColor Green
     Write-Host "NEXT: append CLAUDE-pointer.md to your project's CLAUDE.md (see $installNote)" -ForegroundColor Yellow
   }
   'copilot-cli' {
@@ -119,6 +123,10 @@ switch ($Adapter) {
       Copy-Item $_.FullName (Join-Path $agentsDir "$($_.BaseName).agent.md")
     }
     Write-Host "Copied 7 cardinal subagents to .github/agents/*.agent.md" -ForegroundColor Green
+    $skillsDir = Join-Path $Target '.github\skills'
+    New-Item -ItemType Directory -Force $skillsDir | Out-Null
+    Copy-Item -Recurse (Join-Path $frameworkDir 'core\skills\ginee-*') $skillsDir
+    Write-Host "Copied 10 ginee-* skills to .github/skills/" -ForegroundColor Green
   }
   'agents-md' {
     Copy-Item (Join-Path $frameworkDir 'adapters\agents-md\AGENTS.md') (Join-Path $Target 'AGENTS.md')
