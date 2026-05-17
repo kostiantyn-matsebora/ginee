@@ -19,6 +19,8 @@ Index-first per `core/index-protocol.md` (`local/index/`):
 | `local/index/architecture.idx` (mobile-tier anchors) | Mobile-app boundary, design-system parity points, offline/sync architecture. |
 | `local/index/constraints.yaml` (mobile NFRs: binary size, offline behaviour, accessibility) | Per-platform budgets. |
 | `local/index/cr-index.idx` + `adr-index.idx` (mobile-touching records) | Governance trail for deep links, push tokens, offline sync. |
+| `local/index/stack.yaml` (mobile tier) | Native platform target + framework + direct deps + build chain. |
+| `local/index/commands.yaml` (build / test / sign / release for mobile) | Per-platform invocations (xcodebuild, gradle, fastlane, etc.). |
 
 Full source-doc section ONLY when:
 - Implementing a documented UI state on native — read the source for visual reference at the cited anchor.

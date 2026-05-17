@@ -24,6 +24,8 @@ Index-first per `core/index-protocol.md` (`local/index/`):
 | `local/index/api-matrix.yaml` (status codes + auth scope) | Endpoint inventory for SLI selection + alert routing. |
 | `local/index/adr-index.idx` (reliability + observability ADRs) | Governance trail for SLO changes, observability-stack picks, incident process. |
 | `local/index/<class>-index.idx` for adopter-specific reliability classes (runbook, postmortem, slo — if present as novel classes) | Per-record metadata for the project's SRE doc set. |
+| `local/index/topology.yaml` | Services × ports × dependencies × replicas × resources — primary code-side surface for incident scoping + capacity planning. |
+| `local/index/conventions.yaml` | Active logging / observability conventions if encoded as lint rules; pre-commit hooks. |
 
 Full source-doc section ONLY when:
 - Authoring or amending an SLO doc, runbook, or postmortem (you own these directly).

@@ -18,6 +18,11 @@ Index-first per `core/index-protocol.md` (`local/index/`):
 | `local/index/architecture.idx` | Top-level sections + component map — locate topology, gateway, deployment-tier anchors. |
 | `local/index/api-matrix.yaml` | Endpoint inventory — drives reverse-proxy routes + health-check targets. |
 | `local/index/architecture-fr.idx` | FR table — operational requirements (zero-setup, gateway pattern, etc.). |
+| `local/index/topology.yaml` | Services × ports × depends_on × replicas × resources + networks + volumes + ingress + IaC summary. **Your primary code-side driver** alongside constraints.yaml. |
+| `local/index/runtime-facts.yaml` | Env-var inventory + secrets-store + config-validation. Drives secret-management + env-config work. |
+| `local/index/commands.yaml` (deploy / dev) | Deploy targets per env + local-dev startup command. |
+| `local/index/stack.yaml` (container-runtime + per-tier images) | Runtime images (Dockerfile FROM) + container runtime declaration. |
+| `local/index/repo-map.idx` | Path → owner-role lookup for cross-tier coordination. |
 
 Full source-doc section ONLY when:
 - A constraint entry budget is "see source for full statement" and the verbatim wording governs IaC config.

@@ -19,6 +19,8 @@ Index-first per `core/index-protocol.md` (`local/index/`):
 | `local/index/constraints.yaml` (eval thresholds + latency + cost) | Model-quality gates, inference latency budgets, training-cost caps. |
 | `local/index/adr-index.idx` (ML-related ADRs) | Model-architecture / training-data / deployment-policy governance. |
 | `local/index/<class>-index.idx` for adopter-specific ML doc classes (model-card, eval-report, feature-spec — if present as novel classes) | Per-record metadata for the project's ML doc set. |
+| `local/index/stack.yaml` (ml tier) | Training framework + experiment-tracking + model-registry + feature-store + direct deps. |
+| `local/index/commands.yaml` (build / test / deploy for ml/) | Training-pipeline + eval + serving-deploy invocations. |
 
 Full source-doc section ONLY when:
 - Authoring or amending a model card / eval report / feature spec (you own these directly).

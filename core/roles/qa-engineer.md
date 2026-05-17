@@ -19,6 +19,8 @@ Index-first per `core/index-protocol.md` (`local/index/`):
 | `local/index/api-matrix.yaml` | Endpoint × method × status — every documented status code is a test case. |
 | `local/index/architecture-fr.idx` | FR table — drives the "one scenario per user-visible FR" minimum. |
 | `local/index/constraints.yaml` | NFRs with budgets — drives latency/availability assertions. |
+| `local/index/commands.yaml` (test scope) | Test-runner entry points per scope (unit / functional / e2e / smoke / script-suite). Authoritative invocation list. |
+| `local/index/conventions.yaml` | Lint/style for test-code authoring; commit-message convention for fixture commits. |
 
 Full source-doc section ONLY when:
 - Authoring a new scenario file (you create the source content).
