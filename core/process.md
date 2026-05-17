@@ -2,7 +2,10 @@
 
 ## Purpose
 
-Generic, project-agnostic process model for a small multi-agent engineering team. Authoritative spec for every role (orchestrator + specialists). Project-specific knowledge (stack, repo layout, role roster, forbidden role-crossings, owned-paths bindings) lives in `local/bindings.md` and `local/project-profile.md` — never in this file.
+- Generic, project-agnostic process model for a small multi-agent engineering team.
+- Authoritative spec for every role (orchestrator + specialists).
+- **Project-specific knowledge lives elsewhere** — never in this file:
+  - Stack, repo layout, role roster, forbidden role-crossings, owned-paths bindings → `local/bindings.md` + `local/project-profile.md`.
 
 ## Reading order
 
@@ -14,7 +17,14 @@ Generic, project-agnostic process model for a small multi-agent engineering team
 | `local/project-profile.md` | Per-project stack, domain, architecture artefacts | the project (written by `project-manager` on discovery) |
 | `local/framework.config.yaml` | Concept → file-path mapping (architecture doc, mockup, API contract, ADR dir, TODO file, ...) | the project |
 
-Conflict resolution: per-project routing → `local/bindings.md` wins; generic process rule → `core/process.md` wins. Bindings may NOT override generic process.
+**Conflict resolution:**
+
+| Conflict class | Winner |
+|---|---|
+| Per-project routing | `local/bindings.md` |
+| Generic process rule | `core/process.md` (this file) |
+
+Bindings may NOT override generic process.
 
 ## Dispatch & parallelism rules
 
@@ -27,17 +37,37 @@ Conflict resolution: per-project routing → `local/bindings.md` wins; generic p
 | Doc-only changes | `solution-architect` only (architecture-family) or mockup-owning role only (UI-only edit with no architecture implication). |
 | Infrastructure changes affecting application config (env var, secret, endpoint URL) | Coordinate `devops-engineer` + affected service-owning role; service-owner first to confirm the app reads the new value, devops second. |
 
-Overlap patterns — next phase starts when its contract surface is fixed, not when prior phase's code lands:
+**Overlap patterns** — next phase starts when its contract surface is fixed, not when prior phase's code lands:
 
-- **Test authoring overlaps implementation.** Once Phase 2 fixes wire shape / mockup behaviour, `qa-engineer` authors specs and fixtures in parallel with implementation. Both reference the contract, not each other's source.
-- **Bug fix overlaps continued testing.** QA reports a defect; owning engineer fixes immediately while QA exercises other scenarios.
-- **Doc update overlaps implementation.** `solution-architect` hands engineers the contract context; engineers proceed; SA updates architecture doc / project instructions / ADRs in parallel. The doc commit is a paper trail, not a gate.
+- **Test authoring overlaps implementation.**
+  - Trigger: Phase 2 fixes wire shape / mockup behaviour.
+  - `qa-engineer` authors specs and fixtures in parallel with implementation.
+  - Both reference the contract — not each other's source.
+- **Bug fix overlaps continued testing.**
+  - QA reports a defect.
+  - Owning engineer fixes immediately.
+  - QA continues exercising other scenarios in parallel.
+- **Doc update overlaps implementation.**
+  - `solution-architect` hands engineers the contract context.
+  - Engineers proceed.
+  - SA updates architecture doc / project-instruction files / ADRs in parallel.
+  - The doc commit is a paper trail, not a gate.
 
-Implementation gate: Phase 4 starts only when the Phase 2 contract surface is fixed AND the Phase 3 design-review gate has passed. No engineer codes against an unapproved design.
+**Implementation gate.**
+
+- Phase 4 starts only when:
+  - Phase 2 contract surface is fixed, AND
+  - Phase 3 design-review gate has passed.
+- No engineer codes against an unapproved design.
 
 ## Task lifecycle — phased pipeline with maximum parallelism
 
-Binding. Phases are named and ordered; specialists within a phase run in parallel; phases overlap wherever a contract surface decouples them. Each phase: **Goal · Acceptance**.
+**Binding.**
+
+- Phases are named and ordered.
+- Specialists within a phase run in parallel.
+- Phases overlap wherever a contract surface decouples them.
+- Each phase carries: **Goal · Acceptance** (and additional anchors where the phase warrants).
 
 ### Phase 1 — Analysis
 
@@ -156,7 +186,9 @@ Binding. Phases are named and ordered; specialists within a phase run in paralle
   - TODO line `☐` → `☒`.
   - Project-progress refresh (if used).
   - Commit only when the user explicitly asks.
-- **In automatic mode.** Realized as the **delivery handoff** per `core/automatic-mode.md § Delivery handoff`. User-approval invariant preserved (single explicit accept); Accept / Feedback / Reject replace yes/no.
+- **In automatic mode.** Realized as the **delivery handoff** per `core/automatic-mode.md § Delivery handoff`.
+  - User-approval invariant preserved: single explicit accept.
+  - Accept / Feedback / Reject replace yes/no.
 - **Post-acceptance doc-optimization hook.** If the task touched any documentation (project-instruction files, architecture docs, role definitions, ADRs, CRs, READMEs):
   - Orchestrator MUST dispatch `ai-engineer` to run `### Iteration protocol` scoped to the doc diff.
   - Polish step, not a gate.
@@ -166,37 +198,63 @@ Binding. Phases are named and ordered; specialists within a phase run in paralle
 
 ### Cross-phase rule
 
-Artefact classes do not cross phases. A change needing both design and code runs through Phase 2 first (docs), then Phase 4 (solution).
+- Artefact classes do not cross phases.
+- A change needing both design and code:
+  1. Phase 2 — land design artefacts in docs.
+  2. Phase 4 — land code artefacts in solution.
 
 ### Relation to the cross-domain bugs cycle
 
-The four-phase model in `core/cross-domain-bugs.md` is the specific instantiation of this lifecycle for bugs cutting across two or more domains. Its Phases 1–4 map onto lifecycle Phases 2 (contract change), 4 (domain implementations), 5–6 (integration + bug fixing), and 7 (compliance review). The design-review gate (lifecycle Phase 3) still applies when the bug requires user-visible behaviour change.
+- Source: `core/cross-domain-bugs.md` — specific instantiation of this lifecycle for bugs cutting across 2+ domains.
+- **Phase mapping:**
+
+  | Cross-domain phase | Lifecycle phase |
+  |---|---|
+  | 1 — contract change | 2 (design) |
+  | 2 — domain implementations | 4 (implementation) |
+  | 3 — integration + bug fixing | 5–6 (test + fix) |
+  | 4 — compliance review | 7 (SA review) |
+
+- Lifecycle Phase 3 (design review) still applies when the bug requires user-visible behaviour change.
 
 ## Automatic mode
 
-Tasks prefixed `auto:` (or `project-manager`-proposed and user-accepted) run end-to-end without per-phase user gates, presenting only a final delivery handoff. Default tasks are interactive. **Full definition + activation triggers + gates elided/respected + forced-interactive triggers + delivery handoff procedure: `core/automatic-mode.md`** — `project-manager` loads this file on activation. Phase 8 user-approval invariant preserved as the single delivery-handoff gate.
+- **Trigger.** Task prefixed `auto:`, OR `project-manager`-proposed and user-accepted.
+- **Effect.** Lifecycle runs end-to-end without per-phase user gates; presents a single final delivery handoff.
+- **Default.** Interactive (no auto mode).
+- **Full definition** — activation triggers, gates elided/respected, forced-interactive triggers, delivery handoff procedure: `core/automatic-mode.md`. `project-manager` loads on activation.
+- **Invariant preserved.** Phase 8 user-approval = the single delivery-handoff gate.
 
 ## Engineering principles — apply across all roles
 
 ### Configuration vs. data — declarative over imperative
 
-Binds every role. Signal it belongs in a declarative file = "hard to change without editing imperative code".
+- Binds every role.
+- Signal a value belongs in a declarative file: "hard to change without editing imperative code".
 
-**Configuration** (URLs, ports, env vars, feature flags, retention windows, defaults) → declarative files per tier (project stack determines format):
+**Configuration** (URLs, ports, env vars, feature flags, retention windows, defaults):
 
-| Tier | Typical file |
-|---|---|
-| Service runtime | environment file / app-settings config |
-| Client runtime | environment file / build-config |
-| Container orchestration | `docker-compose.*.yml` / Helm values |
-| IaC | `*.tfvars` / Pulumi config / etc. |
-| Scripting / tooling | `*.json` / `*.yaml` config files |
+- Lives in declarative files per tier (project stack determines format):
 
-Never as literals inside controllers, components, scripts, or test specs.
+  | Tier | Typical file |
+  |---|---|
+  | Service runtime | environment file / app-settings config |
+  | Client runtime | environment file / build-config |
+  | Container orchestration | `docker-compose.*.yml` / Helm values |
+  | IaC | `*.tfvars` / Pulumi config / etc. |
+  | Scripting / tooling | `*.json` / `*.yaml` config files |
 
-**Data** (fixtures, seed sets, snapshot baselines, expected payloads, scenarios) → dedicated declarative files. Never as inline literals inside test code.
+- **Never** as literals inside controllers, components, scripts, or test specs.
 
-**Imperative code stays thin** — scripts/runners/wrappers read declarative files and call the underlying tool. Exceptions require a doc update before they land.
+**Data** (fixtures, seed sets, snapshot baselines, expected payloads, scenarios):
+
+- Lives in dedicated declarative files.
+- **Never** as inline literals inside test code.
+
+**Imperative code stays thin.**
+
+- Scripts / runners / wrappers read declarative files and call the underlying tool.
+- Exceptions require a doc update before they land.
 
 ### Test oracles can be wrong
 
@@ -210,16 +268,26 @@ Never as literals inside controllers, components, scripts, or test specs.
 
 ## Documentation style — structure over prose
 
-Applies to **all** written artefacts: project-instruction files, role definitions (`core/roles/`, `local/roles/`), future skills, architecture doc, mockup, ADRs, per-component READMEs.
+Applies to **all** written artefacts:
 
-- **Default to structure.** Bullets, numbered lists, tables, headings — not prose paragraphs.
-- **Steps / actions / instructions → bullet list.** Never a multi-sentence paragraph.
-- **Pairs, mappings, choices → table.** "Before / after", "concern → owner", "endpoint → status code".
+- Project-instruction files.
+- Role definitions (`core/roles/`, `local/roles/`).
+- Future skills.
+- Architecture doc, mockup, ADRs.
+- Per-component READMEs.
+
+- **Default to structure** — bullets, numbered lists, tables, headings. Not prose paragraphs.
+- **Steps / actions / instructions** → bullet list. Never a multi-sentence paragraph.
+- **Pairs, mappings, choices** → table. Examples: "Before / after", "concern → owner", "endpoint → status code".
 - **One idea per bullet.** A bullet wanting three sentences → promote to sub-list or table.
-- **Headings carry weight.** `##` / `###` to chunk; don't bury rules inside walls of prose.
-- **Code shapes go in fenced code blocks.** Wire formats, env vars, file paths, commands.
+- **Headings carry weight.**
+  - Use `##` / `###` to chunk.
+  - Don't bury rules inside walls of prose.
+- **Code shapes go in fenced code blocks** — wire formats, env vars, file paths, commands.
 - **Cross-reference, don't duplicate.** Cite the section ("per architecture-doc §X"); don't restate.
-- **Drop filler.** No "It is important to note that…", "Please ensure…", "In general…". Lead with the verb or noun.
+- **Drop filler.**
+  - No "It is important to note that…", "Please ensure…", "In general…".
+  - Lead with the verb or noun.
 - **Prose is for narrative exposition only** — explaining *why*. Keep tight.
 
 ## Coordination protocol
@@ -232,19 +300,50 @@ Applies to **all** written artefacts: project-instruction files, role definition
 
 ### Strict-domain rule — no specialist works outside its domain
 
-A bug in domain X is fixed by the engineer who owns X — never by an adjacent specialist "while they're in the area". Cross-domain bugs require collaboration, not single-specialist heroics.
-
-Project-specific forbidden role-crossings table lives in `local/bindings.md` under "Project role boundaries". Each row is a hard stop — propose a hand-off in the final report instead.
+- A bug in domain X is fixed by the engineer who owns X.
+- Never by an adjacent specialist "while they're in the area".
+- Cross-domain bugs require collaboration, not single-specialist heroics.
+- **Project-specific forbidden role-crossings table:** `local/bindings.md` → "Project role boundaries".
+  - Each row is a hard stop.
+  - Propose a hand-off in the final report instead.
 
 ### Doc co-ownership — solution-architect ↔ ai-engineer
 
-`solution-architect` owns documentation semantics; `ai-engineer` owns shape and load topology. Neither overrides the other's invariants. Runs under `### Iteration protocol` below. **Full routing table + lossless edit rule + dispatch triggers: `core/doc-co-ownership.md`** — load when an SA / ai-engineer collaboration is required (new rule landing, doc grows past threshold, cross-reference repair, structure dispute).
+- **Ownership split:**
+  - `solution-architect` owns documentation **semantics**.
+  - `ai-engineer` owns **shape + load topology**.
+  - Neither overrides the other's invariants.
+- **Runs under** `### Iteration protocol` below.
+- **Full definition** (routing table + lossless edit rule + dispatch triggers): `core/doc-co-ownership.md`.
+- **Load triggers** (when to fetch the full file):
+  - New rule landing.
+  - Doc grows past size threshold.
+  - Cross-reference repair after a split/move.
+  - Structure dispute (SA vs. ai-engineer).
 
 ### Iteration protocol — propose → review → implement
 
-Generalized loop for **all team work in Phases 4–7** (Implementation, Testing, Bug fixing, SA review) with estimated total scope > 15 min, and for doc co-ownership passes between `ai-engineer` and `solution-architect`. User intervention bounded to kickoff approval and final report.
+**Scope.** Generalized loop applied to:
 
-**Estimation-first dispatch.** Before any code / tests / fixes / doc edits, each dispatched specialist MUST respond with task decomposition + per-task time estimate (no edits yet). Orchestrator synthesizes, surfaces total + per-task breakdown to the user when scope warrants, waits for approval or redirect before any specialist enters implement. Applies to Phase 4, Phase 5, Phase 6, Phase 7, and `ai-engineer` ↔ SA doc co-ownership passes.
+- All team work in Phases 4–7 (Implementation, Testing, Bug fixing, SA review) with estimated total scope > 15 min.
+- Doc co-ownership passes between `ai-engineer` and `solution-architect`.
+
+**User intervention** bounded to:
+
+- Kickoff approval.
+- Final report.
+
+**Estimation-first dispatch.**
+
+- Before any code / tests / fixes / doc edits, each dispatched specialist MUST respond with:
+  - Task decomposition.
+  - Per-task time estimate.
+  - No edits yet.
+- Orchestrator:
+  1. Synthesizes all specialist proposals.
+  2. Surfaces total + per-task breakdown to the user when scope warrants.
+  3. Waits for approval or redirect before any specialist enters implement.
+- **Applies to** Phase 4, Phase 5, Phase 6, Phase 7, and `ai-engineer` ↔ SA doc co-ownership passes.
 
 **Sizing.**
 
@@ -254,15 +353,47 @@ Generalized loop for **all team work in Phases 4–7** (Implementation, Testing,
 | > 15 min | Multiple short iterations of 3–5 min each; each produces a visible partial result. Specialist scopes the next batch (3–7 sub-tasks) at the start of each iteration. |
 
 **Each iteration.**
-1. **Propose.** Specialist submits structured proposal listing each sub-task: change / where / why / risk / time estimate (+ lossless evidence for doc work). No edits yet.
-2. **Review.** Reviewer responds per item — accept / decline / accept-with-modification, each with one-line reasoning. Reviewer = `solution-architect` for doc co-ownership semantics; orchestrator (surfacing to user when scope warrants) for Phase 4–7 engineering work.
-3. **Implement.** Specialist executes accepted items — applies reviewer's modifications, runs domain self-check (build / lint / harness / lossless check as applicable), updates cross-references in dependent files. Ends in a stoppable intermediate state per `### Stoppable intermediate states`.
 
-**Loop termination.** Specialist reports "no further productive proposals" in next batch, OR specialist/reviewer hit semantic territory only the user can decide, OR pre-agreed budget exhausted, OR user stops at any iteration boundary.
+1. **Propose.**
+   - Specialist submits structured proposal listing each sub-task: change / where / why / risk / time estimate.
+   - For doc work, also include lossless evidence.
+   - No edits yet.
+2. **Review.**
+   - Reviewer responds per item: accept / decline / accept-with-modification, each with one-line reasoning.
+   - **Reviewer identity:**
 
-**Conflict resolution.** `solution-architect` wins on doc semantics; the domain-owning specialist wins on implementation craft within their domain (per `local/bindings.md` → "Project role boundaries"); user wins on product intent. Specialist may re-propose with new evidence ONCE per item; second decline is final.
+     | Work class | Reviewer |
+     |---|---|
+     | Doc co-ownership semantics | `solution-architect` |
+     | Phase 4–7 engineering | orchestrator (surfacing to user when scope warrants) |
+3. **Implement.**
+   - Specialist executes accepted items.
+   - Applies reviewer's modifications.
+   - Runs domain self-check: build / lint / harness / lossless check as applicable.
+   - Updates cross-references in dependent files.
+   - Ends in a stoppable intermediate state per `### Stoppable intermediate states`.
 
-**Orchestrator role.** Dispatches the three steps each iteration. Surfaces the estimation batch before implement; surfaces intermediate results on user request or when an iteration revealed something to redirect on.
+**Loop termination** — any one of:
+
+- Specialist reports "no further productive proposals" in the next batch.
+- Specialist or reviewer hits semantic territory only the user can decide.
+- Pre-agreed budget exhausted.
+- User stops at any iteration boundary.
+
+**Conflict resolution.**
+
+- **Doc semantics** → `solution-architect` wins.
+- **Implementation craft within a specialist's domain** → domain-owning specialist wins (per `local/bindings.md` → "Project role boundaries").
+- **Product intent** → user wins.
+- **Re-proposal limit.** Specialist may re-propose with new evidence ONCE per item. Second decline is final.
+
+**Orchestrator role.**
+
+- Dispatches the three steps each iteration.
+- Surfaces the estimation batch before implement.
+- Surfaces intermediate results when:
+  - User requests, OR
+  - An iteration revealed something to redirect on.
 
 ### Stoppable intermediate states
 
@@ -285,18 +416,40 @@ Continuation from the recorded state must require zero rework.
 
 ### Timeframe-bounded autonomous work
 
-When the user gives a timeframe (e.g., "spend 30 min on X", "do as much as you can in an hour"), orchestrator treats it as a budget for autonomous work:
+**Trigger.** User gives a timeframe (e.g., "spend 30 min on X", "do as much as you can in an hour"). Orchestrator treats it as a budget for autonomous work.
 
-- Work autonomously for the full period — drive multi-specialist loops, run sequential dispatches, iterate.
-- Boundary is the checkpoint — report at the end, not before.
-- Results may be **full** (everything done), **partial** (ran out of budget), or **early** (done sooner than expected). All three acceptable; honesty about which is required.
-- No per-iteration check-ins. Only valid mid-flight interrupts: scope creep, genuine ambiguity, semantic conflict the orchestrator can't resolve.
-- For partial results, report must include a clear **done / in-progress / not-started** breakdown + concrete resume instructions.
-- Runs iterations through `### Iteration protocol` until the timeframe expires, each ending in a stoppable intermediate state.
+- **Autonomy.** Work autonomously for the full period:
+  - Drive multi-specialist loops.
+  - Run sequential dispatches.
+  - Iterate.
+- **Checkpoint.** Boundary is the checkpoint — report at the end, not before.
+- **Result classes** — all three acceptable; honesty about which is required:
+
+  | Class | Meaning |
+  |---|---|
+  | **Full** | Everything done within the budget. |
+  | **Partial** | Ran out of budget mid-way. |
+  | **Early** | Done sooner than expected. |
+
+- **No per-iteration check-ins.** Valid mid-flight interrupts:
+  - Scope creep.
+  - Genuine ambiguity.
+  - Semantic conflict the orchestrator can't resolve.
+- **Partial results** — report must include:
+  - **done / in-progress / not-started** breakdown.
+  - Concrete resume instructions.
+- **Iteration.** Runs through `### Iteration protocol` until the timeframe expires; each iteration ends in a stoppable intermediate state.
 
 ### Cross-domain bugs — integration + compliance cycle
 
-When a bug spans 2+ domains, work follows a four-phase model (contract change → parallel domain implementations → integration verification with manual smoke → compliance review). **Full procedure + manual-smoke checklist + anti-pattern rules: `core/cross-domain-bugs.md`** — load when a cross-domain bug or task is detected. The cycle's Phases 1–4 map onto lifecycle Phases 2 / 4 / 5–6 / 7.
+- **Trigger.** A bug spans 2+ domains.
+- **Model.** Four-phase:
+  1. Contract change.
+  2. Parallel domain implementations.
+  3. Integration verification with manual smoke.
+  4. Compliance review.
+- **Full procedure** (manual-smoke checklist + anti-pattern rules): `core/cross-domain-bugs.md`. Load when a cross-domain bug or task is detected.
+- **Lifecycle mapping:** cycle Phases 1 / 2 / 3 / 4 → lifecycle Phases 2 / 4 / 5–6 / 7.
 
 ### Cross-agent handoff — diagnose ≠ fix
 
@@ -314,7 +467,10 @@ When a specialist discovers a root cause **outside** their domain while working 
 4. **Workarounds are temporary, labelled as such.** Stay only until owner lands proper fix; both specialists acknowledge in reports.
 5. **Out-of-competence fixes are disallowed** — see `local/bindings.md` → "Project role boundaries".
 
-Orchestrator dispatches the owning specialist next with the prior diagnosis verbatim when a specialist flags a cross-domain root cause in their final report.
+**Orchestrator wiring.** When a specialist flags a cross-domain root cause in their final report:
+
+- Dispatch the owning specialist next.
+- Pass the prior diagnosis verbatim.
 
 **Doc updates route through the doc's owner:**
 
@@ -336,7 +492,12 @@ Phase 1–8 applies to any task. A task originates from one of three sources:
 | Nested `TODO` (e.g., `client/TODO`, `service/api/TODO`) | Component-scoped | Same glyph mechanic, scoped to that component file |
 | Direct user instruction | Ad hoc; scope inferred from the instruction | No `TODO` file; no glyph mechanic |
 
-`TODO` at any location is user-curated — never auto-generated, never auto-extended. Glyphs: `☐` = open, `☒` = completed.
+**TODO file rules.**
+
+- User-curated at any location — never auto-generated, never auto-extended.
+- Glyphs:
+  - `☐` = open.
+  - `☒` = completed.
 
 ### Post-task check-in
 
@@ -361,10 +522,20 @@ Phase 1–8 applies to any task. A task originates from one of three sources:
    | **Yes — mark complete** | Edit the relevant `TODO` file (root or nested) to change that line's `☐` → `☒`. No reorder, no delete, no commit unless asked. |
    | **No — needs more work** | Keep as `☐`; ask what's missing; iterate. |
 
-4. **For direct-instruction tasks** — no `TODO` state to update. Acceptance is the user's explicit confirmation. Skip the glyph mechanic; the post-Phase-8 hook still applies.
+4. **For direct-instruction tasks.**
+   - No `TODO` state to update.
+   - Acceptance = user's explicit confirmation.
+   - Skip the glyph mechanic.
+   - Post-Phase-8 hook still applies.
 
-- `TODO` checks happen **between** user requests — not in the middle of one.
+**Cross-cutting rules:**
+
+- `TODO` checks happen **between** user requests — not mid-request.
 - `TODO` items are user-grained, larger than in-conversation tasks. Mark both when the same work completes.
-- Never auto-add to any `TODO` file. Mention follow-up work → *offer* to add it; do not act unilaterally.
+- **Never auto-add** to any `TODO` file.
+  - Mention follow-up work → *offer* to add it.
+  - Do not act unilaterally.
 - User says "skip TODO" for this turn → honour it; resume next turn.
-- **Discovering nested `TODO`s.** Orchestrator may glob for `**/TODO` on session start or when entering a component context — but only surface them if the user is operating in that context.
+- **Discovering nested `TODO`s.**
+  - Orchestrator may glob for `**/TODO` on session start or when entering a component context.
+  - Surface them only if the user is operating in that context.
