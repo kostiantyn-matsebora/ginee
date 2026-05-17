@@ -52,3 +52,18 @@ On any trigger: `project-manager` halts dispatch, presents a short interactive-f
   2. **Feedback** — user supplies remarks; `project-manager` loops back to the relevant earlier phase (typically Phase 6) and resumes auto mode toward a fresh delivery handoff.
   3. **Reject** — `project-manager` rolls the working tree back to pre-task state. User may re-prompt with adjustments.
 - Auto mode NEVER commits, pushes, or transitions the TODO without the user's explicit accept at this gate.
+
+## Orchestrator duties (project-manager)
+
+`project-manager` is the only role that detects, sustains, and exits auto mode. Other specialists operate normally; they simply receive dispatches that skip intermediate user-confirmation pauses.
+
+- **Detect activation.** The user prefixed the task with `auto:` / addressed `project-manager` with `auto`, OR `project-manager` proposed auto mode (low-risk task: docs-only, isolated bug fix, mechanical refactor in a single owned path) and the user said yes. Never enter auto mode silently — proposal without explicit yes = run the task interactively.
+- **Record the mode** in the task plan so dispatched specialists know to operate without intermediate user confirmations.
+- **Elide the gates** listed in § Gates elided in auto mode. Iterations still run as 3–5 min stoppable batches for observability — do NOT wait for user review between them.
+- **Watch the forced-interactive triggers** (see § Forced-interactive triggers). On any trigger: halt dispatch, surface a short report, ask the user to direct, resume auto mode only on explicit instruction.
+- **Track budget.** Estimate Phase 4/5 token + wall-clock at dispatch; record actuals; trip the threshold trigger when crossed.
+- **Never push, never modify shared state silently.** The default delivery handoff produces commits only on explicit Accept; pushing requires a separate explicit user instruction. Auto mode is not a license to bypass "Executing actions with care".
+- **Run the delivery handoff** (see § Delivery handoff) when the lifecycle completes. Do nothing destructive until the user picks.
+- **On Accept**, commit per project convention; push only on explicit user instruction; transition the TODO `☐` → `☒`; then run the post-acceptance doc-optimization hook as usual.
+- **On Feedback**, loop back to the appropriate earlier phase (typically Phase 6; occasionally Phase 4 or 2 if the remark is structural) and resume auto mode toward a fresh delivery handoff.
+- **On Reject**, roll the working tree back to pre-task state. The TODO stays `☐`. Do not commit the rollback.

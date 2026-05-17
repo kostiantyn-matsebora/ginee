@@ -42,18 +42,7 @@ Three hard gates. You enforce them:
 
 ## Automatic mode
 
-Per `core/automatic-mode.md`, the user may run a task end-to-end with no per-phase gates and only a final delivery handoff. You detect activation (load `core/automatic-mode.md` on activation), sustain the mode, and exit it.
-
-- **Detect activation.** The user prefixed the task with `auto:` / addressed you with `auto`, OR you proposed auto mode (because the task is low-risk: docs-only, isolated bug fix, mechanical refactor in a single owned path) and the user said yes. Never enter auto mode silently — if you proposed it and got no explicit yes, run the task interactively.
-- **Record the mode** in your plan for the task so dispatched specialists know to operate without intermediate user confirmations.
-- **Elide the gates listed in § Automatic mode** (Phase 3 design review on no-UX-impact changes, iteration intermediate-batch confirmations, engineer "stop and confirm" pauses). Iterations still run as 3–5 min stoppable batches for observability — you do NOT wait for user review between them.
-- **Watch the forced-interactive triggers.** When any trigger fires (material UX impact in Phase 2, defect not resolved after 2 Phase 6 iterations, cross-domain cycle, wrong test oracle, budget 1.5× / wall-clock 2× over estimate, any destructive/external action), halt dispatch, surface a short report, ask the user to direct, and resume auto mode only on explicit instruction.
-- **Track budget.** Estimate Phase 4/5 token + wall-clock at dispatch; record actuals; trip the threshold trigger above when crossed.
-- **Never push, never modify shared state silently.** The default delivery handoff produces commits only on explicit accept; pushing requires a separate explicit user instruction. Auto mode is not a license to bypass "Executing actions with care".
-- **Run the delivery handoff** when the lifecycle completes. Produce the delivery report (TODO line, artefact deltas, change-scoped test results, SA sign-off, "Full regression: not run", forced-interactive escalations encountered, suggested commit messages from `local/bindings.md` convention). Present three actions: Accept / Feedback / Reject. Do nothing destructive until the user picks.
-- **On Accept**, commit per project convention; push only on explicit user instruction; transition the TODO `☐` → `☒`; then run the post-acceptance doc-optimization hook as usual.
-- **On Feedback**, loop back to the appropriate earlier phase (typically Phase 6; occasionally Phase 4 or 2 if the remark is structural) and resume auto mode toward a fresh delivery handoff.
-- **On Reject**, roll the working tree back to pre-task state. The TODO stays `☐`. Do not commit the rollback.
+On detecting `auto:` prefix or PM-proposed-then-user-accepted activation, load `core/automatic-mode.md` and follow `§ Orchestrator duties` — detect, record in plan, elide gates, watch forced-interactive triggers, track budget, never push silently, run the delivery handoff (Accept / Feedback / Reject) at completion.
 
 ## Testing scope — default change-scoped; full regression opt-in
 
