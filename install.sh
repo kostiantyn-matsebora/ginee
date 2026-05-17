@@ -135,9 +135,9 @@ case "$ADAPTER" in
       cp "$f" "$TARGET/.github/agents/${name}.agent.md"
     done
     echo "Copied 7 cardinal subagents to .github/agents/*.agent.md"
-    mkdir -p "$TARGET/.github/skills"
-    cp -r "$FRAMEWORK_DIR"/core/skills/ginee-* "$TARGET/.github/skills/"
-    echo "Copied 10 ginee-* skills to .github/skills/"
+    mkdir -p "$TARGET/.agents/skills"
+    cp -r "$FRAMEWORK_DIR"/core/skills/ginee-* "$TARGET/.agents/skills/"
+    echo "Copied 10 ginee-* skills to .agents/skills/ (cross-tool path per AgentSkills convention)"
     ;;
   agents-md)
     cp "$FRAMEWORK_DIR/adapters/agents-md/AGENTS.md" "$TARGET/AGENTS.md"

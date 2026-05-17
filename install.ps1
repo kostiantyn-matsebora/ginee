@@ -123,10 +123,10 @@ switch ($Adapter) {
       Copy-Item $_.FullName (Join-Path $agentsDir "$($_.BaseName).agent.md")
     }
     Write-Host "Copied 7 cardinal subagents to .github/agents/*.agent.md" -ForegroundColor Green
-    $skillsDir = Join-Path $Target '.github\skills'
+    $skillsDir = Join-Path $Target '.agents\skills'
     New-Item -ItemType Directory -Force $skillsDir | Out-Null
     Copy-Item -Recurse (Join-Path $frameworkDir 'core\skills\ginee-*') $skillsDir
-    Write-Host "Copied 10 ginee-* skills to .github/skills/" -ForegroundColor Green
+    Write-Host "Copied 10 ginee-* skills to .agents/skills/ (cross-tool path per AgentSkills convention)" -ForegroundColor Green
   }
   'agents-md' {
     Copy-Item (Join-Path $frameworkDir 'adapters\agents-md\AGENTS.md') (Join-Path $Target 'AGENTS.md')

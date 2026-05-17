@@ -29,19 +29,19 @@
    - Copilot CLI also reads `AGENTS.md` at the project root for cross-tool consistency.
    - See `.agents/engineering-team/adapters/agents-md/install.md`.
 
-3. **Bridge the framework skills** to Copilot's skill-discovery path. Skills follow the [AgentSkills standard](https://agentskills.io) and live at `.agents/engineering-team/core/skills/ginee-*/`. Per [GitHub Copilot agent skills docs](https://docs.github.com/en/copilot/concepts/agents/about-agent-skills), the expected destination is `.github/skills/`.
+3. **Bridge the framework skills** to a path Copilot discovers. Skills follow the [AgentSkills standard](https://agentskills.io) and live at `.agents/engineering-team/core/skills/ginee-*/`. Per [GitHub Copilot agent skills docs](https://docs.github.com/en/copilot/concepts/agents/about-agent-skills), Copilot reads three project-level paths: `.github/skills`, `.claude/skills`, **`.agents/skills`**. The framework uses **`.agents/skills/`** — explicit cross-tool path, sibling to `.agents/engineering-team/`, no per-client fingerprint.
 
    ```powershell
-   New-Item -ItemType Directory -Force .github\skills | Out-Null
-   Copy-Item -Recurse .agents\engineering-team\core\skills\ginee-* .github\skills\
+   New-Item -ItemType Directory -Force .agents\skills | Out-Null
+   Copy-Item -Recurse .agents\engineering-team\core\skills\ginee-* .agents\skills\
    ```
 
    ```bash
-   mkdir -p .github/skills
-   cp -r .agents/engineering-team/core/skills/ginee-* .github/skills/
+   mkdir -p .agents/skills
+   cp -r .agents/engineering-team/core/skills/ginee-* .agents/skills/
    ```
 
-   Symlinks (POSIX): `ln -s ../../.agents/engineering-team/core/skills/ginee-* .github/skills/` — preferred over copies for auto-update.
+   Symlinks (POSIX): `ln -s engineering-team/core/skills/ginee-* .agents/skills/` — preferred over copies for auto-update.
 
 4. **Run discovery.**
    - Open Copilot CLI in the project:

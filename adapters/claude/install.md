@@ -23,7 +23,7 @@
 
 2. **Bridge the framework skills** — copy (or symlink) framework skills into `.claude/skills/` so Claude Code's skill discovery picks them up.
 
-   Skills follow the [AgentSkills standard](https://agentskills.io). Source: `.agents/engineering-team/core/skills/ginee-*/`. Each is a directory containing `SKILL.md`.
+   Skills follow the [AgentSkills standard](https://agentskills.io). Source: `.agents/engineering-team/core/skills/ginee-*/`. Each is a directory containing `SKILL.md`. Per [Claude Code skills docs](https://code.claude.com/docs/en/skills), Claude Code only searches `.claude/skills/` (and `~/.claude/skills/`) at the project level — it does **not** currently honor the cross-tool `.agents/skills/` path that other clients (e.g. Copilot) accept. Once it does, this bridge can collapse.
 
    ```powershell
    New-Item -ItemType Directory -Force .claude\skills | Out-Null
