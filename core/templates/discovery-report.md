@@ -1,8 +1,7 @@
 # Discovery Report Template
 
-`project-manager` produces this on first run (or when the user invokes `@project-manager rediscover`). Surfaces the detected project shape to the user and recommends optional specialists from `extras/roles/`.
-
-Replace bracketed placeholders. Drop sections that yield no content for the project (mark `(none detected)`).
+<!-- project-manager produces this on first run (or @project-manager rediscover). Surfaces detected project shape; recommends optional specialists from extras/roles/. -->
+<!-- Replace bracketed placeholders. Drop sections that yield no content (mark "(none detected)"). -->
 
 ---
 
@@ -17,7 +16,7 @@ Replace bracketed placeholders. Drop sections that yield no content for the proj
 
 | Tier | Choice | Evidence |
 |---|---|---|
-| Primary language(s) | `<e.g. TypeScript / C# / Python / Go>` | `<file(s) that revealed it — package.json, *.csproj, pyproject.toml, go.mod>` |
+| Primary language(s) | `<e.g. TypeScript / C# / Python / Go>` | `<file(s) — package.json, *.csproj, pyproject.toml, go.mod>` |
 | Server framework | `<e.g. ASP.NET Core / Express / FastAPI / Spring Boot>` | `<files>` |
 | Client framework | `<e.g. Angular / React / Vue / Svelte / Flutter / SwiftUI>` | `<files>` |
 | Data store | `<e.g. PostgreSQL / MongoDB / DynamoDB / SQLite>` | `<files>` |
@@ -28,7 +27,7 @@ Replace bracketed placeholders. Drop sections that yield no content for the proj
 
 ## Detected domain
 
-`<2–4 sentences describing what the project does, derived from README + top-level docs. No invention.>`
+`<2–4 sentences from README + top-level docs. No invention.>`
 
 ## Architecture artefacts (referenced — not copied)
 
@@ -40,7 +39,7 @@ Replace bracketed placeholders. Drop sections that yield no content for the proj
 | ADR directory | `<path or (none detected)>` | `solution-architect` |
 | CR directory | `<path or (none detected)>` | `solution-architect` |
 | Diagrams directory | `<path or (none detected)>` | `solution-architect` |
-| Project-instruction file | `<path of CLAUDE.md / .github/copilot-instructions.md / .cursor/rules/*.mdc / etc.>` | per-tool — see adapter |
+| Project-instruction file | `<CLAUDE.md / .github/copilot-instructions.md / .cursor/rules/*.mdc / etc.>` | per-tool — see adapter |
 
 ## SDLC artefacts
 
@@ -68,11 +67,11 @@ Replace bracketed placeholders. Drop sections that yield no content for the proj
 
 ## Suggested specialists (from `extras/roles/`)
 
-Recommendations, not enabled. User copies any into `local/roles/` to opt in.
+<!-- Recommendations, not enabled. User copies any into local/roles/ to opt in. -->
 
 | Specialist | Why suggested |
 |---|---|
-| `<e.g. security-engineer>` | `<e.g. project contains auth code under `<path>` and `<file>` references encryption — security review surface present>` |
+| `<e.g. security-engineer>` | `<e.g. auth code under `<path>`; `<file>` references encryption>` |
 | `<e.g. ml-engineer>` | `<e.g. `<dir>` contains ML training pipelines + model artefacts>` |
 | `<e.g. mobile-engineer>` | `<e.g. `<dir>` contains iOS/Android app shell>` |
 | `<e.g. sre>` | `<e.g. project declares uptime SLO in `<file>`>` |
@@ -89,6 +88,6 @@ Recommendations, not enabled. User copies any into `local/roles/` to opt in.
 ## Next step for the user
 
 1. Review the three `local/*` files.
-2. Refine `local/bindings.md` if the auto-detected forbidden-role-crossings table needs project-specific entries.
+2. Refine `local/bindings.md` if auto-detected forbidden-role-crossings need project-specific entries.
 3. (Optional) Copy any suggested specialist from `extras/roles/` into `local/roles/`.
 4. Begin work — dispatch `@project-manager <task>` per `core/process.md` § Task model.

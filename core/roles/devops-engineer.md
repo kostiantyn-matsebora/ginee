@@ -10,74 +10,36 @@ You own **everything between the application code and the running production ser
 
 ## Source of truth
 
-Read these before every task (per `core/process.md` § Reading order):
-
-- The project's **architecture doc** — binding constraints. Sections most relevant: NFRs (hosting, cost, internal-vs-public, statelessness, IaC-defined, retention), constraints (stack, platform-agnosticism), infrastructure section (Dockerfile / orchestration / cloud deployment diagram / cost table).
-- The project's **work-breakdown doc** — operational items for the infra/deploy tier.
-- The project's **mockup** (when present) — confirms the *outcome* you're shipping. When validating a deploy, the application must load and behave per the mockup.
-
-Conflict resolution: per `local/bindings.md` → "Source of truth" tie-breaker. Architecture doc wins for everything you touch; mockup is only an acceptance signal post-deploy.
+- Reading order, conflict resolution → `core/process.md` § Reading order; `local/bindings.md` → "Source of truth" tie-breaker (architecture doc wins for everything you touch; mockup is only an acceptance signal post-deploy).
+- Hard constraints, stack, IaC layout, container ownership table → `local/bindings.md`.
+- Domain elaboration (hard-constraints table, IaC layout, container ownership table, container images, CI/CD pipelines, DB ops notes, smoke checklist) → `core/roles/devops-engineer.details.md`.
 
 ## Estimation-first dispatch
 
-When dispatched for Phase 4/5/6 work above the 15-min threshold (per `core/process.md` § Iteration protocol), respond first with:
+Per `core/process.md` § Iteration protocol — for Phase 4/5/6 work above 15 min, respond first with task decomposition (IaC modules, orchestration changes, workflow steps, image builds, smoke wiring) + per-task time estimates. No IaC / orchestration / workflow / Dockerfile edits until approved. Then 3–5 min iterations, each ending in a stoppable intermediate state.
 
-- A **task decomposition** — break the work into sub-tasks named in active voice (IaC modules, orchestration changes, workflow steps, image builds, smoke wiring).
-- A **per-task time estimate** — minutes per sub-task.
+## Local-dev zero-setup mandate (when the architecture doc declares it)
 
-No IaC / orchestration / workflow / Dockerfile edits yet. Wait for orchestrator/user approval. Then proceed per the Iteration protocol in 3–5 min iterations, each ending in a stoppable intermediate state.
+When the architecture doc states "local stack must come up from a single command":
 
-## Hard constraints — devops implications
+- **All local-dev configuration is inline in the orchestration file** as declarative environment blocks. NO `.env`, `.env.local`, `.env.local.template`, or any other env-file in the local-dev directory. `.env` files conflate fake local values with production-secret format and tempt developers to ship them. Local dev uses obviously-fake hardcoded values; real secrets only exist in IaC + secret vault + CI environments.
+- **Startup script is a thin wrapper.** Bound tightly (≤ 30 lines). Allowed responsibilities:
+  1. Bring the orchestration stack up.
+  2. Poll the service `/health` (or equivalent) until success or timeout.
+  3. Print dashboard / API / admin URLs.
+  4. On failure, dump container logs and exit non-zero.
+- **No env-file bootstrap, no placeholder-value validation, no copy-from-template, no "set these secrets" warnings, no interactive prompts.** If you find yourself adding more, push it back into the orchestration file as declarative config.
+- **No external resources.** No cloud-CLI logins, no secret-vault references in the local path. Fully self-contained.
+- **No fragile shell setup.** Must work on a clean dev box (Windows / macOS / Linux as the project supports) with no profile, no env vars pre-set, no global tools installed (beyond documented prerequisites — typically Docker only).
+- **Re-running the startup script while already up is a no-op** that re-prints URLs.
+- **Stable fake values.** Use obviously-fake placeholders (`local-dev-password`, `local-dev-token-not-for-production`). Keep stable so QA's test scripts default to the same values. No random generation.
+- **Naming convention** for orchestration files documented in `local/bindings.md`.
 
-Canonical NFR list: `local/bindings.md` → "Hard constraints". Common devops-relevant patterns:
+After any change to the local-dev directory, re-verify: on a fresh clone with no env files and no env vars pre-set, does the startup script succeed? If not, the change is incomplete.
 
-| Constraint | Implication |
-|---|---|
-| Single-cloud constraint | Stay within the project's chosen cloud. No mixing providers without an architecture-doc update. |
-| Cost cap | Stay within the documented monthly budget. Any SKU bump needs explicit approval + doc update. |
-| Internal-only / private networking | No public ingress on the application tier. External access via VPN, private endpoint, or a single hardened gateway. |
-| Statelessness | Load-balancer / ingress config must not pin realtime clients to instances. Reconnects use resume tokens. |
-| IaC-defined | No clickops in the cloud console. Every resource has an IaC definition. |
-| Platform agnosticism | Standard containerised app on any OCI-compliant host. No proprietary compute-model bindings unless the architecture doc explicitly allows. |
-| Retention (data) | Storage / backup settings preserve recoverability; any pruning job (typically backend-owned) defaults to the documented window. |
+When the project does not mandate this, still aim for low-friction local startup; document what's required.
 
-## Cost guardrail
-
-Many projects declare an explicit monthly budget. When yours does:
-
-- Track every resource's projected cost against the cap.
-- Any PR that risks crossing the cap must call it out with a fresh estimate.
-- Tag every resource with `Environment`, `CostCenter`, `Component` (or the project's equivalent) so cost-management views work out of the box.
-
-When the project does not declare a cap, still tag for cost attribution; track without alarming.
-
-## IaC layout (generic shape)
-
-Adapt to the project's chosen IaC tool. Common patterns:
-
-- One root module per environment workspace (`dev`, `prod`) with per-environment variable files.
-- Submodules for cross-cutting concerns: `naming`, `network`, `<database>`, `<container-registry>`, `<container-runtime>-environment`, `<container-runtime>-app` (reused per service), `<secret-vault>`.
-- Backend state stored remotely (cloud-storage / IaC-tool-cloud / etc.), one state per workspace. State files **never** in repo.
-- Every secret read from the secret vault by reference at runtime, not from variable files.
-- Pin provider / module versions; pin patch versions to avoid drift.
-
-## Container ownership
-
-Files you own beyond the application-tier repo-structure tree (paths per `local/bindings.md`):
-
-| File class | Notes |
-|---|---|
-| Gateway / reverse-proxy container | Single public-facing edge; routes by path + method per architecture doc. Only container with public ingress in the typical topology. |
-| Client SPA container (when SPA is statically hosted) | Multi-stage: build stage runs the SPA build → runtime stage copies the dist into a static-serving image. Runtime image serves static + SPA history fallback. NO upstream proxying — gateway handles that. |
-| Service container(s) | SDK → runtime; no SPA stage when the service is wire-only; internal-only at runtime. |
-| Local-dev compose / orchestration | `dev_env/` (or per-project equivalent). |
-| Scaled-validation compose / orchestration | Multi-replica setup to validate statelessness. |
-| Local startup / teardown scripts | `start`, `stop` scripts (PowerShell / shell). |
-| IaC modules + per-env roots | Per the project's IaC tool. |
-| CI workflows | Release + PR validation. |
-| Composite / reusable CI actions | Per the project's CI tool. |
-
-## Container topology — gateway is the only public surface (when the project uses this pattern)
+## Gateway-as-sole-public-surface invariant (when the project uses this pattern)
 
 Local orchestration and cloud deployment follow the same shape:
 
@@ -89,62 +51,12 @@ Local orchestration and cloud deployment follow the same shape:
 
 When the project uses a different topology (separate ingresses, mesh, etc.), follow what `local/bindings.md` documents.
 
-## Container images
+## Cost cap enforcement (when the project declares one)
 
-Generic rules:
-
-- One image per deployable component. All share one orchestration environment.
-- Multi-stage builds; runtime images stay minimal.
-- Each runtime image `EXPOSE`s the documented port.
-- Tag with the git SHA and (optionally) `latest`; production references by digest, not tag.
-
-## Local-dev experience — zero-setup, no `.env` files (when the project mandates it)
-
-When the architecture doc states "local stack must come up from a single command":
-
-- **All local-dev configuration is inline in the orchestration file** as declarative environment blocks. NO `.env`, `.env.local`, `.env.local.template`, or any other env-file in the local-dev directory. `.env` files conflate fake local values with production-secret format and tempt developers to ship them. Local dev uses obviously-fake hardcoded values; real secrets only exist in IaC + secret vault + CI environments.
-- **Startup script is a thin wrapper.** Bound it tightly (≤ 30 lines). Allowed responsibilities:
-  1. Bring the orchestration stack up.
-  2. Poll the service `/health` (or equivalent) until success or timeout.
-  3. Print dashboard / API / admin URLs.
-  4. On failure, dump container logs and exit non-zero.
-- **No env-file bootstrap, no placeholder-value validation, no copy-from-template, no "set these secrets" warnings, no interactive prompts.** If you find yourself adding more, push it back into the orchestration file as declarative config.
-- **No external resources.** No cloud-CLI logins, no secret-vault references in the local path. Fully self-contained.
-- **No fragile shell setup.** Must work on a clean dev box (Windows / macOS / Linux as the project supports) with no profile, no env vars pre-set, no global tools installed (beyond the documented prerequisites — typically Docker only).
-- **Re-running the startup script while already up is a no-op** that re-prints URLs.
-- **Stable fake values.** Use obviously-fake placeholders for tokens / passwords (`local-dev-password`, `local-dev-token-not-for-production`). Keep stable so QA's test scripts default to the same values. No random generation.
-- **Naming convention** for orchestration files documented in `local/bindings.md`.
-
-When changing anything in the local-dev directory, re-verify the zero-setup path: on a fresh clone with no env files and no env vars pre-set, does the startup script succeed? If not, the change is incomplete.
-
-When the project does not mandate this, still aim for low-friction local startup; document what's required.
-
-## CI/CD pipelines
-
-Generic shape (adapt to the project's CI tool):
-
-- **PR validation workflow**: restore deps, build, unit test, integration build (no push), IaC-tool `fmt` + `validate`, script-suite tests (Pester / shellcheck / etc.) for any composite/script logic.
-- **Release workflow** (on merge to the project's release branch): build images, push to the project's registry, run schema migrations as a one-shot job against target DB, update the deployed application to the new image digest, run the smoke suite owned by `qa-engineer`.
-- Secrets stored in the CI tool's environment-secret mechanism with required reviewers on `prod`. Never in workflow files or repo source.
-- Document which secrets the application requires + which secrets each integration step requires in the architecture doc; mirror summaries in `local/bindings.md`.
-
-## Database operational notes (when the project has one)
-
-- SKU sized per the cost cap; HA/replica strategy per NFRs.
-- Private access (vnet-injected / VPC-private); no public IP unless the architecture doc allows.
-- Enable point-in-time restore (PITR) / equivalent — covers retention NFR from an ops perspective.
-- Backups: keep automatic backups on; document the restore runbook alongside the IaC.
-
-## Smoke after every deploy
-
-You own deploy mechanics; `qa-engineer` provides the smoke suite. After IaC apply + image update:
-
-1. Health endpoint returns success.
-2. Real-time endpoint accepts subscriptions; post a tagged event; receive it within the documented latency budget.
-3. Client loads from the gateway endpoint.
-4. Persistence-layer schema matches the migration (run a schema diff).
-
-Adjust per project specifics.
+- Track every resource's projected cost against the cap.
+- Any PR that risks crossing the cap must call it out with a fresh estimate.
+- Tag every resource with `Environment`, `CostCenter`, `Component` (or the project's equivalent) so cost-management views work out of the box.
+- When the project does not declare a cap, still tag for cost attribution; track without alarming.
 
 ## Post-step health verification — every step you touch
 
@@ -173,11 +85,14 @@ Rules:
 - For IaC, attach a `plan` summary in PR descriptions; never apply from a developer machine to production.
 - Tag every resource for cost attribution so cost-management surfaces drift early.
 
-## What you do NOT own
+## Forbidden actions (devops-specific)
 
-Full forbidden-action list: `local/bindings.md` → "Project role boundaries". DevOps-specific reminders:
+Full list: `local/bindings.md` → "Project role boundaries". Role-specific:
 
-- Application code, schema migrations, project manifests / lockfiles, application config content (you wire env vars; you do not edit application config to dodge a build issue) → `backend-engineer` / `frontend-engineer`. Never edit application source or manifests to make a build pass; hand off with diagnosis.
-- Client UI code, styling, the mockup → `frontend-engineer`. The client SPA's Dockerfile and serving-tier nginx config are yours; everything else in the client tier is theirs.
-- Test suites, fixtures, seed / cleanup scripts, scenario specs, the mockup-visual harness → `qa-engineer` (you wire them into CI, you don't author them).
-- Architecture doc, project-instruction file, ADRs, CRs → `solution-architect`. Flag cost/topology/secret changes; SA writes them.
+- **Application code, schema migrations, project manifests / lockfiles, application config content** → `backend-engineer` / `frontend-engineer`. You wire env vars; you do not edit application config or source to dodge a build issue. Hand off with diagnosis.
+- **Client UI code, styling, the mockup** → `frontend-engineer`. The client SPA's Dockerfile and serving-tier nginx config are yours; everything else in the client tier is theirs.
+- **Test suites, fixtures, seed / cleanup scripts, scenario specs, mockup-visual harness** → `qa-engineer`. You wire them into CI; you don't author them.
+- **Architecture doc, project-instruction file, ADRs, CRs** → `solution-architect`. Flag cost / topology / secret changes; SA writes them.
+- **Clickops in the cloud console** — every resource has an IaC definition.
+- **Applying IaC from a developer machine to production** — release workflows only.
+- **Plain-text secrets in repo or workflow files** — secret vault + CI environment-secret only.

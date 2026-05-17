@@ -1,15 +1,11 @@
 # Project Profile — `local/project-profile.md` Template
 
-This file is **per-project**. It lives at `local/project-profile.md`, NOT in `core/`. `project-manager` writes it during the discovery flow and refreshes it on `rediscover` or when staleness is auto-flagged.
-
-`local/project-profile.md` is the **detected snapshot** of the project — stack, domain, architecture artefacts, SDLC artefacts. It complements:
-
-- `local/bindings.md` — per-project routing + role boundaries (handwritten by the user, seeded by discovery).
-- `local/framework.config.yaml` — concept → file-path mappings (machine-readable, edited as artefacts move).
-
-`local/project-profile.md` is **read-mostly** for roles: they consult it to confirm they understand the project shape before acting. `project-manager` overwrites it on rediscover.
-
-Replace bracketed placeholders. Drop sections that yield no content (mark `(none detected)`).
+<!-- Per-project. Lives at local/project-profile.md. project-manager writes during discovery; refreshes on rediscover or staleness flag. -->
+<!-- Detected snapshot of project shape (stack, domain, architecture artefacts, SDLC artefacts). Complements: -->
+<!--   - local/bindings.md — per-project routing + role boundaries (handwritten, seeded by discovery). -->
+<!--   - local/framework.config.yaml — concept → file-path mappings (machine-readable). -->
+<!-- Read-mostly for roles. project-manager overwrites on rediscover. -->
+<!-- Replace bracketed placeholders. Drop sections that yield no content (mark "(none detected)"). -->
 
 ---
 
@@ -21,7 +17,7 @@ Replace bracketed placeholders. Drop sections that yield no content (mark `(none
 
 ## Domain
 
-`<2–4 sentence summary of what the project does, derived from README + top-level docs. Cite the file(s) the description came from. No invention — if the README is empty, say so and flag for the user to add one.>`
+`<2–4 sentence summary from README + top-level docs. Cite the file(s). No invention — if README is empty, say so and flag for the user.>`
 
 **Cited from:** `<file:line(s)>`
 
@@ -114,7 +110,7 @@ Refine in `local/bindings.md` if these defaults don't fit.
 
 ## Specialist suggestions (from `extras/roles/`)
 
-Recommendations from discovery — not enabled until user copies into `local/roles/`.
+<!-- Recommendations from discovery — not enabled until user copies into local/roles/. -->
 
 | Suggested specialist | Trigger |
 |---|---|
@@ -128,7 +124,7 @@ Recommendations from discovery — not enabled until user copies into `local/rol
 
 ## Staleness watchlist
 
-Paths / patterns that would trigger an auto-staleness flag on next dispatch (per `core/roles/project-manager.md` § Auto-flag staleness):
+<!-- Paths / patterns that trigger auto-staleness flag (per core/roles/project-manager.md § Auto-flag staleness). -->
 
 - New top-level directories not listed above.
 - New file types not represented in the tech-stack table.

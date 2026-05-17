@@ -1,18 +1,17 @@
 # Pull-Request Description Template
 
-Use for every PR that lands code, tests, infrastructure, or docs. Cite the requirement / NFR / mockup section / CR / ADR; document cross-domain sign-offs; flag any cost impact.
-
-Replace bracketed placeholders. Drop sections that yield no content.
+<!-- Use for every PR landing code, tests, infra, or docs. Cite the requirement / NFR / mockup section / CR / ADR. -->
+<!-- Replace bracketed placeholders. Drop sections that yield no content. -->
 
 ---
 
 ## What
 
-`<one or two sentences — imperative voice. e.g. "Add picker UI for correlation attribute on the matrix Glance view; persist selection in URL.">`
+`<one or two sentences — imperative voice>`
 
 ## Why
 
-`<one or two sentences explaining the trigger — a TODO line, a CR, a defect, an explicit user request. Reference the source.>`
+`<one or two sentences — trigger (TODO line / CR / defect / explicit user request). Reference the source.>`
 
 ## Cites
 
@@ -21,11 +20,11 @@ Replace bracketed placeholders. Drop sections that yield no content.
 | Requirement | `<FR-NN | NFR-NN>` |
 | Architecture-doc section | `<§N or anchor>` |
 | Mockup section / behaviour | `<section / interaction>` |
-| CR | `<CR-NNNN>` (when post-finalization) |
-| ADR | `<ADR-NNNN>` (when a new architectural decision was needed) |
-| Hand-off note | `<path or link>` (when this PR resolves a cross-domain hand-off) |
+| CR | `<CR-NNNN>` (post-finalization) |
+| ADR | `<ADR-NNNN>` (new architectural decision) |
+| Hand-off note | `<path or link>` (when resolving cross-domain hand-off) |
 
-No source → no PR. If the work isn't cited by something authoritative, write the doc update first or flag the gap.
+No source → no PR. If uncited by something authoritative, write the doc update first or flag the gap.
 
 ## Domain breakdown (for cross-domain PRs)
 
@@ -37,7 +36,7 @@ No source → no PR. If the work isn't cited by something authoritative, write t
 
 ## Cross-domain sign-offs
 
-For wire-contract breaking changes, infra changes affecting application config, or any cross-domain bug fix:
+<!-- For wire-contract breaking changes, infra changes affecting application config, or any cross-domain bug fix. -->
 
 - [ ] `solution-architect` — architecture-doc / CR / ADR landed
 - [ ] `backend-engineer` — wire shape confirmed
@@ -48,7 +47,7 @@ For wire-contract breaking changes, infra changes affecting application config, 
 
 ## Cost impact (when applicable)
 
-Devops-led PRs that add resources or bump SKUs:
+<!-- Devops-led PRs that add resources or bump SKUs. -->
 
 | Item | Before | After | Delta |
 |---|---|---|---|
@@ -63,7 +62,7 @@ Cost-cap NFR check: `<still under | exceeds — explain>`.
 |---|---|
 | `<build / test / lint command>` | `<exit code / pass-fail / counts>` |
 
-For PRs that touch a user-facing surface, **manual smoke** result against the running stack (not the mockup):
+<!-- For PRs touching a user-facing surface, manual smoke against the running stack (not the mockup). -->
 
 - `<one line per new flow>`
 

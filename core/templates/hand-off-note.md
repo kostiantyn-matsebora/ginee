@@ -1,10 +1,8 @@
 # Hand-off Note Template
 
-Use this shape when an engineer discovers a root cause **outside** their domain while working on their own task (per `core/process.md` § Cross-agent handoff — diagnose ≠ fix).
-
-The discoverer **diagnoses fully** and **does NOT fix**. The owning role takes the hand-off, fixes, and the discoverer reviews + removes any local workaround.
-
-Replace bracketed placeholders.
+<!-- Use when an engineer discovers a root cause OUTSIDE their domain while working their own task (per core/process.md § Cross-agent handoff — diagnose ≠ fix). -->
+<!-- Discoverer diagnoses fully and does NOT fix. Owning role takes the hand-off, fixes, and the discoverer reviews + removes any local workaround. -->
+<!-- Replace bracketed placeholders. -->
 
 ---
 
@@ -17,7 +15,7 @@ Replace bracketed placeholders.
 
 ## Symptom
 
-What the discoverer observed. Concrete and reproducible:
+<!-- Concrete and reproducible. -->
 
 - Failing command / step: `<verbatim>`
 - Expected: `<one line>`
@@ -26,7 +24,7 @@ What the discoverer observed. Concrete and reproducible:
 
 ## Root cause (verified)
 
-The bug, in the owning role's domain. Cite the file + line + chain of reasoning that led to the conclusion:
+<!-- The bug, in the owning role's domain. Cite file + line + chain of reasoning. -->
 
 ```
 <file:line> — <verbatim relevant excerpt or error>
@@ -41,7 +39,7 @@ The bug, in the owning role's domain. Cite the file + line + chain of reasoning 
 |---|---|
 | `<command / inspection>` | `<output / observation>` |
 
-Attach logs / screenshots / diff snippets where they're load-bearing.
+Attach logs / screenshots / diff snippets where load-bearing.
 
 ## What the discoverer tried and ruled out
 
@@ -49,7 +47,7 @@ Attach logs / screenshots / diff snippets where they're load-bearing.
 |---|---|---|
 | `<hypothesis>` | `<what was checked>` | `Ruled out — <why>` |
 
-This section prevents the owner from re-running the same investigations.
+<!-- Prevents the owner from re-running the same investigations. -->
 
 ## Workaround in place (if any)
 
@@ -58,7 +56,7 @@ This section prevents the owner from re-running the same investigations.
 - **Why:** `<one line — usually "unblock current task">`
 - **Removal trigger:** `<who removes it + when — typically "discoverer, once owner's fix lands">`
 
-Workarounds are **labelled as such** in the code (comment: `// WORKAROUND — see hand-off <date> to <owning role>`). Both roles acknowledge in their reports.
+Workarounds are labelled in the code (comment: `// WORKAROUND — see hand-off <date> to <owning role>`). Both roles acknowledge in their reports.
 
 ## Out-of-competence — discoverer will NOT fix
 
@@ -69,4 +67,4 @@ The owning role takes it from here.
 ## Coordination
 
 - **Both roles stay engaged.** Owner fixes; discoverer reviews and removes the workaround.
-- **Cross-reference.** When the fix lands, the owner's commit/PR references this hand-off note; the discoverer's removal commit references both.
+- **Cross-reference.** Owner's commit/PR references this hand-off note; discoverer's removal commit references both.
