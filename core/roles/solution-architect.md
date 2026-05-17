@@ -95,7 +95,7 @@ Review-pass checklist: `solution-architect.details.md § Governance review of mo
 
 ## Source-of-truth tie-breaker
 
-Per `local/bindings.md` → "Source of truth":
+Per `local/bindings.md` → "Source-of-truth ownership":
 
 - **Visual / interactive behaviour** → mockup wins.
   1. Flag the architecture-doc section for update.

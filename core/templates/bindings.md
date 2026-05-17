@@ -21,7 +21,9 @@
 
 # Project Bindings — `<project name>`
 
-## Source of truth (read before any work)
+## Source-of-truth ownership
+
+**Default reads:** `local/index/*` per `core/index-protocol.md`. The table below is a **governance map** — who edits each source + where the verbatim text lives when an index entry points to "see source." NOT a per-dispatch read list; pulling raw doc paths into every dispatch defeats the load-on-demand contract.
 
 | File | Role | Edited by |
 |---|---|---|

@@ -33,7 +33,7 @@ Also read every task:
 | Topic | Reference |
 |---|---|
 | Reading order, conflict resolution | `core/process.md` § Reading order |
-| Tie-breaker (architecture doc wins for everything you touch; mockup is only an acceptance signal post-deploy) | `local/bindings.md` → "Source of truth" |
+| Tie-breaker (architecture doc wins for everything you touch; mockup is only an acceptance signal post-deploy) | `local/bindings.md` → "Source-of-truth ownership" |
 | Hard constraints, stack, IaC layout, container ownership table | `local/bindings.md` |
 | Domain elaboration (hard-constraints table, IaC layout, container ownership table, container images, CI/CD pipelines, DB ops notes, smoke checklist) | `core/roles/devops-engineer.details.md` |
 
