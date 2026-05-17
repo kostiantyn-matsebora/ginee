@@ -17,6 +17,18 @@ Adopter projects accumulate substantial knowledge across two source categories �
 
 `local/index/*` is the **only default read surface** for source-of-truth artefacts. `core/templates/bindings.md § Source-of-truth ownership` records who edits each raw source + where its verbatim text lives — it is a governance map, not a per-dispatch read list. Any framework surface that names raw `docs/**` or code/config paths as "read before any work" silently competes with this protocol and re-introduces the cost it exists to eliminate.
 
+### Where compression pays off — and where it doesn't
+
+The index is a **summarization tier**, not a re-encoding tier. The win depends on source shape:
+
+| Source shape | Realistic compression | Strategy |
+|---|---|---|
+| Prose-heavy (architecture rationale, ADR body, scenario Given/When/Then) | 5–15% of source | Aggressive — extract identifiers + anchors; drop motivation, alternatives, narrative |
+| List-of-records with metadata (FRs, NFRs, endpoints, UI states, glossary terms) | 15–25% of source | Per-record row with title + key-signal + anchor; full body stays in source |
+| Already-structured config (compose, IaC, package manifests, lint configs) | 5–15% of source — **inventory only** | Record existence (name + tier + anchor); roles read source for per-record detail |
+
+**Compression floor: ≥ 50% of source bytes = recipe failed.** Either rewrite the recipe to drop bulk OR mark the class as `read-source-directly` (skip extraction; role kernels cite the source path via `repo-map.idx`). See `§ Lossless rule for index § Compression floor` for the self-check.
+
 ## Source types
 
 The protocol covers two source categories — same machinery (manifest + SHA-256 + recipes + lossless rule) for both:
@@ -81,6 +93,9 @@ indexed:
     sha256: a3f5b8...c4d1
     indexed-on: 2026-05-17
     index-files: [architecture.idx, architecture-fr.idx, api-matrix.yaml, ui-states.yaml, constraints.yaml, glossary.idx]
+    source-bytes: 48230
+    index-bytes: 6420                    # sum across index-files
+    compression: 0.13                     # index-bytes / source-bytes; ≥ 0.5 = failed (see § Compression floor)
 
   - class: scenario
     category: doc
@@ -93,6 +108,9 @@ indexed:
       docs/scenarios/login-fail.md: c9...
     indexed-on: 2026-05-17
     index-files: [scenario-index.idx]
+    source-bytes: 142800
+    index-bytes: 8200
+    compression: 0.06
 
   # Code class (D15)
   - class: stack
@@ -144,6 +162,7 @@ indexed:
 - **Glob sources** record `sha256-by-file` so a single new/changed file flags only that subset.
 - **`category`** — `doc` (D13) or `code` (D15). Drives heuristic-detection mapping during discovery.
 - **`recipe`** — either a built-in id (`builtin:<recipe>`) or an inline recipe block (for novel classes).
+- **`source-bytes`** + **`index-bytes`** + **`compression`** — byte-size accounting; surfaces compression ratio so adopters and `ai-engineer` see when a recipe is over-extracting (`compression` ≥ 0.5 → failed; see `§ Compression floor`). `index-bytes` = sum across all `index-files` entries.
 
 ## Lifecycle
 
@@ -197,14 +216,29 @@ indexed:
 
 ## Lossless rule for index
 
-- Every named record in the source MUST have an entry in the index. Per category:
+### Coverage rule
+
+- Every named record in the source MUST have an **existence-entry** in the index (name + source-anchor). Per category:
   - **Doc:** every FR / NFR / endpoint / state / ADR / CR / scenario / glossary term.
   - **Code:** every declared dependency / service / port / command / convention rule / env-var / top-level directory.
 - Index entries MAY summarize but MUST cite source path + section anchor (or `file:line` ref for non-section sources).
-- After extraction or re-extraction, `ai-engineer` runs **sample-and-check**:
-  - Pick 5 random items per affected index file.
-  - Verify the source still has them at the cited anchor.
-  - If any cannot be verified → revert and re-plan.
+- Coverage is about *existence*, not *fidelity*. Index records the signals the role needs for routing (existence, name, tier, owner, anchor). Full metadata (per-service env-vars, per-dep version pins, per-port mappings, per-record motivation) stays in source — the index entry's anchor is the contract that the source still holds it.
+
+### Compression floor
+
+- **`compression` (`index-bytes / source-bytes`) ≥ 0.5 = recipe failed.** A summary tier that produces ≥ half the source bytes is re-encoding, not summarizing.
+- Remedies, in order of preference:
+  1. **Rewrite the recipe** to drop bulk — extract existence + anchors only; relegate per-record metadata back to source. Re-extract; verify the ratio falls below 0.5 (target: ≤ 0.15 for prose-heavy, ≤ 0.25 for list-of-records, ≤ 0.15 for already-structured config inventory).
+  2. **Mark the class `read-source-directly`** in `manifest.yaml § indexed[].template`. Skip extraction entirely. Role kernels needing the class cite the source path via `repo-map.idx`. Appropriate when the source is already structured (YAML / JSON / TOML) and compression below 0.5 isn't achievable without losing required existence-entries.
+- Per-class targets recorded in `manifest.yaml § indexed[].compression`. Discovery report flags any entry above target so the adopter sees the bloat up front.
+
+### Sample-and-check
+
+After extraction or re-extraction, `ai-engineer` runs:
+
+1. **Existence check** — pick 5 random items per affected index file. Verify the source still has them at the cited anchor.
+2. **Compression check** — measure `index-bytes / source-bytes`. If ≥ 0.5, the extraction is rejected; rewrite the recipe per § Compression floor.
+3. **On any miss** → revert and re-plan. Do not commit partial extractions.
 
 ## Role consumption pattern
 
