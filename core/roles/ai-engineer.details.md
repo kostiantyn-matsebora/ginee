@@ -73,11 +73,11 @@ When a split produces new files, you MAY group them in a subdirectory rather tha
 - Negation lists scattered across sections.
 - Skill / prompt bundling N concerns into one file.
 
-## Project-doc extraction recipes
+## Project extraction recipes
 
-You own the project-doc index under `local/index/`. Full protocol: `core/index-protocol.md`. `.idx` grammar: `core/index-syntax.md`. Templates: `core/templates/index/`.
+You own the project knowledge index under `local/index/`. Full protocol: `core/index-protocol.md`. `.idx` grammar: `core/index-syntax.md`. Templates: `core/templates/index/`. Protocol covers two source categories — **doc** (D13 baseline) and **code** (D15 extension); same machinery (manifest + SHA-256 + recipes + lossless rule).
 
-### Recipe table
+### Doc-category recipes (D13)
 
 | Source doc | Recipe id | Extracted to | Recipe + extraction tips |
 |---|---|---|---|
@@ -86,9 +86,20 @@ You own the project-doc index under `local/index/`. Full protocol: `core/index-p
 | ADR directory (`docs/adr/*.md`) | `builtin:adr` | `adr-index.idx` (also reusable for RFC, design-decision, any-decision-record class) | <ul><li>Per ADR file → row (id + title + status + 1-line decision summary + source path).</li><li>Body NOT copied.</li><li>Grab: id, title, status, one-line "we decided X". Leave behind: motivation, alternatives, full consequences narrative.</li></ul> |
 | CR directory (`docs/cr/*.md`) | `builtin:cr` | `cr-index.idx` | <ul><li>Per CR file → row (id + title + status + target FR/NFR comma-list + source path).</li><li>Grab: id, title, status, what FRs/NFRs it changes. Leave behind: full diff, full justification.</li></ul> |
 | Scenario directory (`docs/scenarios/*.md`, `tests/scenarios/*.md`) | `builtin:scenario` | `scenario-index.idx` | <ul><li>Per scenario file → row (id + feature label + FR/NFR cited + mockup anchor + fixture path + source).</li><li>Grab: identifiers, feature label, cross-references. Leave behind: step-by-step Gherkin body.</li></ul> |
-| Novel class (RFC variant, runbook, threat-model, data-dictionary, feature-spec, model-card, eval-report, incident-report, playbook, compliance-doc, prompt-library, skill-catalog, release-note, ...) | `inline:<class>` | `<class>-index.idx` (flat records) OR `<class>.yaml` (nested) — new template authored by you | See § Novel-class recipe below. |
 | Project-instruction file (`CLAUDE.md` etc.) | — | — | Not indexed (small, already loaded by adapter pointer). |
 | Diagrams (binary images, drawio, mermaid) | — | — | Not indexed (binary; path-only in `local/framework.config.yaml`). |
+
+### Code-category recipes (D15)
+
+| Source | Recipe id | Extracted to | Recipe + extraction tips |
+|---|---|---|---|
+| Package manifests + lockfiles + Dockerfiles (`package.json`, `*.csproj`, `pyproject.toml`, `Cargo.toml`, `go.mod`, `pom.xml`, `*.gemspec`, lockfiles, `Dockerfile`) | `builtin:package-manifest` | `stack.yaml` | <ul><li>Group by tier (server / client / mobile / ml / data) inferred from path heuristics (`backend/` → server, `frontend/` → client, `mobile/` → mobile, etc.).</li><li>Per tier: language + runtime + framework + ORM + data-store + direct deps (name + version + source-anchor).</li><li>Grab: declared direct deps + pinned versions + Dockerfile FROM images. Leave behind: transitive deps from lockfiles (too noisy; roles read lockfile when needed). Build-only dev deps included with `dev: true` flag.</li></ul> |
+| Container orchestration (`docker-compose*.yml`, Helm charts, `k8s/**/*.yaml`) + IaC (`terraform/**/*.tf`, `pulumi/**`, Bicep) | `builtin:container-orchestration` (+ `builtin:iac` for TF/Pulumi/Bicep) | `topology.yaml` | <ul><li>Per service: name + image + role + ports + depends_on + replicas + resources + env-vars + source-anchor + tier (local-dev/staging/production).</li><li>Cross-cutting: networks, volumes, ingress scheme.</li><li>IaC summary: tool + cloud + state-backend + resource-groups (anchor-only, body NOT copied).</li><li>Grab: declared services + topology graph. Leave behind: container init scripts (anchor only), cloud-resource bodies (read source TF when authoring).</li></ul> |
+| Build / test / lint / deploy command sources (`Makefile`, `package.json § scripts`, `pyproject.toml § tool.poe`, `justfile`, `local/framework.config.yaml § test-runners`, CI workflow steps) | `builtin:commands` | `commands.yaml` | <ul><li>Group by category (build / test / lint / format / deploy / dev).</li><li>Per command: name + cmd + wd + tool + scope (for test) + env (for deploy) + source-anchor.</li><li>Grab: named entry points (npm scripts, make targets, just recipes, test-runner paths from framework.config.yaml). Leave behind: ad-hoc one-liners in READMEs, arbitrary inline shell in CI `run:` blocks. CI step → only when it invokes a project-defined named command.</li></ul> |
+| Lint / formatter / pre-commit configs (`.editorconfig`, ESLint config, Prettier config, Black/Ruff config, dotnet-format settings, golangci-lint, husky, commitlint, `.gitignore`) | `builtin:conventions` | `conventions.yaml` | <ul><li>Formatter block: indent + line-endings + max-line-length + trim-trailing + final-newline (from .editorconfig + per-tool overrides).</li><li>Linters: per-tool + severity-default + customized rules with severity (`off`/`warn`/`error`).</li><li>Naming: branch pattern + commit-message style.</li><li>Pre-commit hooks + ignored-paths highlights.</li><li>Grab: customized rules that change adopter-authored output. Leave behind: defaults the tool ships with (roles know tool defaults). Comments explaining "why" — anchor only.</li></ul> |
+| Env-file schemas + declared env-vars (`.env.example`, `docker-compose` env blocks, `k8s` envFrom, `appsettings.Development.json` placeholders, configuration classes flagged runtime-bound) | `builtin:runtime-facts` | `runtime-facts.yaml` | <ul><li>Per env-var: name + required + default + secret + tier + consumed-by + source-anchor + notes (format hints).</li><li>Cross-cutting: secrets-store (local-dev + cloud) + config-validation approach.</li><li>**Never read real `.env` or production appsettings — values are secrets.** Schema lives in `.env.example`; real values stay in their files.</li><li>Compose / k8s declared env → in scope; literal values redacted if secret-looking. Application-code-read env-vars cross-referenced with declaration.</li></ul> |
+| Repo directory tree + per-dir READMEs | `builtin:repo-structure` | `repo-map.idx` | <ul><li>Per top-level directory → row: `path \| purpose \| owner-role \| category`.</li><li>Nested subtree → row only when ownership / purpose differs from parent.</li><li>Grab: directory purpose (from README or inferred from contents) + owning cardinal (from `local/bindings.md` or detected stack). Leave behind: file inventory (the index is a map, not a manifest).</li></ul> |
+| Novel class (custom CI workflow class, monorepo-specific tool config, unfamiliar infrastructure tool, doc class not pre-covered like RFC variant / runbook / threat-model / model-card / etc.) | `inline:<class>` | `<class>-index.idx` (flat records) OR `<class>.yaml` (nested) — new template authored by you | See § Novel-class recipe below. |
 
 ### Novel-class recipe
 
@@ -127,7 +138,9 @@ After every extraction or re-extraction:
 
 1. Pick **5 random items per affected index file** (or all items if the file has < 5 entries).
 2. Open the cited source path at the cited anchor.
-3. Verify the source still has the item (FR / NFR / endpoint / state / ADR / CR / scenario / record) at that location.
+3. Verify the source still has the item at that location:
+   - **Doc:** FR / NFR / endpoint / state / ADR / CR / scenario / glossary term.
+   - **Code:** declared dependency / service / port / command / convention rule / env-var / top-level directory.
 4. **On any miss** → revert the affected index file(s) and re-plan. Do not commit partial extractions.
 
 Special checks:
