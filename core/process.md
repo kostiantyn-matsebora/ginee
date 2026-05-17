@@ -69,15 +69,16 @@ Each phase below: **Goal · Actions · Artefacts · Criteria of acceptance.**
 
 ### Phase 5 — Testing
 - **Goal.** Verify implementation against contracts via executable suites + manual smoke against the running solution.
-- **Actions.** `qa-engineer` authors and runs functional / API / e2e / harness / script tests / smoke. Tests reference contracts, not implementation internals. Oracles must be TIGHT per **Test oracles can be wrong** below. Manual smoke runs against the running solution (per the project's local-dev startup command), NOT against design artefacts. Runs under `### Iteration protocol` with estimation-first dispatch and stoppable intermediate states.
-- **Artefacts.** Test code in the project's test directory + per-project unit specs alongside source. Manual-smoke report.
-- **Acceptance.** Suite executes; oracle pass/fail accurately reflects correctness. Manual-smoke report recorded (with explicit caveat if smoke could not be run — e.g. headless). Failures route to Phase 6.
+- **Scope — change-scoped by default.** Run only the tests that cover the changed surfaces: new and modified functional / API / e2e / harness / script scenarios for the touched code paths, plus per-project unit specs in modified files, plus any pre-existing scenario whose covered contract was edited in Phase 2 or 4. **Do not run the full regression suite by default** — it is slow and consumes a large token budget. Full regression is **opt-in**: only run it when the user explicitly asks. `project-manager` may remind the user that a full regression run is available and worth doing (especially for wide-reach refactors, infrastructure changes, or risky touches), and MUST warn that it can take significant wall-clock time and consume a large token budget. The user decides; default stays change-scoped.
+- **Actions.** `qa-engineer` authors and runs functional / API / e2e / harness / script tests / smoke for the changed surfaces. Tests reference contracts, not implementation internals. Oracles must be TIGHT per **Test oracles can be wrong** below. Manual smoke runs against the running solution (per the project's local-dev startup command), NOT against design artefacts. Runs under `### Iteration protocol` with estimation-first dispatch and stoppable intermediate states. When the user opts into full regression, it runs after the change-scoped pass is green and is reported separately.
+- **Artefacts.** Test code in the project's test directory + per-project unit specs alongside source. Manual-smoke report. When full regression is run, a separate regression report with pass/fail counts per suite and the wall-clock + approximate token cost.
+- **Acceptance.** Change-scoped suite executes green; oracle pass/fail accurately reflects correctness for the touched surfaces. Manual-smoke report recorded (with explicit caveat if smoke could not be run — e.g. headless). Failures route to Phase 6. Full regression, when requested, is its own pass on top of this gate, not a precondition for it.
 
 ### Phase 6 — Bug fixing
-- **Goal.** Resolve defects found in Phase 5 (or manual smoke) until all oracles are green with no regressions.
+- **Goal.** Resolve defects found in Phase 5 (or manual smoke) until all oracles for the touched surfaces are green with no regressions in those surfaces.
 - **Actions.** Engineer owning the failing surface fixes the defect. QA continues exercising other scenarios in parallel — a bug fix never freezes the test run. Routes back to the specific Phase 4 surface that broke, not a full Phase 4 rerun. Runs under `### Iteration protocol` with estimation-first dispatch and stoppable intermediate states.
 - **Artefacts.** Edits to existing Phase 4 / Phase 5 artefacts.
-- **Acceptance.** All oracles green. No regressions. Manual smoke re-run if a user-visible surface was touched.
+- **Acceptance.** Change-scoped oracles green; no regression introduced in the touched surfaces. Manual smoke re-run if a user-visible surface was touched. Full regression, when the user opted into it in Phase 5, is part of that opt-in pass — not a Phase 6 gate.
 
 ### Phase 7 — SA review
 - **Goal.** Confirm the result complies with architecture invariants, requirements, and mockup contracts before user approval.

@@ -101,6 +101,16 @@ Three hard gates in the phased lifecycle. You enforce them:
 | 7 — SA review | `solution-architect` must sign off on the implemented result. | Dispatch `solution-architect` for the review pass after Phase 6 (or Phase 4 if no Phase 5/6 failures). Verify SA explicitly checked the Phase 5 manual-smoke section. |
 | 8 — User approval | User must explicitly accept the work. | Surface the work; wait for "Yes — mark complete" or "No — needs more work". For TODO-sourced tasks, flip `☐` → `☒` on yes. |
 
+## Testing scope — default change-scoped; full regression opt-in
+
+Per `core/process.md` § Phase 5, the default test run is **change-scoped** — only the suites covering the touched surfaces. Full regression is **opt-in** and runs only on explicit user approval. Your job:
+
+- **Default behaviour.** Dispatch `qa-engineer` for change-scoped Phase 5/6 runs. Do not request full regression unless the user asked for it.
+- **Remind the user when it's worth offering.** After change-scoped tests pass — especially when the change is wide-reach (cross-cutting refactor, shared-library bump, infrastructure edit), touches a fragile area, or `qa-engineer` flagged risk back to you — surface a brief offer: *"Full regression is available and would catch breakage outside the touched surfaces. It can take significant wall-clock time and consume a large token budget. Want to run it?"* Do NOT auto-run.
+- **Warn explicitly about cost.** Every offer must state both: (a) significant wall-clock time, (b) large token-budget consumption. Adopters are paying for both — the user must make an informed choice.
+- **Report separately.** When the user opts in, dispatch `qa-engineer` for a full-regression pass after the change-scoped gate is green. Report its result distinctly (pass/fail per suite + wall-clock + approximate token cost) — it does not retroactively become a gate.
+- **Never silently expand.** If you find yourself wanting to "just run everything to be safe", stop and ask the user. Token + time cost without consent is a feedback bug.
+
 ## Post-acceptance doc-optimization hook
 
 After Phase 8 user acceptance, if the task touched **any** documentation (architecture docs, process docs, ADRs, CRs, READMEs, role definitions, project-instruction files):

@@ -27,6 +27,15 @@ When dispatched for Phase 4/5/6 work above the 15-min threshold (per `core/proce
 
 No scenarios / specs / fixtures / harness edits yet. Wait for orchestrator/user approval. Then proceed per the Iteration protocol in 3–5 min iterations, each ending in a stoppable intermediate state.
 
+## Test scope — change-scoped by default
+
+Per `core/process.md` § Phase 5, your default run is **change-scoped**, not full regression:
+
+- Run only the suites covering the changed surfaces — new and modified scenarios, plus pre-existing scenarios whose covered contract was edited in Phase 2 or 4, plus per-project unit specs in modified files.
+- Do NOT run the entire regression suite by default — it is slow and burns a large token budget.
+- Full regression is **opt-in** and dispatched only when the user explicitly approves it (typically prompted by `project-manager`). When dispatched, run it as a separate pass on top of the change-scoped gate and report pass/fail counts per suite plus the wall-clock and approximate token cost.
+- If you believe a change is risky enough to warrant full regression (wide-reach refactor, cross-cutting infra edit, shared-library bump), flag it back to `project-manager` so they can offer it to the user — do NOT silently expand scope.
+
 ## Required test layers
 
 | Layer | Tool (project-specific — see `local/bindings.md`) | Scope |
