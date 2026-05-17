@@ -60,6 +60,7 @@ Each phase below: **Goal · Actions · Artefacts · Criteria of acceptance.**
 - **Actions.** Synchronous gate. Orchestrator MUST present Phase 2 artefacts (architecture-doc diff, mockup link, API contract, work-breakdown) to the user. User approves or returns remarks; remarks loop back to Phase 2. Distinct from Phase 8 (closes the `TODO` line) and from the `TODO`-workflow checkpoint (sits before Phase 1).
 - **Artefacts.** None — verbal / chat approval.
 - **Acceptance.** Explicit user approval. Without it, Phase 4 does not start.
+- **In automatic mode.** Elided when Phase 2 produces no user-visible behaviour change. Forced back to interactive on any of the triggers in § Automatic mode → Forced-interactive triggers.
 
 ### Phase 4 — Implementation
 - **Goal.** Working code that mirrors the approved Phase 2 contracts.
@@ -91,6 +92,7 @@ Each phase below: **Goal · Actions · Artefacts · Criteria of acceptance.**
 - **Actions.** Orchestrator surfaces the work to the user per the Task model. If manual smoke wasn't run (e.g. headless), the orchestrator asks the user to run it. User picks "Yes — mark complete" or "No — needs more work" (loops back to Phase 6 with specific feedback).
 - **Artefacts.** `TODO` line transition `☐` → `☒`. Project-progress refresh (if used). Commit (only when the user explicitly asks).
 - **Acceptance.** User selects "Yes — mark complete".
+- **In automatic mode.** This phase is realized as the **delivery handoff** described in § Automatic mode → Delivery handoff. The user-approval invariant is preserved (a single explicit accept), but the orchestrator presents three actions — Accept / Feedback / Reject — rather than a simple yes/no.
 - **Post-acceptance doc optimization hook.** If the task touched any documentation (project-instruction files, architecture docs, role definitions, ADRs, CRs, READMEs), the orchestrator MUST dispatch `ai-engineer` to run the Iteration protocol scoped to the doc diff from this task. Runs as a polish step, not a gate — does not block declaring the task complete. If `ai-engineer`'s first proposal batch returns "no productive proposals", the hook completes immediately (no-op acceptable). No user permission required to invoke; the user sees the cumulative optimization diff in the final report and may accept or revert as a unit.
 
 ### Cross-phase rule
@@ -100,6 +102,61 @@ Artefact classes do not cross phases. A change that needs both design and code r
 ### Relation to the cross-domain bugs cycle
 
 The four-phase model in "Cross-domain bugs — integration + compliance cycle" below is the specific instantiation of this lifecycle for bugs that cut across two or more domains. Its Phases 1–4 map onto lifecycle Phases 2 (contract change), 4 (domain implementations), 5–6 (integration + bug fixing), and 7 (compliance review). The design-review gate (lifecycle Phase 3) still applies when the bug requires user-visible behaviour change.
+
+## Automatic mode
+
+For low-risk or self-contained tasks, the user may put the team into **automatic mode**: the lifecycle runs end-to-end without per-phase user gates, presenting only a single **delivery handoff** at the end. The user-approval invariant (Phase 8) is preserved as that one final gate; it is not waived.
+
+### Activation
+
+- **Explicit, per-task only.** Auto mode is opted into for a single task and ends with that task's delivery handoff. It is never session-wide and never inherited across tasks.
+- **Triggers.** User prefixes the task with `auto:` or addresses `project-manager` with `auto` (e.g. `@project-manager auto: ship the dark-mode toggle`). Alternatively, `project-manager` may **propose** auto mode for a task it judges low-risk (docs-only edit, isolated bug fix in a single owned path, mechanical refactor) — the user must reply "yes, auto" or equivalent. The orchestrator never enters auto mode silently.
+- Auto mode is recorded in the orchestrator's plan for that task so the rest of the team operates accordingly.
+
+### Gates elided in auto mode
+
+- **Phase 3 — Design review.** Auto-approved when Phase 2 produces no user-visible behaviour change OR the user has already approved the broader direction in their task prompt. Material UX surfaces still escalate (see Forced-interactive triggers).
+- **Iteration-protocol intermediate-batch user confirmations.** Iterations still run as 3–5 min stoppable batches for observability and recoverability, but the orchestrator does NOT pause for review between batches. The user may interrupt at any time; the next batch boundary is the safe stop.
+- **Per-step "stop and confirm" pauses inside engineers.** Engineers proceed to the next sub-task once their iteration's intermediate state is recorded.
+
+### Gates still respected in auto mode
+
+- **Phase 7 — SA review.** Runs as normal. It is automated; no user interaction is required.
+- **Destructive / external actions** (per the "Executing actions with care" guidance in project-instruction files). Even in auto mode, do not push to shared branches, drop or downgrade dependencies, modify shared infrastructure, send messages, or contact external services without explicit consent. The default delivery handoff does NOT push.
+- **Full regression remains opt-in** (per § Phase 5 Scope). Change-scoped tests run by default. Auto mode does NOT request full regression. The delivery report records that full regression was not run and that the user may request it before accept.
+- **Phase 8 user-approval invariant.** Preserved as the single delivery handoff at the end.
+
+### Forced-interactive triggers — auto mode falls back to interactive when
+
+| Trigger | Action |
+|---|---|
+| Phase 2 surfaces a design choice with material user-visible impact (new screen, changed wire shape that adopters depend on, new external dependency, NFR-affecting trade-off) | Pause; surface Phase 2 artefacts to the user per Phase 3; resume on approval. |
+| Phase 6 fails to resolve the same defect after 2 iteration batches | Pause; surface defect, attempted fixes, and proposed next step. |
+| A cross-domain integration cycle is required (per § Cross-domain bugs) | Pause; surface the integration scope and dispatch plan. |
+| A test oracle is found to be wrong (per § Test oracles can be wrong) | Pause; surface observed vs asserted divergence and oracle-tightening proposal. |
+| Token-budget consumed exceeds 1.5× the Phase 4/5 estimate OR wall-clock exceeds 2× the estimate | Pause; surface burn rate and request continue-or-stop. |
+| Any planned action enters the "destructive / external" set above | Pause; surface action + reason + alternatives. |
+
+When triggered, `project-manager` halts dispatch, presents a short interactive-fallback report, and resumes auto mode only on explicit user direction.
+
+### Delivery handoff (replaces Phase 8 in auto mode)
+
+When the lifecycle completes:
+
+- Working tree contains all changes. **Nothing is committed yet; nothing is pushed.**
+- `project-manager` produces a **delivery report**:
+  - TODO line(s) addressed.
+  - Phase 2 / 4 / 5 artefact deltas summarized (files touched, contracts changed).
+  - Change-scoped test results (pass/fail per suite, manual-smoke note).
+  - SA review sign-off.
+  - "Full regression: not run (auto mode). Request before accept if desired."
+  - Any forced-interactive escalations that occurred during the run.
+  - Suggested commit message(s) per the project's commit convention from `local/bindings.md`.
+- `project-manager` presents three actions:
+  1. **Accept** — `project-manager` commits per project convention. Push only if the user explicitly says push (otherwise commits stay local). On accept, transition the TODO `☐` → `☒`.
+  2. **Feedback** — user supplies remarks; `project-manager` loops back to the relevant earlier phase (typically Phase 6, occasionally Phase 4 or Phase 2 if the remark is structural) and resumes auto mode toward a fresh delivery handoff.
+  3. **Reject** — `project-manager` rolls the working tree back to pre-task state. User may re-prompt with adjustments.
+- Auto mode NEVER commits, pushes, or transitions the TODO without the user's explicit accept at this gate.
 
 ## Engineering principles — apply across all roles
 

@@ -199,6 +199,7 @@ Role names: ship current ones as canonical (`frontend-engineer`, ...) with gener
 | D9 | Role names | **Hybrid** — keep current names as canonical; generic aliases via front-matter (`client-engineer`, `service-engineer`, ...). |
 | D10 | Custom-role extension | **Both** — pre-built `extras/` library + free-form authoring under `local/roles/`. |
 | D11 | Public framework name | **`engineering-team`** |
+| D12 | Automatic mode (added 2026-05-17) | **Per-task opt-in.** The user may run a task end-to-end without per-phase gates by prefixing it with `auto:` (or `project-manager` may propose auto mode for low-risk tasks; user must say yes). Elides Phase 3 design review (when no UX impact), iteration intermediate-batch confirmations, and engineer "stop and confirm" pauses. Falls back to interactive on forced-interactive triggers (material UX change, unresolved defect after 2 iterations, cross-domain cycle, wrong test oracle, budget/time overruns, destructive/external actions). Replaces Phase 8 with a **delivery handoff**: working-tree changes prepared but not committed, delivery report produced, user picks Accept (commit per convention; push only on explicit ask) / Feedback (loop to relevant phase) / Reject (revert working tree). The Phase 8 user-approval invariant is preserved as that single final gate. |
 
 ---
 
