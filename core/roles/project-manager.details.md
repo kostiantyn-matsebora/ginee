@@ -194,3 +194,53 @@ Quick triggers → workflows:
 | Phase transition on issue-sourced task | `core/github-integration.md § Inbound — pick up an issue` (Comment cadence table) |
 
 Repo discovery — origin inference first, `local/framework.config.yaml § github.repo` overrides. Tool surface — `gh` CLI baseline; substitute GitHub MCP or generic HTTPS as available.
+
+## Delivery modes
+
+Full procedure: **`core/delivery-modes.md`**. Kernel summary lives in `project-manager.md § Delivery mode — resolve before Phase 4`.
+
+### Phase 3 — resolve + report the mode
+
+Step 1 of every Phase 3 design review:
+
+1. **Parse the task description** for prefix tokens (`branch:` / `wt:` / `commit:`). Strip the prefix from the working task title; record the mode.
+2. **No prefix** → read `local/framework.config.yaml § delivery.default-mode` if present.
+3. **No config either** → apply the framework default:
+
+   | Source | Default |
+   |---|---|
+   | GitHub issue / TODO line | Mode 1 (`branch`) |
+   | Freeform user instruction | Mode 2 (`wt`) |
+
+4. **Report at Phase 3** with one of these patterns:
+
+   - Resolved via prefix: `Delivery mode: branch+PR (per "branch:" prefix). Continuing.`
+   - Resolved via config: `Delivery mode: branch+PR (per delivery.default-mode in framework.config.yaml). Override? Reply branch: / wt: / commit:.`
+   - Unresolved (no prefix, no config, freeform): ask the user to pick Mode 1 / 2 / 3 — wait for explicit answer before Phase 4.
+   - Framework default applied (issue/TODO + no config): `Delivery mode: branch+PR (framework default for issue-sourced tasks). Override? Reply branch: / wt: / commit:.`
+
+### Per-mode dispatch checklist
+
+**Mode 1 (branch + PR):**
+
+- Phase 4 start: compute slug. For issue-sourced tasks, use `gh issue develop <N> --name <slug> --checkout` (or GraphQL `createLinkedBranch`) to create the branch on origin + link it to the issue. For TODO / freeform, use `git checkout -b <slug>`. Confirm to user.
+- Phase 4 per batch: standard commits on the branch.
+- Phase 8: `git push -u origin <branch>` (no-op if `gh issue develop` already pushed) → `gh pr create` (or MCP) with body from `core/templates/pr-description.md` + `Closes #<N>` (issue-sourced).
+
+**Mode 2 (working-tree only):**
+
+- Phase 4 start: no branch switch.
+- Phase 4 per batch: no `git add` / `git commit` / `git push`.
+- Phase 8: `git status` + `git diff --stat` surfaced; user picks keep / discard / escalate.
+
+**Mode 3 (commit-no-push):**
+
+- Phase 4 start: stay on current branch.
+- Phase 4 per batch: standard commits.
+- Phase 8: `git log --oneline -<N>` surfaced; user pushes manually.
+
+### Mode-discipline forbiddens
+
+- Never act outside the resolved mode (commits in Mode 2, pushes in Mode 3, branch switches in Mode 2/3).
+- Never auto-pick Mode 3 on `main` / `master` / `trunk` when the project has multiple contributors — recommend Mode 1.
+- Never silently re-resolve mid-task. If circumstances change, stop and ask.

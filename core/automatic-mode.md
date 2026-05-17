@@ -70,26 +70,33 @@ On any trigger: `project-manager` halts dispatch, presents a short interactive-f
 
 ## Delivery handoff (replaces Phase 8 in auto mode)
 
-- **Working-tree state at handoff.**
-  - All changes present.
-  - **Nothing committed yet; nothing pushed.**
+- **Working-tree / branch state at handoff** — depends on the resolved delivery mode (per `core/delivery-modes.md`):
+
+  | Resolved mode | State at handoff |
+  |---|---|
+  | Mode 1 (branch + PR) | Commits already on `<branch>`; branch NOT yet pushed. |
+  | Mode 2 (wt) — **auto-mode framework default** | All changes in working tree; nothing committed. |
+  | Mode 3 (commit-no-push) | Commits already on current branch; nothing pushed. |
+
+- **Auto-mode default = Mode 2 (`wt`).** Aligns with the "nothing committed yet" invariant. Adopter can override via `local/framework.config.yaml § delivery.default-mode` or per-task prefix.
 - `project-manager` produces a **delivery report**:
-  - TODO line(s) addressed.
+  - TODO line(s) / issue / freeform task addressed.
   - Phase 2 / 4 / 5 artefact deltas (files touched, contracts changed).
   - Change-scoped test results (pass/fail per suite, manual-smoke note).
   - SA review sign-off.
   - "Full regression: not run (auto mode). Request before accept if desired."
   - Any forced-interactive escalations during the run.
-  - Suggested commit message(s) per project's commit convention from `local/bindings.md`.
+  - Resolved delivery mode + per-mode state (commit list / working-tree diff / branch name).
+  - Suggested commit message(s) per project's commit convention from `local/bindings.md` (Mode 2 only — already committed for Modes 1 and 3).
 - `project-manager` presents three actions:
 
-  | Action | Effect |
+  | Action | Effect (branches by resolved mode) |
   |---|---|
-  | **Accept** | Commit per project convention. Push only if user explicitly says push. Transition TODO `☐` → `☒`. |
+  | **Accept** | Mode 1 → push branch + open PR per `core/templates/pr-description.md` (+ `Closes #<N>` for issue-sourced). Mode 2 → commit per suggested message; push only if user says push. Mode 3 → push current branch. Transition TODO `☐` → `☒` / close issue per task source. |
   | **Feedback** | User supplies remarks; loop back to the relevant earlier phase (typically Phase 6); resume auto mode toward a fresh delivery handoff. |
-  | **Reject** | Roll working tree back to pre-task state. User may re-prompt with adjustments. |
+  | **Reject** | Roll back per mode — Mode 1: delete branch + revert; Mode 2: `git checkout -- .`; Mode 3: `git reset --hard HEAD~<N>`. User may re-prompt with adjustments. |
 
-- **Invariant.** Auto mode NEVER commits, pushes, or transitions the TODO without the user's explicit Accept at this gate.
+- **Invariant.** Auto mode NEVER pushes or transitions task state without the user's explicit Accept at this gate. Mode 2 also never commits without Accept.
 
 ## Orchestrator duties (project-manager)
 

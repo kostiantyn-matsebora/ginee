@@ -121,6 +121,23 @@ test-runners:
 #       source-glob: ops/runbooks/*.md
 #       template: novel                   # ai-engineer authors a new template
 
+# --- Delivery modes (D17) ---
+# Adopter-wide default for how PM lands task results. Per-task prefix
+# (branch: / wt: / commit:) or Phase-3 user answer overrides. Full
+# spec: core/delivery-modes.md.
+#
+# default-mode values:
+#   branch   — Mode 1: feature branch + PR (recommended for multi-dev
+#              repos; default for issue/TODO-sourced tasks if this key
+#              is unset).
+#   wt       — Mode 2: working-tree only; no commits.
+#   commit   — Mode 3: commit-no-push on current branch.
+#
+# Commented out by default → framework defaults apply (branch for
+# issue/TODO-sourced; wt for freeform).
+# delivery:
+#   default-mode: branch
+
 # --- GitHub integration (D14) ---
 # Lets project-manager pick up GitHub issues as a task source alongside
 # TODO files + direct instructions, file new issues from user requests,

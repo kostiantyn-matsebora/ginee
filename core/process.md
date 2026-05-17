@@ -185,12 +185,18 @@ Bindings may NOT override generic process.
   - "Yes — mark complete" → see Acceptance below.
   - "No — needs more work" → loop back to Phase 6 with feedback.
 - **Acceptance.**
-  - TODO line `☐` → `☒`.
+  - TODO line `☐` → `☒` (TODO-sourced).
+  - Issue closed + final comment (GitHub-issue-sourced; per `core/github-integration.md`).
   - Project-progress refresh (if used).
-  - Commit only when the user explicitly asks.
+  - **Delivery finalize** per the resolved delivery mode — `core/delivery-modes.md`:
+    - Mode 1 (branch + PR) → push branch + open PR per `core/templates/pr-description.md`.
+    - Mode 2 (working-tree only) → surface diff; user commits / discards manually.
+    - Mode 3 (commit-no-push) → surface commit list; user pushes manually.
+  - Never commit / push outside the resolved mode (the framework's "commit only when the user explicitly asks" invariant is realized via mode selection at Phase 3, not silent commits).
 - **In automatic mode.** Realized as the **delivery handoff** per `core/automatic-mode.md § Delivery handoff`.
   - User-approval invariant preserved: single explicit accept.
   - Accept / Feedback / Reject replace yes/no.
+  - Accept's concrete action depends on resolved mode (see `core/delivery-modes.md § Auto-mode integration`).
 - **Post-acceptance doc-optimization hook.** If the task touched any documentation (project-instruction files, architecture docs, role definitions, ADRs, CRs, READMEs):
   - Orchestrator MUST dispatch `ai-engineer` to run `core/iteration-protocol.md` scoped to the doc diff.
   - Polish step, not a gate.
@@ -325,6 +331,17 @@ Default short tasks do not load these specs.
 - Specialist needs to post phase-transition progress on a tracking issue mid-task.
 
 Default tasks not sourced from a GitHub issue (TODO files, direct instructions) do not load this file.
+
+### Delivery modes — branch+PR / working-tree / commit-no-push
+
+Every task resolves to one of three delivery modes — **Mode 1 (feature branch + PR)** / **Mode 2 (working-tree only)** / **Mode 3 (commit-no-push)** — picked via per-task prefix (`branch:` / `wt:` / `commit:`), Phase-3 user answer, or `local/framework.config.yaml § delivery.default-mode`. Mode is resolved before Phase 4 and honoured through Phase 8 finalize. Full spec — precedence, per-mode procedure, auto-mode integration, forbidden actions: **`core/delivery-modes.md`**.
+
+**Load triggers:**
+
+- `project-manager` is about to dispatch a task and needs to resolve / propose the mode.
+- A specialist enters Phase 4 and needs to know the commit cadence.
+- `project-manager` is at Phase 8 finalize.
+- Auto-mode delivery-handoff (D12) Accept action fires.
 
 ### Strict-domain rule — no specialist works outside its domain
 
