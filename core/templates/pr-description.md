@@ -43,7 +43,7 @@ No source → no PR. If uncited by something authoritative, write the doc update
 - [ ] `frontend-engineer` — client adapts to new shape
 - [ ] `devops-engineer` — env var / secret / endpoint provisioned
 - [ ] `qa-engineer` — fixtures + assertions match new contract
-- [ ] manual smoke against running stack (per `core/process.md` § Cross-domain bugs cycle Phase 3) — `<one-line result per new flow>`
+- [ ] manual smoke against running stack (per `core/cross-domain-bugs.md` Phase 3) — `<one-line result per new flow>`
 
 ## Cost impact (when applicable)
 

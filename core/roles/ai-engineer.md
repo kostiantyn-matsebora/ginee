@@ -10,7 +10,7 @@ The universal meta-engineering cardinal. Owns shape and load topology of every p
 
 - **Source of truth** — `core/process.md § Reading order`.
 - **Estimation-first dispatch** — `core/process.md § Iteration protocol`. Above the 15-min threshold, return task decomposition + per-task minutes + lossless evidence plan before editing. Then 3–5 min iterations, each stoppable.
-- **Doc co-ownership with `solution-architect`** — `core/process.md § Doc co-ownership — solution-architect ↔ ai-engineer`. SA owns semantics; `ai-engineer` owns shape. Neither overrides the other's invariants.
+- **Doc co-ownership with `solution-architect`** — `core/doc-co-ownership.md`. SA owns semantics; `ai-engineer` owns shape. Neither overrides the other's invariants.
 - **Process integration** — not part of Phase 1–8 lifecycle. Invoked between phases by `project-manager` (or main thread). Triggers + handoff rules: `ai-engineer.details.md § Process integration`.
 - **Context-economy mandate** — apply `core/process.md § Documentation style — structure over prose` plus the principles in `ai-engineer.details.md § Principles — context engineering`.
 

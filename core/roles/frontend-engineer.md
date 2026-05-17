@@ -39,7 +39,7 @@ Cross-references on mockup changes:
 | Geometric / interaction invariant touched (UX-responsiveness or other harness-encoded invariant) | Run the mockup-visual harness; include PASS/FAIL table in final report. **All-green is the definition of done.** A failing assertion is not "the test is wrong"; it is the bug. |
 | New mockup surface (new view, layout, or invariant) needs new harness assertion | Flag for `qa-engineer` in final report. You do not edit the harness; `qa-engineer` does. |
 
-Strict-domain violation cautionary case (what happens when `solution-architect` edits mockup code directly): `core/process.md` § Cross-domain bugs cycle. Each domain in its lane.
+Strict-domain violation cautionary case (what happens when `solution-architect` edits mockup code directly): `core/cross-domain-bugs.md`. Each domain in its lane.
 
 ## Implement the documented UI states exactly
 

@@ -103,7 +103,7 @@ Drive from the architecture-doc NFR table. Common patterns:
 
 You own the harness — assertions, geometric oracles, runner scripts. You do NOT own the mockup itself; `frontend-engineer` does.
 
-Collaboration pattern: see `core/process.md` § Cross-domain bugs cycle. Your role in the cycle:
+Collaboration pattern: see `core/cross-domain-bugs.md`. Your role in the cycle:
 
 - `solution-architect` defines an invariant in the architecture doc.
 - **You encode it as a harness assertion** under the project's mockup-visual directory. Your assertion is the executable form of the invariant; it must fail loudly when violated and pass only when it holds.

@@ -50,7 +50,7 @@ Binding. Phases are named and ordered; specialists within a phase run in paralle
 ### Phase 3 — Design review
 - **Goal.** Synchronous gate: explicit user approval of Phase 2 design before implementation effort is spent. Orchestrator MUST present Phase 2 artefacts (architecture-doc diff, mockup link, API contract, work-breakdown). Remarks loop back to Phase 2. Distinct from Phase 8 (closes TODO line) and the TODO-workflow checkpoint (sits before Phase 1).
 - **Acceptance.** Explicit user approval. Without it, Phase 4 does not start.
-- **In automatic mode.** Elided when Phase 2 produces no user-visible behaviour change. Forced back to interactive per § Automatic mode → Forced-interactive triggers.
+- **In automatic mode.** Elided when Phase 2 produces no user-visible behaviour change. Forced back to interactive per `core/automatic-mode.md § Forced-interactive triggers`.
 
 ### Phase 4 — Implementation
 - **Goal.** Working code mirroring approved Phase 2 contracts. Each engineering role implements its part in its owned paths (per `local/bindings.md`); Phase 5 overlaps once Phase 3 passes; parallel where independent. Runs under `### Iteration protocol`.
@@ -72,7 +72,7 @@ Binding. Phases are named and ordered; specialists within a phase run in paralle
 ### Phase 8 — User approval
 - **Goal.** User confirms delivered work satisfies the TODO line. Orchestrator surfaces per the Task model; if manual smoke wasn't run (e.g. headless), asks the user to run it. User picks "Yes — mark complete" or "No — needs more work" (loops back to Phase 6 with feedback).
 - **Acceptance.** User selects "Yes — mark complete". On accept: TODO line `☐` → `☒`, project-progress refresh (if used), commit only when the user explicitly asks.
-- **In automatic mode.** Realized as the **delivery handoff** (§ Automatic mode → Delivery handoff). User-approval invariant preserved (single explicit accept); three actions — Accept / Feedback / Reject — replace yes/no.
+- **In automatic mode.** Realized as the **delivery handoff** per `core/automatic-mode.md § Delivery handoff`. User-approval invariant preserved (single explicit accept); three actions — Accept / Feedback / Reject — replace yes/no.
 - **Post-acceptance doc optimization hook.** If the task touched any documentation (project-instruction files, architecture docs, role definitions, ADRs, CRs, READMEs), orchestrator MUST dispatch `ai-engineer` to run `### Iteration protocol` scoped to the doc diff. Polish step, not a gate. If first proposal batch returns "no productive proposals", hook completes immediately. No user permission required; user sees the cumulative optimization diff in the final report and may accept or revert as a unit.
 
 ### Cross-phase rule
@@ -81,60 +81,11 @@ Artefact classes do not cross phases. A change needing both design and code runs
 
 ### Relation to the cross-domain bugs cycle
 
-The four-phase model in § Cross-domain bugs is the specific instantiation of this lifecycle for bugs cutting across two or more domains. Its Phases 1–4 map onto lifecycle Phases 2 (contract change), 4 (domain implementations), 5–6 (integration + bug fixing), and 7 (compliance review). The design-review gate (lifecycle Phase 3) still applies when the bug requires user-visible behaviour change.
+The four-phase model in `core/cross-domain-bugs.md` is the specific instantiation of this lifecycle for bugs cutting across two or more domains. Its Phases 1–4 map onto lifecycle Phases 2 (contract change), 4 (domain implementations), 5–6 (integration + bug fixing), and 7 (compliance review). The design-review gate (lifecycle Phase 3) still applies when the bug requires user-visible behaviour change.
 
 ## Automatic mode
 
-For low-risk or self-contained tasks, the lifecycle runs end-to-end without per-phase user gates, presenting only a single **delivery handoff** at the end. Phase 8 user-approval invariant preserved as that one final gate; not waived.
-
-### Activation
-
-- **Explicit, per-task only.** Never session-wide; never inherited across tasks.
-- **Triggers.** User prefixes the task with `auto:` or addresses `project-manager` with `auto`. Alternatively, `project-manager` may **propose** auto mode for a task it judges low-risk (docs-only edit, isolated bug fix in a single owned path, mechanical refactor) — user must reply "yes, auto" or equivalent. Orchestrator never enters auto mode silently.
-- Recorded in orchestrator's plan for that task.
-
-### Gates elided in auto mode
-
-- **Phase 3 — Design review.** Auto-approved when Phase 2 produces no user-visible behaviour change OR the user already approved the broader direction. Material UX surfaces still escalate (see Forced-interactive triggers).
-- **Iteration-protocol intermediate-batch user confirmations.** Iterations still run as 3–5 min stoppable batches, but orchestrator does NOT pause between batches. User may interrupt at any time; next batch boundary is the safe stop.
-- **Per-step "stop and confirm" pauses inside engineers.** Engineers proceed once the iteration's intermediate state is recorded.
-
-### Gates still respected in auto mode
-
-- **Phase 7 — SA review.** Runs as normal. Automated; no user interaction required.
-- **Destructive / external actions** (per "Executing actions with care" guidance in project-instruction files). Even in auto mode, do not push to shared branches, drop or downgrade dependencies, modify shared infrastructure, send messages, or contact external services without explicit consent. Default delivery handoff does NOT push.
-- **Full regression remains opt-in** (per § Phase 5 Scope). Auto mode does NOT request it. Delivery report records that full regression was not run and that the user may request it before accept.
-- **Phase 8 user-approval invariant.** Preserved as the single delivery handoff at the end.
-
-### Forced-interactive triggers — auto mode falls back to interactive when
-
-| Trigger | Action |
-|---|---|
-| Phase 2 surfaces a design choice with material user-visible impact (new screen, changed wire shape adopters depend on, new external dependency, NFR-affecting trade-off) | Pause; surface Phase 2 artefacts per Phase 3; resume on approval. |
-| Phase 6 fails to resolve the same defect after 2 iteration batches | Pause; surface defect, attempted fixes, proposed next step. |
-| A cross-domain integration cycle is required (per § Cross-domain bugs) | Pause; surface integration scope and dispatch plan. |
-| A test oracle is found to be wrong (per § Test oracles can be wrong) | Pause; surface observed vs asserted divergence and oracle-tightening proposal. |
-| Token-budget consumed exceeds 1.5× the Phase 4/5 estimate OR wall-clock exceeds 2× the estimate | Pause; surface burn rate; request continue-or-stop. |
-| Any planned action enters the "destructive / external" set above | Pause; surface action + reason + alternatives. |
-
-On any trigger: `project-manager` halts dispatch, presents a short interactive-fallback report, resumes auto mode only on explicit user direction.
-
-### Delivery handoff (replaces Phase 8 in auto mode)
-
-- Working tree contains all changes. **Nothing committed yet; nothing pushed.**
-- `project-manager` produces a **delivery report**:
-  - TODO line(s) addressed.
-  - Phase 2 / 4 / 5 artefact deltas summarized (files touched, contracts changed).
-  - Change-scoped test results (pass/fail per suite, manual-smoke note).
-  - SA review sign-off.
-  - "Full regression: not run (auto mode). Request before accept if desired."
-  - Any forced-interactive escalations during the run.
-  - Suggested commit message(s) per project's commit convention from `local/bindings.md`.
-- `project-manager` presents three actions:
-  1. **Accept** — `project-manager` commits per project convention. Push only if user explicitly says push. On accept, transition TODO `☐` → `☒`.
-  2. **Feedback** — user supplies remarks; `project-manager` loops back to the relevant earlier phase (typically Phase 6) and resumes auto mode toward a fresh delivery handoff.
-  3. **Reject** — `project-manager` rolls the working tree back to pre-task state. User may re-prompt with adjustments.
-- Auto mode NEVER commits, pushes, or transitions the TODO without the user's explicit accept at this gate.
+Tasks prefixed `auto:` (or `project-manager`-proposed and user-accepted) run end-to-end without per-phase user gates, presenting only a final delivery handoff. Default tasks are interactive. **Full definition + activation triggers + gates elided/respected + forced-interactive triggers + delivery handoff procedure: `core/automatic-mode.md`** — `project-manager` loads this file on activation. Phase 8 user-approval invariant preserved as the single delivery-handoff gate.
 
 ## Engineering principles — apply across all roles
 
@@ -190,23 +141,7 @@ Project-specific forbidden role-crossings table lives in `local/bindings.md` und
 
 ### Doc co-ownership — solution-architect ↔ ai-engineer
 
-Documentation (project-instruction files, this file, ADRs, READMEs, role definitions, skills) is co-owned: `solution-architect` owns **semantics**; `ai-engineer` owns **shape and load topology**. Neither overrides the other's invariants. Runs under `### Iteration protocol` below.
-
-| Scenario | Routing |
-|---|---|
-| New rule / invariant / routing entry / governance decision → write content | `solution-architect`. `ai-engineer` may run a structural pass after. |
-| Existing doc grows past size threshold or exhibits duplication | `ai-engineer` compacts / splits. SA post-reviews to verify no rule lost. |
-| Cross-references break from a split or move | `ai-engineer` updates references; SA verifies semantic continuity. |
-| Doc edit needed AND scope is unclear | Pair-dispatch in one phase — SA edits content; `ai-engineer` edits shape. SA first. |
-| Disagreement (SA wants prose for clarity; `ai-engineer` wants table for compactness) | SA wins on semantics; `ai-engineer` may propose alternative structure that preserves clarity. |
-
-**Hard rule — `ai-engineer`'s edits are lossless.** Before completing any optimization pass, `ai-engineer` must spot-check that every rule, invariant, routing entry, and gate in the diff appears (verbatim or semantically identical) in the new structure. If any cannot be proved → revert and re-plan.
-
-**Dispatch trigger.** `ai-engineer` is not part of the standard Phase 1–8 lifecycle. Invoked between phases when:
-- User explicitly targets AI-asset or doc optimization.
-- SA flags "this doc is getting unwieldy" in their final report.
-- Periodic maintenance (release cadence, post-large-feature cleanup).
-- Phase 8 post-acceptance doc-optimization hook fires (see Phase 8).
+`solution-architect` owns documentation semantics; `ai-engineer` owns shape and load topology. Neither overrides the other's invariants. Runs under `### Iteration protocol` below. **Full routing table + lossless edit rule + dispatch triggers: `core/doc-co-ownership.md`** — load when an SA / ai-engineer collaboration is required (new rule landing, doc grows past threshold, cross-reference repair, structure dispute).
 
 ### Iteration protocol — propose → review → implement
 
@@ -262,25 +197,7 @@ When the user gives a timeframe (e.g., "spend 30 min on X", "do as much as you c
 
 ### Cross-domain bugs — integration + compliance cycle
 
-When a bug spans two or more domains, work follows a four-phase model — parallel where independent, sequential only where a real dependency exists.
-
-**Phase 1 — contract change (sequential).** If the bug requires a contract change (architecture invariant, requirement addition, wire shape, env var), `solution-architect` lands the doc change first. Engineers cannot start their parts until the contract wording exists.
-
-**Phase 2 — domain implementations (parallel by default).** Each engineering domain implements its own part independently. Orchestrator MUST dispatch all independent domain parts in a single message. Domain parts are independent when (a) domain A's deliverable is not required to compile, run, or pass tests in domain B's source tree, and (b) both domains can reference the Phase 1 contract wording without needing each other's code. Sequential is correct only when one domain's output is a literal input to the next (e.g. a generated type the next specialist imports).
-
-**Phase 3 — integration verification (sequential, at the join point).** The specialist closest to the user-facing surface (mockup-owning role for UI bugs, service-owning role for API bugs, devops for deploy bugs) runs the shared oracle end-to-end and confirms all Phase 2 deliverables compose correctly.
-
-**Automated tests are necessary but not sufficient.** For any change adding or modifying user-facing behaviour, Phase 3 also requires a **manual smoke** by the integrator **against the running solution** (project's local-dev startup command) — NOT against the mockup or other design artefact:
-1. Wipe and re-seed the local stack before opening the user-facing surface.
-2. Exercise every NEW user-facing flow in real conditions — not "the page renders", but "the feature does the thing".
-3. Compare running system vs. mockup or architecture doc (mockup = oracle; running system = SUT). If a feature looks wrong but tests say "PASS", route to `qa-engineer` to tighten assertions — NOT call it green.
-4. Record manual smoke results in the Phase 3 report (one line per new feature).
-
-If integrator cannot run the user-facing surface (e.g. headless), state so explicitly. Do not claim manual smoke as PASS without doing it. If integration fails (automated OR manual), return to the specific Phase 2 domain that broke — not a full rerun.
-
-**Phase 4 — compliance review (sequential, final).** `solution-architect` reviews against architecture invariants and the mockup contract. Sign-off, no edits. If invariants violated, returns to Phase 2. SA's review must verify the integrator's manual-smoke report was actually written (empty section = REJECT, return to Phase 3).
-
-**Sign-off in PR description.** Each domain notes which part it owned; integrator notes verification command/output; `solution-architect` notes which requirement / section the result satisfies.
+When a bug spans 2+ domains, work follows a four-phase model (contract change → parallel domain implementations → integration verification with manual smoke → compliance review). **Full procedure + manual-smoke checklist + anti-pattern rules: `core/cross-domain-bugs.md`** — load when a cross-domain bug or task is detected. The cycle's Phases 1–4 map onto lifecycle Phases 2 / 4 / 5–6 / 7.
 
 ### Cross-agent handoff — diagnose ≠ fix
 

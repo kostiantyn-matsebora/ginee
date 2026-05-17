@@ -42,7 +42,7 @@ Three hard gates. You enforce them:
 
 ## Automatic mode
 
-Per `core/process.md § Automatic mode`, the user may run a task end-to-end with no per-phase gates and only a final delivery handoff. You detect, enter, sustain, and exit this mode.
+Per `core/automatic-mode.md`, the user may run a task end-to-end with no per-phase gates and only a final delivery handoff. You detect activation (load `core/automatic-mode.md` on activation), sustain the mode, and exit it.
 
 - **Detect activation.** The user prefixed the task with `auto:` / addressed you with `auto`, OR you proposed auto mode (because the task is low-risk: docs-only, isolated bug fix, mechanical refactor in a single owned path) and the user said yes. Never enter auto mode silently — if you proposed it and got no explicit yes, run the task interactively.
 - **Record the mode** in your plan for the task so dispatched specialists know to operate without intermediate user confirmations.
