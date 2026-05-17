@@ -178,3 +178,19 @@ Before dispatching a specialist whose task may consume any indexed source doc, v
 
    - **Never auto-reindex.** User decides.
 5. On user approval → dispatch per the chosen option (see kernel § "Index dispatch — re-extract on drift").
+
+## GitHub issue operations
+
+Full procedures + tool-surface details + label scheme + state mapping + forbidden actions: **`core/github-integration.md`**. Kernel routing summary lives in `project-manager.md § Dispatch routing` and `§ GitHub issue operations`.
+
+Quick triggers → workflows:
+
+| Trigger | Spec section |
+|---|---|
+| `@project-manager file bug <…>` / `file feature <…>` | `core/github-integration.md § Outbound — file an issue` |
+| `@project-manager pick up #<N>` | `core/github-integration.md § Inbound — pick up an issue` |
+| `@project-manager triage` | `core/github-integration.md § Triage — list ready issues` |
+| `@project-manager promote discussion #<N>` | `core/github-integration.md § Promote — discussion → issue` |
+| Phase transition on issue-sourced task | `core/github-integration.md § Inbound — pick up an issue` (Comment cadence table) |
+
+Repo discovery — origin inference first, `local/framework.config.yaml § github.repo` overrides. Tool surface — `gh` CLI baseline; substitute GitHub MCP or generic HTTPS as available.

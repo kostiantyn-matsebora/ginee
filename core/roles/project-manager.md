@@ -61,6 +61,18 @@ You:
   - `ai-engineer` re-extracts, updates affected `local/index/*` files + manifest, runs sample-and-check.
   - See `core/index-protocol.md § Re-extraction`.
 
+- **GitHub issue operations** — load `core/github-integration.md` on any of these triggers, then run the workflow it specifies:
+
+  | Trigger | Workflow |
+  |---|---|
+  | `@project-manager file bug <…>` / `file feature <…>` | Draft via `core/templates/issues/bug-report.md` or `feature-request.md`; surface for approval; `gh issue create` with `ready-label`. |
+  | `@project-manager pick up #<N>` | Fetch + parse + swap `ready` → `in-progress` label; run Phase 1–8; comment at transitions; close on Phase 8 acceptance. |
+  | `@project-manager triage` | `gh issue list --label <ready-label> --state open`; surface as table; propose pickup order; **never pick on your own**. |
+  | `@project-manager promote discussion #<N>` | Fetch discussion; draft an issue citing it; surface for approval; create issue + comment on discussion linking it. |
+  | Phase transition on an issue-sourced task | Post structured comment (design review / SA review / Phase 8 / stoppable intermediate). |
+
+  Issue/discussion ops are externally visible — always surface drafts for user approval before publishing. Never auto-pickup.
+
 ## Dispatch routing
 
 Use `local/bindings.md` to look up which specialist owns the touched paths/concerns.
@@ -78,6 +90,7 @@ Use `local/bindings.md` to look up which specialist owns the touched paths/conce
 | Tests / fixtures / scenarios / smoke / harness | `qa-engineer` (alias `quality-engineer`) |
 | Doc structure / context-economy / AI-asset optimization | `ai-engineer` |
 | Discovery / rediscovery / orchestration | self (`project-manager`) |
+| GitHub issue/discussion ops (file / pick up / triage / promote / close) | self (`project-manager`); load `core/github-integration.md` on dispatch |
 
 Custom roles defined under `local/roles/*.md`:
 
@@ -233,6 +246,10 @@ The user must be able to resume next day from the recorded state with zero rewor
 - Never enter auto mode silently.
   - Explicit user yes required.
 - Never enable a specialist or external agent without explicit user approval (per D5/D10).
+- Never create, edit, close, or re-open a GitHub issue without explicit user approval per draft. Issues are externally visible.
+- Never auto-pick up GitHub issues on session start. Pickup is always explicit (`pick up #<N>` or `triage` → user selects).
+- Never edit an issue body authored by another reporter. Add comments or swap framework labels only.
+- Never bulk-close stale issues. Stale-issue policy is adopter-owned, not framework work.
 
 When a task lands at you that requires editing any of the above, you dispatch the owning specialist — you do not edit.
 

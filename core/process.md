@@ -311,6 +311,19 @@ Heavy project docs (architecture, mockup, ADRs, CRs, scenarios, plus any adopter
 
 Default short tasks do not load these specs.
 
+### GitHub integration — issues + discussions
+
+`project-manager` files, picks up, triages, and closes GitHub issues as a task source alongside TODO files and direct instructions; promotes discussions to issues on user request; threads phase progress as issue comments; links resulting PRs to issues via `Closes #N`. Full spec — tool surface (gh CLI / MCP / HTTPS), repo discovery (origin inference + override), label scheme, state mapping, outbound/inbound/triage/promote workflows, forbidden actions: **`core/github-integration.md`**.
+
+**Load triggers:**
+
+- `project-manager` dispatched to file an issue (`file bug` / `file feature`).
+- `project-manager` dispatched to pick up / triage an issue (`pick up #<N>` / `triage`).
+- `project-manager` dispatched to promote a discussion (`promote discussion #<N>`).
+- Specialist needs to post phase-transition progress on a tracking issue mid-task.
+
+Default tasks not sourced from a GitHub issue (TODO files, direct instructions) do not load this file.
+
 ### Strict-domain rule — no specialist works outside its domain
 
 - A bug in domain X is fixed by the engineer who owns X.
@@ -370,13 +383,14 @@ Default in-domain tasks do not load this file.
 
 ## Task model
 
-Phase 1–8 applies to any task. A task originates from one of three sources:
+Phase 1–8 applies to any task. A task originates from one of four sources:
 
 | Source | Scope | State mechanic |
 |---|---|---|
 | Repo-root `TODO` (file name per `local/framework.config.yaml` → `todo`) | Project-wide | Glyphs `☐` / `☒`; orchestrator updates the line on completion |
 | Nested `TODO` (e.g., `client/TODO`, `service/api/TODO`) | Component-scoped | Same glyph mechanic, scoped to that component file |
 | Direct user instruction | Ad hoc; scope inferred from the instruction | No `TODO` file; no glyph mechanic |
+| GitHub issue (per `local/framework.config.yaml § github.repo`) | Project-wide; routed via `## Affected area` field in issue body | Native `open`/`closed` + configurable labels (`engineering-team:ready` / `:in-progress` / `:blocked`); PM swaps labels per phase; closes on Phase 8 acceptance. Full spec: `core/github-integration.md`. |
 
 **TODO file rules.**
 
@@ -384,6 +398,13 @@ Phase 1–8 applies to any task. A task originates from one of three sources:
 - Glyphs:
   - `☐` = open.
   - `☒` = completed.
+
+**GitHub issue rules.**
+
+- Reporter-authored (user or anyone with repo access) — never auto-created without explicit user approval.
+- Pickup is always explicit (`@project-manager pick up #<N>` / `triage`). Never auto-picked on session start.
+- Issue body is reporter-owned; PM may add comments + swap framework labels but does not edit the body.
+- PR descriptions for issue-sourced tasks include `Closes #<N>` so GitHub auto-closes the issue on merge.
 
 ### Post-task check-in
 
