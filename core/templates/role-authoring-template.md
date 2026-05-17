@@ -33,7 +33,7 @@ aliases: [<generic-alias-1>, <generic-alias-2>]
 - `<doc 2>` — `<one-line why>`
 - `<mockup, when relevant>` — `<one-line why>`
 
-**Conflict resolution.** Per `core/process.md` § Coordination protocol AND `local/bindings.md` → "Source of truth" tie-breaker.
+**Conflict resolution.** Per `core/process.md` § Coordination protocol AND `local/bindings.md` → "Source-of-truth ownership" tie-breaker.
 
 ## Estimation-first dispatch
 

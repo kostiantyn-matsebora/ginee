@@ -33,7 +33,7 @@ Also read every task:
 | Topic | Reference |
 |---|---|
 | Reading order, conflict resolution, declarative-config rule | `core/process.md` § Reading order + § Configuration vs. data |
-| Tie-breaker (mockup wins for visuals/interactions; architecture doc wins for data/stack/infra) | `local/bindings.md` → "Source of truth" |
+| Tie-breaker (mockup wins for visuals/interactions; architecture doc wins for data/stack/infra) | `local/bindings.md` → "Source-of-truth ownership" |
 | Stack, repo structure, "Do not introduce" list, network topology specifics | `local/bindings.md` |
 | Domain elaboration (workspace layout, same-origin code, realtime client pattern, styling rules, build-step rule, declarative-config client specifics) | `core/roles/frontend-engineer.details.md` |
 

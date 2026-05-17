@@ -15,6 +15,8 @@ Default short tasks do not load this file.
 
 Adopter projects accumulate substantial knowledge across two source categories — **documentation** (architecture doc 30–50K, mockup 30–100K, ADRs / CRs / scenarios often 100K+ corpora) and **code / config** (`package.json`, `Dockerfile`, `docker-compose.yml`, `terraform/`, `.editorconfig`, lockfiles). Pulling raw sources into LLM context on every dispatch burns tokens before any work has started. The index replaces full-source reads with lightweight per-class summaries; roles read originals only when the index points to a fragment they need verbatim.
 
+`local/index/*` is the **only default read surface** for source-of-truth artefacts. `core/templates/bindings.md § Source-of-truth ownership` records who edits each raw source + where its verbatim text lives — it is a governance map, not a per-dispatch read list. Any framework surface that names raw `docs/**` or code/config paths as "read before any work" silently competes with this protocol and re-introduces the cost it exists to eliminate.
+
 ## Source types
 
 The protocol covers two source categories — same machinery (manifest + SHA-256 + recipes + lossless rule) for both:

@@ -32,7 +32,7 @@ Also read every task:
 | Topic | Reference |
 |---|---|
 | Reading order, conflict resolution | `core/process.md` § Reading order |
-| Tie-breaker (architecture doc wins for API/data; mockup wins for visual/interactive) | `local/bindings.md` → "Source of truth" |
+| Tie-breaker (architecture doc wins for API/data; mockup wins for visual/interactive) | `local/bindings.md` → "Source-of-truth ownership" |
 | Stack, runners, seed/cleanup paths, scenario directory layout | `local/bindings.md` |
 | Domain elaboration (zero-setup runner rules, test-data scripts, smoke checklist, NFR automation patterns, mockup-visual harness collaboration) | `core/roles/qa-engineer.details.md` |
 

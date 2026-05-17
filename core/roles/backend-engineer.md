@@ -31,7 +31,7 @@ Also read every task:
 | Topic | Reference |
 |---|---|
 | Reading order, conflict resolution, declarative-config rule | `core/process.md` § Reading order + § Configuration vs. data |
-| Tie-breaker (architecture doc wins for data/API/stack/infra) | `local/bindings.md` → "Source of truth" |
+| Tie-breaker (architecture doc wins for data/API/stack/infra) | `local/bindings.md` → "Source-of-truth ownership" |
 | Stack, repo structure, "Do not introduce" list, network topology specifics | `local/bindings.md` |
 | Domain elaboration (workspace layout, statelessness, real-time path, derivation, retention, declarative-config backend specifics) | `core/roles/backend-engineer.details.md` |
 
