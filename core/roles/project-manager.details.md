@@ -87,22 +87,30 @@ Steps:
    - `local/bindings.md` ← `core/templates/bindings.md`
    - `local/framework.config.yaml` ← `core/templates/framework.config.yaml`
 
-8b. **Enumerate doc classes + dispatch `ai-engineer` for index extraction.** Full spec: `core/index-protocol.md`.
+8b. **Enumerate index classes (doc + code) + dispatch `ai-engineer` for index extraction.** Full spec: `core/index-protocol.md`. Covers both categories — doc (D13) and code/config (D15) — under one `local/index/manifest.yaml`.
    1. Enumerate classes to index in this priority order:
-      1. **Adopter-declared** — `local/framework.config.yaml § index.classes` (highest priority; overrides auto-detection).
+      1. **Adopter-declared** — `local/framework.config.yaml § index.classes` (highest priority; overrides auto-detection). Each entry declares `category: doc | code` + source-glob + template.
       2. **Built-in matched by heuristics** — globs against the templates in `core/templates/index/`:
-         - architecture (`docs/architecture*.md`, `docs/sad*.md`)
-         - adr (`docs/adr/*.md`)
-         - cr (`docs/cr/*.md`)
-         - scenario (`docs/scenarios/*.md`, `tests/scenarios/*.md`)
-         - mockup (`docs/mockup*.html`, mockup directory)
-         - constraints, glossary, api-matrix, ui-states → derived from the architecture doc itself.
-      3. **Novel** — any unmatched doc directory or doc-class hint. List as `template: novel` for `ai-engineer`.
+         - **Doc category:**
+           - architecture (`docs/architecture*.md`, `docs/sad*.md`)
+           - adr (`docs/adr/*.md`)
+           - cr (`docs/cr/*.md`)
+           - scenario (`docs/scenarios/*.md`, `tests/scenarios/*.md`)
+           - mockup (`docs/mockup*.html`, mockup directory)
+           - constraints, glossary, api-matrix, ui-states → derived from the architecture doc itself.
+         - **Code category:**
+           - stack (`package.json`, `**/*.csproj`, `pyproject.toml`, `Cargo.toml`, `go.mod`, `pom.xml`, `*.gemspec`, lockfiles, `Dockerfile`, `**/Dockerfile`)
+           - topology (`docker-compose*.yml`, `k8s/**/*.yaml`, `helm/**/*.yaml`, `terraform/**/*.tf`, `pulumi/**/*.{ts,py,go}`, `infrastructure/**/*.bicep`)
+           - commands (`Makefile`, `package.json § scripts`, `**/package.json § scripts`, `justfile`, `pyproject.toml § tool.poe`, `local/framework.config.yaml § test-runners`)
+           - conventions (`.editorconfig`, `eslint.config.*`, `.prettierrc*`, `pyproject.toml § tool.{black,ruff}`, `.husky/`, `commitlint.config.*`)
+           - runtime-facts (`.env.example`, env-blocks in compose/k8s, declared env-var schemas)
+           - repo-map (repo walk — top-level dirs + per-dir READMEs)
+      3. **Novel** — any unmatched source the framework doesn't pre-recognize (custom CI workflow class, monorepo-specific tool config, unfamiliar IaC tool, doc class without a built-in recipe). List as `template: novel` with appropriate `category` for `ai-engineer`.
    2. Dispatch `ai-engineer` with the enumerated class list. `ai-engineer`:
-      - Applies built-in recipes for known templates.
+      - Applies built-in recipes for known templates (doc + code).
       - Authors new templates + inline recipes for novel classes.
       - Populates `local/index/*` files.
-      - Writes `local/index/manifest.yaml` (SHA-256 per source).
+      - Writes `local/index/manifest.yaml` (SHA-256 per source + `category: doc | code`).
       - Runs sample-and-check (5 random items per affected index file).
 
 9. **Report.**
@@ -160,7 +168,9 @@ Examples that should flag:
 
 Before dispatching a specialist whose task may consume any indexed source doc, verify the index isn't stale. Full spec: `core/index-protocol.md § Pre-dispatch staleness check`.
 
-1. **Identify candidate sources.** From `local/index/manifest.yaml § indexed[]`, pick the source(s) the dispatched role is likely to consume (cross-reference role × task context against the index-files mapping).
+1. **Identify candidate sources.** From `local/index/manifest.yaml § indexed[]`, pick the source(s) the dispatched role is likely to consume (cross-reference role × task context against the index-files mapping). Both categories are in scope:
+   - **Doc** drift relevant when dispatched role consumes design / governance / scenario surfaces (e.g. `solution-architect`, `qa-engineer` authoring against an FR).
+   - **Code** drift relevant when dispatched role consumes stack / topology / commands / conventions / runtime-facts (e.g. `devops-engineer` editing IaC, any engineer running tests / lint after a `package.json` change).
 2. **Compute current SHA-256:**
    - Bash: `sha256sum <file>` or `find <glob> -type f -exec sha256sum {} +`
    - PowerShell: `Get-FileHash -Algorithm SHA256 <file>`
