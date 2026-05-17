@@ -120,3 +120,18 @@ test-runners:
 #     - name: runbook
 #       source-glob: ops/runbooks/*.md
 #       template: novel                   # ai-engineer authors a new template
+
+# --- GitHub integration (D14) ---
+# Lets project-manager pick up GitHub issues as a task source alongside
+# TODO files + direct instructions, file new issues from user requests,
+# and promote discussions to issues. Full spec: core/github-integration.md.
+#
+# repo:
+#   - Defaults to inference from `git remote get-url origin`.
+#   - Uncomment + set when origin isn't the right target (forks, mirrors).
+# Labels are configurable; PM creates missing ones on first use (default color).
+github:
+  # repo: <owner>/<repo>
+  ready-label: engineering-team:ready
+  in-progress-label: engineering-team:in-progress
+  blocked-label: engineering-team:blocked
