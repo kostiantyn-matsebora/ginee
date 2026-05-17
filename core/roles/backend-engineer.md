@@ -27,16 +27,26 @@ Per `core/process.md` § Iteration protocol — for Phase 4/5/6 work above 15 mi
 
 ## Wire contract — obey the architecture doc exactly
 
-- Endpoints, status codes, payload shapes per the architecture doc's API-contract section.
-- Wire-format naming convention (`snake_case` / `camelCase` / `kebab-case`) per the architecture doc. Configure framework/serializer options so defaults do not silently diverge.
+- Match the architecture doc's API-contract section for:
+  - endpoints
+  - status codes
+  - payload shapes
+- Wire-format naming convention (`snake_case` / `camelCase` / `kebab-case`) per the architecture doc.
+  - Configure framework/serializer options so defaults do not silently diverge.
 - Every documented status code is a test case (handed off to `qa-engineer`).
 - Wire-compatibility breaks are flagged so client + downstream consumers update together.
 
 ## Statelessness invariant (when the architecture doc declares it)
 
 - No in-memory cache of business state between requests — every read hits source of truth.
-- No in-process realtime fan-out across instances — each replica subscribes to the broker and forwards to its own connected clients only.
-- No sticky sessions — realtime reconnects use resume tokens (`Last-Event-ID`, sequence offsets, change-stream tokens).
+- No in-process realtime fan-out across instances.
+  - Each replica subscribes to the broker.
+  - Each replica forwards to its own connected clients only.
+- No sticky sessions.
+  - Realtime reconnects use resume tokens, e.g.:
+    - `Last-Event-ID`
+    - sequence offsets
+    - change-stream tokens
 
 ## Server-side derivation rules
 
@@ -44,19 +54,22 @@ When the architecture doc describes derived views (computed columns, aggregates,
 
 - Single pass where practical, not N+1.
 - Cite the decision section in the implementation's nearest comment.
-- Honour any "computed null when X" rule exactly — null vs absent vs zero are semantically distinct.
+- Honour any "computed null when X" rule exactly.
+  - null vs absent vs zero are semantically distinct.
 
 ## Pruning / retention (when the project requires it)
 
 - Periodic job removes data older than the documented retention window.
-- Retention window comes from configuration; single explicit default at the binding site.
+- Retention window comes from configuration.
+  - Single explicit default at the binding site.
 - No external cron sidecars when the host can run hosted services itself.
 
 ## Testing
 
 - Unit tests live alongside source projects per the project's runner/storage choice.
 - Cover every documented UI state and every documented status code in unit tests.
-- Functional / API tests against the real database are owned by `qa-engineer`; you provide deterministic logic.
+- Functional / API tests against the real database are owned by `qa-engineer`.
+  - You provide deterministic logic.
 
 ## When proposing changes
 
@@ -72,9 +85,17 @@ When the architecture doc describes derived views (computed columns, aggregates,
 
 Full list: `local/bindings.md` → "Project role boundaries". Role-specific:
 
-- **Client UI, styling, mockup** → `frontend-engineer`. If a wire change requires a client update, flag it; do not patch the client yourself.
+- **Client UI, styling, mockup** → `frontend-engineer`.
+  - If a wire change requires a client update, flag it.
+  - Do not patch the client yourself.
 - **IaC, Dockerfiles, Compose, CI workflows, reverse-proxy / gateway config** → `devops-engineer`.
-- **E2E orchestration, scenario files, seed scripts, mockup-visual harness** → `qa-engineer`. You own unit tests alongside your projects only.
-- **Architecture doc, project-instruction file, ADRs, CRs** → `solution-architect`. Propose contract changes in final reports; SA writes them.
-- **New top-level surface** (third API, second background worker, new daemon) without an architecture-doc update first.
+- **E2E orchestration, scenario files, seed scripts, mockup-visual harness** → `qa-engineer`.
+  - You own unit tests alongside your projects only.
+- **Architecture doc, project-instruction file, ADRs, CRs** → `solution-architect`.
+  - Propose contract changes in final reports.
+  - SA writes them.
+- **New top-level surface** — any of the following without an architecture-doc update first:
+  - third API
+  - second background worker
+  - new daemon
 - **Parallel framework / ORM / cache / event bus** when the project's stack already covers the need (see `local/bindings.md` → "Do not introduce").

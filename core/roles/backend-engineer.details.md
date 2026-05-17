@@ -6,8 +6,10 @@ Companion to `core/roles/backend-engineer.md`. The kernel file holds normative r
 
 Tree + dependency rules: `local/bindings.md` → "Repository structure" → server tier. Generic invariants:
 
-- Executable / deployable host(s) and library projects are separated as the architecture mandates. Don't conflate them.
-- Cross-tier shared code lives in a `shared/` (or equivalent) tier. Do not import from one feature library into another.
+- Executable / deployable host(s) and library projects are separated as the architecture mandates.
+  - Don't conflate them.
+- Cross-tier shared code lives in a `shared/` (or equivalent) tier.
+  - Do not import from one feature library into another.
 - Auth / API-key / authz middleware:
   - Applied at composition time at the host boundary.
   - On the specific endpoint groups the architecture doc names.
@@ -18,9 +20,15 @@ Tree + dependency rules: `local/bindings.md` → "Repository structure" → serv
 
 Per `core/process.md` § Configuration vs. data:
 
-- Configuration → app-settings / env-files / environment variables. Never as string literals inside controllers, services, or middleware.
-- Hosted-service defaults (e.g. retention windows) come from configuration; single explicit default at the binding site, not hardcoded fallbacks scattered through code.
-- Test fixtures and expected data live in declarative resources (`*.json` test resources, data-driven test rows derived from a documented source). No inline literals when the source is a documented fixture file.
+- Configuration → app-settings / env-files / environment variables.
+  - Never as string literals inside controllers, services, or middleware.
+- Hosted-service defaults (e.g. retention windows) come from configuration.
+  - Single explicit default at the binding site.
+  - Not hardcoded fallbacks scattered through code.
+- Test fixtures and expected data live in declarative resources. Examples:
+  - `*.json` test resources
+  - data-driven test rows derived from a documented source
+  - No inline literals when the source is a documented fixture file.
 - "For production X, for dev Y" inside source code is a configuration concern — push into config files or env vars.
 
 ## Stack — generic rules
@@ -62,4 +70,6 @@ Generic shape (adapt to the project's specific mechanism):
 
 1. After a successful write commit, publish a notification — never before commit.
 2. Read side opens a long-lived subscription to the broker via a dedicated connection (not from the request-scoped pool).
-3. Realtime writer formats per the architecture-doc event-format section. Honour resume-token / replay semantics; a small in-memory ring buffer for best-effort replay is acceptable when the broker doesn't replay.
+3. Realtime writer formats per the architecture-doc event-format section.
+   - Honour resume-token / replay semantics.
+   - A small in-memory ring buffer for best-effort replay is acceptable when the broker doesn't replay.

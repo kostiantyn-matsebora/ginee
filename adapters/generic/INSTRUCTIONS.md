@@ -2,7 +2,9 @@
 
 Project uses the [`engineering-team`](.agents/engineering-team/) framework — vendor-neutral multi-agent collaboration model + generic engineering process.
 
-**When to use.** LLM client doesn't natively support AGENTS.md, CLAUDE.md, GEMINI.md, or per-tool subagent directories. Manually point your client at this file as its instructions / system-prompt context.
+**When to use:**
+- LLM client doesn't natively support AGENTS.md, CLAUDE.md, GEMINI.md, or per-tool subagent directories.
+- Manually point your client at this file as its instructions / system-prompt context.
 
 ## Read before any work
 
@@ -29,7 +31,9 @@ Project uses the [`engineering-team`](.agents/engineering-team/) framework — v
 
 ## Orchestration
 
-- **Dispatch.** Mention the role by name or describe the task surface; the LLM acts as that persona.
+- **Dispatch.**
+  - Mention the role by name, or describe the task surface.
+  - The LLM acts as that persona.
 - **Orchestrator.** `project-manager`.
 - **First install.** Prompt `act as project-manager and run initial discovery`.
 
@@ -45,7 +49,11 @@ Project uses the [`engineering-team`](.agents/engineering-team/) framework — v
 
 ## Capability tier — **3** (instructions-only, no native role routing)
 
-Generic fallback — LLM impersonates each cardinal persona when mentioned. No multi-agent isolation; sequential execution; no parallel dispatch.
+Generic fallback. Behavior:
+- LLM impersonates each cardinal persona when mentioned.
+- No multi-agent isolation.
+- Sequential execution.
+- No parallel dispatch.
 
 For tier-1 or tier-2 clients, use one of:
 

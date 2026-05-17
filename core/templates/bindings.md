@@ -1,8 +1,21 @@
 # Project Bindings — `local/bindings.md` Template
 
-<!-- Per-project. Authored by project-manager during discovery; maintained as project evolves.
-     Records: role→paths · forbidden role-crossings · hard constraints (NFRs) · stack · tie-breakers · repo structure.
-     Replace bracketed placeholders. Drop sections with no content. -->
+<!--
+  Scope:
+  - Per-project.
+  - Authored by project-manager during discovery.
+  - Maintained as project evolves.
+  Records:
+  - Role → paths.
+  - Forbidden role-crossings.
+  - Hard constraints (NFRs).
+  - Stack.
+  - Tie-breakers.
+  - Repo structure.
+  Usage:
+  - Replace bracketed placeholders.
+  - Drop sections with no content.
+-->
 
 ---
 
@@ -81,8 +94,12 @@ Violation → **stop, propose a doc update first**.
 
 ## Roles — deterministic routing
 
-<!-- 7 cardinals + local/roles/*.
-     Orchestrator thread does NOT do role-owned work — dispatch instead. -->
+<!--
+  Scope:
+  - 7 cardinals + local/roles/*.
+  Rule:
+  - Orchestrator thread does NOT do role-owned work — dispatch instead.
+-->
 
 | Role | Concerns |
 |---|---|
@@ -99,8 +116,13 @@ Task spans two roles → dispatch in parallel per `core/process.md` § Dispatch 
 
 ## Project role boundaries
 
-<!-- Forbidden role-crossings. Each row is a hard stop.
-     Cross-domain need surfaced mid-task → propose a hand-off in the final report; do NOT patch across. -->
+<!--
+  Rules:
+  - Forbidden role-crossings.
+  - Each row is a hard stop.
+  - Cross-domain need surfaced mid-task → propose a hand-off in the final report.
+  - Do NOT patch across.
+-->
 
 | Role | Must NOT edit |
 |---|---|

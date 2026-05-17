@@ -1,10 +1,13 @@
 # Claude Code adapter
 
-For projects using [Claude Code](https://code.claude.com/). The 7 cardinal roles install as native Claude Code subagents at `.claude/agents/<role>.md`.
+For projects using [Claude Code](https://code.claude.com/).
+
+The 7 cardinal roles install as native Claude Code subagents at `.claude/agents/<role>.md`.
 
 ## Capability tier — **1** (native subagents + parallel dispatch)
 
-Verified against Claude Code subagent docs as of 2026-05. Re-check per release.
+- Verified against Claude Code subagent docs as of 2026-05.
+- Re-check per release.
 
 ## What this adapter ships
 
@@ -13,7 +16,10 @@ Verified against Claude Code subagent docs as of 2026-05. Re-check per release.
 | `CLAUDE-pointer.md` | Block to append to the project's `CLAUDE.md` |
 | `install.md` | Step-by-step install procedure |
 
-**Subagent pointer files** — live in `.agents/engineering-team/adapters/_shared/agents/*.md`; shared with the Copilot CLI adapter; no duplication.
+**Subagent pointer files:**
+- Live in `.agents/engineering-team/adapters/_shared/agents/*.md`.
+- Shared with the Copilot CLI adapter.
+- No duplication.
 
 ## How it works
 
@@ -26,7 +32,10 @@ Subagent files at `.claude/agents/<role>.md` carry only:
   - `local/bindings.md`
   - `local/project-profile.md`
 
-Canonical charter lives once in `core/roles/`. Subagent files are pure pointers. Updates to `core/` propagate immediately.
+Key properties:
+- Canonical charter lives once in `core/roles/`.
+- Subagent files are pure pointers.
+- Updates to `core/` propagate immediately.
 
 ## Pointer line (for your `CLAUDE.md`)
 

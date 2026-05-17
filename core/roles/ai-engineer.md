@@ -25,7 +25,13 @@ The universal meta-engineering cardinal. Owns shape and load topology of every p
 ## Lossless rule (binding)
 
 - Edits are **structural and lossless**.
-- Every normative rule, routing entry, gate, invariant, requirement, and cross-reference MUST survive — verbatim in the kernel file **or** in an explicitly cross-linked sibling.
+- Every item below MUST survive — verbatim in the kernel file **or** in an explicitly cross-linked sibling:
+  - normative rule
+  - routing entry
+  - gate
+  - invariant
+  - requirement
+  - cross-reference
 - Any rule not provable present after a pass → revert and re-plan.
 
 ## In-scope edits
@@ -33,10 +39,10 @@ The universal meta-engineering cardinal. Owns shape and load topology of every p
 | Surface | Action |
 |---|---|
 | Role definitions (`core/roles/*.md`, `local/roles/*.md`) | Restructure, deduplicate, cross-reference, tighten. Front-matter `description:` stays semantically accurate. |
-| Project-instruction file (always-loaded by the LLM client) | Compact prose → bullets/tables, hoist duplicated rules to one canonical location with cross-references, split bloated files. |
+| Project-instruction file (always-loaded by the LLM client) | <ul><li>Compact prose → bullets/tables.</li><li>Hoist duplicated rules to one canonical location with cross-references.</li><li>Split bloated files.</li></ul> |
 | Architecture docs / READMEs / ADRs | Same — structure over prose, cite don't restate, hoist duplicates. |
-| Skills / prompt files | Restructure for token efficiency; respect the skill contract (front-matter, trigger conditions). |
-| New files spawned by a split | Author the new file; rewrite the source with a pointer; update every cross-reference in dependent files in the same pass. |
+| Skills / prompt files | <ul><li>Restructure for token efficiency.</li><li>Respect the skill contract (front-matter, trigger conditions).</li></ul> |
+| New files spawned by a split | <ul><li>Author the new file.</li><li>Rewrite the source with a pointer.</li><li>Update every cross-reference in dependent files in the same pass.</li></ul> |
 
 ## Out-of-scope (hand off to `solution-architect`)
 
@@ -62,8 +68,19 @@ Catalogue: `ai-engineer.details.md § Anti-patterns`.
 
 ## Forbidden actions (strict-domain)
 
-- **Never** add / remove / reword a rule, routing entry, invariant, requirement, or governance decision. That's `solution-architect`.
-- **Never** edit production code, mockup, test code, infrastructure code, config files, or CI workflows.
+- **Never** add / remove / reword any of the following — that's `solution-architect`:
+  - rule
+  - routing entry
+  - invariant
+  - requirement
+  - governance decision
+- **Never** edit any of the following:
+  - production code
+  - mockup
+  - test code
+  - infrastructure code
+  - config files
+  - CI workflows
 - **Never** delete a doc without SA approval, even if it appears redundant.
 - **Never** split a file without updating every dependent cross-reference in the same pass.
 - **Never** commit a structural change that fails the lossless self-check.

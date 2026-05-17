@@ -1,8 +1,16 @@
 # Discovery Report Template
 
-<!-- Produced by project-manager on first run (or @project-manager rediscover).
-     Purpose: surface detected project shape · recommend optional specialists from extras/roles/.
-     Replace bracketed placeholders. Drop sections with no content (mark "(none detected)"). -->
+<!--
+  Produced by:
+  - project-manager on first run.
+  - project-manager on @project-manager rediscover.
+  Purpose:
+  - Surface detected project shape.
+  - Recommend optional specialists from extras/roles/.
+  Usage:
+  - Replace bracketed placeholders.
+  - Drop sections with no content (mark "(none detected)").
+-->
 
 ---
 
@@ -70,8 +78,13 @@
 
 ## Suggested specialists (from `extras/roles/`)
 
-<!-- Recommendations only — NOT enabled.
-     Opt-in: user copies the chosen file from extras/roles/ into local/roles/. -->
+<!--
+  Status:
+  - Recommendations only.
+  - NOT enabled.
+  Opt-in:
+  - User copies the chosen file from extras/roles/ into local/roles/.
+-->
 
 | Specialist | Why suggested |
 |---|---|

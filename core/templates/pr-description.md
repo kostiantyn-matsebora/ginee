@@ -1,8 +1,21 @@
 # Pull-Request Description Template
 
-<!-- Use for every PR landing code · tests · infra · docs.
-     Every PR cites: requirement / NFR / mockup section / CR / ADR.
-     Replace bracketed placeholders. Drop sections with no content. -->
+<!--
+  Use for every PR landing:
+  - Code.
+  - Tests.
+  - Infra.
+  - Docs.
+  Every PR cites one of:
+  - Requirement.
+  - NFR.
+  - Mockup section.
+  - CR.
+  - ADR.
+  Usage:
+  - Replace bracketed placeholders.
+  - Drop sections with no content.
+-->
 
 ---
 
@@ -14,7 +27,17 @@
 
 ## Why
 
-<!-- One or two sentences. Trigger = TODO line / CR / defect / explicit user request. Reference the source. -->
+<!--
+  Form:
+  - One or two sentences.
+  Trigger is one of:
+  - TODO line.
+  - CR.
+  - Defect.
+  - Explicit user request.
+  Rule:
+  - Reference the source.
+-->
 
 `<trigger + reference>`
 
@@ -29,7 +52,10 @@
 | ADR | `<ADR-NNNN>` (new architectural decision) |
 | Hand-off note | `<path or link>` (when resolving cross-domain hand-off) |
 
-**No source → no PR.** Uncited by something authoritative → write the doc update first, or flag the gap.
+**No source → no PR.** Uncited by something authoritative:
+
+- Write the doc update first, OR
+- Flag the gap.
 
 ## Domain breakdown (for cross-domain PRs)
 
@@ -41,10 +67,12 @@
 
 ## Cross-domain sign-offs
 
-<!-- Required when PR touches any of:
-     · wire-contract breaking change
-     · infra change affecting application config
-     · cross-domain bug fix -->
+<!--
+  Required when PR touches any of:
+  - Wire-contract breaking change.
+  - Infra change affecting application config.
+  - Cross-domain bug fix.
+-->
 
 - [ ] `solution-architect` — architecture-doc / CR / ADR landed
 - [ ] `backend-engineer` — wire shape confirmed
@@ -70,11 +98,18 @@
 |---|---|
 | `<build / test / lint command>` | `<exit code / pass-fail / counts>` |
 
-<!-- PRs touching a user-facing surface → manual smoke against the running stack (NOT the mockup). -->
+<!--
+  PRs touching a user-facing surface:
+  - Manual smoke against the running stack.
+  - NOT the mockup.
+-->
 
 - `<one line per new flow>`
 
-**Manual smoke skipped** (e.g. headless): state so explicitly. **Never** claim PASS without doing it.
+**Manual smoke skipped** (e.g. headless):
+
+- State so explicitly.
+- **Never** claim PASS without doing it.
 
 ## Open issues / follow-ups
 

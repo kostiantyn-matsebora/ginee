@@ -3,7 +3,9 @@
 ## Prerequisites
 
 - `.agents/engineering-team/` directory present at the project root.
-- `.claude/agents/` directory (Claude Code creates it; create manually if absent).
+- `.claude/agents/` directory:
+  - Claude Code creates it.
+  - Create manually if absent.
 
 ## Steps
 
@@ -19,15 +21,21 @@
    cp .agents/engineering-team/adapters/_shared/agents/*.md .claude/agents/
    ```
 
-2. **Update `CLAUDE.md`** — append the block from `.agents/engineering-team/adapters/claude/CLAUDE-pointer.md` to the project's `CLAUDE.md`. No existing `CLAUDE.md` — create one with that block as the content.
+2. **Update `CLAUDE.md`.**
+   - Append the block from `.agents/engineering-team/adapters/claude/CLAUDE-pointer.md` to the project's `CLAUDE.md`.
+   - No existing `CLAUDE.md` — create one with that block as the content.
 
-3. **Run discovery** — open the project in Claude Code and prompt:
+3. **Run discovery.**
+   - Open the project in Claude Code.
+   - Prompt:
 
-   ```
-   @project-manager run initial discovery
-   ```
+     ```
+     @project-manager run initial discovery
+     ```
 
-4. **Verify** — `@solution-architect status` and `@qa-engineer status` should each report their charter (read from `.agents/engineering-team/core/roles/<role>.md`) and confirm the project's bindings.
+4. **Verify** — prompt `@solution-architect status` and `@qa-engineer status`. Each should:
+   - Report its charter (read from `.agents/engineering-team/core/roles/<role>.md`).
+   - Confirm the project's bindings.
 
 ## Updates
 

@@ -1,6 +1,8 @@
 # GitHub Copilot CLI adapter
 
-For projects using [GitHub Copilot CLI](https://docs.github.com/en/copilot/concepts/agents/copilot-cli). The 7 cardinal roles install as native Copilot custom subagents at `.github/agents/<role>.agent.md`.
+For projects using [GitHub Copilot CLI](https://docs.github.com/en/copilot/concepts/agents/copilot-cli).
+
+The 7 cardinal roles install as native Copilot custom subagents at `.github/agents/<role>.agent.md`.
 
 ## Capability tier — **1** (native subagents + parallel dispatch)
 
@@ -18,11 +20,17 @@ Re-check per release.
 | `README.md` | This file |
 | `install.md` | Step-by-step install procedure |
 
-**Subagent pointer files** — live in `.agents/engineering-team/adapters/_shared/agents/*.md`; shared with the Claude Code adapter. Install copies them into `.github/agents/` and renames to `.agent.md`. No duplication.
+**Subagent pointer files:**
+- Live in `.agents/engineering-team/adapters/_shared/agents/*.md`.
+- Shared with the Claude Code adapter.
+- Install copies them into `.github/agents/` and renames to `.agent.md`.
+- No duplication.
 
 ## How it works
 
-Copilot CLI custom-agent files use the `.agent.md` extension with YAML front-matter. Shared pointer files carry only:
+Copilot CLI custom-agent files use the `.agent.md` extension with YAML front-matter.
+
+Shared pointer files carry only:
 
 - Front-matter (`name`, `description`) — Copilot CLI's routing fields.
 - A 4-line body instructing the subagent to read:
@@ -31,11 +39,14 @@ Copilot CLI custom-agent files use the `.agent.md` extension with YAML front-mat
   - `local/bindings.md`
   - `local/project-profile.md`
 
-Canonical role definitions live once in `core/roles/`. Subagent files are pure pointers.
+Key properties:
+- Canonical role definitions live once in `core/roles/`.
+- Subagent files are pure pointers.
 
 ## Pointer for AGENTS.md (recommended)
 
-Copilot CLI also reads `AGENTS.md` at the project root. Install the `agents-md` adapter alongside this one for cross-tool consistency.
+- Copilot CLI also reads `AGENTS.md` at the project root.
+- Install the `agents-md` adapter alongside this one for cross-tool consistency.
 
 ## Smoke test
 

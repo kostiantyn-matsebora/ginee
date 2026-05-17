@@ -1,13 +1,27 @@
 # Project Profile — `local/project-profile.md` Template
 
-<!-- Per-project. Path: local/project-profile.md.
-     Authored by project-manager during discovery; refreshed on rediscover OR staleness flag.
-     Contents: detected snapshot of project shape — stack · domain · architecture artefacts · SDLC artefacts.
-     Sibling files:
-       · local/bindings.md            — per-project routing + role boundaries (handwritten, seeded by discovery).
-       · local/framework.config.yaml  — concept → file-path mappings (machine-readable).
-     Lifecycle: read-mostly for roles · project-manager OVERWRITES on rediscover.
-     Replace bracketed placeholders. Drop sections with no content (mark "(none detected)"). -->
+<!--
+  Scope:
+  - Per-project.
+  - Path: local/project-profile.md.
+  Authored by:
+  - project-manager during discovery.
+  - Refreshed on rediscover OR staleness flag.
+  Contents — detected snapshot of project shape:
+  - Stack.
+  - Domain.
+  - Architecture artefacts.
+  - SDLC artefacts.
+  Sibling files:
+  - local/bindings.md — per-project routing + role boundaries (handwritten, seeded by discovery).
+  - local/framework.config.yaml — concept → file-path mappings (machine-readable).
+  Lifecycle:
+  - Read-mostly for roles.
+  - project-manager OVERWRITES on rediscover.
+  Usage:
+  - Replace bracketed placeholders.
+  - Drop sections with no content (mark "(none detected)").
+-->
 
 ---
 
@@ -19,8 +33,14 @@
 
 ## Domain
 
-<!-- 2–4 sentence summary from README + top-level docs.
-     Rules: cite the file(s) · no invention · empty README → say so, flag for the user. -->
+<!--
+  Form:
+  - 2–4 sentence summary from README + top-level docs.
+  Rules:
+  - Cite the file(s).
+  - No invention.
+  - Empty README → say so, flag for the user.
+-->
 
 `<domain summary>`
 
@@ -115,8 +135,13 @@
 
 ## Specialist suggestions (from `extras/roles/`)
 
-<!-- Recommendations from discovery — NOT enabled.
-     Opt-in: user copies the chosen file into local/roles/. -->
+<!--
+  Status:
+  - Recommendations from discovery.
+  - NOT enabled.
+  Opt-in:
+  - User copies the chosen file into local/roles/.
+-->
 
 | Suggested specialist | Trigger |
 |---|---|

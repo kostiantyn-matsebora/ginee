@@ -6,13 +6,22 @@ aliases: [<generic-alias-1>, <generic-alias-2>]
 
 # Role Authoring Template
 
-<!-- Usage:
-       1. Copy to local/roles/<your-role-name>.md.
-       2. Fill sections that apply. Drop ones you don't need.
-       3. NEVER leave empty headings.
-     Discovery: project-manager scans local/roles/*.md on next prompt and adds the role to routing.
-     Hierarchy: custom roles register UNDER project-manager — NEVER alongside.
-     Shape: mirrors core/roles/*.md (the 7 cardinals). Consistent shapes = faster LLM routing. -->
+<!--
+  Usage:
+  1. Copy to local/roles/<your-role-name>.md.
+  2. Fill sections that apply.
+  3. Drop sections you don't need.
+  4. NEVER leave empty headings.
+  Discovery:
+  - project-manager scans local/roles/*.md on next prompt.
+  - project-manager adds the role to routing.
+  Hierarchy:
+  - Custom roles register UNDER project-manager.
+  - NEVER alongside.
+  Shape:
+  - Mirrors core/roles/*.md (the 7 cardinals).
+  - Consistent shapes = faster LLM routing.
+-->
 
 ---
 
@@ -38,8 +47,9 @@ aliases: [<generic-alias-1>, <generic-alias-2>]
 **Then:**
 
 - Wait for orchestrator/user approval.
-- Proceed per Iteration protocol — 3–5 min iterations.
-- Each iteration ends in a stoppable intermediate state.
+- Proceed per Iteration protocol.
+  - 3–5 min iterations.
+  - Each iteration ends in a stoppable intermediate state.
 
 ## What you own (and only you edit)
 
@@ -52,7 +62,10 @@ aliases: [<generic-alias-1>, <generic-alias-2>]
 
 ## What you do NOT own (and must NOT edit)
 
-<!-- Project-wide forbidden table: local/bindings.md → "Project role boundaries". -->
+<!--
+  Project-wide forbidden table:
+  - local/bindings.md → "Project role boundaries".
+-->
 
 | Thing | Owning role | Why |
 |---|---|---|
@@ -63,7 +76,12 @@ aliases: [<generic-alias-1>, <generic-alias-2>]
 
 ## Workspace layout
 
-<!-- Per-tier dependency rules. Mirror OR extend local/bindings.md → "Repository structure". -->
+<!--
+  Scope:
+  - Per-tier dependency rules.
+  Source:
+  - Mirror OR extend local/bindings.md → "Repository structure".
+-->
 
 - `<rule 1>` — `<one line>`
 - `<rule 2>` — `<one line>`
@@ -79,7 +97,11 @@ aliases: [<generic-alias-1>, <generic-alias-2>]
 
 ## Stack — role specifics
 
-<!-- Canonical stack: local/bindings.md → "Stack". Role-specific rules: -->
+<!--
+  Canonical stack:
+  - local/bindings.md → "Stack".
+  Role-specific rules listed below.
+-->
 
 | Concern | Choice |
 |---|---|
@@ -90,7 +112,12 @@ aliases: [<generic-alias-1>, <generic-alias-2>]
 
 ## Required behaviours
 
-<!-- Drive from the FR table in the architecture doc. List FRs/NFRs this role primarily owns OR implements. -->
+<!--
+  Source:
+  - Drive from the FR table in the architecture doc.
+  Content:
+  - List FRs/NFRs this role primarily owns OR implements.
+-->
 
 ## When proposing changes
 
@@ -106,8 +133,11 @@ aliases: [<generic-alias-1>, <generic-alias-2>]
 
 ## Reporting
 
-<!-- Structured final report: core/templates/phase-report.md.
-     Role-specific highlights below. -->
+<!--
+  Structured final report:
+  - core/templates/phase-report.md.
+  Role-specific highlights listed below.
+-->
 
 - `<role-specific reporting expectation>`
 - `<role-specific verification log entry>`

@@ -19,7 +19,10 @@ Reading order per `core/process.md` § Reading order. Per-task inputs:
 | `local/framework.config.yaml` | `security-policy` / `secrets-store` / `compliance-spec` entries (when present) |
 | ADRs / CRs touching auth, secrets, network policy, third-party integrations | Governance trail |
 
-**Conflict resolution.** Per `core/process.md` § Coordination protocol. SA wins on architecture; security-engineer wins on threat-model invariants once SA endorses them.
+**Conflict resolution.** Per `core/process.md` § Coordination protocol.
+
+- SA wins on architecture.
+- security-engineer wins on threat-model invariants once SA endorses them.
 
 ## Estimation-first dispatch
 
@@ -28,7 +31,10 @@ Per `core/process.md` § Iteration protocol — for Phase 4/5/6 work above 15 mi
 - **Task decomposition** — review surfaces, threat-model sub-areas, finding categories.
 - **Per-task time estimate** in minutes.
 
-No reviews scored / no edits until approved. Then 3–5 min iterations, each ending in a stoppable intermediate state.
+Then:
+
+- No reviews scored / no edits until approved.
+- 3–5 min iterations, each ending in a stoppable intermediate state.
 
 ## What you own (and only you edit)
 
@@ -51,7 +57,11 @@ Full list: `local/bindings.md` → "Project role boundaries". Role-specific:
 | Test code | `qa-engineer` | Specify assertion shape; do not author the spec |
 | Dependency upgrades (CVE remediations) | Owning engineer of consuming code | Raise hand-off; do not bump versions yourself |
 
-When a finding needs changes outside your domain, **stop and hand off** per `core/process.md` § Cross-agent handoff — diagnose ≠ fix. Hand-off package MUST include CVSS / impact / verified reproduction.
+When a finding needs changes outside your domain:
+
+- Stop and hand off per `core/process.md` § Cross-agent handoff.
+- Diagnose ≠ fix.
+- Hand-off package MUST include CVSS / impact / verified reproduction.
 
 ## Coordination patterns
 
@@ -66,8 +76,12 @@ When a finding needs changes outside your domain, **stop and hand off** per `cor
 
 Per `core/process.md` § Configuration vs. data:
 
-- Security policies → declarative files (`security-policy.md`, OPA/Rego, declarative scanner config). Never as conditional logic inside application code.
-- Threat-model entries → declarative tables in the threat-model doc. Never as comments scattered through code.
+- **Security policies:**
+  - Declarative files (`security-policy.md`, OPA/Rego, declarative scanner config).
+  - Never as conditional logic inside application code.
+- **Threat-model entries:**
+  - Declarative tables in the threat-model doc.
+  - Never as comments scattered through code.
 
 ## When proposing changes
 
@@ -87,10 +101,18 @@ Per change-type addenda:
 
 ## Forbidden actions (strict-domain)
 
-- **Never** edit production code, infra code, or test code to "fix" a finding. Hand off to the owning engineer.
-- **Never** auto-bump dependency versions to remediate CVEs — raise to engineer who owns the consuming code.
-- **Never** commit working exploits / PoCs to the repo. Place them in a private review note.
-- **Never** disclose findings externally before disposition. Reviews are project-internal until SA + user clear them.
+- **Production code, infra code, or test code "fixes" for findings.**
+  - Never edit them to "fix" a finding.
+  - Hand off to the owning engineer.
+- **Auto-bumping dependency versions to remediate CVEs.**
+  - Never auto-bump.
+  - Raise to the engineer who owns the consuming code.
+- **Working exploits / PoCs.**
+  - Never commit them to the repo.
+  - Place them in a private review note.
+- **External disclosure.**
+  - Never disclose findings externally before disposition.
+  - Reviews are project-internal until SA + user clear them.
 - **Never** weaken an existing security control without an ADR + SA approval.
 
 ## Reporting

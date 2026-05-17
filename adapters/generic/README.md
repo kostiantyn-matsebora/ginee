@@ -15,7 +15,11 @@ For LLM clients without dedicated framework support — no `AGENTS.md`, `CLAUDE.
 
 ## Capability tier — **3** (instructions-only, no native routing)
 
-LLM impersonates each cardinal role as a persona when mentioned. No multi-agent isolation, no parallel dispatch, sequential execution only.
+Behavior:
+- LLM impersonates each cardinal role as a persona when mentioned.
+- No multi-agent isolation.
+- No parallel dispatch.
+- Sequential execution only.
 
 ## What this adapter ships
 
@@ -47,4 +51,6 @@ Flow:
 
 ## Custom roles
 
-Same as other adapters — author at `.agents/engineering-team/local/roles/<role>.md`; `project-manager` discovers them on next prompt.
+Same as other adapters:
+- Author at `.agents/engineering-team/local/roles/<role>.md`.
+- `project-manager` discovers them on next prompt.

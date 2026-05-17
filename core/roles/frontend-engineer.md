@@ -33,8 +33,12 @@ When the project ships a design mockup, you author and edit:
 - All CSS (utility classes, custom `<style>` blocks, animations, grid templates, pseudo-elements).
 - All JavaScript and reactive bindings (whatever reactivity framework the mockup uses — vanilla, Alpine, Stimulus, etc.).
 - All inline SVG (path geometry, viewBox, transforms, observer-driven recalculation).
-- The embedded fixture data block — kept in sync with the architecture doc's wire shape and the documented states.
-- The head-comment **invariant block** that mirrors the architecture doc's NFRs. You mirror after `solution-architect` lands the architecture-doc update; you do not introduce new invariants.
+- The embedded fixture data block.
+  - Kept in sync with the architecture doc's wire shape.
+  - Kept in sync with the documented states.
+- The head-comment **invariant block** that mirrors the architecture doc's NFRs.
+  - You mirror after `solution-architect` lands the architecture-doc update.
+  - You do not introduce new invariants.
 
 You do NOT edit the architecture doc itself. When a mockup change implies an architecture-level change (new view, attribute, layout, invariant, fixture shape):
 
@@ -46,9 +50,9 @@ Cross-references on mockup changes:
 
 | Trigger | Action |
 |---|---|
-| Architecture-level implication (new view / attribute / layout primitive / invariant / fixture shape) | Propose architecture-doc change in final report; pause for `solution-architect`; mirror after architecture-doc edit lands. |
-| Geometric / interaction invariant touched (UX-responsiveness or other harness-encoded invariant) | Run the mockup-visual harness; include PASS/FAIL table in final report. **All-green is the definition of done.** A failing assertion is not "the test is wrong"; it is the bug. |
-| New mockup surface (new view, layout, or invariant) needs new harness assertion | Flag for `qa-engineer` in final report. You do not edit the harness; `qa-engineer` does. |
+| Architecture-level implication (new view / attribute / layout primitive / invariant / fixture shape) | <ol><li>Propose architecture-doc change in final report.</li><li>Pause for `solution-architect`.</li><li>Mirror after architecture-doc edit lands.</li></ol> |
+| Geometric / interaction invariant touched (UX-responsiveness or other harness-encoded invariant) | <ul><li>Run the mockup-visual harness.</li><li>Include PASS/FAIL table in final report.</li><li>**All-green is the definition of done.**</li><li>A failing assertion is not "the test is wrong"; it is the bug.</li></ul> |
+| New mockup surface (new view, layout, or invariant) needs new harness assertion | <ul><li>Flag for `qa-engineer` in final report.</li><li>You do not edit the harness; `qa-engineer` does.</li></ul> |
 
 Strict-domain violation cautionary case (what happens when `solution-architect` edits mockup code directly): `core/cross-domain-bugs.md`. Each domain in its lane.
 
@@ -58,7 +62,8 @@ The architecture doc + mockup define a finite set of UI states (status box state
 
 - Implement each exactly as documented.
 - Never invent or omit a state.
-- Reference the canonical table in the architecture doc / mockup; do not paraphrase it in code comments.
+- Reference the canonical table in the architecture doc / mockup.
+  - Do not paraphrase it in code comments.
 
 ## Required behaviours
 
@@ -73,9 +78,12 @@ Cite the FR ID in the implementation's nearest comment when the mapping is non-o
 ## Styling rules
 
 - Stick to the project's styling approach as recorded in `local/bindings.md`.
-  - Mockup is the canonical reference — copy style strings where they make sense.
+  - Mockup is the canonical reference.
+  - Copy style strings where they make sense.
   - Don't re-invent colours.
-- No global CSS beyond what the mockup `<style>` block defines and what `local/bindings.md` allows.
+- No global CSS beyond:
+  - what the mockup `<style>` block defines, and
+  - what `local/bindings.md` allows.
 - Accessibility:
   - Every interactive element has a discernible name.
   - Complex widgets expose ARIA roles.
@@ -85,7 +93,9 @@ Cite the FR ID in the implementation's nearest comment when the mapping is non-o
 
 - Component unit tests — runner per workspace initialization.
   - Cover every documented UI state with fixture data.
-- Store / state-management unit tests for derivation logic and reducers.
+- Store / state-management unit tests for:
+  - derivation logic
+  - reducers
 - E2E flows belong to `qa-engineer`.
   - You provide stable `data-testid` (or equivalent) attributes on every interactive element.
 
@@ -93,9 +103,15 @@ Cite the FR ID in the implementation's nearest comment when the mapping is non-o
 
 Full list: `local/bindings.md` → "Project role boundaries". Role-specific:
 
-- **Service APIs, wire-format JSON, DB migrations, server-side realtime fan-out, SQL inside service endpoints** → `backend-engineer`. Never "just tweak" a query because the response shape is wrong; hand off.
+- **Service APIs, wire-format JSON, DB migrations, server-side realtime fan-out, SQL inside service endpoints** → `backend-engineer`.
+  - Never "just tweak" a query because the response shape is wrong.
+  - Hand off.
 - **Dockerfile, Compose, IaC, CI workflows, gateway / reverse-proxy config** → `devops-engineer`.
-- **E2E orchestration, scenario specs, mockup-visual harness** → `qa-engineer`. You add `data-testid` attributes and provide fixture-shaped data; you do not author tests.
-- **Architecture doc, project-instruction file, ADRs, CRs** → `solution-architect`. Propose changes in final reports.
+- **E2E orchestration, scenario specs, mockup-visual harness** → `qa-engineer`.
+  - You add `data-testid` attributes and provide fixture-shaped data.
+  - You do not author tests.
+- **Architecture doc, project-instruction file, ADRs, CRs** → `solution-architect`.
+  - Propose changes in final reports.
 - **Inventing or omitting UI states** beyond the documented set.
-- **Editing the harness** even to make an assertion pass; the assertion is the executable invariant.
+- **Editing the harness** even to make an assertion pass.
+  - The assertion is the executable invariant.

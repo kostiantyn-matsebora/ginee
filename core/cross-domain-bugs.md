@@ -1,12 +1,22 @@
 # Cross-domain bugs — integration + compliance cycle
 
-Load-on-demand. Fetched when a bug or task is detected to span 2+ domains. Default single-domain tasks do not load this file.
+**Load-on-demand.**
 
-Four-phase model — parallel where independent, sequential only where a real dependency exists.
+- Fetched when a bug or task is detected to span 2+ domains.
+- Default single-domain tasks do not load this file.
+
+**Model.** Four-phase:
+
+- Parallel where independent.
+- Sequential only where a real dependency exists.
 
 ## Phase 1 — Contract change (sequential)
 
-- Required only if the bug needs a contract change (architecture invariant, requirement addition, wire shape, env var).
+- **Required only if** the bug needs a contract change. Examples:
+  - Architecture invariant.
+  - Requirement addition.
+  - Wire shape.
+  - Env var.
 - `solution-architect` lands the doc change first.
 - Engineers cannot start their parts until the contract wording exists.
 
@@ -29,14 +39,27 @@ Four-phase model — parallel where independent, sequential only where a real de
   | API | service-owning role |
   | Deploy | `devops-engineer` |
 
-- Integrator runs the shared oracle end-to-end; confirms all Phase 2 deliverables compose correctly.
-- **Automated tests are necessary but not sufficient.** For any change adding or modifying user-facing behaviour, Phase 3 also requires a **manual smoke** by the integrator **against the running solution** (project's local-dev startup command) — NOT against the mockup or other design artefact:
+- **Integrator's job.**
+  - Run the shared oracle end-to-end.
+  - Confirm all Phase 2 deliverables compose correctly.
+- **Automated tests are necessary but not sufficient.** For any change adding or modifying user-facing behaviour, Phase 3 also requires a **manual smoke** by the integrator:
+  - Against the running solution (project's local-dev startup command).
+  - NOT against the mockup or other design artefact.
+
+  Procedure:
   1. Wipe and re-seed the local stack before opening the user-facing surface.
   2. Exercise every NEW user-facing flow in real conditions — not "the page renders", but "the feature does the thing".
-  3. Compare running system vs. mockup or architecture doc (mockup = oracle; running system = SUT). Feature looks wrong but tests PASS → route to `qa-engineer` to tighten assertions; do NOT call it green.
+  3. Compare running system vs. mockup or architecture doc:
+     - Mockup = oracle.
+     - Running system = SUT.
+     - Feature looks wrong but tests PASS → route to `qa-engineer` to tighten assertions; do NOT call it green.
   4. Record manual smoke results in the Phase 3 report (one line per new feature).
-- If integrator cannot run the user-facing surface (e.g. headless), state so explicitly. Do not claim manual smoke PASS without doing it.
-- Integration fails (automated OR manual) → return to the specific Phase 2 domain that broke. NOT a full rerun.
+- **If integrator cannot run the user-facing surface** (e.g. headless):
+  - State so explicitly.
+  - Do not claim manual smoke PASS without doing it.
+- **Integration fails** (automated OR manual):
+  - Return to the specific Phase 2 domain that broke.
+  - NOT a full rerun.
 
 ## Phase 4 — Compliance review (sequential, final)
 

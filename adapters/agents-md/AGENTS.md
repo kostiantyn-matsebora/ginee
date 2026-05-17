@@ -28,8 +28,13 @@ Project uses the [`engineering-team`](.agents/engineering-team/) framework — v
 ## Orchestration
 
 - **Dispatch.** Mention the role that owns the surface (e.g. `@frontend-engineer`, `@solution-architect`).
-- **Orchestrator.** `project-manager` — invoke for ambiguous scope or first-run discovery.
-- **First install.** Prompt `@project-manager run initial discovery` → produces `local/project-profile.md` + `local/bindings.md` + `local/framework.config.yaml`.
+- **Orchestrator.** `project-manager`. Invoke for:
+  - Ambiguous scope.
+  - First-run discovery.
+- **First install.** Prompt `@project-manager run initial discovery`. Produces:
+  - `local/project-profile.md`
+  - `local/bindings.md`
+  - `local/framework.config.yaml`
 
 ## Coordination rules (always apply)
 

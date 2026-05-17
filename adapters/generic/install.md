@@ -14,17 +14,18 @@
 
 2. **Provide `INSTRUCTIONS.md`'s content** to that surface. Two options:
 
-   **Option A (recommended) — reference the file by path:**
+   **Option A (recommended) — reference the file by path.**
 
-   If your client can read repo files, point its instructions at:
+   If your client can read repo files:
+   - Point its instructions at:
 
-   ```
-   .agents/engineering-team/adapters/generic/INSTRUCTIONS.md
-   ```
+     ```
+     .agents/engineering-team/adapters/generic/INSTRUCTIONS.md
+     ```
 
-   Configure the client to read this file at the start of every session.
+   - Configure the client to read this file at the start of every session.
 
-   **Option B — paste the content:**
+   **Option B — paste the content.**
 
    If your client only accepts inline text:
 
@@ -39,13 +40,17 @@
 
    Paste into your client's instructions / system-prompt field.
 
-3. **Run discovery** — start a session and prompt:
+3. **Run discovery.**
+   - Start a session.
+   - Prompt:
 
-   ```
-   act as project-manager and run initial discovery
-   ```
+     ```
+     act as project-manager and run initial discovery
+     ```
 
-4. **Verify** — prompt `act as solution-architect and report status`. Confirm it loads the canonical charter and project bindings.
+4. **Verify** — prompt `act as solution-architect and report status`. Confirm it loads:
+   - The canonical charter.
+   - Project bindings.
 
 ## Limitations vs higher-tier adapters
 

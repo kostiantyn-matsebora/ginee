@@ -1,26 +1,66 @@
 # engineering-team — framework.config.yaml template
-# Path: local/framework.config.yaml · Authored by: project-manager (during discovery)
-# Purpose: map abstract concepts → concrete project file paths. Reference, never copy (D5/G5).
-# Replace example values. Leave commented-out concepts when not present — do NOT invent paths.
+# Header:
+#   - Path: local/framework.config.yaml.
+#   - Authored by: project-manager (during discovery).
+# Purpose:
+#   - Map abstract concepts → concrete project file paths.
+#   - Reference, never copy (D5/G5).
+# Usage:
+#   - Replace example values.
+#   - Leave commented-out concepts when not present.
+#   - Do NOT invent paths.
 
 # --- Source of truth ---
-architecture-doc: docs/architecture.md   # SAD: requirements, constraints, components, data model, API, decisions. Owner: solution-architect.
-mockup: docs/mockup.html                 # Visual + behavioural client contract. Owner: frontend-engineer · reviewed by solution-architect. Comment out if none.
-# api-contract: docs/api.md              # Standalone API contract (omit when API lives inside the SAD).
-work-breakdown-doc: docs/WBS.md          # Operational work-breakdown: per-phase items, milestones.
-# ci-cd-integration-doc: docs/ci-cd-integration.md   # Operational companion to the SAD.
+architecture-doc: docs/architecture.md
+# SAD — System Architecture Document.
+#   - Requirements.
+#   - Constraints.
+#   - Components.
+#   - Data model.
+#   - API.
+#   - Decisions.
+#   - Owner: solution-architect.
+mockup: docs/mockup.html
+# Mockup.
+#   - Visual + behavioural client contract.
+#   - Owner: frontend-engineer.
+#   - Reviewed by: solution-architect.
+#   - Comment out if none.
+# api-contract: docs/api.md
+#   - Standalone API contract.
+#   - Omit when API lives inside the SAD.
+work-breakdown-doc: docs/WBS.md
+# WBS — Operational work-breakdown.
+#   - Per-phase items.
+#   - Milestones.
+# ci-cd-integration-doc: docs/ci-cd-integration.md
+#   - Operational companion to the SAD.
 
 # --- Change governance ---
-adr-directory: docs/adr/             # Architecture Decision Records.
-cr-directory: docs/cr/               # Change Requests.
-diagrams-directory: docs/diagrams/   # C4 / sequence / deployment diagrams.
+adr-directory: docs/adr/
+# ADRs — Architecture Decision Records.
+cr-directory: docs/cr/
+# CRs — Change Requests.
+diagrams-directory: docs/diagrams/
+# Diagrams.
+#   - C4.
+#   - Sequence.
+#   - Deployment.
 
 # --- Task & workflow ---
-todo: TODO                           # Repo-root TODO file (user-curated open items).
-nested-todos-glob: "**/TODO"         # Glob for nested per-component TODOs; null if unused.
+todo: TODO
+# Repo-root TODO file.
+#   - User-curated open items.
+nested-todos-glob: "**/TODO"
+# Nested per-component TODOs.
+#   - Glob.
+#   - null if unused.
 # Always-loaded project-instruction file — path varies per adapter:
-#   claude → CLAUDE.md · copilot → .github/copilot-instructions.md · cursor → .cursor/rules/*.mdc
-#   codex  → AGENTS.md · generic → INSTRUCTIONS.md
+#   - claude → CLAUDE.md
+#   - copilot → .github/copilot-instructions.md
+#   - cursor → .cursor/rules/*.mdc
+#   - codex → AGENTS.md
+#   - generic → INSTRUCTIONS.md
 project-instruction-file: CLAUDE.md
 
 # --- Repository structure ---
@@ -32,7 +72,9 @@ local-dev-path: dev_env/
 testing-path: testing/
 ci-workflows-path: .github/workflows/
 
-# --- Stack identity (declarative summary; full detail in local/project-profile.md) ---
+# --- Stack identity ---
+# Declarative summary.
+#   - Full detail in local/project-profile.md.
 stack:
   server-language: <e.g. C# / TypeScript / Python / Go>
   server-framework: <e.g. ASP.NET Core / Express / FastAPI / Spring Boot>
@@ -43,7 +85,8 @@ stack:
   ci-tool: <GitHub Actions / GitLab CI / Azure Pipelines / Jenkins / none>
   container-runtime: <Docker / Podman / none>
 
-# --- Hard constraints (mirror of local/bindings.md → "Hard constraints") ---
+# --- Hard constraints ---
+# Mirror of local/bindings.md → "Hard constraints".
 constraints:
   hosting-cloud: <e.g. Azure / AWS / GCP / none>
   cost-cap-usd-per-month: <number or null>
@@ -52,9 +95,11 @@ constraints:
   stateless-backend: <true | false>
 
 # --- Tooling commands ---
-local-dev-startup-command: pwsh -NoProfile -File dev_env/start.ps1   # Surfaced by project-manager when asking for manual smoke.
+local-dev-startup-command: pwsh -NoProfile -File dev_env/start.ps1
+# Surfaced by project-manager when asking for manual smoke.
 
-# Test-runner entry points (per core/roles/qa-engineer.md § Zero-setup rule for test runners).
+# Test-runner entry points.
+#   - Per core/roles/qa-engineer.md § Zero-setup rule for test runners.
 test-runners:
   functional: testing/functional/run-tests.ps1
   e2e: testing/e2e/run-tests.ps1

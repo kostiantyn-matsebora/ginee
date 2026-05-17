@@ -1,6 +1,8 @@
 # AGENTS.md adapter (cross-tool standard)
 
-For clients that read `AGENTS.md` at the project root. Single-file adapter — one pointer file covers them all.
+For clients that read `AGENTS.md` at the project root.
+
+Single-file adapter — one pointer file covers them all.
 
 ## Supported clients
 
@@ -17,13 +19,16 @@ For clients that read `AGENTS.md` at the project root. Single-file adapter — o
 | Claude Code | Pending | Use the `claude` adapter as primary; AGENTS.md is a cross-tool backup |
 | Gemini CLI | Uses `GEMINI.md` | Copy `AGENTS.md` content to `GEMINI.md` for parity |
 
-Verified 2026-05. AGENTS.md stewarded by the Agentic AI Foundation (Linux Foundation). Re-check per release.
+- Verified 2026-05.
+- AGENTS.md stewarded by the Agentic AI Foundation (Linux Foundation).
+- Re-check per release.
 
 ## Capability tier — **2** (instructions-only, single-agent persona model)
 
 - `AGENTS.md` — single instructions file.
 - 7 cardinals — PERSONAS the single LLM impersonates when mentioned by name in chat.
-- No native subagent isolation; sequential execution.
+- No native subagent isolation.
+- Sequential execution.
 
 For tier-1 (native subagents + parallel dispatch), use:
 - `claude` adapter (Claude Code)
@@ -39,7 +44,9 @@ These install ON TOP OF this adapter, not instead of it.
 | `README.md` | This file |
 | `install.md` | Step-by-step install |
 
-**No subagent pointer files** — clients in this tier don't load multiple agent files; `AGENTS.md` lists where each cardinal's canonical charter lives.
+**No subagent pointer files:**
+- Clients in this tier don't load multiple agent files.
+- `AGENTS.md` lists where each cardinal's canonical charter lives.
 
 ## Pointer line (for clients with separate instructions files)
 
@@ -54,9 +61,14 @@ See AGENTS.md at the project root.
 1. Install per `install.md`.
 2. Open the project in your client (Cursor / Codex / Windsurf / etc.).
 3. Prompt: `read AGENTS.md and confirm the cardinal roles + process spec are loaded`.
-4. Prompt: `@project-manager run initial discovery` — clients without `@mention` routing use `act as project-manager and run initial discovery`.
+4. Prompt:
+   - `@project-manager run initial discovery`.
+   - Clients without `@mention` routing — use `act as project-manager and run initial discovery` instead.
 
 ## Custom roles
 
 - Location — `.agents/engineering-team/local/roles/<role>.md`.
-- Discovery — `project-manager` picks them up automatically and adds to routing — no AGENTS.md edit needed.
+- Discovery:
+  - `project-manager` picks them up automatically.
+  - Adds them to routing.
+  - No AGENTS.md edit needed.

@@ -33,10 +33,15 @@ Per `core/process.md` § Phase 5, your default run is **change-scoped**, not ful
   - New and modified scenarios.
   - Pre-existing scenarios whose covered contract was edited in Phase 2 or 4.
   - Per-project unit specs in modified files.
-- Do NOT run the entire regression suite by default — it is slow and burns a large token budget.
+- Do NOT run the entire regression suite by default. Reasons:
+  - It is slow.
+  - It burns a large token budget.
 - Full regression is **opt-in** and dispatched only when the user explicitly approves it (typically prompted by `project-manager`). When dispatched:
   - Run it as a separate pass on top of the change-scoped gate.
-  - Report pass/fail counts per suite plus the wall-clock and approximate token cost.
+  - Report:
+    - pass/fail counts per suite
+    - wall-clock
+    - approximate token cost
 - If you believe a change is risky enough to warrant full regression (wide-reach refactor, cross-cutting infra edit, shared-library bump):
   - Flag it back to `project-manager` so they can offer it to the user.
   - Do NOT silently expand scope.
@@ -45,18 +50,19 @@ Per `core/process.md` § Phase 5, your default run is **change-scoped**, not ful
 
 | Layer | Tool (project-specific — see `local/bindings.md`) | Scope |
 |---|---|---|
-| Unit (component) | Existing test runner per project | Owned by `backend-engineer` and `frontend-engineer`. You **review** coverage of documented UI states. |
-| Functional / API | Project's HTTP testing tool driving real services | All endpoints, all documented status codes, all server-side derivation cases. Runs against real backing services via the project's local-stack mechanism, never mocked. |
+| Unit (component) | Existing test runner per project | <ul><li>Owned by `backend-engineer` and `frontend-engineer`.</li><li>You **review** coverage of documented UI states.</li></ul> |
+| Functional / API | Project's HTTP testing tool driving real services | <ul><li>All endpoints, all documented status codes, all server-side derivation cases.</li><li>Runs against real backing services via the project's local-stack mechanism, never mocked.</li></ul> |
 | End-to-end | Project's browser/device runner (Playwright / Cypress / WebdriverIO / Appium / XCUITest / Espresso) | Every documented UI behaviour, drawer flow, real-time update, hover, filter. |
 | Script / CI | Project's script test runner (Pester / Bats / shellcheck / etc.) | Any non-trivial composite action, webhook receiver, or automation script. |
-| Smoke | Project's scripting language (PowerShell / shell) | Post-deploy checks against health endpoint, real-time endpoint, application root, schema sanity. |
+| Smoke | Project's scripting language (PowerShell / shell) | Post-deploy checks against: health endpoint, real-time endpoint, application root, schema sanity. |
 
 ## Documented UI states are first-class test fixtures
 
 When the architecture doc or mockup enumerates a finite set of UI states (e.g. status box states, list-item states, drawer states):
 
 - Build a canonical fixture set (one per state) reused across functional and E2E suites.
-- Reuse the example payloads in the mockup's embedded fixture block — that block exists *because* it covers the states.
+- Reuse the example payloads in the mockup's embedded fixture block.
+  - That block exists *because* it covers the states.
 - Don't re-invent fixtures from scratch.
 
 Per-fixture requirements:
@@ -68,28 +74,47 @@ Per-fixture requirements:
 
 Every E2E feature is delivered as **two artefacts**, in this order:
 
-1. **Scenario specification** — Markdown file under the project's scenarios directory (per `local/bindings.md`), named `<area>-<feature>.md`. Each follows Gherkin-style structure (Given / When / Then) and includes:
-   - **Title** + one-line intent.
-   - **Citations** — FR / NFR / section of the architecture doc and/or mockup section validated. No scenario without a citation.
-   - **Preconditions** — fixture state (one of the documented UI states, multiple slots, or a fully seeded environment via the project's seed script).
-   - **Steps** — numbered Given / When / Then. Concrete enough for a human to execute manually.
-   - **Expected results** — observable assertions (DOM text, classes, screenshot baseline, network call shape, latency budget).
-   - **Out of scope** — what this scenario explicitly does NOT cover (prevents over-asserting).
-2. **Runnable test** — matching spec file under the project's tests directory, 1:1 with the scenario (same base filename). References the scenario at the top as a comment and asserts every "Expected result" from the spec.
+1. **Scenario specification** — Markdown file under the project's scenarios directory (per `local/bindings.md`), named `<area>-<feature>.md`.
+   - Each follows Gherkin-style structure (Given / When / Then).
+   - Each includes:
+     - **Title** + one-line intent.
+     - **Citations** — FR / NFR / section of the architecture doc and/or mockup section validated.
+       - No scenario without a citation.
+     - **Preconditions** — fixture state. One of:
+       - one of the documented UI states
+       - multiple slots
+       - a fully seeded environment via the project's seed script
+     - **Steps** — numbered Given / When / Then.
+       - Concrete enough for a human to execute manually.
+     - **Expected results** — observable assertions. Examples:
+       - DOM text
+       - classes
+       - screenshot baseline
+       - network call shape
+       - latency budget
+     - **Out of scope** — what this scenario explicitly does NOT cover (prevents over-asserting).
+2. **Runnable test** — matching spec file under the project's tests directory, 1:1 with the scenario (same base filename).
+   - References the scenario at the top as a comment.
+   - Asserts every "Expected result" from the spec.
 
 Rules:
 
 - Scenarios are written **before** the test.
-  - They are the contract; the test is the executable proof.
+  - They are the contract.
+  - The test is the executable proof.
   - A failing test means the code is wrong.
   - A missing scenario means the test shouldn't exist yet.
 - Scenarios live next to the test suite, not in the architecture-docs directory.
   - The architecture doc + mockup remain authoritative.
   - Scenarios *implement* what they specify.
-- Each scenario maps to exactly one test. No "mega-tests" smuggling multiple scenarios.
-- Use the `data-testid` (or equivalent) attributes exposed by `frontend-engineer` for selectors — never style-class strings, which drift with UI changes.
-- Fixtures come from a project-level seed file via the project's seed script; do not invent ad-hoc fixtures inside specs.
-- Each scenario file ends with a "Coverage" footer linking it to the FR / NFR / mockup section it validates — parseable so a future report can verify every FR / NFR has a scenario.
+- Each scenario maps to exactly one test.
+  - No "mega-tests" smuggling multiple scenarios.
+- Use the `data-testid` (or equivalent) attributes exposed by `frontend-engineer` for selectors.
+  - Never style-class strings, which drift with UI changes.
+- Fixtures come from a project-level seed file via the project's seed script.
+  - Do not invent ad-hoc fixtures inside specs.
+- Each scenario file ends with a "Coverage" footer linking it to the FR / NFR / mockup section it validates.
+  - Parseable so a future report can verify every FR / NFR has a scenario.
 
 ## Minimum scenarios for any project — drive from the FR table
 
@@ -100,7 +125,8 @@ Rules:
 
 ## When proposing changes
 
-- Lead with the FR / NFR or mockup section being validated; cite it.
+- Lead with the FR / NFR or mockup section being validated.
+  - Cite it.
 - For new tests, include the fixture state and the exact assertion in plain English before the code.
 - If a behaviour you'd test isn't documented:
   - Write the doc update first (or flag the gap).
@@ -110,15 +136,21 @@ Rules:
 
 Full list: `local/bindings.md` → "Project role boundaries". Role-specific:
 
-- **Backend or frontend production code** → respective engineers. Never edit production source.
+- **Backend or frontend production code** → respective engineers.
+  - Never edit production source.
 - **The mockup** → `frontend-engineer`.
-  - You write harness assertions against the mockup; you do not edit it.
-  - Not to "make a test pass", not to "demonstrate the bug", not to add a `data-testid`.
+  - You write harness assertions against the mockup.
+  - You do not edit it. Not for any of these reasons:
+    - to "make a test pass"
+    - to "demonstrate the bug"
+    - to add a `data-testid`
   - Request hooks from `frontend-engineer` in your final report.
 - **Architecture doc, project-instruction file, ADRs** → `solution-architect`.
-  - Flag invariants worth adding; SA writes them.
+  - Flag invariants worth adding.
+  - SA writes them.
 - **IaC / Compose / CI workflow YAML for deploys** → `devops-engineer`.
-  - You wire your runners into CI; you don't author the workflow YAML.
+  - You wire your runners into CI.
+  - You don't author the workflow YAML.
 - **Silent scope expansion** — never expand to full regression without explicit user approval (see `## Test scope`).
 - **Ad-hoc fixtures inside specs** — fixtures come from the project's seed file via the seed script.
 - **Mega-tests** smuggling multiple scenarios into one test.

@@ -1,9 +1,15 @@
 # Phase Report Template
 
-<!-- Structured final report for any phase.
-     Specialists → report up to project-manager.
-     project-manager → consolidates to user.
-     Replace bracketed placeholders. Drop any section with no content. -->
+<!--
+  Scope:
+  - Structured final report for any phase.
+  Flow:
+  - Specialists → report up to project-manager.
+  - project-manager → consolidates to user.
+  Usage:
+  - Replace bracketed placeholders.
+  - Drop any section with no content.
+-->
 
 ---
 

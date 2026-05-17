@@ -16,7 +16,9 @@
    cp .agents/engineering-team/adapters/agents-md/AGENTS.md ./AGENTS.md
    ```
 
-   If a project-root `AGENTS.md` already exists — merge (don't overwrite); append the engineering-team section to existing project-specific rules.
+   If a project-root `AGENTS.md` already exists:
+   - Merge (don't overwrite).
+   - Append the engineering-team section to existing project-specific rules.
 
 2. **(Gemini users only)** Copy the same content to `GEMINI.md`:
 
@@ -24,13 +26,15 @@
    cp AGENTS.md GEMINI.md
    ```
 
-3. **Run discovery** — open the project in your client (Cursor / Codex / Windsurf / Copilot IDE / etc.) and prompt:
+3. **Run discovery.**
+   - Open the project in your client (Cursor / Codex / Windsurf / Copilot IDE / etc.).
+   - Prompt:
 
-   ```
-   @project-manager run initial discovery
-   ```
+     ```
+     @project-manager run initial discovery
+     ```
 
-   Clients without `@mention` routing — prompt `act as project-manager and run initial discovery`.
+   - Clients without `@mention` routing — prompt `act as project-manager and run initial discovery` instead.
 
 4. **Verify** — prompt `@solution-architect status` (or `act as solution-architect and report status`). Confirm:
    - Canonical charter loaded from `.agents/engineering-team/core/roles/solution-architect.md`.
@@ -52,11 +56,15 @@ On new framework release:
 
 ## Cross-tool layering
 
-Baseline adapter for all AGENTS.md-supporting clients. For clients with native subagent support, layer the dedicated adapter on top:
+Baseline adapter for all AGENTS.md-supporting clients.
+
+For clients with native subagent support, layer the dedicated adapter on top:
 
 | Client | Layer also |
 |---|---|
 | Claude Code | `.agents/engineering-team/adapters/claude/` |
 | Copilot CLI | `.agents/engineering-team/adapters/copilot-cli/` |
 
-Layered installs do not conflict — AGENTS.md provides cross-tool context; the per-client adapter provides native subagent routing.
+Layered installs do not conflict:
+- AGENTS.md provides cross-tool context.
+- The per-client adapter provides native subagent routing.

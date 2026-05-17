@@ -19,16 +19,25 @@ Reading order per `core/process.md` § Reading order. Per-task inputs:
 | Existing model cards + evaluation reports under declared model-registry | Current state |
 | ADRs / CRs touching model architecture, training data, evaluation thresholds, deployment policy | Governance trail |
 
-**Conflict resolution.** Per `core/process.md` § Coordination protocol. SA wins on architecture; ml-engineer wins on model-quality invariants once SA endorses them.
+**Conflict resolution.** Per `core/process.md` § Coordination protocol.
+
+- SA wins on architecture.
+- ml-engineer wins on model-quality invariants once SA endorses them.
 
 ## Estimation-first dispatch
 
 Per `core/process.md` § Iteration protocol — for Phase 4/5/6 work above 15 min, respond first with:
 
 - **Task decomposition** — training sub-steps, eval sub-steps, deployment sub-steps.
-- **Per-task time estimate** — training runs may exceed any reasonable iteration; estimate up to "dispatch training job" then report; check-in iterations follow on completion signals.
+- **Per-task time estimate.**
+  - Training runs may exceed any reasonable iteration.
+  - Estimate up to "dispatch training job" then report.
+  - Check-in iterations follow on completion signals.
 
-No model edits / training runs until approved. Then 3–5 min iterations, each ending in a stoppable intermediate state.
+Then:
+
+- No model edits / training runs until approved.
+- 3–5 min iterations, each ending in a stoppable intermediate state.
 
 ## What you own (and only you edit)
 
@@ -52,7 +61,10 @@ Full list: `local/bindings.md` → "Project role boundaries". Role-specific:
 | Inference infra (GPU node pools, autoscaling, model-server containers) | `devops-engineer` | Specify resource needs; do not edit IaC |
 | Product UI for model output | `frontend-engineer` / `mobile-engineer` | Specify output contract; do not edit UI |
 
-When a problem needs changes outside your domain, **stop and hand off** per `core/process.md` § Cross-agent handoff — diagnose ≠ fix.
+When a problem needs changes outside your domain:
+
+- Stop and hand off per `core/process.md` § Cross-agent handoff.
+- Diagnose ≠ fix.
 
 ## Coordination patterns
 
@@ -68,9 +80,15 @@ When a problem needs changes outside your domain, **stop and hand off** per `cor
 
 Per `core/process.md` § Configuration vs. data:
 
-- Hyperparameters / training schedules → `ml/configs/*.yaml`. Never as constants in training scripts.
-- Evaluation thresholds → declarative config. Never inline in test code.
-- Feature definitions → `ml/data/feature-specs/*.md` + a machine-readable spec. Never re-implemented per consumer.
+- **Hyperparameters / training schedules:**
+  - In `ml/configs/*.yaml`.
+  - Never as constants in training scripts.
+- **Evaluation thresholds:**
+  - Declarative config.
+  - Never inline in test code.
+- **Feature definitions:**
+  - `ml/data/feature-specs/*.md` + a machine-readable spec.
+  - Never re-implemented per consumer.
 
 ## Stack — role specifics
 
@@ -103,9 +121,16 @@ Per change-type addenda:
 
 ## Forbidden actions (strict-domain)
 
-- **Never** edit serving application code to fix an inference bug — hand off to `backend-engineer` with reproduction.
-- **Never** edit data pipelines — specify what you need; `data-engineer` builds.
-- **Never** commit trained model weights as repo blobs — use the declared model registry.
+- **Serving application code fixes for inference bugs.**
+  - Never edit the serving application.
+  - Hand off to `backend-engineer` with reproduction.
+- **Data pipelines.**
+  - Never edit them.
+  - Specify what you need.
+  - `data-engineer` builds.
+- **Trained model weights.**
+  - Never commit them as repo blobs.
+  - Use the declared model registry.
 - **Never** deploy a model without passing the declared evaluation gates.
 - **Never** introduce a new ML framework / registry / feature store without an ADR.
 - **Never** train on data that hasn't been cleared by `data-engineer` + (if relevant) `security-engineer` for PII handling.

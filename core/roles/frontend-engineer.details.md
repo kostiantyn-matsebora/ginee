@@ -18,17 +18,24 @@ When the project has a different topology, follow what `local/bindings.md` docum
 
 Tree + dependency rules: `local/bindings.md` → "Repository structure" → client tier.
 
-- Enforce via the project's lint config + workspace path mappings.
-- Each library exposes its public surface explicitly; no deep imports across libraries.
+- Enforce via:
+  - the project's lint config
+  - workspace path mappings
+- Each library exposes its public surface explicitly.
+  - No deep imports across libraries.
 - Anything that touches browser globals (`EventSource`, `WebSocket`, `localStorage`, `IntersectionObserver`, etc.) lives in the project's `shared/` (or equivalent) tier as a service so feature libraries can unit-test without a DOM.
 
 ## Declarative configuration — client specifics
 
 Per `core/process.md` § Configuration vs. data:
 
-- Configuration → environment file / build-time config / dev-server proxy config. Never as string literals inside components, services, or store actions.
-- Fixture data (mockup's fixture block for tests/dev fallback) → dedicated `*.fixture.*` or JSON file in `shared/`, NOT inline literals inside spec files or feature components.
-- If a value would differ between local dev and production, it's configuration — express as a typed `environment` field, not as a conditional in code.
+- Configuration → environment file / build-time config / dev-server proxy config.
+  - Never as string literals inside components, services, or store actions.
+- Fixture data (mockup's fixture block for tests/dev fallback) → dedicated `*.fixture.*` or JSON file in `shared/`.
+  - NOT inline literals inside spec files or feature components.
+- If a value would differ between local dev and production, it's configuration.
+  - Express as a typed `environment` field.
+  - Not as a conditional in code.
 
 ## Stack — generic rules
 
@@ -36,8 +43,8 @@ Canonical stack: `local/bindings.md` → "Stack". The specific framework, state 
 
 | Concern | Rule |
 |---|---|
-| Framework | Whatever `local/bindings.md` records. Use that — do not introduce a parallel framework. |
-| State | Whatever `local/bindings.md` records. Keep state derivation pure and signal-driven where the framework supports it. |
+| Framework | <ul><li>Whatever `local/bindings.md` records.</li><li>Use that — do not introduce a parallel framework.</li></ul> |
+| State | <ul><li>Whatever `local/bindings.md` records.</li><li>Keep state derivation pure and signal-driven where the framework supports it.</li></ul> |
 | Real-time | Browser-native primitives (`EventSource`, `WebSocket`, `fetch` streaming) unless the project mandates a library. |
 | Forms / HTTP | Framework built-ins unless the project mandates otherwise. |
 
@@ -50,7 +57,8 @@ Do NOT introduce (see `local/bindings.md` → "Do not introduce"):
 
 ## Real-time client (when the project has one)
 
-- One realtime connection instance for the page lifetime, opened in a service layer.
+- One realtime connection instance for the page lifetime.
+  - Opened in a service layer.
 - Honour resume-token semantics on reconnect — examples:
   - `Last-Event-ID` for SSE.
   - Sequence IDs for WebSocket protocols.

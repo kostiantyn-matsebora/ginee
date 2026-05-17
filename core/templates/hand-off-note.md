@@ -1,11 +1,19 @@
 # Hand-off Note Template
 
-<!-- Trigger: engineer discovers a root cause OUTSIDE their domain while working their own task
-              (per core/process.md § Cross-agent handoff — diagnose ≠ fix).
-     Discoverer → diagnoses fully; does NOT fix.
-     Owning role → takes the hand-off, fixes.
-     Discoverer → reviews owner's fix, removes any local workaround.
-     Replace bracketed placeholders. -->
+<!--
+  Trigger:
+  - Engineer discovers a root cause OUTSIDE their domain while working their own task
+    (per core/process.md § Cross-agent handoff — diagnose ≠ fix).
+  Flow:
+  - Discoverer → diagnoses fully.
+  - Discoverer → does NOT fix.
+  - Owning role → takes the hand-off.
+  - Owning role → fixes.
+  - Discoverer → reviews owner's fix.
+  - Discoverer → removes any local workaround.
+  Usage:
+  - Replace bracketed placeholders.
+-->
 
 ---
 
@@ -27,7 +35,14 @@
 
 ## Root cause (verified)
 
-<!-- The bug, in the owning role's domain. Cite file + line + chain of reasoning. -->
+<!--
+  Scope:
+  - The bug, in the owning role's domain.
+  Cite:
+  - File.
+  - Line.
+  - Chain of reasoning.
+-->
 
 ```
 <file:line> — <verbatim relevant excerpt or error>

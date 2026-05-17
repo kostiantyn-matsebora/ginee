@@ -4,13 +4,24 @@ Companion to `core/roles/ai-engineer.md`. Elaborations only; kernel rules are bi
 
 ## Principles — context engineering
 
-1. **Always-loaded ≠ all-knowable.** The project-instruction file is the always-loaded surface for the LLM client. Keep it pointer-rich and short; push detail to lazy-loaded specs.
-2. **One source of truth.** Each rule lives in one file. Other files cite via path + section.
-3. **Cite, don't restate.** A 1-line citation beats a re-explanation; one update propagates without drift.
+1. **Always-loaded ≠ all-knowable.**
+   - The project-instruction file is the always-loaded surface for the LLM client.
+   - Keep it pointer-rich and short.
+   - Push detail to lazy-loaded specs.
+2. **One source of truth.**
+   - Each rule lives in one file.
+   - Other files cite via path + section.
+3. **Cite, don't restate.**
+   - A 1-line citation beats a re-explanation.
+   - One update propagates without drift.
 4. **Structure beats prose.** Bullets / tables / headings parse faster and tokenize tighter than paragraphs.
-5. **Section atomicity.** Every section reads standalone. If section A depends on section B, cite B explicitly.
+5. **Section atomicity.**
+   - Every section reads standalone.
+   - If section A depends on section B, cite B explicitly.
 6. **Vocabulary consistency.** One term per concept across all docs.
-7. **Front-load instructions.** Most important content first; LLM attention is non-uniform.
+7. **Front-load instructions.**
+   - Most important content first.
+   - LLM attention is non-uniform.
 8. **Imperative voice for rules.** "Do X." / "Never Y." — not "It is recommended that you should consider…".
 9. **Forbidden actions as lists.** Consolidate negations into one block per role.
 10. **ASCII first.** Avoid unusual unicode that wastes tokens or breaks tokenizers.
@@ -26,10 +37,10 @@ Companion to `core/roles/ai-engineer.md`. Elaborations only; kernel rules are bi
 
 | Trigger | Action |
 |---|---|
-| File > ~15K chars AND mixes generic + project-specific content | Extract generic part to a new sibling file; replace with pointer block; update cross-references. |
-| Same long rule cited from 3+ places | Move to own file; replace each site with cross-reference. |
-| Role file > ~10K chars AND has discipline-specific deep sections | Extract deep sections to `core/roles/<role>-<topic>.md` siblings (or `local/roles/<role>-<topic>.md` for project-local roles); role file links to them. |
-| Skill / prompt bundling unrelated concerns | Split into one-skill-per-concern; orchestrator loads only what's needed. |
+| File > ~15K chars AND mixes generic + project-specific content | <ol><li>Extract generic part to a new sibling file.</li><li>Replace with pointer block.</li><li>Update cross-references.</li></ol> |
+| Same long rule cited from 3+ places | <ol><li>Move to own file.</li><li>Replace each site with cross-reference.</li></ol> |
+| Role file > ~10K chars AND has discipline-specific deep sections | <ol><li>Extract deep sections to `core/roles/<role>-<topic>.md` siblings (or `local/roles/<role>-<topic>.md` for project-local roles).</li><li>Role file links to them.</li></ol> |
+| Skill / prompt bundling unrelated concerns | <ol><li>Split into one-skill-per-concern.</li><li>Orchestrator loads only what's needed.</li></ol> |
 
 ### Post-split checklist
 
@@ -46,7 +57,10 @@ When a split produces new files, you MAY group them in a subdirectory rather tha
 - **Cap.** Maximum **2-3 directory levels including the parent**.
   - OK: `docs/` → `docs/process/` → `docs/process/<file>.md`.
   - NOT OK: `docs/process/governance/cycles/<file>.md` — exceeds the cap.
-- **Why the cap.** Deeper nesting hurts discoverability and inflates cross-reference paths; flat sometimes beats deeply nested.
+- **Why the cap.**
+  - Deeper nesting hurts discoverability.
+  - Deeper nesting inflates cross-reference paths.
+  - Flat sometimes beats deeply nested.
 
 ## Anti-patterns
 
@@ -71,4 +85,7 @@ Invoked **between** lifecycle phases when:
 Coordination with `solution-architect`:
 
 - Use standard cross-agent handoff (per `core/process.md` § Cross-agent handoff — diagnose ≠ fix).
-- On noticing a semantic issue mid-optimization → flag + hand off; **do not** fix.
+- On noticing a semantic issue mid-optimization:
+  1. Flag.
+  2. Hand off.
+  3. **Do not** fix.
