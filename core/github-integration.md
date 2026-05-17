@@ -51,15 +51,16 @@ Resolution rules:
 
 ## Command targeting — primary vs framework
 
-Default target is the primary repo. The `framework-` prefix routes the same operation to the framework repo:
+Default target is the primary repo. The `framework-` prefix routes **metadata-only** operations (file / triage / promote) to the framework repo:
 
 | Default (primary) | Framework-targeted variant |
 |---|---|
 | `@project-manager file bug <title>` | `@project-manager file framework-bug <title>` |
 | `@project-manager file feature <title>` | `@project-manager file framework-feature <title>` |
-| `@project-manager pick up #<N>` | `@project-manager pick up framework#<N>` |
 | `@project-manager triage` | `@project-manager triage framework` |
 | `@project-manager promote discussion #<N>` | `@project-manager promote discussion framework#<N>` |
+
+`pick up` has **no `framework-` variant.** Addressing an issue requires the source — that means working in the framework repo, where target = origin = framework and standard `@project-manager pick up #<N>` applies. From an adopter project (no framework source available), PM rejects framework-issue pickup attempts with: *"Clone `<framework-repo>` separately, cd into it, then `@project-manager pick up #<N>`."*
 
 If `github.framework-repo` is unset, framework-targeted commands fail fast with a one-line "framework-repo not configured" message + an offer to populate the key. No silent fallback to primary.
 
@@ -112,11 +113,11 @@ Trigger: `@project-manager file bug <title>` / `file feature <title>` (→ prima
 
 ## Inbound — pick up an issue
 
-Trigger: `@project-manager pick up #<N>` (→ primary) or `@project-manager pick up framework#<N>` (→ framework upstream). **Never auto-picks.**
+Trigger: `@project-manager pick up #<N>` — always targets the primary repo (= the working tree's origin). **Never auto-picks.** **No `framework-` variant** — see § Command targeting.
 
-1. Resolve target repo (primary unless `framework#` prefix on the issue id). Fetch:
+1. Fetch:
    ```
-   gh issue view <N> --repo <target-repo> --json title,body,labels,state,comments
+   gh issue view <N> --repo <primary-repo> --json title,body,labels,state,comments
    ```
 2. Validate:
    - State must be `OPEN`.
