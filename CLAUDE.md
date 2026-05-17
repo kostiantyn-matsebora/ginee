@@ -123,7 +123,17 @@ Canonical in the plan file. Summary:
 The framework is load-bearing LLM context for every adopter on every task. Aggregate weight is the dominant adopter cost: today `core/` alone is ~160K, before `local/`, project docs, or task materials. Every byte we add multiplies across every dispatch in every project. Treat token weight as a first-class constraint, on par with correctness.
 
 - **Concise + LLM-optimized.** Every framework file (`core/`, `adapters/`, `extras/`) is loaded into the model's context on every adopter task. Write for that audience. Cut filler, redundant restatements, marketing tone, and "in this section we will explore" preambles. Every sentence must earn its tokens.
-- **Structure over prose — always.** Bullets, numbered lists, tables, headings. Never multi-sentence prose paragraphs where a list works. Steps and sequences → numbered list. Choices and mappings → table. Definitions → term: gloss. One idea per bullet; a bullet wanting three sentences gets promoted to a sub-list or table. This is the same rule as `core/process.md § Documentation style`, but in framework files it is binding, not aspirational.
+- **Structure over prose — always.** Convert prose into the smallest readable structure that preserves every rule. Available shapes:
+  - Bullets, numbered lists, tables, headings, nested sub-lists, multi-level trees, definition lines (`term — gloss`).
+  - Any combination — bullets containing tables, tables with bulleted cells, nested sub-bullets under a parent bullet — is fair game when it improves LLM parse-ability OR human scannability.
+  - **Line count is not the constraint; byte count + parseability are.** A 10-line nested list that replaces a 4-line dense paragraph is a win: same bytes (or fewer), each rule on its own line, no connectives to disambiguate.
+  - Conversion rules:
+    - Steps / sequences → numbered list.
+    - Choices, mappings, triggers→actions, role→responsibility → table.
+    - "X means Y" → `**X.** Y` on its own line.
+    - Multi-rule bullet ("do A; also B; warn about C") → parent bullet + sub-bullets, one rule per line.
+    - Prose paragraph stating > 2 rules → restructure. No exceptions.
+  - Same rule as `core/process.md § Documentation style`, but in framework files it is **binding, not aspirational**.
 - **Dispatch `ai-engineer` to optimize framework files** whenever a file grows materially, a new artefact lands, or a structural change touches more than one file. `ai-engineer`'s charter is context economy + load topology — that's exactly the work. Hard threshold: any framework file change above ~50 lines net-added should be followed by an `ai-engineer` optimization pass under the lossless rule before commit. Adding new role files, templates, or adapter sections always triggers an optimization pass.
 
 ## Resuming work in a new session
