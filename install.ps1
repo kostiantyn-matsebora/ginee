@@ -115,6 +115,31 @@ if (-not $Adapter) {
 $adapterDir = Join-Path $frameworkDir "adapters\$Adapter"
 $installNote = Join-Path $adapterDir 'install.md'
 
+# --- Prune framework-dev cruft from the adopter's framework dir -------------
+# Adopters need: core/ (incl. MIGRATIONS), adapters/_shared + chosen adapter,
+# extras/, local/ skeleton. Everything else is framework-dev only.
+$pruneRoots = @(
+  '.github',         # release CI for the framework's own repo
+  '.claude',         # framework's own working state
+  '.gitignore',
+  '.dockerignore',
+  'install.ps1',     # installer; not invoked from inside .agents/
+  'install.sh',
+  'PLAN.md',         # framework design doc
+  'CLAUDE.md',       # framework's own project instructions (would shadow adopter's notion)
+  'README.md'        # install/marketing; references framework's GitHub
+)
+foreach ($p in $pruneRoots) {
+  $path = Join-Path $frameworkDir $p
+  if (Test-Path $path) { Remove-Item -Recurse -Force $path }
+}
+# Drop unchosen adapter subdirs (keep _shared + the selected one)
+$adaptersRoot = Join-Path $frameworkDir 'adapters'
+$keepAdapters = @('_shared', $Adapter)
+Get-ChildItem -Directory $adaptersRoot | Where-Object { $keepAdapters -notcontains $_.Name } |
+  ForEach-Object { Remove-Item -Recurse -Force $_.FullName }
+Write-Host "Pruned framework-dev files (release CI, other adapters, design docs)" -ForegroundColor DarkGray
+
 Write-Host ""
 Write-Host "Adapter '$Adapter' will be installed per:" -ForegroundColor Cyan
 Write-Host "  $installNote"

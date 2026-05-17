@@ -127,6 +127,21 @@ fi
 ADAPTER_DIR="$FRAMEWORK_DIR/adapters/$ADAPTER"
 INSTALL_NOTE="$ADAPTER_DIR/install.md"
 
+# --- Prune framework-dev cruft from the adopter's framework dir ------------
+# Adopters need: core/ (incl. MIGRATIONS), adapters/_shared + chosen adapter,
+# extras/, local/ skeleton. Everything else is framework-dev only.
+for p in .github .claude .gitignore .dockerignore install.ps1 install.sh PLAN.md CLAUDE.md README.md; do
+  rm -rf "$FRAMEWORK_DIR/$p"
+done
+# Drop unchosen adapter subdirs (keep _shared + the selected one)
+for d in "$FRAMEWORK_DIR"/adapters/*/; do
+  name="$(basename "$d")"
+  if [ "$name" != "_shared" ] && [ "$name" != "$ADAPTER" ]; then
+    rm -rf "$d"
+  fi
+done
+echo "Pruned framework-dev files (release CI, other adapters, design docs)"
+
 echo ""
 echo "Adapter '$ADAPTER' will be installed per:"
 echo "  $INSTALL_NOTE"
