@@ -161,6 +161,7 @@ switch ($Adapter) {
     Write-Host "Copied 7 cardinal subagents to .claude/agents/" -ForegroundColor Green
     $skillsDir = Join-Path $Target '.claude\skills'
     New-Item -ItemType Directory -Force $skillsDir | Out-Null
+    Get-ChildItem $skillsDir -Filter 'ginee-*' -Directory -ErrorAction SilentlyContinue | Remove-Item -Recurse -Force
     Copy-Item -Recurse (Join-Path $frameworkDir 'core\skills\ginee-*') $skillsDir
     Write-Host "Copied 10 ginee-* skills to .claude/skills/" -ForegroundColor Green
 
@@ -191,6 +192,7 @@ switch ($Adapter) {
     Write-Host "Copied 7 cardinal subagents to .github/agents/*.agent.md" -ForegroundColor Green
     $skillsDir = Join-Path $Target '.agents\skills'
     New-Item -ItemType Directory -Force $skillsDir | Out-Null
+    Get-ChildItem $skillsDir -Filter 'ginee-*' -Directory -ErrorAction SilentlyContinue | Remove-Item -Recurse -Force
     Copy-Item -Recurse (Join-Path $frameworkDir 'core\skills\ginee-*') $skillsDir
     Write-Host "Copied 10 ginee-* skills to .agents/skills/ (cross-tool path per AgentSkills convention)" -ForegroundColor Green
   }

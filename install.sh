@@ -162,6 +162,7 @@ case "$ADAPTER" in
     cp "$FRAMEWORK_DIR"/adapters/_shared/agents/*.md "$TARGET/.claude/agents/"
     echo "Copied 7 cardinal subagents to .claude/agents/"
     mkdir -p "$TARGET/.claude/skills"
+    rm -rf "$TARGET"/.claude/skills/ginee-*
     cp -r "$FRAMEWORK_DIR"/core/skills/ginee-* "$TARGET/.claude/skills/"
     echo "Copied 10 ginee-* skills to .claude/skills/"
 
@@ -190,6 +191,7 @@ case "$ADAPTER" in
     done
     echo "Copied 7 cardinal subagents to .github/agents/*.agent.md"
     mkdir -p "$TARGET/.agents/skills"
+    rm -rf "$TARGET"/.agents/skills/ginee-*
     cp -r "$FRAMEWORK_DIR"/core/skills/ginee-* "$TARGET/.agents/skills/"
     echo "Copied 10 ginee-* skills to .agents/skills/ (cross-tool path per AgentSkills convention)"
     ;;
