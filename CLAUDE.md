@@ -116,7 +116,15 @@ Canonical in the plan file. Summary:
 - `local/` is adopter-owned — survives updates.
 - Lossless rule for restructuring: any pass that touches structure must prove every rule/invariant survives (per `core/roles/ai-engineer.md`).
 - SAD-freeze + CR/ADR pattern applies once this project's own architecture doc is finalized (not yet — currently in design phase).
-- Follow `core/process.md § Documentation style — structure over prose` for all new docs.
+- Follow `core/process.md § Documentation style — structure over prose` and `## Framework authoring — context economy` below for all new docs.
+
+## Framework authoring — context economy
+
+The framework is load-bearing LLM context for every adopter on every task. Aggregate weight is the dominant adopter cost: today `core/` alone is ~160K, before `local/`, project docs, or task materials. Every byte we add multiplies across every dispatch in every project. Treat token weight as a first-class constraint, on par with correctness.
+
+- **Concise + LLM-optimized.** Every framework file (`core/`, `adapters/`, `extras/`) is loaded into the model's context on every adopter task. Write for that audience. Cut filler, redundant restatements, marketing tone, and "in this section we will explore" preambles. Every sentence must earn its tokens.
+- **Structure over prose — always.** Bullets, numbered lists, tables, headings. Never multi-sentence prose paragraphs where a list works. Steps and sequences → numbered list. Choices and mappings → table. Definitions → term: gloss. One idea per bullet; a bullet wanting three sentences gets promoted to a sub-list or table. This is the same rule as `core/process.md § Documentation style`, but in framework files it is binding, not aspirational.
+- **Dispatch `ai-engineer` to optimize framework files** whenever a file grows materially, a new artefact lands, or a structural change touches more than one file. `ai-engineer`'s charter is context economy + load topology — that's exactly the work. Hard threshold: any framework file change above ~50 lines net-added should be followed by an `ai-engineer` optimization pass under the lossless rule before commit. Adding new role files, templates, or adapter sections always triggers an optimization pass.
 
 ## Resuming work in a new session
 
