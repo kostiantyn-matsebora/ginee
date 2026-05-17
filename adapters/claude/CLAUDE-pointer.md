@@ -12,7 +12,7 @@ This project uses the [`engineering-team`](engineering-team/) framework. **Read 
 - `engineering-team/local/bindings.md` — project-specific routing, role boundaries, source-of-truth, stack
 - `engineering-team/local/project-profile.md` — discovered project context (filled by `@project-manager` on first run)
 
-Dispatch via the cardinal roles in `.claude/agents/` (installed from `engineering-team/adapters/claude/agents/`). The orchestrator is `project-manager`. Custom roles live in `engineering-team/local/roles/`.
+Dispatch via the cardinal roles in `.claude/agents/` (installed from `engineering-team/adapters/_shared/agents/` per `engineering-team/adapters/claude/install.md`). The orchestrator is `project-manager`. Custom roles live in `engineering-team/local/roles/`.
 
 On first install, prompt: `@project-manager run initial discovery`.
 

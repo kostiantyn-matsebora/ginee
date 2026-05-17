@@ -163,8 +163,8 @@ Role names: ship current ones as canonical (`frontend-engineer`, ...) with gener
 | P3 | `core/templates/*.md` | extract templates implicit in current process |
 | P4 | `adapters/claude/` | new — smoke-tested by re-importing into deployment-dashboard |
 | P5 | `project-manager`'s discovery flow | new — tested against deployment-dashboard |
-| P6 | `adapters/copilot/`, `adapters/cursor/` | new |
-| P7 | `adapters/codex/`, `adapters/generic/` | new |
+| P6 | `adapters/copilot-cli/` (Copilot CLI tier-1) | new |
+| P7 | `adapters/agents-md/` (shared AGENTS.md for Codex / Cursor / Windsurf / Amp / Devin / Factory / Jules / Copilot IDE — tier-2) + `adapters/generic/` (INSTRUCTIONS.md fallback — tier-3) | new |
 | P8 | `extras/roles/*.md` (5–6 specialists) | new |
 | P9 | `README.md` with per-client pointer lines + tier-0/1/2 distribution | new + `install.ps1` / `install.sh` + GH Release workflow |
 | Fast-follower | `npx` CLI + GitHub template repo | new |
