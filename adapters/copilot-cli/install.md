@@ -41,14 +41,14 @@
 
 ## Updates
 
-When the framework releases a new version:
+On new framework release:
 
 1. Re-fetch `.agents/engineering-team/core/` + `.agents/engineering-team/adapters/` + `.agents/engineering-team/extras/` (your `local/` survives).
 2. Re-run step 1 above — pointers may have been refined.
-3. Read `.agents/engineering-team/core/MIGRATIONS/` for any breaking-change notes.
+3. Read `.agents/engineering-team/core/MIGRATIONS/` for breaking-change notes.
 
 ## Uninstall
 
 1. Delete the 7 cardinal files from `.github/agents/` (and any custom roles).
 2. (If installed) Uninstall the `agents-md` adapter per its `install.md`.
-3. Optionally delete the `.agents/engineering-team/` directory.
+3. Optionally delete `.agents/engineering-team/`.

@@ -1,8 +1,8 @@
 # Project Bindings — `local/bindings.md` Template
 
-<!-- Per-project. project-manager writes during discovery; maintained as project evolves. -->
-<!-- Records: role→paths, forbidden role-crossings, hard constraints (NFRs), stack, tie-breaker rules, repo structure. -->
-<!-- Replace bracketed placeholders. Drop sections with no content. -->
+<!-- Per-project. Authored by project-manager during discovery; maintained as project evolves.
+     Records: role→paths · forbidden role-crossings · hard constraints (NFRs) · stack · tie-breakers · repo structure.
+     Replace bracketed placeholders. Drop sections with no content. -->
 
 ---
 
@@ -17,11 +17,13 @@
 | `<ADR directory path>` | Architecture decision records | `solution-architect` |
 | `<CR directory path>` | Change requests | `solution-architect` |
 
-**Tie-breaker** (architecture doc vs. mockup):
-- Visual / interactive behaviour → mockup wins; flag architecture doc for update.
-- API / data / stack / infrastructure → architecture doc wins; flag mockup for update.
+**Tie-breakers.**
 
-Conflict between request / instinct / existing code and the docs → **stop, flag for owning role**. Doc update lands first, code follows.
+| Conflict | Winner | Action |
+|---|---|---|
+| Visual / interactive behaviour: architecture doc vs. mockup | mockup | flag architecture doc for update |
+| API / data / stack / infrastructure: architecture doc vs. mockup | architecture doc | flag mockup for update |
+| Request / instinct / existing code vs. docs | docs | **stop, flag owning role** — doc update lands first, code follows |
 
 ## Repository structure
 
@@ -37,7 +39,10 @@ Conflict between request / instinct / existing code and the docs → **stop, fla
 └── ...
 ```
 
-Per-tier dependency rules: `<e.g. "feature libs may only reference shared; shared may not reference feature libs">`
+**Per-tier dependency rules:**
+
+- `<e.g. feature libs may only reference shared>`
+- `<e.g. shared may not reference feature libs>`
 
 ## Stack — non-negotiable
 
@@ -76,7 +81,8 @@ Violation → **stop, propose a doc update first**.
 
 ## Roles — deterministic routing
 
-<!-- 7 cardinals + local/roles/*. Do not do role-owned work in the orchestrator thread. -->
+<!-- 7 cardinals + local/roles/*.
+     Orchestrator thread does NOT do role-owned work — dispatch instead. -->
 
 | Role | Concerns |
 |---|---|
@@ -93,7 +99,8 @@ Task spans two roles → dispatch in parallel per `core/process.md` § Dispatch 
 
 ## Project role boundaries
 
-<!-- Forbidden role-crossings. Each row is a hard stop — propose a hand-off in the final report instead. -->
+<!-- Forbidden role-crossings. Each row is a hard stop.
+     Cross-domain need surfaced mid-task → propose a hand-off in the final report; do NOT patch across. -->
 
 | Role | Must NOT edit |
 |---|---|

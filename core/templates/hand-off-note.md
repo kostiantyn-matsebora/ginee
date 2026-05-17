@@ -1,8 +1,11 @@
 # Hand-off Note Template
 
-<!-- Use when an engineer discovers a root cause OUTSIDE their domain while working their own task (per core/process.md § Cross-agent handoff — diagnose ≠ fix). -->
-<!-- Discoverer diagnoses fully and does NOT fix. Owning role takes the hand-off, fixes, and the discoverer reviews + removes any local workaround. -->
-<!-- Replace bracketed placeholders. -->
+<!-- Trigger: engineer discovers a root cause OUTSIDE their domain while working their own task
+              (per core/process.md § Cross-agent handoff — diagnose ≠ fix).
+     Discoverer → diagnoses fully; does NOT fix.
+     Owning role → takes the hand-off, fixes.
+     Discoverer → reviews owner's fix, removes any local workaround.
+     Replace bracketed placeholders. -->
 
 ---
 
@@ -39,7 +42,7 @@
 |---|---|
 | `<command / inspection>` | `<output / observation>` |
 
-Attach logs / screenshots / diff snippets where load-bearing.
+**Attach** logs / screenshots / diff snippets where load-bearing.
 
 ## What the discoverer tried and ruled out
 
@@ -56,15 +59,21 @@ Attach logs / screenshots / diff snippets where load-bearing.
 - **Why:** `<one line — usually "unblock current task">`
 - **Removal trigger:** `<who removes it + when — typically "discoverer, once owner's fix lands">`
 
-Workarounds are labelled in the code (comment: `// WORKAROUND — see hand-off <date> to <owning role>`). Both roles acknowledge in their reports.
+**Labelling rules:**
+
+- Code marker: `// WORKAROUND — see hand-off <date> to <owning role>`.
+- Both roles acknowledge the workaround in their reports.
 
 ## Out-of-competence — discoverer will NOT fix
 
-The forbidden role-crossings table (`local/bindings.md` → "Project role boundaries") makes this a hard stop. Patching across domains causes silent contract drift.
-
-The owning role takes it from here.
+- **Hard stop.** Forbidden role-crossings table (`local/bindings.md` → "Project role boundaries").
+- **Why.** Patching across domains causes silent contract drift.
+- **Next.** Owning role takes it from here.
 
 ## Coordination
 
-- **Both roles stay engaged.** Owner fixes; discoverer reviews and removes the workaround.
-- **Cross-reference.** Owner's commit/PR references this hand-off note; discoverer's removal commit references both.
+| Role | Action |
+|---|---|
+| Owner | Fixes; commit/PR references this hand-off note. |
+| Discoverer | Reviews owner's fix; removes the workaround; removal commit references both. |
+| Both | Stay engaged through resolution. |

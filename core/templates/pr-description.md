@@ -1,17 +1,22 @@
 # Pull-Request Description Template
 
-<!-- Use for every PR landing code, tests, infra, or docs. Cite the requirement / NFR / mockup section / CR / ADR. -->
-<!-- Replace bracketed placeholders. Drop sections that yield no content. -->
+<!-- Use for every PR landing code · tests · infra · docs.
+     Every PR cites: requirement / NFR / mockup section / CR / ADR.
+     Replace bracketed placeholders. Drop sections with no content. -->
 
 ---
 
 ## What
 
-`<one or two sentences — imperative voice>`
+<!-- One or two sentences, imperative voice. -->
+
+`<change summary>`
 
 ## Why
 
-`<one or two sentences — trigger (TODO line / CR / defect / explicit user request). Reference the source.>`
+<!-- One or two sentences. Trigger = TODO line / CR / defect / explicit user request. Reference the source. -->
+
+`<trigger + reference>`
 
 ## Cites
 
@@ -24,7 +29,7 @@
 | ADR | `<ADR-NNNN>` (new architectural decision) |
 | Hand-off note | `<path or link>` (when resolving cross-domain hand-off) |
 
-No source → no PR. If uncited by something authoritative, write the doc update first or flag the gap.
+**No source → no PR.** Uncited by something authoritative → write the doc update first, or flag the gap.
 
 ## Domain breakdown (for cross-domain PRs)
 
@@ -36,7 +41,10 @@ No source → no PR. If uncited by something authoritative, write the doc update
 
 ## Cross-domain sign-offs
 
-<!-- For wire-contract breaking changes, infra changes affecting application config, or any cross-domain bug fix. -->
+<!-- Required when PR touches any of:
+     · wire-contract breaking change
+     · infra change affecting application config
+     · cross-domain bug fix -->
 
 - [ ] `solution-architect` — architecture-doc / CR / ADR landed
 - [ ] `backend-engineer` — wire shape confirmed
@@ -54,7 +62,7 @@ No source → no PR. If uncited by something authoritative, write the doc update
 | `<resource>` | `<USD/mo>` | `<USD/mo>` | `<+/- USD>` |
 | **Total** | | | |
 
-Cost-cap NFR check: `<still under | exceeds — explain>`.
+**Cost-cap NFR check:** `<still under | exceeds — explain>`.
 
 ## Verification log
 
@@ -62,11 +70,11 @@ Cost-cap NFR check: `<still under | exceeds — explain>`.
 |---|---|
 | `<build / test / lint command>` | `<exit code / pass-fail / counts>` |
 
-<!-- For PRs touching a user-facing surface, manual smoke against the running stack (not the mockup). -->
+<!-- PRs touching a user-facing surface → manual smoke against the running stack (NOT the mockup). -->
 
 - `<one line per new flow>`
 
-If manual smoke wasn't possible (e.g. headless), state so explicitly. Do not claim PASS without doing it.
+**Manual smoke skipped** (e.g. headless): state so explicitly. **Never** claim PASS without doing it.
 
 ## Open issues / follow-ups
 

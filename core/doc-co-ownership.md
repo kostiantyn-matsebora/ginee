@@ -2,7 +2,13 @@
 
 Load-on-demand definition. Fetched when an SA / ai-engineer collaboration is required (new rule landing, doc grows past threshold, cross-reference repair, structure dispute). Default tasks do not load this file.
 
-Documentation (project-instruction files, `core/process.md`, ADRs, READMEs, role definitions, skills) is co-owned: `solution-architect` owns **semantics**; `ai-engineer` owns **shape and load topology**. Neither overrides the other's invariants. Runs under `core/process.md § Iteration protocol`.
+**Co-ownership.**
+
+- **Documentation in scope.** project-instruction files, `core/process.md`, ADRs, READMEs, role definitions, skills.
+- **`solution-architect`** owns semantics.
+- **`ai-engineer`** owns shape + load topology.
+- Neither overrides the other's invariants.
+- Runs under `core/process.md § Iteration protocol`.
 
 | Scenario | Routing |
 |---|---|

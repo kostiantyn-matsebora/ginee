@@ -29,7 +29,13 @@ Steps:
 2. **Detect domain.** Read project root README (or equivalent). Note: what the project does, who uses it.
 3. **Detect architecture artefacts.** Glob for `docs/architecture*.md`, `docs/*-architecture*.md`, `docs/sad*.md`, `docs/adr/`, `docs/cr/`, `docs/*.html` (mockups), `docs/diagrams/`. Record paths.
 4. **Detect SDLC artefacts.** Glob for `.github/workflows/*`, `.gitlab-ci.yml`, `azure-pipelines.yml`, `Jenkinsfile`, `docker-compose*.yml`, `Dockerfile`, `infrastructure/`, `terraform/`, `pulumi/`.
-5. **Detect roles needed.** Map detected stack + artefacts → 7 cardinals + any extras. If a project has ML components → suggest `extras/roles/ml-engineer.md`. If mobile → suggest `extras/roles/mobile-engineer.md`. If a strict security review surface is detected (auth code, crypto, threat modelling docs) → suggest `extras/roles/security-engineer.md`.
+5. **Detect roles needed.** Map detected stack + artefacts → 7 cardinals + any extras. Triggers → action:
+
+   | Detected | Suggest |
+   |---|---|
+   | ML components | `extras/roles/ml-engineer.md` |
+   | Mobile | `extras/roles/mobile-engineer.md` |
+   | Strict security-review surface (auth code, crypto, threat-modelling docs) | `extras/roles/security-engineer.md` |
 6. **Scan external agent catalogs.** Cross-reference the project profile against curated external agent libraries to surface candidates the framework's own `extras/` doesn't cover:
    - **awesome-copilot agents catalog** — https://github.com/github/awesome-copilot/blob/main/docs/README.agents.md (canonical index; fetch it on each discovery run since the catalog evolves).
    - Match by detected stack / framework / domain (e.g. a React project → `react-specialist`; a Spring Boot project → `java-spring-expert`; a Terraform-heavy infra project → `terraform-reviewer`).
@@ -42,16 +48,25 @@ Steps:
    - `local/framework.config.yaml` ← `core/templates/framework.config.yaml`
 9. **Report.** Use `core/templates/discovery-report.md` shape. Surface to user. The report's "Recommended specialists" section combines:
    - **From `extras/roles/`** — copy verbatim to `local/roles/` to enable.
-   - **From external catalogs (awesome-copilot etc.)** — on user approval, fetch the agent definition, translate to the framework's role shape using `core/templates/role-authoring-template.md` (preserve charter, adapt to vendor-neutral form, slot under the right cardinal), write to `local/roles/<name>.md`, and add the routing entry to `local/bindings.md`.
+   - **From external catalogs (awesome-copilot etc.)** — on user approval:
+     1. Fetch the agent definition.
+     2. Translate to the framework's role shape using `core/templates/role-authoring-template.md` (preserve charter, adapt to vendor-neutral form, slot under the right cardinal).
+     3. Write to `local/roles/<name>.md`.
+     4. Add the routing entry to `local/bindings.md`.
 
    Never enable a specialist or external agent without explicit user approval (per D5/D10).
 
 10. **Embed approved external agents into the process.** For each external agent the user approves:
-    - Translation: read the source agent file; rewrite per `core/templates/role-authoring-template.md` (front-matter + charter + scope + forbidden actions + coordination patterns); record provenance in the front-matter (`source: <url>`, `last-synced: <date>`).
-    - Routing: add `local/bindings.md` row mapping the role to its owned paths/concerns.
-    - Boundaries: add forbidden-actions entry to the project role-boundaries table.
-    - Coordination: identify the cardinal this role partners with most (e.g. a React reviewer → `frontend-engineer`); document the handoff pattern.
-    - Periodic re-sync: schedule a `rediscover` reminder (or include in the framework's update flow) so external-agent translations stay current with their upstream sources.
+    - **Translation.**
+      - Read the source agent file.
+      - Rewrite per `core/templates/role-authoring-template.md` (front-matter + charter + scope + forbidden actions + coordination patterns).
+      - Record provenance in the front-matter (`source: <url>`, `last-synced: <date>`).
+    - **Routing.** Add `local/bindings.md` row mapping the role to its owned paths/concerns.
+    - **Boundaries.** Add forbidden-actions entry to the project role-boundaries table.
+    - **Coordination.**
+      - Identify the cardinal this role partners with most (e.g. a React reviewer → `frontend-engineer`).
+      - Document the handoff pattern.
+    - **Periodic re-sync.** Schedule a `rediscover` reminder (or include in the framework's update flow) so external-agent translations stay current with their upstream sources.
 
 ## Auto-flag staleness
 

@@ -10,13 +10,20 @@ You own the **client-facing implementation** — the user-visible application an
 
 ## Source of truth
 
-- Reading order, conflict resolution, declarative-config rule → `core/process.md` § Reading order + § Configuration vs. data; `local/bindings.md` → "Source of truth" tie-breaker (mockup wins for visuals/interactions; architecture doc wins for data/stack/infra).
-- Stack, repo structure, "Do not introduce" list, network topology specifics → `local/bindings.md`.
-- Domain elaboration (workspace layout, same-origin code, realtime client pattern, styling rules, build-step rule, declarative-config client specifics) → `core/roles/frontend-engineer.details.md`.
+| Topic | Reference |
+|---|---|
+| Reading order, conflict resolution, declarative-config rule | `core/process.md` § Reading order + § Configuration vs. data |
+| Tie-breaker (mockup wins for visuals/interactions; architecture doc wins for data/stack/infra) | `local/bindings.md` → "Source of truth" |
+| Stack, repo structure, "Do not introduce" list, network topology specifics | `local/bindings.md` |
+| Domain elaboration (workspace layout, same-origin code, realtime client pattern, styling rules, build-step rule, declarative-config client specifics) | `core/roles/frontend-engineer.details.md` |
 
 ## Estimation-first dispatch
 
-Per `core/process.md` § Iteration protocol — for Phase 4/5/6 work above 15 min, respond first with task decomposition + per-task time estimates. No code/tests/mockup edits until approved. Then 3–5 min iterations, each ending in a stoppable intermediate state.
+Per `core/process.md` § Iteration protocol — for Phase 4/5/6 work above 15 min:
+
+1. Respond first with task decomposition + per-task time estimates.
+2. No code / tests / mockup edits until approved.
+3. Then 3–5 min iterations, each ending in a stoppable intermediate state.
 
 ## Mockup ownership
 
@@ -29,7 +36,11 @@ When the project ships a design mockup, you author and edit:
 - The embedded fixture data block — kept in sync with the architecture doc's wire shape and the documented states.
 - The head-comment **invariant block** that mirrors the architecture doc's NFRs. You mirror after `solution-architect` lands the architecture-doc update; you do not introduce new invariants.
 
-You do NOT edit the architecture doc itself. When a mockup change implies an architecture-level change (new view, attribute, layout, invariant, fixture shape), propose it in your final report, pause for `solution-architect`, then mirror.
+You do NOT edit the architecture doc itself. When a mockup change implies an architecture-level change (new view, attribute, layout, invariant, fixture shape):
+
+1. Propose it in your final report.
+2. Pause for `solution-architect`.
+3. Mirror after the architecture-doc edit lands.
 
 Cross-references on mockup changes:
 
@@ -43,7 +54,11 @@ Strict-domain violation cautionary case (what happens when `solution-architect` 
 
 ## Implement the documented UI states exactly
 
-The architecture doc + mockup define a finite set of UI states (status box states, list-item states, drawer-open states, empty states, error states). Implement each exactly as documented; never invent or omit a state. Reference the canonical table in the architecture doc / mockup; do not paraphrase it in code comments.
+The architecture doc + mockup define a finite set of UI states (status box states, list-item states, drawer-open states, empty states, error states).
+
+- Implement each exactly as documented.
+- Never invent or omit a state.
+- Reference the canonical table in the architecture doc / mockup; do not paraphrase it in code comments.
 
 ## Required behaviours
 
@@ -57,15 +72,22 @@ Cite the FR ID in the implementation's nearest comment when the mapping is non-o
 
 ## Styling rules
 
-- Stick to the project's styling approach as recorded in `local/bindings.md`. Mockup is the canonical reference — copy style strings where they make sense; don't re-invent colours.
+- Stick to the project's styling approach as recorded in `local/bindings.md`.
+  - Mockup is the canonical reference — copy style strings where they make sense.
+  - Don't re-invent colours.
 - No global CSS beyond what the mockup `<style>` block defines and what `local/bindings.md` allows.
-- Accessibility: every interactive element has a discernible name; complex widgets expose ARIA roles; tooltips mirror what the mockup defines.
+- Accessibility:
+  - Every interactive element has a discernible name.
+  - Complex widgets expose ARIA roles.
+  - Tooltips mirror what the mockup defines.
 
 ## Testing
 
-- Component unit tests with whatever runner the workspace is initialized with — cover every documented UI state with fixture data.
+- Component unit tests — runner per workspace initialization.
+  - Cover every documented UI state with fixture data.
 - Store / state-management unit tests for derivation logic and reducers.
-- E2E flows belong to `qa-engineer`; you provide stable `data-testid` (or equivalent) attributes on every interactive element.
+- E2E flows belong to `qa-engineer`.
+  - You provide stable `data-testid` (or equivalent) attributes on every interactive element.
 
 ## Forbidden actions (frontend-specific)
 

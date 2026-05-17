@@ -19,7 +19,7 @@
    cp .agents/engineering-team/adapters/_shared/agents/*.md .claude/agents/
    ```
 
-2. **Update `CLAUDE.md`** — append the block from `.agents/engineering-team/adapters/claude/CLAUDE-pointer.md` to your project's `CLAUDE.md`. If your project has no `CLAUDE.md`, create one with that block as the content.
+2. **Update `CLAUDE.md`** — append the block from `.agents/engineering-team/adapters/claude/CLAUDE-pointer.md` to the project's `CLAUDE.md`. No existing `CLAUDE.md` — create one with that block as the content.
 
 3. **Run discovery** — open the project in Claude Code and prompt:
 
@@ -31,14 +31,14 @@
 
 ## Updates
 
-When the framework releases a new version:
+On new framework release:
 
 1. Re-fetch `.agents/engineering-team/core/` + `.agents/engineering-team/adapters/` + `.agents/engineering-team/extras/` (your `local/` survives).
-2. Re-copy `.agents/engineering-team/adapters/_shared/agents/*.md` to `.claude/agents/` (the pointers may have been refined).
-3. Read `.agents/engineering-team/core/MIGRATIONS/` for any breaking-change notes.
+2. Re-copy `.agents/engineering-team/adapters/_shared/agents/*.md` to `.claude/agents/` (pointers may have been refined).
+3. Read `.agents/engineering-team/core/MIGRATIONS/` for breaking-change notes.
 
 ## Uninstall
 
 1. Delete the 7 cardinal files from `.claude/agents/` (and any custom roles you copied).
 2. Remove the pointer block from `CLAUDE.md`.
-3. Optionally delete the `.agents/engineering-team/` directory.
+3. Optionally delete `.agents/engineering-team/`.

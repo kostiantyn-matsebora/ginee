@@ -1,14 +1,14 @@
 # INSTRUCTIONS.md — Engineering Team Framework (generic fallback)
 
-This project uses the [`engineering-team`](.agents/engineering-team/) framework — a vendor-neutral multi-agent collaboration model + generic engineering process.
+Project uses the [`engineering-team`](.agents/engineering-team/) framework — vendor-neutral multi-agent collaboration model + generic engineering process.
 
-**Use this file when your LLM client doesn't natively support AGENTS.md, CLAUDE.md, GEMINI.md, or per-tool subagent directories.** Manually point your client at this file as its instructions / system-prompt context.
+**When to use.** LLM client doesn't natively support AGENTS.md, CLAUDE.md, GEMINI.md, or per-tool subagent directories. Manually point your client at this file as its instructions / system-prompt context.
 
 ## Read before any work
 
-1. `.agents/engineering-team/core/process.md` — the team's process spec (lifecycle, dispatch & parallelism rules, iteration protocol, doc co-ownership, task model, post-acceptance hooks)
-2. `.agents/engineering-team/local/bindings.md` — this project's specific routing, role boundaries, stack
-3. `.agents/engineering-team/local/project-profile.md` — discovered project context
+1. `.agents/engineering-team/core/process.md` — process spec (lifecycle, dispatch & parallelism, iteration protocol, doc co-ownership, task model, post-acceptance hooks).
+2. `.agents/engineering-team/local/bindings.md` — project routing, role boundaries, stack.
+3. `.agents/engineering-team/local/project-profile.md` — discovered project context.
 
 ## Cardinal roles (read on demand)
 
@@ -24,27 +24,33 @@ This project uses the [`engineering-team`](.agents/engineering-team/) framework 
 
 ## Custom roles
 
-- `.agents/engineering-team/local/roles/` — project-specific additions (copy from `.agents/engineering-team/extras/roles/` or author per `.agents/engineering-team/core/templates/role-authoring-template.md`).
+- Location — `.agents/engineering-team/local/roles/`.
+- Source — copy from `.agents/engineering-team/extras/roles/` or author per `.agents/engineering-team/core/templates/role-authoring-template.md`.
 
 ## Orchestration
 
-Mention the role by name or describe the task surface; the LLM acts as that persona. The orchestrator is `project-manager`.
-
-**On first install**, prompt: `act as project-manager and run initial discovery`.
+- **Dispatch.** Mention the role by name or describe the task surface; the LLM acts as that persona.
+- **Orchestrator.** `project-manager`.
+- **First install.** Prompt `act as project-manager and run initial discovery`.
 
 ## Coordination rules (always apply)
 
-- **Strict-domain rule** — no role works outside its domain. See `core/process.md § Strict-domain rule`.
-- **Estimation-first dispatch** — for Phase 4/5/6 work > 15 min, the dispatched role responds first with task decomposition + per-task estimates.
-- **Iteration protocol** — for scope > 15 min, work in 3–5 min batches with visible intermediate results.
-- **Doc co-ownership** — `solution-architect` owns documentation semantics; `ai-engineer` owns shape and load topology.
-- **SAD freeze + CR/ADR governance** — once SAD is finalized, requirements changes go to `docs/cr/` and architecture changes to `docs/adr/`.
+| Rule | What | Reference |
+|---|---|---|
+| Strict-domain | No role works outside its domain. | `core/process.md § Strict-domain rule` |
+| Estimation-first dispatch | Phase 4/5/6 work > 15 min — dispatched role responds first with task decomposition + per-task estimates. | — |
+| Iteration protocol | Scope > 15 min — work in 3–5 min batches with visible intermediate results. | — |
+| Doc co-ownership | `solution-architect` owns documentation semantics; `ai-engineer` owns shape + load topology. | — |
+| SAD freeze + CR/ADR | After SAD finalized — requirements changes → `docs/cr/`; architecture changes → `docs/adr/`. | — |
 
 ## Capability tier — **3** (instructions-only, no native role routing)
 
-Generic fallback — the LLM impersonates each cardinal persona when mentioned. No multi-agent isolation; sequential execution; no parallel dispatch.
+Generic fallback — LLM impersonates each cardinal persona when mentioned. No multi-agent isolation; sequential execution; no parallel dispatch.
 
 For tier-1 or tier-2 clients, use one of:
-- `.agents/engineering-team/adapters/claude/` — Claude Code (tier-1)
-- `.agents/engineering-team/adapters/copilot-cli/` — Copilot CLI (tier-1)
-- `.agents/engineering-team/adapters/agents-md/` — Codex / Cursor / Windsurf / Amp / Devin / Factory / Jules / Copilot IDE (tier-2)
+
+| Adapter | Tier | Clients |
+|---|---|---|
+| `.agents/engineering-team/adapters/claude/` | 1 | Claude Code |
+| `.agents/engineering-team/adapters/copilot-cli/` | 1 | Copilot CLI |
+| `.agents/engineering-team/adapters/agents-md/` | 2 | Codex / Cursor / Windsurf / Amp / Devin / Factory / Jules / Copilot IDE |

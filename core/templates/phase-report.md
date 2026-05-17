@@ -1,7 +1,9 @@
 # Phase Report Template
 
-<!-- Structured final report for any phase. Specialists report up to project-manager; project-manager consolidates to user. -->
-<!-- Replace bracketed placeholders. Drop any section that yields no content. -->
+<!-- Structured final report for any phase.
+     Specialists → report up to project-manager.
+     project-manager → consolidates to user.
+     Replace bracketed placeholders. Drop any section with no content. -->
 
 ---
 
@@ -30,8 +32,8 @@
 |---|---|---|
 | `<command>` | `<exit code / pass-fail / count>` | `<one line if non-obvious>` |
 
-- Manual smoke (when user-facing surface touched): `<one line per new flow>`
-- Lossless self-check (for `ai-engineer` doc work): `<sample of rules / invariants spot-checked + result>`
+- **Manual smoke** *(when user-facing surface touched)* — `<one line per new flow>`
+- **Lossless self-check** *(for `ai-engineer` doc work)* — `<sample of rules / invariants spot-checked + result>`
 
 ## Open issues
 
@@ -47,7 +49,7 @@
 ## Next dispatch needed
 
 - **Role:** `<role>` — **Reason:** `<one-line>` — **Scope:** `<one-line>`
-- Cross-domain hand-offs: attach a `core/templates/hand-off-note.md` instance.
+- **Cross-domain hand-off** — attach a `core/templates/hand-off-note.md` instance.
 
 ## Stop-state (when interrupted)
 

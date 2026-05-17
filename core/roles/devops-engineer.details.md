@@ -21,8 +21,18 @@ Canonical NFR list: `local/bindings.md` → "Hard constraints". Common devops-re
 Adapt to the project's chosen IaC tool. Common patterns:
 
 - One root module per environment workspace (`dev`, `prod`) with per-environment variable files.
-- Submodules for cross-cutting concerns: `naming`, `network`, `<database>`, `<container-registry>`, `<container-runtime>-environment`, `<container-runtime>-app` (reused per service), `<secret-vault>`.
-- Backend state stored remotely (cloud-storage / IaC-tool-cloud / etc.), one state per workspace. State files **never** in repo.
+- Submodules for cross-cutting concerns:
+  - `naming`
+  - `network`
+  - `<database>`
+  - `<container-registry>`
+  - `<container-runtime>-environment`
+  - `<container-runtime>-app` (reused per service)
+  - `<secret-vault>`
+- Backend state:
+  - Stored remotely (cloud-storage / IaC-tool-cloud / etc.).
+  - One state per workspace.
+  - State files **never** in repo.
 - Every secret read from the secret vault by reference at runtime, not from variable files.
 - Pin provider / module versions; pin patch versions to avoid drift.
 
@@ -46,18 +56,33 @@ Files you own beyond the application-tier repo-structure tree (paths per `local/
 
 Generic rules:
 
-- One image per deployable component. All share one orchestration environment.
+- One image per deployable component.
+  - All share one orchestration environment.
 - Multi-stage builds; runtime images stay minimal.
 - Each runtime image `EXPOSE`s the documented port.
-- Tag with the git SHA and (optionally) `latest`; production references by digest, not tag.
+- Tag with the git SHA and (optionally) `latest`.
+  - Production references by digest, not tag.
 
 ## CI/CD pipelines
 
 Generic shape (adapt to the project's CI tool):
 
-- **PR validation workflow**: restore deps, build, unit test, integration build (no push), IaC-tool `fmt` + `validate`, script-suite tests (Pester / shellcheck / etc.) for any composite/script logic.
-- **Release workflow** (on merge to the project's release branch): build images, push to the project's registry, run schema migrations as a one-shot job against target DB, update the deployed application to the new image digest, run the smoke suite owned by `qa-engineer`.
-- Secrets stored in the CI tool's environment-secret mechanism with required reviewers on `prod`. Never in workflow files or repo source.
+- **PR validation workflow** — steps:
+  1. Restore deps.
+  2. Build.
+  3. Unit test.
+  4. Integration build (no push).
+  5. IaC-tool `fmt` + `validate`.
+  6. Script-suite tests (Pester / shellcheck / etc.) for any composite/script logic.
+- **Release workflow** (on merge to the project's release branch) — steps:
+  1. Build images.
+  2. Push to the project's registry.
+  3. Run schema migrations as a one-shot job against target DB.
+  4. Update the deployed application to the new image digest.
+  5. Run the smoke suite owned by `qa-engineer`.
+- Secrets:
+  - Stored in the CI tool's environment-secret mechanism with required reviewers on `prod`.
+  - Never in workflow files or repo source.
 - Document which secrets the application requires + which secrets each integration step requires in the architecture doc; mirror summaries in `local/bindings.md`.
 
 ## Database operational notes (when the project has one)
@@ -65,7 +90,9 @@ Generic shape (adapt to the project's CI tool):
 - SKU sized per the cost cap; HA/replica strategy per NFRs.
 - Private access (vnet-injected / VPC-private); no public IP unless the architecture doc allows.
 - Enable point-in-time restore (PITR) / equivalent — covers retention NFR from an ops perspective.
-- Backups: keep automatic backups on; document the restore runbook alongside the IaC.
+- Backups:
+  - Keep automatic backups on.
+  - Document the restore runbook alongside the IaC.
 
 ## Smoke after every deploy
 

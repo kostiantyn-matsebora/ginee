@@ -5,8 +5,9 @@ For projects using [GitHub Copilot CLI](https://docs.github.com/en/copilot/conce
 ## Capability tier — **1** (native subagents + parallel dispatch)
 
 Verified against:
-- Copilot CLI GA (Feb 2026) + `/fleet` command (Apr 2026) for parallel subagent orchestration
-- Custom-agents SDK — NLP-based subagent invocation (direct mention by name) + automatic routing
+
+- Copilot CLI GA (Feb 2026) + `/fleet` command (Apr 2026) — parallel subagent orchestration.
+- Custom-agents SDK — NLP-based subagent invocation (direct mention by name) + automatic routing.
 
 Re-check per release.
 
@@ -17,13 +18,18 @@ Re-check per release.
 | `README.md` | This file |
 | `install.md` | Step-by-step install procedure |
 
-**Subagent pointer files live in `.agents/engineering-team/adapters/_shared/agents/*.md`** — shared with the Claude Code adapter. The install step copies them into `.github/agents/` and renames them to `.agent.md`. No duplication.
+**Subagent pointer files** — live in `.agents/engineering-team/adapters/_shared/agents/*.md`; shared with the Claude Code adapter. Install copies them into `.github/agents/` and renames to `.agent.md`. No duplication.
 
 ## How it works
 
-Copilot CLI custom-agent files use the `.agent.md` extension with YAML front-matter. The shared pointer files carry only:
-- Front-matter (`name`, `description`) — Copilot CLI's routing fields
-- A 4-line body instructing the subagent to read `.agents/engineering-team/core/roles/<role>.md` plus `core/process.md` + `local/bindings.md` + `local/project-profile.md`
+Copilot CLI custom-agent files use the `.agent.md` extension with YAML front-matter. Shared pointer files carry only:
+
+- Front-matter (`name`, `description`) — Copilot CLI's routing fields.
+- A 4-line body instructing the subagent to read:
+  - `.agents/engineering-team/core/roles/<role>.md` (canonical charter)
+  - `core/process.md`
+  - `local/bindings.md`
+  - `local/project-profile.md`
 
 Canonical role definitions live once in `core/roles/`. Subagent files are pure pointers.
 
@@ -43,4 +49,5 @@ Copilot CLI also reads `AGENTS.md` at the project root. Install the `agents-md` 
 
 ## Custom roles
 
-Place custom subagent definitions in `.agents/engineering-team/local/roles/<role>.md` and create a matching `.github/agents/<role>.agent.md` thin pointer.
+1. Place custom subagent definitions in `.agents/engineering-team/local/roles/<role>.md`.
+2. Create a matching `.github/agents/<role>.agent.md` thin pointer.

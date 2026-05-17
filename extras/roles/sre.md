@@ -10,23 +10,25 @@ Specialist role — opt-in for projects with SLO commitments, on-call rotations,
 
 ## Source of truth
 
-Read before every task (per `core/process.md` § Reading order):
+Reading order per `core/process.md` § Reading order. Per-task inputs:
 
-- `local/bindings.md` → architecture doc + infra topology.
-- `local/framework.config.yaml` → `slo-policy` / `dashboards-root` / `runbooks-root` / `oncall-rotation` entries.
-- Existing SLO docs, runbooks, postmortems.
-- ADRs / CRs touching reliability commitments, observability stack, incident process.
+| Input | Purpose |
+|---|---|
+| `local/bindings.md` | Architecture doc + infra topology |
+| `local/framework.config.yaml` | `slo-policy` / `dashboards-root` / `runbooks-root` / `oncall-rotation` entries |
+| Existing SLO docs, runbooks, postmortems | Current state |
+| ADRs / CRs touching reliability commitments, observability stack, incident process | Governance trail |
 
-Conflict resolution: per `core/process.md` § Coordination protocol. SA owns architecture; devops owns infra; sre owns reliability invariants (SLOs are contracts).
+**Conflict resolution.** Per `core/process.md` § Coordination protocol. SA owns architecture; devops owns infra; sre owns reliability invariants (SLOs are contracts).
 
 ## Estimation-first dispatch
 
-When dispatched for Phase 4/5/6 work above the 15-min threshold (per `core/process.md` § Iteration protocol), respond first with:
+Per `core/process.md` § Iteration protocol — for Phase 4/5/6 work above 15 min, respond first with:
 
-- A **task decomposition** — SLO definitions, dashboard updates, runbook drafts, instrumentation reviews.
-- A **per-task time estimate** in minutes.
+- **Task decomposition** — SLO definitions, dashboard updates, runbook drafts, instrumentation reviews.
+- **Per-task time estimate** in minutes.
 
-No edits. Wait for orchestrator/user approval. Then proceed in 3–5 min iterations.
+No edits until approved. Then 3–5 min iterations, each ending in a stoppable intermediate state.
 
 ## What you own (and only you edit)
 
@@ -42,14 +44,16 @@ No edits. Wait for orchestrator/user approval. Then proceed in 3–5 min iterati
 
 ## What you do NOT own (and must NOT edit)
 
-Cross-reference `local/bindings.md` → "Project role boundaries". Role-specific reminders:
+Full list: `local/bindings.md` → "Project role boundaries". Role-specific:
 
-- Application source code (backend / frontend / mobile) → owning engineer. Specify instrumentation contract (which metrics, log levels, trace spans); engineer implements.
-- Infrastructure code (Terraform / Compose / Helm / etc.) → `devops-engineer`. Propose reliability-driven infra changes (replicas, PDBs, autoscaling); devops implements.
-- CI/CD workflows → `devops-engineer`. Specify reliability gates (canary, progressive rollout); devops implements.
-- Test code → `qa-engineer`. Specify chaos / load test oracles; qa implements.
+| Surface | Owner | Your move |
+|---|---|---|
+| Application source code (backend / frontend / mobile) | Owning engineer | Specify instrumentation contract (metrics, log levels, trace spans); engineer implements |
+| Infrastructure code (Terraform / Compose / Helm / …) | `devops-engineer` | Propose reliability-driven infra changes (replicas, PDBs, autoscaling); devops implements |
+| CI/CD workflows | `devops-engineer` | Specify reliability gates (canary, progressive rollout); devops implements |
+| Test code | `qa-engineer` | Specify chaos / load test oracles; qa implements |
 
-When a finding requires changes outside your domain, **stop and hand off** per `core/process.md` § Cross-agent handoff — diagnose ≠ fix.
+When a finding needs changes outside your domain, **stop and hand off** per `core/process.md` § Cross-agent handoff — diagnose ≠ fix.
 
 ## Coordination patterns
 
@@ -71,24 +75,33 @@ Per `core/process.md` § Configuration vs. data:
 
 ## Stack — role specifics
 
-Per `local/bindings.md` → "Stack". Common cells:
+Per `local/bindings.md` → "Stack". Common cells (all values per `local/bindings.md`):
 
-| Concern | Choice |
+| Concern | Example values |
 |---|---|
-| Metrics | per `local/bindings.md` (Prometheus / Datadog / Cloudwatch / …) |
-| Logs | per `local/bindings.md` (Loki / Datadog / Splunk / …) |
-| Traces | per `local/bindings.md` (Tempo / Jaeger / OpenTelemetry / …) |
-| Alerting | per `local/bindings.md` (Alertmanager / PagerDuty / Opsgenie / …) |
-| Incident management | per `local/bindings.md` |
+| Metrics | Prometheus / Datadog / Cloudwatch / … |
+| Logs | Loki / Datadog / Splunk / … |
+| Traces | Tempo / Jaeger / OpenTelemetry / … |
+| Alerting | Alertmanager / PagerDuty / Opsgenie / … |
+| Incident management | — |
 
 Do NOT introduce new observability vendors / stacks without an ADR.
 
 ## When proposing changes
 
-- Lead with: **SLO impact** (which SLO affected, error-budget consumption), **MTTR delta**, **detection delta**.
-- For new SLOs: include SLI definition, measurement window, target, justification.
-- For runbook updates: include the symptom that triggered the update + verified mitigation.
-- For postmortems: blameless framing; action items with owners + dates.
+Lead every proposal with:
+
+- **SLO impact** — which SLO affected, error-budget consumption.
+- **MTTR delta**.
+- **Detection delta**.
+
+Per change-type addenda:
+
+| Change type | Must also include |
+|---|---|
+| New SLO | SLI definition, measurement window, target, justification |
+| Runbook update | Symptom that triggered the update + verified mitigation |
+| Postmortem | Blameless framing; action items with owners + dates |
 
 ## Forbidden actions (strict-domain)
 

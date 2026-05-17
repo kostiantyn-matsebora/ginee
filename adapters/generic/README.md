@@ -15,7 +15,7 @@ For LLM clients without dedicated framework support — no `AGENTS.md`, `CLAUDE.
 
 ## Capability tier — **3** (instructions-only, no native routing)
 
-The LLM impersonates each cardinal role as a persona when mentioned. No multi-agent isolation, no parallel dispatch, sequential execution only.
+LLM impersonates each cardinal role as a persona when mentioned. No multi-agent isolation, no parallel dispatch, sequential execution only.
 
 ## What this adapter ships
 
@@ -27,12 +27,17 @@ The LLM impersonates each cardinal role as a persona when mentioned. No multi-ag
 
 ## How it works
 
-The `INSTRUCTIONS.md` file is a single document that:
-- Points at `.agents/engineering-team/core/process.md` for the process spec
-- Lists the 7 cardinal roles with paths to their canonical charters
-- Includes the always-apply coordination rules in summary form
+`INSTRUCTIONS.md` is a single document that:
 
-The client reads `INSTRUCTIONS.md` as system-prompt context; when the user mentions a role (e.g. "act as backend-engineer"), the LLM reads the corresponding `core/roles/<role>.md` and acts per that charter.
+- Points at `.agents/engineering-team/core/process.md` for the process spec.
+- Lists the 7 cardinal roles with paths to their canonical charters.
+- Includes the always-apply coordination rules in summary form.
+
+Flow:
+
+1. Client reads `INSTRUCTIONS.md` as system-prompt context.
+2. User mentions a role (e.g. `act as backend-engineer`).
+3. LLM reads `core/roles/<role>.md` and acts per that charter.
 
 ## Smoke test
 

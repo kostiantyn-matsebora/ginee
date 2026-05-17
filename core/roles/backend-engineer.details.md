@@ -8,7 +8,10 @@ Tree + dependency rules: `local/bindings.md` → "Repository structure" → serv
 
 - Executable / deployable host(s) and library projects are separated as the architecture mandates. Don't conflate them.
 - Cross-tier shared code lives in a `shared/` (or equivalent) tier. Do not import from one feature library into another.
-- Auth / API-key / authz middleware is applied at composition time at the host boundary, on the specific endpoint groups the architecture doc names. Never global when the architecture says scoped; never scoped when the architecture says global.
+- Auth / API-key / authz middleware:
+  - Applied at composition time at the host boundary.
+  - On the specific endpoint groups the architecture doc names.
+  - Never global when the architecture says scoped; never scoped when the architecture says global.
 - Unit tests live alongside their source project.
 
 ## Declarative configuration — backend specifics
@@ -32,15 +35,26 @@ Canonical stack: `local/bindings.md` → "Stack". The specific language, web fra
 | Auth on writes | Per architecture-doc § Security. |
 | Container port | Per `local/bindings.md`. |
 
-Do NOT introduce in-memory event buses, caching layers, mapper libraries, validation libraries when built-ins suffice, or any cloud-proprietary SDK that breaks platform agnosticism unless the architecture doc mandates it.
+Do NOT introduce (unless the architecture doc mandates):
+
+- In-memory event buses.
+- Caching layers.
+- Mapper libraries.
+- Validation libraries when built-ins suffice.
+- Any cloud-proprietary SDK that breaks platform agnosticism.
 
 ## Network topology — what the service serves
 
 Read `local/bindings.md` → "Network topology" for project specifics. Common patterns:
 
-- Service serves wire data (JSON / RPC) only — no static-asset middleware, no SPA fallback route. The client SPA ships in its own container behind the same gateway.
-- Service container is **internal-only** in dev/prod orchestration — reached exclusively via a reverse-proxy / gateway. No CORS headers if the project is single-origin via gateway.
-- Adjust per project: if the project hosts the SPA inside the service, the architecture doc says so and the rule above does not apply.
+- Service serves wire data (JSON / RPC) only.
+  - No static-asset middleware.
+  - No SPA fallback route.
+  - Client SPA ships in its own container behind the same gateway.
+- Service container is **internal-only** in dev/prod orchestration.
+  - Reached exclusively via a reverse-proxy / gateway.
+  - No CORS headers if the project is single-origin via gateway.
+- Adjust per project: if the project hosts the SPA inside the service, the architecture doc says so and the rules above do not apply.
 
 ## Real-time path (when the project has one)
 

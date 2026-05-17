@@ -16,7 +16,7 @@
    cp .agents/engineering-team/adapters/agents-md/AGENTS.md ./AGENTS.md
    ```
 
-   If you already have an `AGENTS.md` at the project root, merge the new content (don't overwrite existing project-specific rules — append the engineering-team section).
+   If a project-root `AGENTS.md` already exists — merge (don't overwrite); append the engineering-team section to existing project-specific rules.
 
 2. **(Gemini users only)** Copy the same content to `GEMINI.md`:
 
@@ -30,29 +30,33 @@
    @project-manager run initial discovery
    ```
 
-   If the client doesn't support `@mention` routing, prompt: `act as project-manager and run initial discovery`.
+   Clients without `@mention` routing — prompt `act as project-manager and run initial discovery`.
 
-4. **Verify** — prompt `@solution-architect status` (or "act as solution-architect and report status"). Confirm it loads the canonical charter from `.agents/engineering-team/core/roles/solution-architect.md` and the project bindings.
+4. **Verify** — prompt `@solution-architect status` (or `act as solution-architect and report status`). Confirm:
+   - Canonical charter loaded from `.agents/engineering-team/core/roles/solution-architect.md`.
+   - Project bindings loaded.
 
 ## Updates
 
-When the framework releases a new version:
+On new framework release:
 
 1. Re-fetch `.agents/engineering-team/core/` + `.agents/engineering-team/adapters/` + `.agents/engineering-team/extras/` (your `local/` survives).
-2. Re-copy `.agents/engineering-team/adapters/agents-md/AGENTS.md` to project root (merge if you added project-specific content).
-3. Read `.agents/engineering-team/core/MIGRATIONS/` for any breaking-change notes.
+2. Re-copy `.agents/engineering-team/adapters/agents-md/AGENTS.md` to project root (merge if project-specific content was added).
+3. Read `.agents/engineering-team/core/MIGRATIONS/` for breaking-change notes.
 
 ## Uninstall
 
-1. Remove the engineering-team section from `AGENTS.md` (or delete the file if it was framework-only).
-2. (Gemini users) Same for `GEMINI.md`.
-3. Optionally delete the `.agents/engineering-team/` directory.
+1. Remove the engineering-team section from `AGENTS.md` (or delete the file if framework-only).
+2. (Gemini) Same for `GEMINI.md`.
+3. Optionally delete `.agents/engineering-team/`.
 
 ## Cross-tool layering
 
-This adapter is a **baseline** for all AGENTS.md-supporting clients. For clients with native subagent support, layer the dedicated adapter on top:
+Baseline adapter for all AGENTS.md-supporting clients. For clients with native subagent support, layer the dedicated adapter on top:
 
-- Claude Code → also install `.agents/engineering-team/adapters/claude/`
-- Copilot CLI → also install `.agents/engineering-team/adapters/copilot-cli/`
+| Client | Layer also |
+|---|---|
+| Claude Code | `.agents/engineering-team/adapters/claude/` |
+| Copilot CLI | `.agents/engineering-team/adapters/copilot-cli/` |
 
-Layered installs do not conflict — the AGENTS.md provides cross-tool context; the per-client adapter provides native subagent routing.
+Layered installs do not conflict — AGENTS.md provides cross-tool context; the per-client adapter provides native subagent routing.

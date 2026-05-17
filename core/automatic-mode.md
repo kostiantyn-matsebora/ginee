@@ -2,12 +2,16 @@
 
 Load-on-demand definition. `project-manager` fetches this file when activation is detected (`auto:` prefix or PM-proposed-then-user-accepted). Default tasks run interactive — do not load this file.
 
-For low-risk or self-contained tasks, the lifecycle runs end-to-end without per-phase user gates, presenting only a single **delivery handoff** at the end. Phase 8 user-approval invariant preserved as that one final gate; not waived.
+For low-risk or self-contained tasks, the lifecycle runs end-to-end without per-phase user gates, presenting a single **delivery handoff** at the end. Phase 8 user-approval invariant preserved as that one final gate; not waived.
 
 ## Activation
 
 - **Explicit, per-task only.** Never session-wide; never inherited across tasks.
-- **Triggers.** User prefixes the task with `auto:` or addresses `project-manager` with `auto`. Alternatively, `project-manager` may **propose** auto mode for a task it judges low-risk (docs-only edit, isolated bug fix in a single owned path, mechanical refactor) — user must reply "yes, auto" or equivalent. Orchestrator never enters auto mode silently.
+- **Triggers:**
+  - User prefixes the task with `auto:`.
+  - User addresses `project-manager` with `auto`.
+  - `project-manager` proposes auto mode for a low-risk task (docs-only edit, isolated bug fix in a single owned path, mechanical refactor) AND user replies "yes, auto" or equivalent.
+- **Never silent.** Orchestrator never enters auto mode without one of the triggers above.
 - Recorded in orchestrator's plan for that task.
 
 ## Gates elided in auto mode

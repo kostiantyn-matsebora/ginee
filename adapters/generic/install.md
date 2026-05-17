@@ -8,15 +8,15 @@
 ## Steps
 
 1. **Locate your client's instructions surface.** Possibilities:
-   - A "Custom Instructions" / "System Prompt" field in the client's settings
-   - A project-level config file the client reads (varies by tool)
-   - A manual paste into the chat as the first message of each session
+   - A "Custom Instructions" / "System Prompt" field in the client's settings.
+   - A project-level config file the client reads (varies by tool).
+   - A manual paste into the chat as the first message of each session.
 
 2. **Provide `INSTRUCTIONS.md`'s content** to that surface. Two options:
 
    **Option A (recommended) — reference the file by path:**
 
-   If your client can read repo files: point its instructions at:
+   If your client can read repo files, point its instructions at:
 
    ```
    .agents/engineering-team/adapters/generic/INSTRUCTIONS.md
@@ -51,20 +51,20 @@
 
 - No native role isolation — context bleeds between cardinal personas within a session.
 - No parallel dispatch — iterations run sequentially.
-- The LLM must hold all role context simultaneously, which costs tokens.
+- LLM must hold all role context simultaneously — costs tokens.
 
 If your client matures to support `AGENTS.md` or a subagent directory, upgrade to the matching adapter for better isolation + parallelism.
 
 ## Updates
 
-When the framework releases a new version:
+On new framework release:
 
 1. Re-fetch `.agents/engineering-team/` (your `local/` survives).
-2. If your client reads `INSTRUCTIONS.md` by path: no further action.
-3. If you pasted the content: re-paste with the updated file.
-4. Read `.agents/engineering-team/core/MIGRATIONS/` for any breaking-change notes.
+2. Client reads `INSTRUCTIONS.md` by path → no further action.
+3. Pasted content → re-paste with the updated file.
+4. Read `.agents/engineering-team/core/MIGRATIONS/` for breaking-change notes.
 
 ## Uninstall
 
 1. Clear the client's instructions / system-prompt field (or remove the path reference).
-2. Optionally delete the `.agents/engineering-team/` directory.
+2. Optionally delete `.agents/engineering-team/`.

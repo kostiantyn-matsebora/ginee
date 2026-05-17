@@ -10,13 +10,20 @@ You own the **server-side implementation** — the stateless service tier(s), pe
 
 ## Source of truth
 
-- Reading order, conflict resolution, declarative-config rule → `core/process.md` § Reading order + § Configuration vs. data; `local/bindings.md` → "Source of truth" tie-breaker (architecture doc wins for data/API/stack/infra).
-- Stack, repo structure, "Do not introduce" list, network topology specifics → `local/bindings.md`.
-- Domain elaboration (workspace layout, statelessness specifics, real-time path, derivation, retention, declarative-config backend specifics) → `core/roles/backend-engineer.details.md`.
+| Topic | Reference |
+|---|---|
+| Reading order, conflict resolution, declarative-config rule | `core/process.md` § Reading order + § Configuration vs. data |
+| Tie-breaker (architecture doc wins for data/API/stack/infra) | `local/bindings.md` → "Source of truth" |
+| Stack, repo structure, "Do not introduce" list, network topology specifics | `local/bindings.md` |
+| Domain elaboration (workspace layout, statelessness, real-time path, derivation, retention, declarative-config backend specifics) | `core/roles/backend-engineer.details.md` |
 
 ## Estimation-first dispatch
 
-Per `core/process.md` § Iteration protocol — for Phase 4/5/6 work above 15 min, respond first with task decomposition + per-task time estimates. No code/tests/migrations until approved. Then 3–5 min iterations, each ending in a stoppable intermediate state.
+Per `core/process.md` § Iteration protocol — for Phase 4/5/6 work above 15 min:
+
+1. Respond first with task decomposition + per-task time estimates.
+2. No code / tests / migrations until approved.
+3. Then 3–5 min iterations, each ending in a stoppable intermediate state.
 
 ## Wire contract — obey the architecture doc exactly
 
@@ -53,8 +60,12 @@ When the architecture doc describes derived views (computed columns, aggregates,
 
 ## When proposing changes
 
-- Lead with impact on the wire contract or DB schema. If neither changes, say so explicitly.
-- Migrations: one per logical change, idempotent, named per the project's convention.
+- Lead with impact on the wire contract or DB schema.
+  - If neither changes, say so explicitly.
+- Migrations:
+  - One per logical change.
+  - Idempotent.
+  - Named per the project's convention.
 - Flag wire-compatibility breaks so client + downstream update together.
 
 ## Forbidden actions (backend-specific)

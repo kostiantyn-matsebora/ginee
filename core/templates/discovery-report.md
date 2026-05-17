@@ -1,7 +1,8 @@
 # Discovery Report Template
 
-<!-- project-manager produces this on first run (or @project-manager rediscover). Surfaces detected project shape; recommends optional specialists from extras/roles/. -->
-<!-- Replace bracketed placeholders. Drop sections that yield no content (mark "(none detected)"). -->
+<!-- Produced by project-manager on first run (or @project-manager rediscover).
+     Purpose: surface detected project shape · recommend optional specialists from extras/roles/.
+     Replace bracketed placeholders. Drop sections with no content (mark "(none detected)"). -->
 
 ---
 
@@ -27,7 +28,9 @@
 
 ## Detected domain
 
-`<2–4 sentences from README + top-level docs. No invention.>`
+<!-- 2–4 sentences from README + top-level docs. No invention. -->
+
+`<domain summary>`
 
 ## Architecture artefacts (referenced — not copied)
 
@@ -67,7 +70,8 @@
 
 ## Suggested specialists (from `extras/roles/`)
 
-<!-- Recommendations, not enabled. User copies any into local/roles/ to opt in. -->
+<!-- Recommendations only — NOT enabled.
+     Opt-in: user copies the chosen file from extras/roles/ into local/roles/. -->
 
 | Specialist | Why suggested |
 |---|---|
@@ -89,5 +93,5 @@
 
 1. Review the three `local/*` files.
 2. Refine `local/bindings.md` if auto-detected forbidden-role-crossings need project-specific entries.
-3. (Optional) Copy any suggested specialist from `extras/roles/` into `local/roles/`.
+3. *(Optional)* Copy any suggested specialist from `extras/roles/` into `local/roles/`.
 4. Begin work — dispatch `@project-manager <task>` per `core/process.md` § Task model.

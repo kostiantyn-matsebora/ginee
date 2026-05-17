@@ -64,15 +64,29 @@ When dispatched on an engineer-proposed change:
 
 When the mockup-owning role proposes a mockup change, your review confirms:
 
-- **Architecture coherence** — the mockup still reflects current FRs, invariants (UX-responsiveness, layout invariants, others), and the wire shape in the architecture doc.
+- **Architecture coherence** — the mockup still reflects, per the architecture doc:
+  - Current FRs.
+  - Invariants (UX-responsiveness, layout invariants, others).
+  - The wire shape.
 - **Invariant block mirroring** — the head-comment invariant block in the mockup mirrors current architecture-doc NFRs.
-- **Harness compliance** — the mockup-owning role's report includes the PASS/FAIL output of the mockup-visual harness (when the project has one). All-green is the bar.
-- **No architecture-level changes smuggled in** — a new view, attribute, layout, or invariant in the mockup that isn't in the architecture doc is a stop. Land the architecture-doc update first, then the mockup-owning role mirrors.
+- **Harness compliance** — the mockup-owning role's report includes the PASS/FAIL output of the mockup-visual harness (when the project has one).
+  - All-green is the bar.
+- **No architecture-level changes smuggled in** — a new view, attribute, layout, or invariant in the mockup that isn't in the architecture doc is a stop.
+  - Land the architecture-doc update first.
+  - Then the mockup-owning role mirrors.
 
 Sign-off is governance work. You do not edit the mockup; you confirm the result meets the contract.
 
 ## Engineering principles
 
-- **Declarative over imperative** — per `core/process.md § Configuration vs. data`. Reject doc updates that would require violating this in code.
-- **Single source of truth** — when something is defined twice (e.g. architecture doc and a README), prefer the architecture doc and have the README cite the section.
-- **No hidden contracts** — every wire shape, env var, endpoint, status code, and event payload that crosses a component boundary must be explicit in the architecture doc.
+- **Declarative over imperative** — per `core/process.md § Configuration vs. data`.
+  - Reject doc updates that would require violating this in code.
+- **Single source of truth** — when something is defined twice (e.g. architecture doc and a README):
+  - Prefer the architecture doc.
+  - Have the README cite the section.
+- **No hidden contracts** — every item that crosses a component boundary must be explicit in the architecture doc:
+  - Wire shapes.
+  - Env vars.
+  - Endpoints.
+  - Status codes.
+  - Event payloads.

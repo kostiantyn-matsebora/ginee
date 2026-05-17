@@ -17,7 +17,10 @@ Companion to `core/roles/ai-engineer.md`. Elaborations only; kernel rules are bi
 
 ## File splitting
 
-When a single doc exceeds context-budget threshold OR mixes always-needed with rarely-needed content, **split it**.
+**Split a doc when** any of:
+
+- Single doc exceeds context-budget threshold.
+- Doc mixes always-needed with rarely-needed content.
 
 ### Triggers
 
@@ -38,10 +41,12 @@ When a single doc exceeds context-budget threshold OR mixes always-needed with r
 
 When a split produces new files, you MAY group them in a subdirectory rather than flat-listing next to the parent.
 
+- **Default.** Sibling files next to the parent when only one or two new files are spawned.
 - **Allowed.** Subdirectory grouping when 2+ split files share a concern (e.g., `docs/process/` for process specs, `docs/roles/` for role deep-dives).
-- **Cap.** Maximum **2-3 directory levels including the parent**. Example: `docs/` → `docs/process/` → `docs/process/<file>.md` is OK. `docs/process/governance/cycles/<file>.md` is NOT — exceeds the cap.
+- **Cap.** Maximum **2-3 directory levels including the parent**.
+  - OK: `docs/` → `docs/process/` → `docs/process/<file>.md`.
+  - NOT OK: `docs/process/governance/cycles/<file>.md` — exceeds the cap.
 - **Why the cap.** Deeper nesting hurts discoverability and inflates cross-reference paths; flat sometimes beats deeply nested.
-- **Default.** Sibling files next to the parent when only one or two new files are spawned. Subdirectory only when the grouping is clearly beneficial.
 
 ## Anti-patterns
 
@@ -63,4 +68,7 @@ Invoked **between** lifecycle phases when:
 - Periodic maintenance (release cadence, post-large-feature cleanup).
 - Phase 8 post-acceptance doc-optimization hook fires (per `core/process.md` § Phase 8 — User approval).
 
-Coordinates with `solution-architect` via standard cross-agent handoff (per `core/process.md` § Cross-agent handoff — diagnose ≠ fix). On noticing a semantic issue mid-optimization → flag + hand off, do not fix.
+Coordination with `solution-architect`:
+
+- Use standard cross-agent handoff (per `core/process.md` § Cross-agent handoff — diagnose ≠ fix).
+- On noticing a semantic issue mid-optimization → flag + hand off; **do not** fix.

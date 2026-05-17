@@ -6,30 +6,40 @@ aliases: [<generic-alias-1>, <generic-alias-2>]
 
 # Role Authoring Template
 
-<!-- Copy to local/roles/<your-role-name>.md. Fill sections that apply; drop ones you don't need. Do NOT leave empty headings. -->
-<!-- project-manager discovers local/roles/*.md on next prompt and adds the role to routing. Custom roles register UNDER project-manager — never alongside. -->
-<!-- Mirrors structure of the 7 cardinal role files in core/roles/*.md. LLMs route faster on consistent shapes. -->
+<!-- Usage:
+       1. Copy to local/roles/<your-role-name>.md.
+       2. Fill sections that apply. Drop ones you don't need.
+       3. NEVER leave empty headings.
+     Discovery: project-manager scans local/roles/*.md on next prompt and adds the role to routing.
+     Hierarchy: custom roles register UNDER project-manager — NEVER alongside.
+     Shape: mirrors core/roles/*.md (the 7 cardinals). Consistent shapes = faster LLM routing. -->
 
 ---
 
 ## Source of truth
 
-<!-- Read these before every task (per core/process.md § Reading order). -->
+<!-- Read before every task (per core/process.md § Reading order). -->
 
 - `<doc 1 — path in local/framework.config.yaml or absolute>` — `<one-line why>`
 - `<doc 2>` — `<one-line why>`
 - `<mockup, when relevant>` — `<one-line why>`
 
-Conflict resolution: per `core/process.md` § Coordination protocol and `local/bindings.md` → "Source of truth" tie-breaker.
+**Conflict resolution.** Per `core/process.md` § Coordination protocol AND `local/bindings.md` → "Source of truth" tie-breaker.
 
 ## Estimation-first dispatch
 
-<!-- When dispatched above the 15-min threshold (per core/process.md § Iteration protocol), respond first with: -->
+<!-- Trigger: dispatch scope > 15-min threshold (per core/process.md § Iteration protocol). -->
 
-- A **task decomposition** — sub-tasks in active voice.
-- A **per-task time estimate** — minutes per sub-task.
+**First response (before any edits):**
 
-No edits yet. Wait for orchestrator/user approval. Then proceed per Iteration protocol in 3–5 min iterations, each ending in a stoppable intermediate state.
+1. **Task decomposition** — sub-tasks in active voice.
+2. **Per-task time estimate** — minutes per sub-task.
+
+**Then:**
+
+- Wait for orchestrator/user approval.
+- Proceed per Iteration protocol — 3–5 min iterations.
+- Each iteration ends in a stoppable intermediate state.
 
 ## What you own (and only you edit)
 
@@ -42,16 +52,18 @@ No edits yet. Wait for orchestrator/user approval. Then proceed per Iteration pr
 
 ## What you do NOT own (and must NOT edit)
 
-<!-- Cross-reference local/bindings.md → "Project role boundaries" for the project-wide forbidden table. -->
+<!-- Project-wide forbidden table: local/bindings.md → "Project role boundaries". -->
 
-- `<thing 1>` → `<owning role>`. `<why>`.
-- `<thing 2>` → `<owning role>`. `<why>`.
+| Thing | Owning role | Why |
+|---|---|---|
+| `<thing 1>` | `<owning role>` | `<why>` |
+| `<thing 2>` | `<owning role>` | `<why>` |
 
-When a problem requires changes outside your domain, **stop and hand off** per `core/process.md` § Cross-agent handoff — diagnose ≠ fix.
+**Out-of-domain need surfaces mid-task →** stop and hand off per `core/process.md` § Cross-agent handoff — diagnose ≠ fix.
 
 ## Workspace layout
 
-<!-- Per-tier dependency rules (mirror or extend local/bindings.md → "Repository structure"). -->
+<!-- Per-tier dependency rules. Mirror OR extend local/bindings.md → "Repository structure". -->
 
 - `<rule 1>` — `<one line>`
 - `<rule 2>` — `<one line>`
@@ -60,29 +72,31 @@ When a problem requires changes outside your domain, **stop and hand off** per `
 
 <!-- Per core/process.md § Configuration vs. data. -->
 
-- Configuration → `<file>`. Never as string literals inside `<surface>`.
-- Data / fixtures → `<file>`. Never inline literals inside `<surface>`.
+| Kind | Goes in | Never as |
+|---|---|---|
+| Configuration | `<file>` | string literals inside `<surface>` |
+| Data / fixtures | `<file>` | inline literals inside `<surface>` |
 
 ## Stack — role specifics
 
-<!-- Canonical stack: local/bindings.md → "Stack". Role specifics: -->
+<!-- Canonical stack: local/bindings.md → "Stack". Role-specific rules: -->
 
 | Concern | Choice |
 |---|---|
 | `<concern 1>` | `<rule>` |
 | `<concern 2>` | `<rule>` |
 
-Do NOT introduce `<X / Y / Z>` — see `local/bindings.md` → "Do not introduce".
+**Do NOT introduce** `<X / Y / Z>` — see `local/bindings.md` → "Do not introduce".
 
 ## Required behaviours
 
-<!-- Drive from the FR table in the architecture doc. List FRs/NFRs this role primarily owns or implements. -->
+<!-- Drive from the FR table in the architecture doc. List FRs/NFRs this role primarily owns OR implements. -->
 
 ## When proposing changes
 
 - `<role-specific lead — e.g. "Lead with cost delta">`
 - `<role-specific lead 2>`
-- For wire-shape changes, flag for cross-domain consumers in your final report.
+- **Wire-shape change →** flag cross-domain consumers in your final report.
 
 ## Forbidden actions (strict-domain)
 
@@ -92,7 +106,8 @@ Do NOT introduce `<X / Y / Z>` — see `local/bindings.md` → "Do not introduce
 
 ## Reporting
 
-<!-- Use core/templates/phase-report.md for the structured final report. Highlight role-specific sections: -->
+<!-- Structured final report: core/templates/phase-report.md.
+     Role-specific highlights below. -->
 
 - `<role-specific reporting expectation>`
 - `<role-specific verification log entry>`

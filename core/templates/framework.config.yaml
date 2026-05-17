@@ -1,43 +1,30 @@
 # engineering-team — framework.config.yaml template
-# Per-project. Lives at local/framework.config.yaml. project-manager writes during discovery.
-# Maps abstract concepts to concrete project file paths. Reference, never copy (D5/G5).
+# Path: local/framework.config.yaml · Authored by: project-manager (during discovery)
+# Purpose: map abstract concepts → concrete project file paths. Reference, never copy (D5/G5).
 # Replace example values. Leave commented-out concepts when not present — do NOT invent paths.
 
 # --- Source of truth ---
-
-# Solution Architecture Document (requirements, constraints, components, data model, API, decisions). Owned by solution-architect.
-architecture-doc: docs/architecture.md
-
-# Design mockup (visual + behavioural client contract). Owned by frontend-engineer; reviewed by solution-architect. Comment out if none.
-mockup: docs/mockup.html
-
-# Standalone API contract document, when separated from architecture doc.
-# api-contract: docs/api.md
-
-# Operational work-breakdown document (per-phase items, milestones).
-work-breakdown-doc: docs/WBS.md
-
-# CI/CD integration guide (operational companion to architecture doc).
-# ci-cd-integration-doc: docs/ci-cd-integration.md
+architecture-doc: docs/architecture.md   # SAD: requirements, constraints, components, data model, API, decisions. Owner: solution-architect.
+mockup: docs/mockup.html                 # Visual + behavioural client contract. Owner: frontend-engineer · reviewed by solution-architect. Comment out if none.
+# api-contract: docs/api.md              # Standalone API contract (omit when API lives inside the SAD).
+work-breakdown-doc: docs/WBS.md          # Operational work-breakdown: per-phase items, milestones.
+# ci-cd-integration-doc: docs/ci-cd-integration.md   # Operational companion to the SAD.
 
 # --- Change governance ---
-
-adr-directory: docs/adr/             # Architecture Decision Records
-cr-directory: docs/cr/               # Change Requests
-diagrams-directory: docs/diagrams/   # C4 / sequence / deployment diagrams
+adr-directory: docs/adr/             # Architecture Decision Records.
+cr-directory: docs/cr/               # Change Requests.
+diagrams-directory: docs/diagrams/   # C4 / sequence / deployment diagrams.
 
 # --- Task & workflow ---
-
-todo: TODO                           # Repo-root TODO file (user-curated open items)
-nested-todos-glob: "**/TODO"         # Glob for nested per-component TODOs; null if unused
-
-# Project-instruction file (always-loaded surface). Path depends on adapter:
-#   claude: CLAUDE.md | copilot: .github/copilot-instructions.md | cursor: .cursor/rules/*.mdc
-#   codex:  AGENTS.md | generic: INSTRUCTIONS.md
+todo: TODO                           # Repo-root TODO file (user-curated open items).
+nested-todos-glob: "**/TODO"         # Glob for nested per-component TODOs; null if unused.
+# Always-loaded project-instruction file — path varies per adapter:
+#   claude → CLAUDE.md · copilot → .github/copilot-instructions.md · cursor → .cursor/rules/*.mdc
+#   codex  → AGENTS.md · generic → INSTRUCTIONS.md
 project-instruction-file: CLAUDE.md
 
 # --- Repository structure ---
-# project-manager uses these to attribute paths to roles.
+# Used by project-manager to attribute paths to roles.
 server-tier-path: backend/
 client-tier-path: frontend/
 infrastructure-path: infrastructure/
@@ -46,7 +33,6 @@ testing-path: testing/
 ci-workflows-path: .github/workflows/
 
 # --- Stack identity (declarative summary; full detail in local/project-profile.md) ---
-
 stack:
   server-language: <e.g. C# / TypeScript / Python / Go>
   server-framework: <e.g. ASP.NET Core / Express / FastAPI / Spring Boot>
@@ -58,7 +44,6 @@ stack:
   container-runtime: <Docker / Podman / none>
 
 # --- Hard constraints (mirror of local/bindings.md → "Hard constraints") ---
-
 constraints:
   hosting-cloud: <e.g. Azure / AWS / GCP / none>
   cost-cap-usd-per-month: <number or null>
@@ -67,9 +52,7 @@ constraints:
   stateless-backend: <true | false>
 
 # --- Tooling commands ---
-
-# Local-dev startup command. project-manager surfaces this when asking for manual smoke.
-local-dev-startup-command: pwsh -NoProfile -File dev_env/start.ps1
+local-dev-startup-command: pwsh -NoProfile -File dev_env/start.ps1   # Surfaced by project-manager when asking for manual smoke.
 
 # Test-runner entry points (per core/roles/qa-engineer.md § Zero-setup rule for test runners).
 test-runners:
