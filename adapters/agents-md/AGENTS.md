@@ -1,28 +1,28 @@
 # AGENTS.md — Engineering Team Framework
 
-This project uses the [`engineering-team`](engineering-team/) framework — a vendor-neutral multi-agent collaboration model + generic engineering process.
+This project uses the [`engineering-team`](.agents/engineering-team/) framework — a vendor-neutral multi-agent collaboration model + generic engineering process.
 
 ## Read before any work
 
-1. `engineering-team/core/process.md` — the team's process spec (lifecycle, dispatch & parallelism rules, iteration protocol, doc co-ownership, task model, post-acceptance hooks)
-2. `engineering-team/local/bindings.md` — this project's specific routing, role boundaries, stack
-3. `engineering-team/local/project-profile.md` — discovered project context
+1. `.agents/engineering-team/core/process.md` — the team's process spec (lifecycle, dispatch & parallelism rules, iteration protocol, doc co-ownership, task model, post-acceptance hooks)
+2. `.agents/engineering-team/local/bindings.md` — this project's specific routing, role boundaries, stack
+3. `.agents/engineering-team/local/project-profile.md` — discovered project context
 
 ## Cardinal roles (read on demand)
 
 | Role | Charter at | Alias |
 |---|---|---|
-| `project-manager` | `engineering-team/core/roles/project-manager.md` | — (orchestrator) |
-| `solution-architect` | `engineering-team/core/roles/solution-architect.md` | architect |
-| `ai-engineer` | `engineering-team/core/roles/ai-engineer.md` | context-engineer |
-| `frontend-engineer` | `engineering-team/core/roles/frontend-engineer.md` | client-engineer |
-| `backend-engineer` | `engineering-team/core/roles/backend-engineer.md` | service-engineer |
-| `devops-engineer` | `engineering-team/core/roles/devops-engineer.md` | platform-engineer |
-| `qa-engineer` | `engineering-team/core/roles/qa-engineer.md` | quality-engineer |
+| `project-manager` | `.agents/engineering-team/core/roles/project-manager.md` | — (orchestrator) |
+| `solution-architect` | `.agents/engineering-team/core/roles/solution-architect.md` | architect |
+| `ai-engineer` | `.agents/engineering-team/core/roles/ai-engineer.md` | context-engineer |
+| `frontend-engineer` | `.agents/engineering-team/core/roles/frontend-engineer.md` | client-engineer |
+| `backend-engineer` | `.agents/engineering-team/core/roles/backend-engineer.md` | service-engineer |
+| `devops-engineer` | `.agents/engineering-team/core/roles/devops-engineer.md` | platform-engineer |
+| `qa-engineer` | `.agents/engineering-team/core/roles/qa-engineer.md` | quality-engineer |
 
 ## Custom roles (project-specific)
 
-- `engineering-team/local/roles/` — copy from `engineering-team/extras/roles/` (curated specialists: security, ml, mobile, sre, data) or author per `engineering-team/core/templates/role-authoring-template.md`.
+- `.agents/engineering-team/local/roles/` — copy from `.agents/engineering-team/extras/roles/` (curated specialists: security, ml, mobile, sre, data) or author per `.agents/engineering-team/core/templates/role-authoring-template.md`.
 
 ## Orchestration
 

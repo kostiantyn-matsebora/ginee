@@ -82,7 +82,7 @@ Canonical in the plan file. Summary:
 | D5 | **7 cardinal roles** (5 engineering + project-manager + ai-engineer; revised 6 → 7 on 2026-05-16) — extensible via `local/roles/` + `extras/roles/` library |
 | D6 | Discovery refresh: both manual `rediscover` + auto-flag staleness |
 | D7 | Coexistence with existing instruction files: adopt (additive, pointer-line only) |
-| D8 | Install directory: `engineering-team/` |
+| D8 | Install directory: `.agents/engineering-team/` (amended 2026-05-17 from `engineering-team/` — dot-prefix convention + `.agents/` namespace for agent tooling; survives root clutter) |
 | D9 | Role names: hybrid — current names canonical + generic aliases (`client-engineer`, `service-engineer`, `platform-engineer`, `quality-engineer`) |
 | D10 | Custom-role extension: both pre-built library + free-form authoring under `local/roles/` |
 | D11 | Public name: `engineering-team` |
@@ -92,7 +92,7 @@ Canonical in the plan file. Summary:
 | Layer | Choice |
 |---|---|
 | Authoring | Markdown only |
-| Distribution baseline | Copy-paste of the `engineering-team/` directory |
+| Distribution baseline | Copy-paste of the framework source into `.agents/engineering-team/` in the adopter project |
 | Distribution upgrades | Tarball (GitHub Releases) + one-line shell installer (`iwr...iex` / `curl...sh`) |
 | Future fast-follower | `npx @org/engineering-team init / update` (Node.js) |
 | Versioning | SemVer in `core/VERSION`; migration notes in `core/MIGRATIONS/` |
@@ -110,7 +110,7 @@ Canonical in the plan file. Summary:
 
 ## Hard constraints
 
-- All files under `engineering-team/` only — do not modify any other project from this directory.
+- All files under this `engineering-team/` framework repo only — do not modify any other project from this directory. (This refers to the framework's own source repo; in adopter projects the framework lives at `.agents/engineering-team/`.)
 - `core/`, `adapters/`, `extras/` are upstream-owned — replaced on update for adopters; we author them here.
 - `local/` is adopter-owned — survives updates.
 - Lossless rule for restructuring: any pass that touches structure must prove every rule/invariant survives (per `core/roles/ai-engineer.md`).

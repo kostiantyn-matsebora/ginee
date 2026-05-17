@@ -2,7 +2,7 @@
 
 ## Prerequisites
 
-- `engineering-team/` directory present at the project root.
+- `.agents/engineering-team/` directory present at the project root.
 - An LLM client that lets you specify instructions / system prompt manually.
 
 ## Steps
@@ -19,7 +19,7 @@
    If your client can read repo files: point its instructions at:
 
    ```
-   engineering-team/adapters/generic/INSTRUCTIONS.md
+   .agents/engineering-team/adapters/generic/INSTRUCTIONS.md
    ```
 
    Configure the client to read this file at the start of every session.
@@ -29,12 +29,12 @@
    If your client only accepts inline text:
 
    ```powershell
-   Get-Content engineering-team\adapters\generic\INSTRUCTIONS.md | Set-Clipboard
+   Get-Content .agents\engineering-team\adapters\generic\INSTRUCTIONS.md | Set-Clipboard
    ```
 
    ```bash
-   cat engineering-team/adapters/generic/INSTRUCTIONS.md | pbcopy  # macOS
-   xclip -selection clipboard < engineering-team/adapters/generic/INSTRUCTIONS.md  # Linux
+   cat .agents/engineering-team/adapters/generic/INSTRUCTIONS.md | pbcopy  # macOS
+   xclip -selection clipboard < .agents/engineering-team/adapters/generic/INSTRUCTIONS.md  # Linux
    ```
 
    Paste into your client's instructions / system-prompt field.
@@ -59,12 +59,12 @@ If your client matures to support `AGENTS.md` or a subagent directory, upgrade t
 
 When the framework releases a new version:
 
-1. Re-fetch `engineering-team/` (your `local/` survives).
+1. Re-fetch `.agents/engineering-team/` (your `local/` survives).
 2. If your client reads `INSTRUCTIONS.md` by path: no further action.
 3. If you pasted the content: re-paste with the updated file.
-4. Read `engineering-team/core/MIGRATIONS/` for any breaking-change notes.
+4. Read `.agents/engineering-team/core/MIGRATIONS/` for any breaking-change notes.
 
 ## Uninstall
 
 1. Clear the client's instructions / system-prompt field (or remove the path reference).
-2. Optionally delete the `engineering-team/` directory.
+2. Optionally delete the `.agents/engineering-team/` directory.

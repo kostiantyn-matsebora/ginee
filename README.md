@@ -1,6 +1,6 @@
 # engineering-team
 
-[![Latest Release](https://img.shields.io/github/v/release/PLACEHOLDER-OWNER/engineering-team?label=release&color=0969da)](https://github.com/PLACEHOLDER-OWNER/engineering-team/releases/latest)
+[![Latest Release](https://img.shields.io/github/v/release/kostiantyn-matsebora/engineering-team?label=release&color=0969da)](https://github.com/kostiantyn-matsebora/engineering-team/releases/latest)
 [![License](https://img.shields.io/badge/license-TBD-lightgrey)](LICENSE)
 
 [![Claude Code](https://img.shields.io/badge/Claude%20Code-tier--1-D97757?logo=anthropic&logoColor=white)](adapters/claude/README.md)
@@ -80,39 +80,38 @@ engineering-team
 
 ### 1. Get the framework into your project
 
-**Claude Code** — local copy + install via shell:
+> **Project-level install.** The framework lives inside your project (it creates `./.agents/engineering-team/` and writes adapter files into `./.claude/`, `./.github/agents/`, or `./AGENTS.md`). Always run the installer **from the root of the project / git repo you want to set up** — the current working directory becomes the install target.
+
+**Option A — download the installer into your project root, then run it** (recommended while the framework repo is private):
+
+```bash
+cd /path/to/your-project
+curl -fsSLO https://raw.githubusercontent.com/kostiantyn-matsebora/engineering-team/main/install.sh
+chmod +x install.sh
+./install.sh --adapter claude          # or copilot-cli | agents-md | generic
+```
 
 ```powershell
-.\install.ps1 -Adapter claude
+cd C:\path\to\your-project
+iwr -useb https://raw.githubusercontent.com/kostiantyn-matsebora/engineering-team/main/install.ps1 -OutFile install.ps1
+.\install.ps1 -Adapter claude          # or copilot-cli | agents-md | generic
 ```
+
+> The `raw.githubusercontent.com` URL returns 404 while this repo is private — authenticate first (`gh auth login` and configure git credentials) so the script's `git clone` step can fetch the framework. Once the repo is public, both downloads work anonymously.
+
+**Option B — one-liner pipe** (works once the framework repo is public):
 
 ```bash
-./install.sh --adapter claude
+cd /path/to/your-project && curl -fsSL https://raw.githubusercontent.com/kostiantyn-matsebora/engineering-team/main/install.sh | bash -s -- --adapter claude
 ```
-
-**Copilot CLI** — same installer, different adapter:
 
 ```powershell
-.\install.ps1 -Adapter copilot-cli
+cd C:\path\to\your-project; $env:ET_ADAPTER='claude'; iwr -useb https://raw.githubusercontent.com/kostiantyn-matsebora/engineering-team/main/install.ps1 | iex
 ```
 
-```bash
-./install.sh --adapter copilot-cli
-```
+Pin a release with `--ref v0.1.0` / `$env:ET_REF='v0.1.0'`.
 
-**Cursor / Codex / Windsurf / Amp / Devin / Factory / Jules / Copilot IDE** — cross-tool `AGENTS.md`:
-
-```bash
-./install.sh --adapter agents-md
-```
-
-**Anything else** — instructions-only fallback:
-
-```bash
-./install.sh --adapter generic
-```
-
-> Copy-paste is the canonical baseline. The installer is a convenience: drop the `engineering-team/` directory anywhere in your project and run the install steps in [`adapters/<your-client>/install.md`](adapters/) manually.
+> Copy-paste is the canonical baseline. The installer is a convenience: drop the `.agents/engineering-team/` directory into your project root and run the install steps in [`adapters/<your-client>/install.md`](adapters/) manually.
 
 ### 2. Run discovery
 
@@ -148,7 +147,7 @@ Every adopter project has:
 
 ```
 your-project/
-├── engineering-team/           ← framework (replaced on update; local/ survives)
+├── .agents/engineering-team/   ← framework (replaced on update; local/ survives)
 │   ├── core/                   ← process spec + 7 cardinal role definitions + templates
 │   ├── adapters/<client>/      ← per-client renderings (pointer files only)
 │   ├── extras/roles/           ← pre-built specialists (opt-in)
@@ -158,7 +157,7 @@ your-project/
 │       ├── framework.config.yaml
 │       └── roles/              ← your custom roles
 │
-├── .claude/agents/             ← (Claude adopters) thin pointers to engineering-team/core/roles/
+├── .claude/agents/             ← (Claude adopters) thin pointers to .agents/engineering-team/core/roles/
 ├── AGENTS.md                   ← (AGENTS.md adopters) one pointer file
 └── ... (your code, docs, mockups, tests — untouched)
 ```

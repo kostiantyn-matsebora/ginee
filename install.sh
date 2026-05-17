@@ -1,16 +1,28 @@
 #!/usr/bin/env bash
 # engineering-team installer (POSIX shell)
-# Usage:
-#   curl -fsSL https://raw.githubusercontent.com/<owner>/engineering-team/main/install.sh | bash
-#   OR locally:
+#
+# Run this from the ROOT of the project / git repo you want to install the framework into.
+# The installer treats the current working directory ($PWD) as the project root and creates:
+#   ./.agents/engineering-team/   — the framework (core/, adapters/, extras/, local/)
+#   ./.claude/agents/             — Claude adapter (when --adapter claude)
+#   ./.github/agents/             — Copilot CLI adapter (when --adapter copilot-cli)
+#   ./AGENTS.md                   — AGENTS.md adapter (when --adapter agents-md)
+# Use --target to install into a different directory (e.g. ./install.sh --target ../my-project).
+#
+# Usage (local — recommended while the framework repo is private):
+#   curl -fsSLO https://raw.githubusercontent.com/kostiantyn-matsebora/engineering-team/main/install.sh
+#   chmod +x install.sh
 #   ./install.sh [--target <path>] [--adapter <claude|copilot-cli|agents-md|generic>] [--ref <branch-or-tag>] [--update-only]
+#
+# Usage (remote one-liner — works once the framework repo is public):
+#   curl -fsSL https://raw.githubusercontent.com/kostiantyn-matsebora/engineering-team/main/install.sh | bash -s -- --adapter claude
 
 set -euo pipefail
 
 TARGET="$(pwd)"
 ADAPTER=""
 REF="main"
-REPO_URL="https://github.com/PLACEHOLDER-OWNER/engineering-team"
+REPO_URL="https://github.com/kostiantyn-matsebora/engineering-team"
 UPDATE_ONLY=0
 
 while [ $# -gt 0 ]; do
@@ -28,13 +40,16 @@ while [ $# -gt 0 ]; do
   esac
 done
 
-FRAMEWORK_DIR="$TARGET/engineering-team"
+FRAMEWORK_DIR="$TARGET/.agents/engineering-team"
 
 echo "engineering-team installer"
-echo "  Target           : $TARGET"
+echo "  Project root     : $TARGET   (cwd — pass --target to install elsewhere)"
 echo "  Framework dir    : $FRAMEWORK_DIR"
 echo "  Adapter          : ${ADAPTER:-detect interactively}"
 echo "  Ref              : $REF"
+echo ""
+echo "This installer must be run from the root of the project / git repo you want to set up."
+echo "It writes the framework into ./.agents/engineering-team/ and adapter files into your project tree."
 echo ""
 
 # --- 1. Fetch framework ----------------------------------------------------
@@ -53,6 +68,7 @@ if [ -d "$FRAMEWORK_DIR" ]; then
   fi
 else
   echo "Cloning framework..."
+  mkdir -p "$(dirname "$FRAMEWORK_DIR")"
   git clone --depth 1 --branch "$REF" "$REPO_URL" "$FRAMEWORK_DIR"
   rm -rf "$FRAMEWORK_DIR/.git"
 fi
@@ -68,13 +84,23 @@ fi
 # --- 3. Adapter prompt + install -------------------------------------------
 
 if [ -z "$ADAPTER" ]; then
+  if [ ! -t 0 ] && [ ! -r /dev/tty ]; then
+    echo "Error: --adapter not specified and no interactive terminal available." >&2
+    echo "When piping from curl, pass it explicitly, e.g.:" >&2
+    echo "  curl -fsSL <url>/install.sh | bash -s -- --adapter claude" >&2
+    exit 1
+  fi
   echo ""
   echo "Pick the adapter that matches your LLM client:"
   echo "  [1] claude       — Claude Code (tier-1)"
   echo "  [2] copilot-cli  — GitHub Copilot CLI (tier-1)"
   echo "  [3] agents-md    — Codex / Cursor / Windsurf / Amp / Devin / Factory / Jules / Copilot IDE (tier-2)"
   echo "  [4] generic      — INSTRUCTIONS.md fallback (tier-3)"
-  read -rp "Pick 1-4: " sel
+  if [ -t 0 ]; then
+    read -rp "Pick 1-4: " sel
+  else
+    read -rp "Pick 1-4: " sel < /dev/tty
+  fi
   case "$sel" in
     1) ADAPTER="claude" ;;
     2) ADAPTER="copilot-cli" ;;

@@ -52,4 +52,4 @@ See AGENTS.md at the project root.
 
 ## Custom roles
 
-Custom roles go in `engineering-team/local/roles/<role>.md`. They're discovered automatically by `project-manager` and added to routing — no AGENTS.md edit needed.
+Custom roles go in `.agents/engineering-team/local/roles/<role>.md`. They're discovered automatically by `project-manager` and added to routing — no AGENTS.md edit needed.

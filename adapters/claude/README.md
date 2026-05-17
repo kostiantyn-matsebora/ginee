@@ -13,20 +13,20 @@ Verified against Claude Code subagent docs as of 2026-05. Re-check per release.
 | `CLAUDE-pointer.md` | Block to append to the project's `CLAUDE.md` |
 | `install.md` | Step-by-step install procedure |
 
-**Subagent pointer files live in `engineering-team/adapters/_shared/agents/*.md`** — shared with the Copilot CLI adapter. No duplication.
+**Subagent pointer files live in `.agents/engineering-team/adapters/_shared/agents/*.md`** — shared with the Copilot CLI adapter. No duplication.
 
 ## How it works
 
 Subagent files at `.claude/agents/<role>.md` carry only:
 - Front-matter (`name`, `description`) — what Claude Code uses for routing
-- A 4-line body instructing the subagent to read the canonical role at `engineering-team/core/roles/<role>.md` plus `core/process.md` + `local/bindings.md` + `local/project-profile.md`
+- A 4-line body instructing the subagent to read the canonical role at `.agents/engineering-team/core/roles/<role>.md` plus `core/process.md` + `local/bindings.md` + `local/project-profile.md`
 
 The canonical charter lives once in `core/roles/`. Subagent files are pure pointers. Updates to `core/` propagate immediately.
 
 ## Pointer line (for your `CLAUDE.md`)
 
 ```
-Engineering team framework: see engineering-team/core/process.md + engineering-team/adapters/claude/CLAUDE-pointer.md
+Engineering team framework: see .agents/engineering-team/core/process.md + .agents/engineering-team/adapters/claude/CLAUDE-pointer.md
 ```
 
 Or paste the full block from `CLAUDE-pointer.md` for context-rich onboarding.
@@ -40,4 +40,4 @@ Or paste the full block from `CLAUDE-pointer.md` for context-rich onboarding.
 
 ## Custom roles
 
-Place custom subagent definitions in `engineering-team/local/roles/<role>.md` (using `core/templates/role-authoring-template.md`). Create a matching `.claude/agents/<role>.md` pointer (copy the shape from `_shared/agents/`). `project-manager` discovers them on next prompt.
+Place custom subagent definitions in `.agents/engineering-team/local/roles/<role>.md` (using `core/templates/role-authoring-template.md`). Create a matching `.claude/agents/<role>.md` pointer (copy the shape from `_shared/agents/`). `project-manager` discovers them on next prompt.

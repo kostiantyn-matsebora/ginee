@@ -28,7 +28,7 @@ The LLM impersonates each cardinal role as a persona when mentioned. No multi-ag
 ## How it works
 
 The `INSTRUCTIONS.md` file is a single document that:
-- Points at `engineering-team/core/process.md` for the process spec
+- Points at `.agents/engineering-team/core/process.md` for the process spec
 - Lists the 7 cardinal roles with paths to their canonical charters
 - Includes the always-apply coordination rules in summary form
 
@@ -42,4 +42,4 @@ The client reads `INSTRUCTIONS.md` as system-prompt context; when the user menti
 
 ## Custom roles
 
-Same as other adapters — author at `engineering-team/local/roles/<role>.md`; `project-manager` discovers them on next prompt.
+Same as other adapters — author at `.agents/engineering-team/local/roles/<role>.md`; `project-manager` discovers them on next prompt.

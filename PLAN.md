@@ -15,7 +15,7 @@ The framework ships **process knowledge only** — no domain, stack, architectur
 ### Three-layer directory model
 
 ```
-engineering-team/                     ← drops into any project
+.agents/engineering-team/             ← drops into any project
 ├── core/                             ← immutable, replaced on update
 │   ├── process.md                    ← phased lifecycle, strict-domain rule,
 │   │                                   cross-domain cycle, parallel dispatch rules
@@ -67,7 +67,7 @@ engineering-team/                     ← drops into any project
 
 ### Reference, never copy (R6)
 
-`engineering-team/local/framework.config.yaml` maps **concepts → project paths**:
+`.agents/engineering-team/local/framework.config.yaml` maps **concepts → project paths**:
 
 ```yaml
 architecture-doc: docs/architecture.md
@@ -86,7 +86,7 @@ Roles read this config at runtime; renaming a doc = edit one line. No knowledge 
 
 ### Install (manual baseline — D4)
 
-1. Get the `engineering-team/` directory into your project (one of the channels below).
+1. Get the `.agents/engineering-team/` directory into your project (one of the channels below).
 2. Open the project's client-specific instruction file (`CLAUDE.md`, `.github/copilot-instructions.md`, `.cursor/rules/`, ...).
 3. Paste the **single pointer line** the README provides for that client.
 4. Open your LLM, prompt: `@project-manager run initial discovery.`
@@ -131,7 +131,7 @@ Init never overwrites the existing instruction file. It only appends (or asks th
 
 ### Update
 
-User re-fetches the upstream `engineering-team/` and replaces `core/`, `adapters/`, `extras/`. `local/` is untouched.
+User re-fetches the upstream `.agents/engineering-team/` and replaces `core/`, `adapters/`, `extras/`. `local/` is untouched.
 `core/VERSION` is SemVer; breaking releases ship a migration note in `core/MIGRATIONS/<from>-to-<to>.md`.
 
 ### Role extension (D5, D10 — both)
@@ -195,7 +195,7 @@ Role names: ship current ones as canonical (`frontend-engineer`, ...) with gener
 | D5 | Role topology | **7 cardinal roles (5 engineering + project-manager + ai-engineer); extensible; project-manager always orchestrator.** ai-engineer is the universal meta-engineering cardinal — every adopting project has AI assets and docs that need optimization; revised from 6 to 7 on 2026-05-16. |
 | D6 | Discovery refresh model | **Both** — manual `rediscover` + auto-flag staleness. |
 | D7 | Coexistence with existing instruction files | **Adopt (additive)** — single pointer line only. |
-| D8 | Install directory name | **`engineering-team/`** |
+| D8 | Install directory name | **`.agents/engineering-team/`** (amended 2026-05-17 from `engineering-team/`) — dot-prefix matches the convention every other agent/IDE tool uses (`.claude/`, `.cursor/`, `.github/`, `.vscode/`); `.agents/` namespace leaves room for other agent frameworks to coexist without polluting the project root. |
 | D9 | Role names | **Hybrid** — keep current names as canonical; generic aliases via front-matter (`client-engineer`, `service-engineer`, ...). |
 | D10 | Custom-role extension | **Both** — pre-built `extras/` library + free-form authoring under `local/roles/`. |
 | D11 | Public framework name | **`engineering-team`** |
