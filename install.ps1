@@ -1,16 +1,29 @@
 # engineering-team installer (PowerShell)
 #
-# Run this from the ROOT of the project / git repo you want to install the framework into.
-# The installer treats the current working directory as the project root and creates:
+# Parameter cheat-sheet (do not confuse the two paths):
+#   -Target   = WHERE TO INSTALL INTO (the adopter project root — e.g. your dashboard repo).
+#               Defaults to current working directory.
+#   -RepoUrl  = WHERE TO FETCH THE FRAMEWORK FROM (the engineering-team git repo).
+#               Defaults to the public GitHub URL. Pass a local checkout path
+#               (e.g. C:\path\to\engineering-team) while the repo is private.
+#
+# The installer creates inside -Target:
 #   .\.agents\engineering-team\   — the framework (core, adapters, extras, local)
 #   .\.claude\agents\             — Claude adapter (when -Adapter claude)
+#   .\.claude\skills\             — Claude adapter skills
 #   .\.github\agents\             — Copilot CLI adapter (when -Adapter copilot-cli)
+#   .\.agents\skills\             — Copilot CLI adapter skills (cross-tool AgentSkills path)
 #   .\AGENTS.md                   — AGENTS.md adapter (when -Adapter agents-md)
-# Use -Target to install into a different directory.
 #
-# Usage (local — recommended while the framework repo is private):
+# Field-trial example (private repo, local framework checkout, explicit -Target so cwd is irrelevant):
+#   C:\path\to\engineering-team\install.ps1 `
+#     -Target  C:\path\to\your-project `
+#     -RepoUrl C:\path\to\engineering-team `
+#     -Adapter claude
+#
+# Usage (download once, run from project root, no -Target):
 #   iwr -useb https://raw.githubusercontent.com/kostiantyn-matsebora/engineering-team/main/install.ps1 -OutFile install.ps1
-#   .\install.ps1 [-Target <path>] [-Adapter <claude|copilot-cli|agents-md|generic>] [-Ref <branch-or-tag>] [-UpdateOnly]
+#   .\install.ps1 [-Target <path>] [-Adapter <claude|copilot-cli|agents-md|generic>] [-Ref <branch-or-tag>] [-RepoUrl <url-or-local-path>] [-UpdateOnly]
 #
 # Usage (remote one-liner — works once the framework repo is public; env vars carry arguments since `iex` can't accept params):
 #   $env:ET_ADAPTER='claude'; iwr -useb https://raw.githubusercontent.com/kostiantyn-matsebora/engineering-team/main/install.ps1 | iex
@@ -18,10 +31,12 @@
 
 [CmdletBinding()]
 param(
+  # WHERE TO INSTALL INTO — adopter project root. Default = cwd.
   [string] $Target = (Get-Location).Path,
   [ValidateSet('claude','copilot-cli','agents-md','generic')]
   [string] $Adapter,
   [string] $Ref = 'main',
+  # WHERE TO FETCH THE FRAMEWORK FROM — git URL or local checkout path.
   [string] $RepoUrl = 'https://github.com/kostiantyn-matsebora/engineering-team',
   [switch] $UpdateOnly
 )
@@ -37,10 +52,11 @@ $ErrorActionPreference = 'Stop'
 $frameworkDir = Join-Path $Target '.agents\engineering-team'
 
 Write-Host "engineering-team installer" -ForegroundColor Cyan
-Write-Host "  Project root     : $Target   (cwd — pass -Target to install elsewhere)"
-Write-Host "  Framework dir    : $frameworkDir"
-Write-Host "  Adapter          : $(if ($Adapter) { $Adapter } else { 'detect interactively' })"
-Write-Host "  Ref              : $Ref"
+Write-Host "  Install into (-Target)  : $Target   (defaults to cwd)"
+Write-Host "  Fetch from   (-RepoUrl) : $RepoUrl"
+Write-Host "  Framework dir           : $frameworkDir"
+Write-Host "  Adapter                 : $(if ($Adapter) { $Adapter } else { 'detect interactively' })"
+Write-Host "  Ref                     : $Ref"
 Write-Host ""
 Write-Host "This installer must be run from the root of the project / git repo you want to set up." -ForegroundColor Yellow
 Write-Host "It writes the framework into .\.agents\engineering-team\ and adapter files into your project tree."
@@ -114,7 +130,24 @@ switch ($Adapter) {
     New-Item -ItemType Directory -Force $skillsDir | Out-Null
     Copy-Item -Recurse (Join-Path $frameworkDir 'core\skills\ginee-*') $skillsDir
     Write-Host "Copied 10 ginee-* skills to .claude/skills/" -ForegroundColor Green
-    Write-Host "NEXT: append CLAUDE-pointer.md to your project's CLAUDE.md (see $installNote)" -ForegroundColor Yellow
+
+    # Append CLAUDE-pointer.md to project's CLAUDE.md (idempotent via sentinel header)
+    $claudeMd = Join-Path $Target 'CLAUDE.md'
+    $pointerSrc = Join-Path $frameworkDir 'adapters\claude\CLAUDE-pointer.md'
+    $sentinel = '## Engineering team framework'
+    if (Test-Path $claudeMd) {
+      $existing = Get-Content $claudeMd -Raw
+      if ($existing -like "*$sentinel*") {
+        Write-Host "CLAUDE.md already contains the engineering-team pointer — skipped append" -ForegroundColor Yellow
+      } else {
+        Add-Content -Path $claudeMd -Value ""
+        Add-Content -Path $claudeMd -Value (Get-Content $pointerSrc -Raw)
+        Write-Host "Appended engineering-team pointer block to CLAUDE.md" -ForegroundColor Green
+      }
+    } else {
+      Copy-Item $pointerSrc $claudeMd
+      Write-Host "Created CLAUDE.md from pointer template" -ForegroundColor Green
+    }
   }
   'copilot-cli' {
     $agentsDir = Join-Path $Target '.github\agents'
@@ -146,8 +179,9 @@ Write-Host ""
 Write-Host "Install complete." -ForegroundColor Green
 Write-Host "Next steps:" -ForegroundColor Cyan
 Write-Host "  1. Open your client in this project."
-Write-Host "  2. Prompt: @project-manager run initial discovery"
-Write-Host "     (or 'act as project-manager and run initial discovery' for tier-2/3 clients)"
+Write-Host "  2. Type:  Run initial discovery"
+Write-Host "     (auto-activates the ginee-discovery skill in Claude Code / Copilot CLI."
+Write-Host "      Tier-3 fallback: 'act as project-manager and run initial discovery'.)"
 Write-Host "  3. Review the recommended specialists; user-approve any extras to enable."
 Write-Host ""
 Write-Host "Documentation:" -ForegroundColor Cyan

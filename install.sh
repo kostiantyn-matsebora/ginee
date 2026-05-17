@@ -1,18 +1,31 @@
 #!/usr/bin/env bash
 # engineering-team installer (POSIX shell)
 #
-# Run this from the ROOT of the project / git repo you want to install the framework into.
-# The installer treats the current working directory ($PWD) as the project root and creates:
+# Parameter cheat-sheet (do not confuse the two paths):
+#   --target  = WHERE TO INSTALL INTO (the adopter project root — e.g. your dashboard repo).
+#               Defaults to $PWD.
+#   --repo    = WHERE TO FETCH THE FRAMEWORK FROM (the engineering-team git repo).
+#               Defaults to the public GitHub URL. Pass a local checkout path
+#               (e.g. /path/to/engineering-team) while the repo is private.
+#
+# The installer creates inside --target:
 #   ./.agents/engineering-team/   — the framework (core/, adapters/, extras/, local/)
 #   ./.claude/agents/             — Claude adapter (when --adapter claude)
+#   ./.claude/skills/             — Claude adapter skills
 #   ./.github/agents/             — Copilot CLI adapter (when --adapter copilot-cli)
+#   ./.agents/skills/             — Copilot CLI adapter skills (cross-tool AgentSkills path)
 #   ./AGENTS.md                   — AGENTS.md adapter (when --adapter agents-md)
-# Use --target to install into a different directory (e.g. ./install.sh --target ../my-project).
 #
-# Usage (local — recommended while the framework repo is private):
+# Field-trial example (private repo, local framework checkout, explicit --target so $PWD is irrelevant):
+#   /path/to/engineering-team/install.sh \
+#     --target  /path/to/your-project \
+#     --repo    /path/to/engineering-team \
+#     --adapter claude
+#
+# Usage (download once, run from project root):
 #   curl -fsSLO https://raw.githubusercontent.com/kostiantyn-matsebora/engineering-team/main/install.sh
 #   chmod +x install.sh
-#   ./install.sh [--target <path>] [--adapter <claude|copilot-cli|agents-md|generic>] [--ref <branch-or-tag>] [--update-only]
+#   ./install.sh [--target <path>] [--adapter <claude|copilot-cli|agents-md|generic>] [--ref <branch-or-tag>] [--repo <url-or-local-path>] [--update-only]
 #
 # Usage (remote one-liner — works once the framework repo is public):
 #   curl -fsSL https://raw.githubusercontent.com/kostiantyn-matsebora/engineering-team/main/install.sh | bash -s -- --adapter claude
@@ -43,10 +56,11 @@ done
 FRAMEWORK_DIR="$TARGET/.agents/engineering-team"
 
 echo "engineering-team installer"
-echo "  Project root     : $TARGET   (cwd — pass --target to install elsewhere)"
-echo "  Framework dir    : $FRAMEWORK_DIR"
-echo "  Adapter          : ${ADAPTER:-detect interactively}"
-echo "  Ref              : $REF"
+echo "  Install into (--target) : $TARGET   (defaults to \$PWD)"
+echo "  Fetch from   (--repo)   : $REPO_URL"
+echo "  Framework dir           : $FRAMEWORK_DIR"
+echo "  Adapter                 : ${ADAPTER:-detect interactively}"
+echo "  Ref                     : $REF"
 echo ""
 echo "This installer must be run from the root of the project / git repo you want to set up."
 echo "It writes the framework into ./.agents/engineering-team/ and adapter files into your project tree."
@@ -126,7 +140,23 @@ case "$ADAPTER" in
     mkdir -p "$TARGET/.claude/skills"
     cp -r "$FRAMEWORK_DIR"/core/skills/ginee-* "$TARGET/.claude/skills/"
     echo "Copied 10 ginee-* skills to .claude/skills/"
-    echo "NEXT: append CLAUDE-pointer.md to your project's CLAUDE.md (see $INSTALL_NOTE)"
+
+    # Append CLAUDE-pointer.md to project's CLAUDE.md (idempotent via sentinel header)
+    CLAUDE_MD="$TARGET/CLAUDE.md"
+    POINTER_SRC="$FRAMEWORK_DIR/adapters/claude/CLAUDE-pointer.md"
+    SENTINEL='## Engineering team framework'
+    if [ -f "$CLAUDE_MD" ]; then
+      if grep -qF "$SENTINEL" "$CLAUDE_MD"; then
+        echo "CLAUDE.md already contains the engineering-team pointer — skipped append"
+      else
+        printf '\n' >> "$CLAUDE_MD"
+        cat "$POINTER_SRC" >> "$CLAUDE_MD"
+        echo "Appended engineering-team pointer block to CLAUDE.md"
+      fi
+    else
+      cp "$POINTER_SRC" "$CLAUDE_MD"
+      echo "Created CLAUDE.md from pointer template"
+    fi
     ;;
   copilot-cli)
     mkdir -p "$TARGET/.github/agents"
@@ -157,8 +187,9 @@ echo ""
 echo "Install complete."
 echo "Next steps:"
 echo "  1. Open your client in this project."
-echo "  2. Prompt: @project-manager run initial discovery"
-echo "     (or 'act as project-manager and run initial discovery' for tier-2/3 clients)"
+echo "  2. Type:  Run initial discovery"
+echo "     (auto-activates the ginee-discovery skill in Claude Code / Copilot CLI."
+echo "      Tier-3 fallback: 'act as project-manager and run initial discovery'.)"
 echo "  3. Review the recommended specialists; user-approve any extras to enable."
 echo ""
 echo "Documentation:"
