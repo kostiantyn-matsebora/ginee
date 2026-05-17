@@ -40,7 +40,11 @@
 
    Paste into your client's instructions / system-prompt field.
 
-3. **Run discovery.**
+3. **(If your client supports the [AgentSkills standard](https://agentskills.io))** Bridge the framework skills to its skill-discovery path. Source: `.agents/engineering-team/core/skills/ginee-*/`. Check your client's docs for the expected destination. Most clients use `.<client>/skills/`.
+
+   Skips for non-AgentSkills clients — framework workflows still work via natural-language routing in `INSTRUCTIONS.md`, just without per-workflow skill activation.
+
+4. **Run discovery.**
    - Start a session.
    - Prompt:
 
@@ -48,17 +52,33 @@
      act as project-manager and run initial discovery
      ```
 
-4. **Verify** — prompt `act as solution-architect and report status`. Confirm it loads:
+5. **Verify** — prompt `act as solution-architect and report status`. Confirm it loads:
    - The canonical charter.
    - Project bindings.
 
+## How to invoke
+
+Generic adapter has no auto-routing — every framework workflow runs via natural-language to the orchestrator. Patterns:
+
+| Want to | Prompt |
+|---|---|
+| Run discovery | `act as project-manager and run initial discovery` |
+| File a bug | `act as project-manager and file a bug titled "<title>"` |
+| File a framework feature | `act as project-manager and file a framework feature request titled "<title>"` |
+| Pick up a task | `act as project-manager and pick up issue #<N>` (or TODO line or freeform description) |
+| Triage | `act as project-manager and triage / list ready work` |
+| Promote discussion | `act as project-manager and promote discussion #<N>` |
+| Reindex | `act as ai-engineer and reindex <source>` |
+
+If your client supports AgentSkills (step 3 above), each of these phrasings also auto-activates the matching `ginee-*` skill — same behaviour, fewer keystrokes.
+
 ## Limitations vs higher-tier adapters
 
-- No native role isolation — context bleeds between cardinal personas within a session.
+- No native role isolation — context bleeds between cardinal personas within a session (unless the client supports AgentSkills + subagents).
 - No parallel dispatch — iterations run sequentially.
 - LLM must hold all role context simultaneously — costs tokens.
 
-If your client matures to support `AGENTS.md` or a subagent directory, upgrade to the matching adapter for better isolation + parallelism.
+If your client matures to support `AGENTS.md`, a subagent directory, or AgentSkills, upgrade to the matching adapter for better isolation + parallelism.
 
 ## Updates
 

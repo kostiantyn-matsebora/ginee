@@ -26,19 +26,67 @@
    cp AGENTS.md GEMINI.md
    ```
 
-3. **Run discovery.**
-   - Open the project in your client (Cursor / Codex / Windsurf / Copilot IDE / etc.).
-   - Prompt:
+3. **Bridge the framework skills** to your client's skill-discovery path. Source: `.agents/engineering-team/core/skills/ginee-*/`. Each is a directory containing `SKILL.md` per the [AgentSkills standard](https://agentskills.io).
+
+   | Client | Destination |
+   |---|---|
+   | Cursor | `.cursor/skills/` |
+   | OpenAI Codex | `~/.codex/skills/` or per-project (see [Codex skills docs](https://developers.openai.com/codex/skills/)) |
+   | Gemini CLI | per the [Gemini CLI skills docs](https://geminicli.com/docs/cli/skills/) |
+   | Goose | `~/.config/goose/skills/` (per its docs) |
+   | Other AgentSkills clients | per the client's docs |
+
+   ```bash
+   # Example — Cursor
+   mkdir -p .cursor/skills
+   cp -r .agents/engineering-team/core/skills/ginee-* .cursor/skills/
+   ```
+
+   Symlinks (POSIX) are preferred over copies — auto-pick up framework updates.
+
+4. **Run discovery.**
+   - Open the project in your client (Cursor / Codex / Gemini CLI / etc.).
+   - Ask the client to run initial discovery — natural language matches the `ginee-discovery` skill, or the orchestrator routes to `project-manager` via subagent description match. Example phrasings:
 
      ```
-     @project-manager run initial discovery
+     Run initial discovery.
+     ```
+     ```
+     @project-manager run initial discovery     (Cursor: @ is literal)
+     ```
+     ```
+     act as project-manager and run initial discovery     (clients without @-routing)
      ```
 
-   - Clients without `@mention` routing — prompt `act as project-manager and run initial discovery` instead.
+5. **Verify** — ask the client to report status of each cardinal. Each should:
+   - Load its charter from `.agents/engineering-team/core/roles/<role>.md`.
+   - Confirm project bindings.
 
-4. **Verify** — prompt `@solution-architect status` (or `act as solution-architect and report status`). Confirm:
-   - Canonical charter loaded from `.agents/engineering-team/core/roles/solution-architect.md`.
-   - Project bindings loaded.
+## How to invoke
+
+`@<role>` notation in framework docs is vendor-neutral shorthand. Per-client reality:
+
+| Client | Invocation |
+|---|---|
+| Cursor | `@<agent>` is literal in chat. |
+| OpenAI Codex | natural-language to the orchestrator (`AGENTS.md` routing). |
+| Gemini CLI | natural-language; skills auto-activate on description match. |
+| Generic AGENTS.md client | natural-language (`act as <role> and ...`). |
+
+Framework workflows (file / pick-up / triage / promote / discovery / reindex) activate via AgentSkills description match. Cheat sheet:
+
+| Phrasing | Activates |
+|---|---|
+| "Run initial discovery" | `ginee-discovery` |
+| "Rediscover the project" | `ginee-rediscover` |
+| "File a bug titled X" | `ginee-file-bug` |
+| "File a feature request titled X" | `ginee-file-feature` |
+| "File a framework bug titled X" | `ginee-file-framework-bug` |
+| "File a framework feature titled X" | `ginee-file-framework-feature` |
+| "Pick up #N" / "Work on the TODO about X" / "Start on Y" | `ginee-pick-up` (unified — issues, TODO lines, freeform) |
+| "Triage" / "List ready work" / "Show the backlog" | `ginee-triage` (unified — issues + framework + TODOs) |
+| "Promote discussion #N" | `ginee-promote-discussion` |
+| "Reindex `<source>`" | `ginee-reindex` |
 
 ## Updates
 
@@ -46,13 +94,15 @@ On new framework release:
 
 1. Re-fetch `.agents/engineering-team/core/` + `.agents/engineering-team/adapters/` + `.agents/engineering-team/extras/` (your `local/` survives).
 2. Re-copy `.agents/engineering-team/adapters/agents-md/AGENTS.md` to project root (merge if project-specific content was added).
-3. Read `.agents/engineering-team/core/MIGRATIONS/` for breaking-change notes.
+3. Re-copy `.agents/engineering-team/core/skills/ginee-*` to your client's skill directory (skill bodies / descriptions may have been refined). Skip if you used symlinks.
+4. Read `.agents/engineering-team/core/MIGRATIONS/` for breaking-change notes.
 
 ## Uninstall
 
 1. Remove the engineering-team section from `AGENTS.md` (or delete the file if framework-only).
 2. (Gemini) Same for `GEMINI.md`.
-3. Optionally delete `.agents/engineering-team/`.
+3. Delete `ginee-*` skill directories from your client's skill path.
+4. Optionally delete `.agents/engineering-team/`.
 
 ## Cross-tool layering
 
