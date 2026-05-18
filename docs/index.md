@@ -33,6 +33,10 @@ the same governance every single time.
 
 <div class="why-ginee-grid">
   <article class="why-card">
+    <h3><span class="why-emoji">📐</span> Process is the framework</h3>
+    <p>The phased lifecycle, dispatch rules, and iteration protocol are the spine. Agents, the knowledge index, self-onboarding, the adapters — all optimisations on top. Strip them away and the process still holds; you could run it by hand.</p>
+  </article>
+  <article class="why-card">
     <h3><span class="why-emoji">👥</span> Works like a real team</h3>
     <p>Roles dispatch each other, hand off, and review each other's work. Strict-domain rule keeps each specialist in its lane; cross-domain bugs go through a propose → implement → verify cycle, not single-agent guessing.</p>
   </article>
