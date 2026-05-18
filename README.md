@@ -40,9 +40,10 @@ ginee
 │   ├── cross-domain bugs use a propose → implement → verify cycle, not single-agent guessing
 │   └── doc co-ownership pattern — solution-architect owns semantics, ai-engineer owns shape
 │
-├── ☐ TODO-DRIVEN WORKFLOW
-│   ├── reads root TODO, nested per-component TODOs, or just your direct instruction
-│   ├── flips ☐ → ☒ only on user approval; never auto-adds; honours "skip TODO" cues
+├── 📥 THREE TASK SOURCES
+│   ├── freeform requests ("Use ginee to add a /api/health endpoint")
+│   ├── TODO files (root + nested per-component) — flips ☐ → ☒ only on user approval; never auto-adds
+│   ├── GitHub issues — file / pick up / triage / promote; PRs auto-close via `Closes #N`
 │   └── post-acceptance hook — if docs changed, ai-engineer proposes optimization automatically
 │
 ├── 🎯 DETERMINISTIC
