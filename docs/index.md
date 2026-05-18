@@ -104,22 +104,29 @@ Run initial discovery
 
 ### 3. Give it work
 
-Talk to *ginee* — the team self-dispatches per `local/bindings.md`. Three task sources:
+Talk to *ginee* — the team self-dispatches per `local/bindings.md`. Two phrasings for every request:
+
+- **Freeform** (any tier): `Use ginee to ...`.
+- **Skill phrasing** (tier-1 auto-activates `ginee-*`): natural language matching a skill description.
+
+Three task sources:
 
 ```
-# Freeform
+# Freeform — any source, any tier
 Use ginee to add a dark-mode toggle to the header
 
-# TODO files
-Pick up the next TODO
+# TODO files — auto-activates ginee-pick-up on tier-1
+Use ginee to pick up the next TODO            # freeform
+Pick up the next TODO                         # ginee-pick-up
 
-# GitHub issues
-Pick up issue #42
-File a bug: dashboard renders blank on Safari 17
-Triage ready work
+# GitHub issues — auto-activates ginee-* skills on tier-1
+Use ginee to pick up issue #42                # freeform
+Pick up #42                                   # ginee-pick-up
+File a bug titled "Safari 17 dashboard blank" # ginee-file-bug
+Triage ready work                             # ginee-triage
 ```
 
-Natural-language prompts auto-activate the matching skill (`ginee-pick-up` / `ginee-file-bug` / `ginee-triage`). For long tasks, the iteration protocol kicks in automatically: 3–5 min batches with visible intermediate results and a stop-anywhere contract.
+Full 10-skill cheat sheet in [`adapters/claude/install.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/adapters/claude/install.md#how-to-invoke). For long tasks, the iteration protocol kicks in automatically: 3–5 min batches with visible intermediate results and a stop-anywhere contract.
 
 [**Full Getting Started guide →**]({{ '/GETTING_STARTED.html' | relative_url }})
 

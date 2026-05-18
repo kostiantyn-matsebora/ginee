@@ -129,35 +129,40 @@ Ginee scans the repo and writes `local/project-profile.md`, `local/bindings.md`,
 
 ### 3. Give it work
 
-Ginee is a team — once installed, you talk to *ginee*, not to a specific role. The team routes work internally per `local/bindings.md`. Three task sources, pick whichever fits:
+Ginee is a team — once installed, you talk to *ginee*, not to a specific role. The team routes work internally per `local/bindings.md`. Every request has two phrasings:
 
-**Freeform** — describe what you want, the team self-dispatches:
+- **Freeform** (works on any tier): `Use ginee to ...` — catch-all; the team self-dispatches.
+- **Skill phrasing** (tier-1 auto-activates the matching `ginee-*` skill): natural language that matches a skill description. Cheat sheet in [adapters/claude/install.md § How to invoke](adapters/claude/install.md).
+
+Three task sources:
+
+**Freeform work** — describe what you want:
 
 ```
-Use ginee to add a dark-mode toggle to the header
+Use ginee to add a dark-mode toggle to the header                   # freeform
 Use ginee to add a /api/health endpoint returning { status, version }
 ```
 
-**TODO files** — point ginee at an unchecked item in your root or per-component TODO:
+**TODO files** — flips `☐` → `☒` on Phase 8 approval; never auto-adds:
 
 ```
-Pick up the next TODO
-Pick up the dark-mode TODO in components/header/TODO.md
+Use ginee to pick up the next TODO                                  # freeform
+Pick up the next TODO                                               # ginee-pick-up
+Work on the TODO about dark-mode in components/header/TODO.md       # ginee-pick-up
 ```
 
-Activates `ginee-pick-up`. Flips `☐` → `☒` on user approval at Phase 8; never auto-adds.
-
-**GitHub issues** — pick up an open issue, file a new one, or triage the backlog:
+**GitHub issues** — file, pick up, or triage:
 
 ```
-Pick up issue #42
-File a bug: dashboard renders blank on Safari 17
-Triage ready work
+Use ginee to pick up issue #42                                      # freeform
+Pick up #42                                                         # ginee-pick-up
+File a bug titled "dashboard renders blank on Safari 17"            # ginee-file-bug
+File a feature request titled "dark-mode toggle in header"          # ginee-file-feature
+Triage ready work                                                   # ginee-triage
+Promote discussion #17                                              # ginee-promote-discussion
 ```
 
-Activates `ginee-pick-up` / `ginee-file-bug` / `ginee-triage`. PRs auto-close issues via `Closes #N`. Full skill list in [adapters/claude/install.md § How to invoke](adapters/claude/install.md).
-
-For tasks above ~15 minutes, the iteration protocol kicks in: 3–5 min stoppable batches with visible intermediate results. Interrupt anytime; resume next day with zero rework.
+PRs auto-close issues via `Closes #N`. For tasks above ~15 minutes, the iteration protocol kicks in: 3–5 min stoppable batches with visible intermediate results. Interrupt anytime; resume next day with zero rework.
 
 ---
 

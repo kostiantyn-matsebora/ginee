@@ -89,35 +89,40 @@ You'll see proposed changes before any file is written — approve or redirect e
 
 ## 3. Give it work
 
-Ginee is a team — talk to *ginee*, not to a specific role. The team routes work internally per `local/bindings.md`. Three task sources:
+Ginee is a team — talk to *ginee*, not to a specific role. The team routes work internally per `local/bindings.md`. Every request has two phrasings:
 
-**Freeform** — describe what you want; the team self-dispatches:
+- **Freeform** (any tier): `Use ginee to ...` — catch-all; the team self-dispatches.
+- **Skill phrasing** (tier-1 auto-activates the matching `ginee-*` skill): natural language that matches a skill description. Cheat sheet in [adapters/claude/install.md § How to invoke](https://github.com/kostiantyn-matsebora/ginee/blob/main/adapters/claude/install.md#how-to-invoke).
 
-```
-Use ginee to rename the dashboard header to "Operations Console"
-Use ginee to add a /api/health endpoint returning { status:"ok", version:VERSION }
-```
+Three task sources:
 
-**TODO files** — point ginee at an unchecked item:
+**Freeform work** — describe what you want:
 
 ```
-Pick up the next TODO
-Pick up the health-endpoint TODO in api/TODO.md
+Use ginee to rename the dashboard header to "Operations Console"     # freeform
+Use ginee to add a /api/health endpoint returning { status, version }
 ```
 
-Activates `ginee-pick-up`. Flips `☐` → `☒` on user approval at Phase 8; never auto-adds.
-
-**GitHub issues** — pick up, file, or triage:
+**TODO files** — flips `☐` → `☒` on Phase 8 approval; never auto-adds:
 
 ```
-Pick up issue #42
-File a bug: dashboard renders blank on Safari 17
-Triage ready work
+Use ginee to pick up the next TODO                                   # freeform
+Pick up the next TODO                                                # ginee-pick-up
+Work on the health-endpoint TODO in api/TODO.md                      # ginee-pick-up
 ```
 
-Activates `ginee-pick-up` / `ginee-file-bug` / `ginee-triage`. PRs auto-close issues via `Closes #N`.
+**GitHub issues** — file, pick up, or triage:
 
-For tasks &gt; 15 minutes of estimated work, the [iteration protocol](https://github.com/kostiantyn-matsebora/ginee/blob/main/core/iteration-protocol.md) kicks in: each specialist returns a task decomposition + per-task estimate **before** editing, you approve, then 3–5 min stoppable batches.
+```
+Use ginee to pick up issue #42                                       # freeform
+Pick up #42                                                          # ginee-pick-up
+File a bug titled "dashboard renders blank on Safari 17"             # ginee-file-bug
+File a feature request titled "dark-mode toggle in header"           # ginee-file-feature
+Triage ready work                                                    # ginee-triage
+Promote discussion #17                                               # ginee-promote-discussion
+```
+
+PRs auto-close issues via `Closes #N`. For tasks &gt; 15 minutes of estimated work, the [iteration protocol](https://github.com/kostiantyn-matsebora/ginee/blob/main/core/iteration-protocol.md) kicks in: each specialist returns a task decomposition + per-task estimate **before** editing, you approve, then 3–5 min stoppable batches.
 
 ## 4. Update later
 
