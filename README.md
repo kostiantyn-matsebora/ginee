@@ -114,7 +114,7 @@ iwr -useb https://raw.githubusercontent.com/kostiantyn-matsebora/ginee/main/inst
 .\install.ps1 -Adapter claude
 ```
 
-Pin a release with `--ref v0.1.0` / `$env:GINEE_REF='v0.1.0'`. Update in place later with `--update-only` / `-UpdateOnly` (preserves `local/`).
+Pin a release with `--ref v0.1.0` / `$env:GINEE_REF='v0.1.0'`.
 
 ### 2. Run discovery
 
@@ -164,6 +164,30 @@ Use ginee to pick up issue #42                                      # freeform
 ```
 
 PRs auto-close issues via `Closes #N`. Full 10-skill list + natural-language cheat sheet in [adapters/claude/install.md § How to invoke](adapters/claude/install.md). For tasks above ~15 minutes, the iteration protocol kicks in: 3–5 min stoppable batches with visible intermediate results. Interrupt anytime; resume next day with zero rework.
+
+### 4. Update later
+
+Re-run the installer with the update flag — `core/` + `adapters/` + `extras/` re-fetch from upstream; `local/` (your bindings, custom roles, discovered index) is preserved untouched.
+
+```bash
+./install.sh --update-only --adapter claude
+```
+
+```powershell
+.\install.ps1 -UpdateOnly -Adapter claude
+```
+
+Piped (no local checkout):
+
+```bash
+GINEE_UPDATE_ONLY=1 GINEE_ADAPTER=claude bash -c "$(curl -fsSL https://raw.githubusercontent.com/kostiantyn-matsebora/ginee/main/install.sh)"
+```
+
+```powershell
+$env:GINEE_UPDATE_ONLY='1'; $env:GINEE_ADAPTER='claude'; iwr -useb https://raw.githubusercontent.com/kostiantyn-matsebora/ginee/main/install.ps1 | iex
+```
+
+Check `core/MIGRATIONS/` after each update for breaking-change notes.
 
 ---
 

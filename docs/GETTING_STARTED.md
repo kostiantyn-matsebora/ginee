@@ -128,6 +128,8 @@ PRs auto-close issues via `Closes #N`. For tasks &gt; 15 minutes of estimated wo
 
 ## 4. Update later
 
+From a local checkout of the installer:
+
 ```bash
 ./install.sh --update-only --adapter claude
 ```
@@ -136,7 +138,17 @@ PRs auto-close issues via `Closes #N`. For tasks &gt; 15 minutes of estimated wo
 .\install.ps1 -UpdateOnly -Adapter claude
 ```
 
-`core/`, `adapters/`, `extras/` re-fetch from the framework upstream. `local/` (your bindings + custom roles + discovered index) is preserved untouched.
+Or piped (no local checkout needed):
+
+```bash
+GINEE_UPDATE_ONLY=1 GINEE_ADAPTER=claude bash -c "$(curl -fsSL https://raw.githubusercontent.com/kostiantyn-matsebora/ginee/main/install.sh)"
+```
+
+```powershell
+$env:GINEE_UPDATE_ONLY='1'; $env:GINEE_ADAPTER='claude'; iwr -useb https://raw.githubusercontent.com/kostiantyn-matsebora/ginee/main/install.ps1 | iex
+```
+
+`core/`, `adapters/`, `extras/` re-fetch from the framework upstream. `local/` (your bindings + custom roles + discovered index) is preserved untouched. Read `.agents/ginee/core/MIGRATIONS/` after each update for breaking-change notes.
 
 ## What now
 
