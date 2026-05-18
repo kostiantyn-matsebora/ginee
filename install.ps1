@@ -397,11 +397,12 @@ switch ($Adapter) {
 
 # Detect lingering pre-D11 references in local/ (independent of step-0 dir rename —
 # the dir may have been renamed in a previous run while local/ text stayed stale).
+$legacyFrameworkName = 'engineering-team'  # codename retired in D11 rebrand (2026-05-18)
 $staleLocalHits = $false
 $localDir = Join-Path $frameworkDir 'local'
 if (Test-Path $localDir) {
   $staleLocalHits = [bool](Get-ChildItem $localDir -Recurse -File -ErrorAction SilentlyContinue |
-    Select-String -Pattern 'engineering-team' -SimpleMatch -List -ErrorAction SilentlyContinue |
+    Select-String -Pattern $legacyFrameworkName -SimpleMatch -List -ErrorAction SilentlyContinue |
     Select-Object -First 1)
 }
 
