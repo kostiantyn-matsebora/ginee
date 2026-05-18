@@ -8,13 +8,16 @@
 #
 # Usage (download once, then run with named parameters):
 #   iwr -useb https://raw.githubusercontent.com/kostiantyn-matsebora/ginee/main/install.ps1 -OutFile install.ps1
-#   .\install.ps1 [-Target <path>] [-Adapter <claude|copilot-cli|agents-md|generic>] [-Ref <branch-or-tag>] [-UpdateOnly]
+#   .\install.ps1 [-Target <path>] [-Adapter <claude|copilot-cli|agents-md|generic>] [-Ref <ref>] [-UpdateOnly]
 #
 # Parameters:
 #   -Target    Project root to install into. Default = current working directory.
 #   -Adapter   claude | copilot-cli | agents-md | generic. Prompts if omitted.
-#   -Ref       Git ref (branch / tag / commit). Default = main. Pin a release with -Ref v0.1.0.
-#   -RepoUrl   Override fetch URL — only needed for forks or testing a local checkout.
+#   -Ref       Release tag (vX.Y.Z), "latest" (default), or any git branch/SHA. Tagged refs and
+#              "latest" download the released zip over HTTPS (no git needed). Branch/SHA refs
+#              fall back to git clone.
+#   -RepoUrl   Override fetch URL — only needed for forks or testing a local checkout. Forks
+#              always use the git-clone path regardless of -Ref.
 #              Default = https://github.com/kostiantyn-matsebora/ginee.
 #   -UpdateOnly  Refresh core/+adapters/+extras/ in place; preserve local/.
 #
@@ -36,7 +39,7 @@ param(
   # with value would no longer be valid" when an empty $Adapter pre-exists in
   # the caller's scope.
   [string] $Adapter,
-  [string] $Ref = 'main',
+  [string] $Ref = 'latest',
   # WHERE TO FETCH THE FRAMEWORK FROM. Override for forks / local-checkout testing.
   [string] $RepoUrl = 'https://github.com/kostiantyn-matsebora/ginee',
   [switch] $UpdateOnly
@@ -49,10 +52,54 @@ if ($env:GINEE_TARGET) { $Target = $env:GINEE_TARGET }
 if ($env:GINEE_REPO)   { $RepoUrl = $env:GINEE_REPO }
 if ($env:GINEE_UPDATE_ONLY -eq '1' -or $env:GINEE_UPDATE_ONLY -eq 'true') { $UpdateOnly = $true }
 
+# --- Defeat iex caller-scope leak ------------------------------------------
+# When this script is piped through Invoke-Expression, param() runs in the caller's
+# scope. If $Ref / $Target / $RepoUrl already exist in that scope (very common —
+# $Ref is a stock identifier), the param defaults DON'T fire — PowerShell coerces
+# the pre-existing value via [string], turning $null into ''. Then `git clone
+# --branch ''` triggers Windows ERROR_INVALID_NAME ("The filename, directory name,
+# or volume label syntax is incorrect.") with no PS wrapping — hard to diagnose.
+# Re-apply defaults if scope-leaked vars came in empty/whitespace.
+if ([string]::IsNullOrWhiteSpace($Ref))     { $Ref = 'latest' }
+if ([string]::IsNullOrWhiteSpace($RepoUrl)) { $RepoUrl = 'https://github.com/kostiantyn-matsebora/ginee' }
+if ([string]::IsNullOrWhiteSpace($Target))  {
+  $fsLoc = Get-Location -PSProvider FileSystem -ErrorAction SilentlyContinue
+  $Target = if ($fsLoc) { $fsLoc.Path } else { [Environment]::CurrentDirectory }
+}
+# Strip PS-provider prefix (e.g., Microsoft.PowerShell.Core\FileSystem::C:\…)
+# so git.exe + file ops get a plain Win32 path.
+try { $Target = (Resolve-Path -LiteralPath $Target -ErrorAction Stop).ProviderPath } catch {
+  # If $Target doesn't exist yet (rare; e.g., --target points at a not-yet-created dir),
+  # fall back to making it absolute against cwd via Path API.
+  $Target = [System.IO.Path]::GetFullPath($Target)
+}
+
 $validAdapters = @('claude','copilot-cli','agents-md','generic')
 if ($Adapter -and $Adapter -notin $validAdapters) {
   Write-Error "Invalid -Adapter '$Adapter'. Must be one of: $($validAdapters -join ', ')."
   exit 1
+}
+
+$DefaultRepoUrl = 'https://github.com/kostiantyn-matsebora/ginee'
+
+# --- Diagnostics: step banners + on-error dump -----------------------------
+
+$script:lastStep = ''
+function Step([string]$msg) {
+  Write-Host ">> $msg" -ForegroundColor DarkCyan
+  $script:lastStep = $msg
+}
+trap {
+  Write-Host ''
+  Write-Host "ginee install FAILED at step: $(if ($script:lastStep) { $script:lastStep } else { '<before first step>' })" -ForegroundColor Red
+  Write-Host "  Ref      : $Ref"
+  Write-Host "  Target   : $Target"
+  Write-Host "  RepoUrl  : $RepoUrl"
+  Write-Host "  Adapter  : $Adapter"
+  Write-Host "  PS       : $($PSVersionTable.PSVersion)"
+  Write-Host "  Cwd      : $($PWD.Path) (provider: $($PWD.Provider.Name))"
+  Write-Host "  Error    : $($_.Exception.Message)"
+  break
 }
 
 $ErrorActionPreference = 'Stop'
@@ -73,16 +120,100 @@ Write-Host ""
 
 $legacyDir = Join-Path $Target '.agents\engineering-team'
 if ((Test-Path $legacyDir) -and -not (Test-Path $frameworkDir)) {
-  Write-Host "Migrating .agents\engineering-team\ -> .agents\ginee\ (post-2026-05-18 rebrand)" -ForegroundColor Cyan
+  Step "Migrating .agents\engineering-team\ -> .agents\ginee\ (post-2026-05-18 rebrand)"
   Rename-Item $legacyDir $frameworkDir
   Write-Host "  Legacy install preserved in place; local/ contents carried over intact." -ForegroundColor DarkGray
+}
+
+# --- Fetch helpers ---------------------------------------------------------
+# Two paths:
+#   1. Zip — for vX.Y.Z tags + "latest" against canonical upstream. No git dependency.
+#   2. Git clone — for branches, SHAs, and forks (-RepoUrl override).
+
+function Is-TagRef([string]$r) {
+  return $r -match '^v\d+\.\d+\.\d+([-+.][A-Za-z0-9.-]+)?$'
+}
+
+function Resolve-LatestTag {
+  Step "Resolving 'latest' tag via $RepoUrl/releases/latest"
+  # /releases/latest HTTP 302s to /releases/tag/vX.Y.Z. Use UseBasicParsing so this
+  # works on PS 5.1 without IE.
+  $resp = Invoke-WebRequest -UseBasicParsing -Uri "$RepoUrl/releases/latest" -MaximumRedirection 10
+  $finalUri = $resp.BaseResponse.ResponseUri
+  if (-not $finalUri) {
+    $finalUri = $resp.BaseResponse.RequestMessage.RequestUri
+  }
+  $tag = ([string]$finalUri).TrimEnd('/').Split('/')[-1]
+  if (-not (Is-TagRef $tag)) {
+    throw "Could not parse 'latest' redirect (got '$tag' from '$finalUri')"
+  }
+  return $tag
+}
+
+function Fetch-Zip-To([string]$tag, [string]$dest) {
+  $zip = "ginee-$tag.zip"
+  $zipUrl = "$RepoUrl/releases/download/$tag/$zip"
+  $checksumsUrl = "$RepoUrl/releases/download/$tag/SHA256SUMS.txt"
+  $tmp = Join-Path ([System.IO.Path]::GetTempPath()) "ginee-$([guid]::NewGuid().Guid)"
+  New-Item -ItemType Directory -Force -Path $tmp | Out-Null
+
+  Step "Downloading $zip"
+  Invoke-WebRequest -UseBasicParsing -Uri $zipUrl -OutFile (Join-Path $tmp $zip)
+
+  Step "Downloading SHA256SUMS.txt"
+  Invoke-WebRequest -UseBasicParsing -Uri $checksumsUrl -OutFile (Join-Path $tmp 'SHA256SUMS.txt')
+
+  Step "Verifying SHA256 of $zip"
+  $expected = (Get-Content (Join-Path $tmp 'SHA256SUMS.txt') | Where-Object { $_ -match "\s$([regex]::Escape($zip))\s*$" } | Select-Object -First 1)
+  if (-not $expected) {
+    throw "SHA256SUMS.txt does not contain an entry for $zip"
+  }
+  $expectedHash = ($expected -split '\s+')[0].ToUpper()
+  $actualHash = (Get-FileHash -Algorithm SHA256 -Path (Join-Path $tmp $zip)).Hash.ToUpper()
+  if ($expectedHash -ne $actualHash) {
+    throw "SHA256 mismatch for $zip (expected $expectedHash, got $actualHash)"
+  }
+
+  Step "Extracting $zip"
+  Expand-Archive -Path (Join-Path $tmp $zip) -DestinationPath $tmp -Force
+
+  Step "Installing framework -> $dest"
+  New-Item -ItemType Directory -Force -Path (Split-Path -Parent $dest) | Out-Null
+  if (Test-Path $dest) { Remove-Item -Recurse -Force $dest }
+  Move-Item -Path (Join-Path $tmp "ginee-$tag") -Destination $dest
+  Remove-Item -Recurse -Force $tmp
+}
+
+function Fetch-GitClone-To([string]$ref, [string]$dest) {
+  if ($ref -notmatch '^[A-Za-z0-9._/-]+$') {
+    throw "Invalid -Ref '$ref' (alphanum, dot, slash, dash, underscore only)"
+  }
+  Step "Cloning $RepoUrl @ $ref -> $dest (git fallback)"
+  New-Item -ItemType Directory -Force -Path (Split-Path -Parent $dest) | Out-Null
+  if (Test-Path $dest) { Remove-Item -Recurse -Force $dest }
+  $gitArgs = @('clone','--depth','1','--branch',$ref,$RepoUrl,$dest)
+  & git @gitArgs
+  if ($LASTEXITCODE -ne 0) { throw "git clone failed (exit $LASTEXITCODE)" }
+  Remove-Item -Recurse -Force (Join-Path $dest '.git') -ErrorAction SilentlyContinue
+}
+
+function Fetch-ToDir([string]$ref, [string]$dest) {
+  # Zip path only against canonical upstream — forks may not publish releases under same naming
+  if ($RepoUrl -eq $DefaultRepoUrl) {
+    if ($ref -eq 'latest') { $ref = Resolve-LatestTag }
+    if (Is-TagRef $ref) {
+      Fetch-Zip-To $ref $dest
+      return
+    }
+  }
+  Fetch-GitClone-To $ref $dest
 }
 
 # --- 1. Fetch framework ----------------------------------------------------
 
 if (Test-Path $frameworkDir) {
   if ($UpdateOnly) {
-    Write-Host "Updating existing framework at $frameworkDir (preserving local/)..." -ForegroundColor Yellow
+    Step "Updating existing framework at $frameworkDir (preserving local/)"
     # Preserve local/
     $localBackup = Join-Path ([System.IO.Path]::GetTempPath()) "et-local-$([guid]::NewGuid().Guid)"
     if (Test-Path (Join-Path $frameworkDir 'local')) {
@@ -91,28 +222,25 @@ if (Test-Path $frameworkDir) {
     Remove-Item -Recurse -Force (Join-Path $frameworkDir 'core'),
                                 (Join-Path $frameworkDir 'adapters'),
                                 (Join-Path $frameworkDir 'extras') -ErrorAction SilentlyContinue
-    # Fetch fresh upstream content into a temp clone, then copy the three upstream-owned dirs into place
-    $tmpClone = Join-Path ([System.IO.Path]::GetTempPath()) "et-clone-$([guid]::NewGuid().Guid)"
-    git clone --depth 1 --branch $Ref $RepoUrl $tmpClone
+    # Fetch fresh upstream content into a staging dir, then copy the three upstream-owned dirs
+    $staging = Join-Path ([System.IO.Path]::GetTempPath()) "ginee-staging-$([guid]::NewGuid().Guid)"
+    Fetch-ToDir $Ref $staging
     foreach ($d in 'core','adapters','extras') {
-      $src = Join-Path $tmpClone $d
+      $src = Join-Path $staging $d
       if (Test-Path $src) { Copy-Item -Recurse $src (Join-Path $frameworkDir $d) }
     }
-    Remove-Item -Recurse -Force $tmpClone
+    Remove-Item -Recurse -Force $staging
   } else {
     Write-Error "Framework already installed at $frameworkDir. Use -UpdateOnly to refresh core/+adapters/+extras/ (local/ is preserved)."
   }
 } else {
-  Write-Host "Cloning framework..." -ForegroundColor Cyan
-  New-Item -ItemType Directory -Force (Split-Path -Parent $frameworkDir) | Out-Null
-  git clone --depth 1 --branch $Ref $RepoUrl $frameworkDir
-  Remove-Item -Recurse -Force (Join-Path $frameworkDir '.git') -ErrorAction SilentlyContinue
+  Fetch-ToDir $Ref $frameworkDir
 }
 
 # --- 2. Restore local/ on update -------------------------------------------
 
 if ($UpdateOnly -and (Test-Path $localBackup)) {
-  Write-Host "Restoring preserved local/..." -ForegroundColor Cyan
+  Step "Restoring preserved local/"
   Copy-Item -Recurse $localBackup (Join-Path $frameworkDir 'local')
   Remove-Item -Recurse -Force $localBackup
 }
@@ -140,8 +268,11 @@ $adapterDir = Join-Path $frameworkDir "adapters\$Adapter"
 $installNote = Join-Path $adapterDir 'install.md'
 
 # --- Prune framework-dev cruft from the adopter's framework dir -------------
+# Needed for backward compat with releases packaged before release.yml was updated
+# to pre-prune. On future releases the zip ships clean and these rms become no-ops.
 # Adopters need: core/ (incl. MIGRATIONS), adapters/_shared + chosen adapter,
 # extras/, local/ skeleton, LICENSE. Everything else is framework-dev only.
+Step "Pruning framework-dev cruft"
 $pruneRoots = @(
   '.github',         # release CI + issue templates for the framework's own repo
   '.claude',         # framework's own working state
@@ -161,10 +292,13 @@ foreach ($p in $pruneRoots) {
 }
 # Drop unchosen adapter subdirs (keep _shared + the selected one)
 $adaptersRoot = Join-Path $frameworkDir 'adapters'
-$keepAdapters = @('_shared', $Adapter)
-Get-ChildItem -Directory $adaptersRoot | Where-Object { $keepAdapters -notcontains $_.Name } |
-  ForEach-Object { Remove-Item -Recurse -Force $_.FullName }
-Write-Host "Pruned framework-dev files (release CI, other adapters, design docs)" -ForegroundColor DarkGray
+if (Test-Path $adaptersRoot) {
+  Get-ChildItem $adaptersRoot -Directory | ForEach-Object {
+    if ($_.Name -ne '_shared' -and $_.Name -ne $Adapter) {
+      Remove-Item -Recurse -Force $_.FullName
+    }
+  }
+}
 
 Write-Host ""
 Write-Host "Adapter '$Adapter' will be installed per:" -ForegroundColor Cyan
@@ -173,6 +307,7 @@ Write-Host ""
 
 switch ($Adapter) {
   'claude' {
+    Step "Installing claude adapter to .claude\"
     $agentsDir = Join-Path $Target '.claude\agents'
     New-Item -ItemType Directory -Force $agentsDir | Out-Null
     # Drop legacy project-manager.md pointer from pre-rename installs (renamed to team-lead.md on 2026-05-18)
@@ -204,6 +339,7 @@ switch ($Adapter) {
     }
   }
   'copilot-cli' {
+    Step "Installing copilot-cli adapter to .github\agents\ + .agents\skills\"
     $agentsDir = Join-Path $Target '.github\agents'
     New-Item -ItemType Directory -Force $agentsDir | Out-Null
     # Drop legacy project-manager.agent.md pointer from pre-rename installs (renamed to team-lead on 2026-05-18)
@@ -219,6 +355,7 @@ switch ($Adapter) {
     Write-Host "Copied 10 ginee-* skills to .agents/skills/ (cross-tool path per AgentSkills convention)" -ForegroundColor Green
   }
   'agents-md' {
+    Step "Installing AGENTS.md to project root"
     Copy-Item (Join-Path $frameworkDir 'adapters\agents-md\AGENTS.md') (Join-Path $Target 'AGENTS.md')
     Write-Host "Copied AGENTS.md to project root" -ForegroundColor Green
     Write-Host "NEXT (Gemini users): cp AGENTS.md GEMINI.md" -ForegroundColor Yellow
@@ -242,6 +379,6 @@ Write-Host "      Tier-3 fallback: 'act as team-lead and run initial discovery'.
 Write-Host "  3. Review the recommended specialists; user-approve any extras to enable."
 Write-Host ""
 Write-Host "Documentation:" -ForegroundColor Cyan
-Write-Host "  README:      $(Join-Path $frameworkDir 'README.md')"
-Write-Host "  Process:     $(Join-Path $frameworkDir 'core\process.md')"
-Write-Host "  Adapter:     $installNote"
+Write-Host "  Online:   https://kostiantyn-matsebora.github.io/ginee"
+Write-Host "  Process:  $(Join-Path $frameworkDir 'core\process.md')"
+Write-Host "  Adapter:  $installNote"

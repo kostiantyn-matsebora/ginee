@@ -87,7 +87,7 @@ ginee
 
 ### 1. Install
 
-> **Project-level install.** The framework lives inside your project. Run the installer **from the root of the project / git repo you want to set up** — the current working directory becomes the install target. No GitHub auth required.
+> **Project-level install.** The framework lives inside your project. Run the installer **from the root of the project / git repo you want to set up** — the current working directory becomes the install target. No GitHub auth required. No `git` required for tagged-release installs (default) — the installer downloads + verifies the release tarball over HTTPS.
 
 **One-liner** (recommended):
 
@@ -114,7 +114,7 @@ iwr -useb https://raw.githubusercontent.com/kostiantyn-matsebora/ginee/main/inst
 .\install.ps1 -Adapter claude
 ```
 
-Pin a release with `--ref v0.1.0` / `$env:GINEE_REF='v0.1.0'`.
+`--ref` defaults to `latest` (resolves to the most recent published release). Pin to a specific release with `--ref v0.1.0` / `$env:GINEE_REF='v0.1.0'`. Track a branch / commit with `--ref main` or `--ref <sha>` (falls back to `git clone` — requires `git` on PATH).
 
 ### 2. Run discovery
 
