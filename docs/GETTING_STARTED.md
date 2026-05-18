@@ -12,7 +12,7 @@ permalink: /GETTING_STARTED.html
 
 - A project / git repo to install into.
 - One of: **Claude Code** · **GitHub Copilot CLI** · a client that reads **AGENTS.md** (Cursor, Codex, Windsurf, Gemini CLI, Goose, ...) · or any LLM with a `INSTRUCTIONS.md` reader (generic fallback).
-- `git` available on `PATH` (the installer uses `git clone` to fetch the framework).
+- `curl` (Linux/macOS) or `Invoke-WebRequest` (Windows; built in to PowerShell). `git` is **only** required if you install from a branch / commit (`--ref main` or `--ref <sha>`); tagged-release installs download a verified tarball over HTTPS.
 
 That's it. ginee is markdown-only — no Node, Python, or build step.
 
@@ -43,7 +43,15 @@ $env:GINEE_ADAPTER='claude'; iwr -useb https://raw.githubusercontent.com/kostian
 | `agents-md` | tier-2 | Cursor, OpenAI Codex, Windsurf, Amp, Devin, Factory, Jules, GitHub Copilot IDE (read `AGENTS.md`) |
 | `generic` | tier-3 | Any LLM that can read an `INSTRUCTIONS.md` |
 
-### Pin a version
+### Ref resolution
+
+`--ref` controls what gets installed:
+
+| Value | Source | Notes |
+|---|---|---|
+| `latest` (default) | Release tarball | Resolves to the most recent published release via the `/releases/latest` redirect. No `git` needed. |
+| `vX.Y.Z` (e.g. `v0.1.0`) | Release tarball | Pin to a specific release. Verified against `SHA256SUMS.txt`. No `git` needed. |
+| `main` / branch / SHA | `git clone --depth 1` | Fall-back path. Requires `git` on PATH. |
 
 ```bash
 ./install.sh --ref v0.1.0 --adapter claude
@@ -160,7 +168,8 @@ $env:GINEE_UPDATE_ONLY='1'; $env:GINEE_ADAPTER='claude'; iwr -useb https://raw.g
 
 | Symptom | Likely cause | Fix |
 |---|---|---|
-| `git clone` step fails | Network issue or `git` not on PATH | Check connectivity to github.com + `git --version`. ginee is public — no GitHub auth required for the default `--repo` |
+| `git clone` step fails | Branch/SHA ref + `git` not on PATH | Switch to a tagged ref (`--ref latest` or `--ref v0.1.0`) — those use the tarball path and skip `git`. Otherwise install `git` and re-run. |
+| SHA256 verification fails | Network corruption or a tampered mirror | Re-run; if it persists, file an issue. The installer aborts before unpacking so nothing is written on mismatch. |
 | `.agents/engineering-team/` exists after update | Pre-rebrand install path | The installer auto-renames on next `--update-only` run — re-run and it migrates once |
 | Specialist refuses to edit a file | Forbidden role-crossing per `local/bindings.md § Project role boundaries` | Dispatch the owning role instead — the strict-domain rule is intentional |
 | Discovery surfaces "no architecture doc" | Project has no `docs/architecture.md` (or similar) yet | OK; PM works without one. Author one when ready and `@team-lead rediscover` |

@@ -92,6 +92,8 @@ $env:GINEE_ADAPTER='claude'; iwr -useb https://raw.githubusercontent.com/kostian
 
 Adapters: `claude` (Claude Code) · `copilot-cli` (GitHub Copilot CLI) · `agents-md` (Cursor / Codex / Windsurf / Gemini) · `generic` (fallback).
 
+Default `--ref` is `latest` — downloads + SHA256-verifies the published release tarball; no `git` required. Pin with `--ref v0.1.0`, or track a branch / commit with `--ref main` / `--ref <sha>` (falls back to `git clone`).
+
 ### 2. Run discovery
 
 Open your client in the project, then prompt:

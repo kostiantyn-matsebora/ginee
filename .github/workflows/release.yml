@@ -97,9 +97,19 @@ jobs:
           TAG="${{ steps.version.outputs.tag }}"
           PKG="ginee-${TAG}"
           mkdir -p _dist
-          # Stage a clean copy WITHOUT local/ contents + WITHOUT .github/ + WITHOUT _dist itself
+          # Stage a clean copy. Exclude list mirrors install.sh's prune list so
+          # the released tarball ships "ready to use" — no adopter-side pruning
+          # needed for tagged installs.
           mkdir -p "_stage/${PKG}"
-          rsync -a --exclude '_dist' --exclude '_stage' --exclude '.git' --exclude '.github' --exclude 'local/*' ./ "_stage/${PKG}/"
+          rsync -a \
+            --exclude '_dist' --exclude '_stage' \
+            --exclude '.git' --exclude '.github' --exclude '.claude' \
+            --exclude '.gitignore' --exclude '.dockerignore' \
+            --exclude 'install.sh' --exclude 'install.ps1' \
+            --exclude 'PLAN.md' --exclude 'CLAUDE.md' --exclude 'README.md' --exclude 'SECURITY.md' \
+            --exclude 'docs' \
+            --exclude 'local/*' \
+            ./ "_stage/${PKG}/"
           # Preserve empty local/roles/ so consumers see the structure
           mkdir -p "_stage/${PKG}/local/roles"
           touch "_stage/${PKG}/local/.gitkeep" "_stage/${PKG}/local/roles/.gitkeep"

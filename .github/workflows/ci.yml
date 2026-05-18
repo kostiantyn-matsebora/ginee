@@ -437,3 +437,124 @@ jobs:
             Write-Error "local/sentinel.txt lost or corrupted on --update-only"
           }
           Write-Host "Update-only preserved local/: OK"
+
+  install-smoke-tarball-bash:
+    # Exercises the release-tarball path (no --repo override, --ref latest)
+    # against the real published GitHub Release. Verifies the tarball flow
+    # works end-to-end without git on PATH for the common adopter scenario.
+    name: Install smoke tarball (bash)
+    needs: validate
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Scaffold fake adopter project
+        run: |
+          set -e
+          mkdir -p /tmp/fake-tarball
+          cd /tmp/fake-tarball
+          git init -q
+          git config user.email ci@example.com
+          git config user.name "CI"
+          printf '# Fake project for ginee tarball-path smoke test\n' > README.md
+          git add . && git commit -q -m "init"
+
+      - name: Install via tarball path (--ref latest, no --repo override)
+        run: |
+          set -e
+          cat install.sh | bash -s -- --target /tmp/fake-tarball --adapter claude --ref latest
+
+      - name: Verify framework layout + claude adapter footprint
+        run: |
+          set -e
+          ROOT=/tmp/fake-tarball
+          for d in core core/roles core/templates core/MIGRATIONS core/skills adapters adapters/_shared/agents extras/roles local; do
+            [ -d "$ROOT/.agents/ginee/$d" ] || { echo "::error::Missing $ROOT/.agents/ginee/$d"; exit 1; }
+          done
+          [ -f "$ROOT/.agents/ginee/core/VERSION" ] || { echo "::error::Missing core/VERSION"; exit 1; }
+          for role in team-lead solution-architect ai-engineer frontend-engineer backend-engineer devops-engineer qa-engineer; do
+            [ -f "$ROOT/.claude/agents/${role}.md" ] || { echo "::error::Missing .claude/agents/${role}.md"; exit 1; }
+          done
+          for skill in ginee-discovery ginee-rediscover ginee-pick-up ginee-triage ginee-file-bug; do
+            [ -f "$ROOT/.claude/skills/${skill}/SKILL.md" ] || { echo "::error::Missing .claude/skills/${skill}/SKILL.md"; exit 1; }
+          done
+          grep -qF "## Engineering team framework" "$ROOT/CLAUDE.md" || { echo "::error::CLAUDE.md missing pointer sentinel"; exit 1; }
+          echo "Tarball-path install: OK"
+
+  install-smoke-tarball-pwsh:
+    name: Install smoke tarball (pwsh)
+    needs: validate
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Scaffold fake adopter project
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          New-Item -ItemType Directory -Force -Path C:\temp\fake-tarball | Out-Null
+          Set-Location C:\temp\fake-tarball
+          git init -q
+          git config user.email ci@example.com
+          git config user.name "CI"
+          '# Fake project for ginee tarball-path smoke test' | Set-Content README.md
+          git add . ; git commit -q -m "init"
+
+      - name: Install via tarball path (iex pattern, no GINEE_REPO override)
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $env:GINEE_TARGET = 'C:\temp\fake-tarball'
+          $env:GINEE_ADAPTER = 'claude'
+          $env:GINEE_REF = 'latest'
+          # Mirrors README `iwr ... | iex`; substitutes network fetch with workspace install.ps1.
+          Get-Content $env:GITHUB_WORKSPACE\install.ps1 -Raw | iex
+
+      - name: Verify framework layout + claude adapter footprint
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $root = 'C:\temp\fake-tarball'
+          $required = 'core','core\roles','core\templates','core\MIGRATIONS','core\skills','adapters','adapters\_shared\agents','extras\roles','local'
+          foreach ($d in $required) {
+            if (-not (Test-Path "$root\.agents\ginee\$d")) { Write-Error "Missing $root\.agents\ginee\$d" }
+          }
+          if (-not (Test-Path "$root\.agents\ginee\core\VERSION")) { Write-Error "Missing core/VERSION" }
+          $roles = 'team-lead','solution-architect','ai-engineer','frontend-engineer','backend-engineer','devops-engineer','qa-engineer'
+          foreach ($r in $roles) {
+            if (-not (Test-Path "$root\.claude\agents\$r.md")) { Write-Error "Missing .claude/agents/$r.md" }
+          }
+          $skills = 'ginee-discovery','ginee-rediscover','ginee-pick-up','ginee-triage','ginee-file-bug'
+          foreach ($s in $skills) {
+            if (-not (Test-Path "$root\.claude\skills\$s\SKILL.md")) { Write-Error "Missing .claude/skills/$s/SKILL.md" }
+          }
+          if (-not (Select-String -Path "$root\CLAUDE.md" -SimpleMatch -Quiet '## Engineering team framework')) {
+            Write-Error "CLAUDE.md missing pointer sentinel"
+          }
+          Write-Host "Tarball-path install: OK"
+
+      - name: Regression — scope-leak fix (pre-set $Ref=$null in session)
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          Remove-Item -Recurse -Force C:\temp\scope-leak -ErrorAction SilentlyContinue
+          New-Item -ItemType Directory -Force C:\temp\scope-leak | Out-Null
+          Set-Location C:\temp\scope-leak
+          git init -q
+          git config user.email ci@example.com
+          git config user.name "CI"
+          'init' | Set-Content README.md
+          git add . ; git commit -q -m "init"
+          # Simulate the bug scenario: $Ref / $Target empty in caller scope before iex
+          $Ref = $null
+          $Target = $null
+          $env:GINEE_TARGET = 'C:\temp\scope-leak'
+          $env:GINEE_ADAPTER = 'claude'
+          Remove-Item env:GINEE_REF -ErrorAction SilentlyContinue
+          # Should normalize $Ref to 'latest' and succeed via the tarball path,
+          # not throw "The filename, directory name, or volume label syntax is incorrect."
+          Get-Content $env:GITHUB_WORKSPACE\install.ps1 -Raw | iex
+          if (-not (Test-Path 'C:\temp\scope-leak\.agents\ginee\core\VERSION')) {
+            Write-Error "Scope-leak regression: install did not complete"
+          }
+          Write-Host "Scope-leak regression cover: OK"
