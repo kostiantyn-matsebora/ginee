@@ -170,6 +170,10 @@ jobs:
         adapter: [claude, copilot-cli, agents-md, generic]
     steps:
       - uses: actions/checkout@v4
+        with:
+          # Full history so we can push HEAD to the local bare repo
+          # (shallow clones can't be pushed to a fresh repo).
+          fetch-depth: 0
 
       - name: Set up local bare repo (installer git-clones the PR content)
         run: |
@@ -308,6 +312,8 @@ jobs:
         adapter: [claude, copilot-cli, agents-md, generic]
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Set up local bare repo
         shell: pwsh
