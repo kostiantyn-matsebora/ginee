@@ -27,6 +27,12 @@ the same governance every single time.
 
 ```
 ginee
+├── 📐 PROCESS IS THE FRAMEWORK
+│   ├── the phased lifecycle, dispatch rules, and iteration protocol are the spine
+│   ├── agents, the knowledge index, self-onboarding, the adapters — all optimisations
+│   │   on top; each makes the process cheaper to run on a real project
+│   └── strip the optimisations away and the process still holds; you can run it by hand
+│
 ├── 👥 WORKS LIKE A REAL TEAM
 │   ├── roles dispatch each other, hand off, and review each other's work
 │   ├── strict-domain rule — no role works outside its lane; mockup edits go to frontend,
