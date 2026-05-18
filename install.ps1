@@ -1,33 +1,31 @@
 # ginee installer (PowerShell)
 #
-# Parameter cheat-sheet (do not confuse the two paths):
-#   -Target   = WHERE TO INSTALL INTO (the adopter project root — e.g. your dashboard repo).
-#               Defaults to current working directory.
-#   -RepoUrl  = WHERE TO FETCH THE FRAMEWORK FROM (the ginee git repo).
-#               Defaults to the public GitHub URL. Pass a local checkout path
-#               (e.g. C:\path\to\ginee) while the repo is private.
+# Run anonymously — no GitHub auth needed; the framework is public OSS.
 #
-# The installer creates inside -Target:
-#   .\.agents\ginee\   — the framework (core, adapters, extras, local)
+# Usage (one-liner — recommended; env vars carry arguments since `iex` can't accept params):
+#   $env:GINEE_ADAPTER='claude'; iwr -useb https://raw.githubusercontent.com/kostiantyn-matsebora/ginee/main/install.ps1 | iex
+#   $env:GINEE_ADAPTER='claude'; $env:GINEE_REF='v0.1.0'; iwr -useb https://raw.githubusercontent.com/kostiantyn-matsebora/ginee/main/install.ps1 | iex
+#
+# Usage (download once, then run with named parameters):
+#   iwr -useb https://raw.githubusercontent.com/kostiantyn-matsebora/ginee/main/install.ps1 -OutFile install.ps1
+#   .\install.ps1 [-Target <path>] [-Adapter <claude|copilot-cli|agents-md|generic>] [-Ref <branch-or-tag>] [-UpdateOnly]
+#
+# Parameters:
+#   -Target    Project root to install into. Default = current working directory.
+#   -Adapter   claude | copilot-cli | agents-md | generic. Prompts if omitted.
+#   -Ref       Git ref (branch / tag / commit). Default = main. Pin a release with -Ref v0.1.0.
+#   -RepoUrl   Override fetch URL — only needed for forks or testing a local checkout.
+#              Default = https://github.com/kostiantyn-matsebora/ginee.
+#   -UpdateOnly  Refresh core/+adapters/+extras/ in place; preserve local/.
+#
+# What gets created inside -Target:
+#   .\.agents\ginee\              — the framework (core, adapters, extras, local)
 #   .\.claude\agents\             — Claude adapter (when -Adapter claude)
 #   .\.claude\skills\             — Claude adapter skills
 #   .\.github\agents\             — Copilot CLI adapter (when -Adapter copilot-cli)
 #   .\.agents\skills\             — Copilot CLI adapter skills (cross-tool AgentSkills path)
 #   .\AGENTS.md                   — AGENTS.md adapter (when -Adapter agents-md)
-#
-# Field-trial example (private repo, local framework checkout, explicit -Target so cwd is irrelevant):
-#   C:\path\to\ginee\install.ps1 `
-#     -Target  C:\path\to\your-project `
-#     -RepoUrl C:\path\to\ginee `
-#     -Adapter claude
-#
-# Usage (download once, run from project root, no -Target):
-#   iwr -useb https://raw.githubusercontent.com/kostiantyn-matsebora/ginee/main/install.ps1 -OutFile install.ps1
-#   .\install.ps1 [-Target <path>] [-Adapter <claude|copilot-cli|agents-md|generic>] [-Ref <branch-or-tag>] [-RepoUrl <url-or-local-path>] [-UpdateOnly]
-#
-# Usage (remote one-liner — works once the framework repo is public; env vars carry arguments since `iex` can't accept params):
-#   $env:GINEE_ADAPTER='claude'; iwr -useb https://raw.githubusercontent.com/kostiantyn-matsebora/ginee/main/install.ps1 | iex
-#   $env:GINEE_ADAPTER='claude'; $env:GINEE_REF='v0.1.0'; iwr -useb <url>/install.ps1 | iex
+#   .\CLAUDE.md                   — pointer block appended (idempotent via sentinel)
 
 [CmdletBinding()]
 param(
@@ -36,7 +34,7 @@ param(
   [ValidateSet('claude','copilot-cli','agents-md','generic')]
   [string] $Adapter,
   [string] $Ref = 'main',
-  # WHERE TO FETCH THE FRAMEWORK FROM — git URL or local checkout path.
+  # WHERE TO FETCH THE FRAMEWORK FROM. Override for forks / local-checkout testing.
   [string] $RepoUrl = 'https://github.com/kostiantyn-matsebora/ginee',
   [switch] $UpdateOnly
 )

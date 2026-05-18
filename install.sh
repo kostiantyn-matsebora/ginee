@@ -1,34 +1,32 @@
 #!/usr/bin/env bash
 # ginee installer (POSIX shell)
 #
-# Parameter cheat-sheet (do not confuse the two paths):
-#   --target  = WHERE TO INSTALL INTO (the adopter project root — e.g. your dashboard repo).
-#               Defaults to $PWD.
-#   --repo    = WHERE TO FETCH THE FRAMEWORK FROM (the ginee git repo).
-#               Defaults to the public GitHub URL. Pass a local checkout path
-#               (e.g. /path/to/ginee) while the repo is private.
+# Run anonymously — no GitHub auth needed; the framework is public OSS.
 #
-# The installer creates inside --target:
-#   ./.agents/ginee/   — the framework (core/, adapters/, extras/, local/)
+# Usage (one-liner — recommended):
+#   curl -fsSL https://raw.githubusercontent.com/kostiantyn-matsebora/ginee/main/install.sh | bash -s -- --adapter claude
+#
+# Usage (download once, then run with named flags):
+#   curl -fsSLO https://raw.githubusercontent.com/kostiantyn-matsebora/ginee/main/install.sh
+#   chmod +x install.sh
+#   ./install.sh [--target <path>] [--adapter <claude|copilot-cli|agents-md|generic>] [--ref <branch-or-tag>] [--update-only]
+#
+# Parameters:
+#   --target       Project root to install into. Default = $PWD.
+#   --adapter      claude | copilot-cli | agents-md | generic. Prompts if omitted.
+#   --ref          Git ref (branch / tag / commit). Default = main. Pin a release with --ref v0.1.0.
+#   --repo         Override fetch URL — only needed for forks or testing a local checkout.
+#                  Default = https://github.com/kostiantyn-matsebora/ginee.
+#   --update-only  Refresh core/+adapters/+extras/ in place; preserve local/.
+#
+# What gets created inside --target:
+#   ./.agents/ginee/              — the framework (core/, adapters/, extras/, local/)
 #   ./.claude/agents/             — Claude adapter (when --adapter claude)
 #   ./.claude/skills/             — Claude adapter skills
 #   ./.github/agents/             — Copilot CLI adapter (when --adapter copilot-cli)
 #   ./.agents/skills/             — Copilot CLI adapter skills (cross-tool AgentSkills path)
 #   ./AGENTS.md                   — AGENTS.md adapter (when --adapter agents-md)
-#
-# Field-trial example (private repo, local framework checkout, explicit --target so $PWD is irrelevant):
-#   /path/to/ginee/install.sh \
-#     --target  /path/to/your-project \
-#     --repo    /path/to/ginee \
-#     --adapter claude
-#
-# Usage (download once, run from project root):
-#   curl -fsSLO https://raw.githubusercontent.com/kostiantyn-matsebora/ginee/main/install.sh
-#   chmod +x install.sh
-#   ./install.sh [--target <path>] [--adapter <claude|copilot-cli|agents-md|generic>] [--ref <branch-or-tag>] [--repo <url-or-local-path>] [--update-only]
-#
-# Usage (remote one-liner — works once the framework repo is public):
-#   curl -fsSL https://raw.githubusercontent.com/kostiantyn-matsebora/ginee/main/install.sh | bash -s -- --adapter claude
+#   ./CLAUDE.md                   — pointer block appended (idempotent via sentinel)
 
 set -euo pipefail
 
