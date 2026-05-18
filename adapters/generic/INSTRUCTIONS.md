@@ -16,7 +16,7 @@ Project uses the [`ginee`](.agents/ginee/) framework — vendor-neutral multi-ag
 
 | Role | Charter at | Alias |
 |---|---|---|
-| `project-manager` | `.agents/ginee/core/roles/project-manager.md` | — (orchestrator) |
+| `team-lead` | `.agents/ginee/core/roles/team-lead.md` | — (orchestrator) |
 | `solution-architect` | `.agents/ginee/core/roles/solution-architect.md` | architect |
 | `ai-engineer` | `.agents/ginee/core/roles/ai-engineer.md` | context-engineer |
 | `frontend-engineer` | `.agents/ginee/core/roles/frontend-engineer.md` | client-engineer |
@@ -34,8 +34,8 @@ Project uses the [`ginee`](.agents/ginee/) framework — vendor-neutral multi-ag
 - **Dispatch.**
   - Mention the role by name, or describe the task surface.
   - The LLM acts as that persona.
-- **Orchestrator.** `project-manager`.
-- **First install.** Prompt `act as project-manager and run initial discovery`.
+- **Orchestrator.** `team-lead`.
+- **First install.** Prompt `act as team-lead and run initial discovery`.
 
 ## Coordination rules (always apply)
 

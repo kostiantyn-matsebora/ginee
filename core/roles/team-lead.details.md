@@ -1,6 +1,6 @@
-# Project Manager — Details
+# Team Lead — Details
 
-Companion to `core/roles/project-manager.md`. Elaborations only; kernel rules are binding.
+Companion to `core/roles/team-lead.md`. Elaborations only; kernel rules are binding.
 
 ## Source-of-truth reading list (full)
 
@@ -19,9 +19,9 @@ If any of the four `local/*` files is missing on first run → trigger the Disco
 
 Triggered when:
 
-- User invokes `@project-manager run initial discovery` (the canonical install step).
+- User invokes `@team-lead run initial discovery` (the canonical install step).
 - Any of `local/project-profile.md`, `local/bindings.md`, `local/framework.config.yaml` is missing when you start a task.
-- User invokes `@project-manager rediscover` (full re-run).
+- User invokes `@team-lead rediscover` (full re-run).
 
 Steps:
 
@@ -184,30 +184,30 @@ Before dispatching a specialist whose task may consume any indexed source doc, v
      | Option | Effect |
      |---|---|
      | `@ai-engineer reindex <source>` | Targeted re-extraction; cheapest. |
-     | `@project-manager rediscover` | Full re-discovery + re-extraction; use when class membership itself changed. |
+     | `@team-lead rediscover` | Full re-discovery + re-extraction; use when class membership itself changed. |
 
    - **Never auto-reindex.** User decides.
 5. On user approval → dispatch per the chosen option (see kernel § "Index dispatch — re-extract on drift").
 
 ## GitHub issue operations
 
-Full procedures + tool-surface details + label scheme + state mapping + forbidden actions: **`core/github-integration.md`**. Kernel routing summary lives in `project-manager.md § Dispatch routing` and `§ GitHub issue operations`.
+Full procedures + tool-surface details + label scheme + state mapping + forbidden actions: **`core/github-integration.md`**. Kernel routing summary lives in `team-lead.md § Dispatch routing` and `§ GitHub issue operations`.
 
 Quick triggers → workflows:
 
 | Trigger | Spec section |
 |---|---|
-| `@project-manager file bug <…>` / `file feature <…>` | `core/github-integration.md § Outbound — file an issue` |
-| `@project-manager pick up #<N>` | `core/github-integration.md § Inbound — pick up an issue` |
-| `@project-manager triage` | `core/github-integration.md § Triage — list ready issues` |
-| `@project-manager promote discussion #<N>` | `core/github-integration.md § Promote — discussion → issue` |
+| `@team-lead file bug <…>` / `file feature <…>` | `core/github-integration.md § Outbound — file an issue` |
+| `@team-lead pick up #<N>` | `core/github-integration.md § Inbound — pick up an issue` |
+| `@team-lead triage` | `core/github-integration.md § Triage — list ready issues` |
+| `@team-lead promote discussion #<N>` | `core/github-integration.md § Promote — discussion → issue` |
 | Phase transition on issue-sourced task | `core/github-integration.md § Inbound — pick up an issue` (Comment cadence table) |
 
 Repo discovery — origin inference first, `local/framework.config.yaml § github.repo` overrides. Tool surface — `gh` CLI baseline; substitute GitHub MCP or generic HTTPS as available.
 
 ## Delivery modes
 
-Full procedure: **`core/delivery-modes.md`**. Kernel summary lives in `project-manager.md § Delivery mode — resolve before Phase 4`.
+Full procedure: **`core/delivery-modes.md`**. Kernel summary lives in `team-lead.md § Delivery mode — resolve before Phase 4`.
 
 ### Phase 3 — resolve + report the mode
 

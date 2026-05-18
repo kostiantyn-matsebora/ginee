@@ -46,16 +46,16 @@
 
 4. **Run discovery.**
    - Open the project in your client (Cursor / Codex / Gemini CLI / etc.).
-   - Ask the client to run initial discovery — natural language matches the `ginee-discovery` skill, or the orchestrator routes to `project-manager` via subagent description match. Example phrasings:
+   - Ask the client to run initial discovery — natural language matches the `ginee-discovery` skill, or the orchestrator routes to `team-lead` via subagent description match. Example phrasings:
 
      ```
      Run initial discovery.
      ```
      ```
-     @project-manager run initial discovery     (Cursor: @ is literal)
+     @team-lead run initial discovery     (Cursor: @ is literal)
      ```
      ```
-     act as project-manager and run initial discovery     (clients without @-routing)
+     act as team-lead and run initial discovery     (clients without @-routing)
      ```
 
 5. **Verify** — ask the client to report status of each cardinal. Each should:

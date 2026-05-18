@@ -30,7 +30,7 @@ Modified:
 - `core/index-protocol.md` — title broadens; new `§ Source types` section; common-files table covers both categories; manifest shape adds `category: doc | code` per entry; lifecycle + lossless rule + adopter-declared example extended.
 - `core/roles/ai-engineer.md` — In-scope-edits row renamed (Project knowledge index) + recipe list extended.
 - `core/roles/ai-engineer.details.md` — `§ Project-doc extraction recipes` → `§ Project extraction recipes`; new doc/code sub-tables; sample-and-check verify-step is category-aware.
-- `core/roles/project-manager.details.md` — Discovery Step 8b heuristics split into doc + code sub-groups; pre-dispatch staleness check covers both categories.
+- `core/roles/team-lead.details.md` — Discovery Step 8b heuristics split into doc + code sub-groups; pre-dispatch staleness check covers both categories.
 - Role kernels (`backend-engineer`, `frontend-engineer`, `devops-engineer`, `qa-engineer`, `solution-architect`, `security-engineer`, `sre`, `ml-engineer`, `mobile-engineer`, `data-engineer`) — Source-of-truth tables gain relevant code-category pointers.
 - `CLAUDE.md` / `PLAN.md` — D15 row added.
 
@@ -38,7 +38,7 @@ Modified:
 
 After re-fetching framework files on upgrade:
 
-1. **Run `@project-manager rediscover`** (or natural-language equivalent that activates `ginee-rediscover` per D16). This re-enumerates classes — discovers the new code-category sources and populates the new index files.
+1. **Run `@team-lead rediscover`** (or natural-language equivalent that activates `ginee-rediscover` per D16). This re-enumerates classes — discovers the new code-category sources and populates the new index files.
 
    Or, for targeted extraction without full rediscover:
 

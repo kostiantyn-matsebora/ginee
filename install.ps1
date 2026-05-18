@@ -164,6 +164,8 @@ switch ($Adapter) {
   'claude' {
     $agentsDir = Join-Path $Target '.claude\agents'
     New-Item -ItemType Directory -Force $agentsDir | Out-Null
+    # Drop legacy project-manager.md pointer from pre-rename installs (renamed to team-lead.md on 2026-05-18)
+    Remove-Item (Join-Path $agentsDir 'project-manager.md') -Force -ErrorAction SilentlyContinue
     Copy-Item (Join-Path $frameworkDir 'adapters\_shared\agents\*.md') $agentsDir
     Write-Host "Copied 7 cardinal subagents to .claude/agents/" -ForegroundColor Green
     $skillsDir = Join-Path $Target '.claude\skills'
@@ -193,6 +195,8 @@ switch ($Adapter) {
   'copilot-cli' {
     $agentsDir = Join-Path $Target '.github\agents'
     New-Item -ItemType Directory -Force $agentsDir | Out-Null
+    # Drop legacy project-manager.agent.md pointer from pre-rename installs (renamed to team-lead on 2026-05-18)
+    Remove-Item (Join-Path $agentsDir 'project-manager.agent.md') -Force -ErrorAction SilentlyContinue
     Get-ChildItem (Join-Path $frameworkDir 'adapters\_shared\agents\*.md') | ForEach-Object {
       Copy-Item $_.FullName (Join-Path $agentsDir "$($_.BaseName).agent.md")
     }
@@ -223,7 +227,7 @@ Write-Host "Next steps:" -ForegroundColor Cyan
 Write-Host "  1. Open your client in this project."
 Write-Host "  2. Type:  Run initial discovery"
 Write-Host "     (auto-activates the ginee-discovery skill in Claude Code / Copilot CLI."
-Write-Host "      Tier-3 fallback: 'act as project-manager and run initial discovery'.)"
+Write-Host "      Tier-3 fallback: 'act as team-lead and run initial discovery'.)"
 Write-Host "  3. Review the recommended specialists; user-approve any extras to enable."
 Write-Host ""
 Write-Host "Documentation:" -ForegroundColor Cyan

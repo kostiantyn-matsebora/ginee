@@ -52,7 +52,7 @@ Key properties:
 
 1. Install per `install.md`.
 2. Open Copilot CLI: `copilot`
-3. Mention a role: `@project-manager status` — confirm it loads.
+3. Mention a role: `@team-lead status` — confirm it loads.
 4. Run a parallel iteration via `/fleet`:
    ```
    /fleet plan a 3-task implementation for FEATURE-X, dispatch frontend-engineer and backend-engineer in parallel per the iteration protocol

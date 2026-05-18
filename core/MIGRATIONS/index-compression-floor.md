@@ -47,7 +47,7 @@ After re-fetching framework files on upgrade:
 2. **Audit doc-category classes** for compression. The existing recipes (`builtin:architecture`, `builtin:adr`, `builtin:cr`, `builtin:scenario`) were already designed around existence-entries; most projects will pass without re-extraction. Run a discovery report to confirm:
 
    ```
-   @project-manager rediscover --check-only
+   @team-lead rediscover --check-only
    ```
 
    (or natural-language equivalent activating `ginee-rediscover` per D16). Output flags any class above target. Run targeted reindex for any that fail.

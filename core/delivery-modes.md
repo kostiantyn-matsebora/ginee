@@ -2,10 +2,10 @@
 
 **Load-on-demand.** Fetched when:
 
-- `project-manager` is about to dispatch a task and needs to resolve or propose the delivery mode.
+- `team-lead` is about to dispatch a task and needs to resolve or propose the delivery mode.
 - A specialist enters Phase 4 (implementation) and needs to know which mode applies to its commit cadence.
-- `project-manager` is at Phase 8 finalize and runs the per-mode finalize procedure.
-- `project-manager` is in auto-mode delivery-handoff (D12) and runs the Accept action.
+- `team-lead` is at Phase 8 finalize and runs the per-mode finalize procedure.
+- `team-lead` is in auto-mode delivery-handoff (D12) and runs the Accept action.
 
 Default short tasks load this file on first use; the resolved mode is then carried through the session in the task's working state.
 

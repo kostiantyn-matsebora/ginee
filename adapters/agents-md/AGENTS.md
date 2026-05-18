@@ -12,7 +12,7 @@ Project uses the [`ginee`](.agents/ginee/) framework — vendor-neutral multi-ag
 
 | Role | Charter at | Alias |
 |---|---|---|
-| `project-manager` | `.agents/ginee/core/roles/project-manager.md` | — (orchestrator) |
+| `team-lead` | `.agents/ginee/core/roles/team-lead.md` | — (orchestrator) |
 | `solution-architect` | `.agents/ginee/core/roles/solution-architect.md` | architect |
 | `ai-engineer` | `.agents/ginee/core/roles/ai-engineer.md` | context-engineer |
 | `frontend-engineer` | `.agents/ginee/core/roles/frontend-engineer.md` | client-engineer |
@@ -28,10 +28,10 @@ Project uses the [`ginee`](.agents/ginee/) framework — vendor-neutral multi-ag
 ## Orchestration
 
 - **Dispatch.** Mention the role that owns the surface (e.g. `@frontend-engineer`, `@solution-architect`).
-- **Orchestrator.** `project-manager`. Invoke for:
+- **Orchestrator.** `team-lead`. Invoke for:
   - Ambiguous scope.
   - First-run discovery.
-- **First install.** Prompt `@project-manager run initial discovery`. Produces:
+- **First install.** Prompt `@team-lead run initial discovery`. Produces:
   - `local/project-profile.md`
   - `local/bindings.md`
   - `local/framework.config.yaml`

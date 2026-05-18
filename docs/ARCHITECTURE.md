@@ -65,7 +65,7 @@ core/
 ├── post-task-check-in.md       After every completed user request
 │
 ├── roles/                      7 cardinal role kernels (always present)
-│   ├── project-manager.md             orchestrator + discovery
+│   ├── team-lead.md             orchestrator + discovery
 │   ├── solution-architect.md          architecture-doc semantics + governance
 │   ├── ai-engineer.md                 doc context economy + load topology
 │   ├── frontend-engineer.md           client UI + mockup
@@ -132,7 +132,7 @@ Specialist roles outside the 7-cardinal baseline. Enabled per project based on w
 | `sre` | Project has SLOs, runbooks, or post-deploy ops requirements |
 | `data-engineer` | Project has a data warehouse, lake, or pipeline orchestrator |
 
-Same role-kernel shape as cardinals (see [Reference → Role kernels]({{ '/reference/ROLES.html' | relative_url }})). Adopters approve specialists during discovery — `project-manager` proposes, user accepts.
+Same role-kernel shape as cardinals (see [Reference → Role kernels]({{ '/reference/ROLES.html' | relative_url }})). Adopters approve specialists during discovery — `team-lead` proposes, user accepts.
 
 ## Layer 4 — `local/` — adopter project state
 
@@ -160,7 +160,7 @@ local/
     └── <your-role>.md          Same shape as core/roles/*.md (see role-authoring-template)
 ```
 
-**Discovery writes most of this on first run.** Adopters edit `bindings.md` and `framework.config.yaml` to refine PM's auto-discovered defaults; everything else is regenerated on `@project-manager rediscover` or `@ai-engineer reindex`.
+**Discovery writes most of this on first run.** Adopters edit `bindings.md` and `framework.config.yaml` to refine PM's auto-discovered defaults; everything else is regenerated on `@team-lead rediscover` or `@ai-engineer reindex`.
 
 ## The installer
 
@@ -219,7 +219,7 @@ Specialist reports its loaded set in its first response — adopters see per-dis
 
 ```
 DISCOVERY (initial)
-   project-manager enumerates classes
+   team-lead enumerates classes
    → ai-engineer extracts per recipe
    → writes manifest.yaml + index files
    → sample-and-check: existence + compression
@@ -227,9 +227,9 @@ DISCOVERY (initial)
    → adopter reviews + approves
 
 PRE-DISPATCH (every task)
-   project-manager identifies sources the task may consume
+   team-lead identifies sources the task may consume
    → computes current SHA-256, compares with manifest
-   → on drift: flag + offer @ai-engineer reindex or @project-manager rediscover
+   → on drift: flag + offer @ai-engineer reindex or @team-lead rediscover
    → never auto-reindexes
 
 RE-EXTRACTION
@@ -291,7 +291,7 @@ Result: `local/` is empty (just `.gitkeep`), everything else is in place.
 User: "Run initial discovery"
    │
    ▼
-project-manager (orchestrator)
+team-lead (orchestrator)
    │
    ├─ Step 1: detect stack
    │   • language / runtime / framework / ORM / data-store / container-runtime
@@ -413,7 +413,7 @@ Upstream framework changes (new cardinal role, new spec, new locked decision) go
 | **GitHub Copilot CLI** | tier-1 | yes — `.github/agents/*.agent.md` | yes — `.agents/skills/<name>/SKILL.md` (cross-tool path) | Natural-language + `/fleet` for parallel dispatch |
 | **Cursor** | tier-2 | personas in `AGENTS.md` | (via AgentSkills, where supported) | `@<role>` literal mention |
 | **OpenAI Codex / Windsurf / Amp / Devin / Factory / Jules / Copilot IDE** | tier-2 | personas in `AGENTS.md` | (varies per client) | Natural-language or `@<role>` per client |
-| **Generic LLM** | tier-3 | impersonation via `INSTRUCTIONS.md` | n/a | "act as project-manager and ..." pattern |
+| **Generic LLM** | tier-3 | impersonation via `INSTRUCTIONS.md` | n/a | "act as team-lead and ..." pattern |
 
 Same process, same role kernels, same lifecycle — execution path degrades gracefully on lower tiers.
 

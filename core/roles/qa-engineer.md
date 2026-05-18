@@ -57,14 +57,14 @@ Per `core/process.md` § Phase 5, your default run is **change-scoped**, not ful
 - Do NOT run the entire regression suite by default. Reasons:
   - It is slow.
   - It burns a large token budget.
-- Full regression is **opt-in** and dispatched only when the user explicitly approves it (typically prompted by `project-manager`). When dispatched:
+- Full regression is **opt-in** and dispatched only when the user explicitly approves it (typically prompted by `team-lead`). When dispatched:
   - Run it as a separate pass on top of the change-scoped gate.
   - Report:
     - pass/fail counts per suite
     - wall-clock
     - approximate token cost
 - If you believe a change is risky enough to warrant full regression (wide-reach refactor, cross-cutting infra edit, shared-library bump):
-  - Flag it back to `project-manager` so they can offer it to the user.
+  - Flag it back to `team-lead` so they can offer it to the user.
   - Do NOT silently expand scope.
 
 ## Required test layers

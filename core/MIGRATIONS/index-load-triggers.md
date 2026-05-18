@@ -35,7 +35,7 @@ After re-fetching framework files on upgrade:
    | frontend-engineer | local/index/conventions.yaml | `style/lint touch` | trivial fixes shouldn't load full lint config (8 KB) |
    ```
 
-   `project-manager` reads this table at dispatch time and extends/contracts the specialist's baseline accordingly.
+   `team-lead` reads this table at dispatch time and extends/contracts the specialist's baseline accordingly.
 
 3. **(Optional) Audit your `local/roles/*.md` custom roles** (if you have any). Update their `## Source of truth` sections to the new table shape with `Load when` column — see `core/templates/role-authoring-template.md` for the shape. Custom roles that don't update keep working (their flat-list baseline is treated as always-load — same as pre-fix behaviour).
 

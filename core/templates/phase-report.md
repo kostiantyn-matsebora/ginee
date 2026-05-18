@@ -4,8 +4,8 @@
   Scope:
   - Structured final report for any phase.
   Flow:
-  - Specialists → report up to project-manager.
-  - project-manager → consolidates to user.
+  - Specialists → report up to team-lead.
+  - team-lead → consolidates to user.
   Usage:
   - Replace bracketed placeholders.
   - Drop any section with no content.

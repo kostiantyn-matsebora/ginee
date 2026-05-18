@@ -42,7 +42,7 @@ Some highlights:
 
 | # | Decision |
 |---|---|
-| D5 | 7 cardinal roles (5 engineering + project-manager + ai-engineer) |
+| D5 | 7 cardinal roles (5 engineering + team-lead + ai-engineer) |
 | D8 | Install directory: `.agents/ginee/` |
 | D11 | Public framework name: `ginee` |
 | D12 | Automatic mode (per-task `auto:` opt-in) |

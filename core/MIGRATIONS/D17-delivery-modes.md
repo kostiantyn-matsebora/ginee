@@ -15,8 +15,8 @@ New artefacts:
 Modified:
 
 - `core/process.md § Phase 8` — mode-aware acceptance steps + new Coordination-protocol stub.
-- `core/roles/project-manager.md` — Phase-3 gate now includes mode-resolution; new `Delivery mode` section + forbiddens.
-- `core/roles/project-manager.details.md` — Phase-3 resolution procedure + per-mode dispatch checklist.
+- `core/roles/team-lead.md` — Phase-3 gate now includes mode-resolution; new `Delivery mode` section + forbiddens.
+- `core/roles/team-lead.details.md` — Phase-3 resolution procedure + per-mode dispatch checklist.
 - `core/automatic-mode.md` (D12 spec) — handoff state + Accept action branch by resolved mode; auto-mode default = `wt`.
 
 ## Action required
