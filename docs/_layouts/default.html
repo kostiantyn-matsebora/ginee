@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="{{ site.lang | default: 'en-US' }}">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  {% seo %}
+
+  <link rel="stylesheet" href="{{ '/assets/css/style.css' | relative_url }}">
+  {% if site.logo %}
+    <link rel="icon" type="image/svg+xml" href="{{ site.logo | relative_url }}">
+  {% endif %}
+
+  <script>
+    (function () {
+      try {
+        var saved = localStorage.getItem('ginee-theme');
+        var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        var theme = saved || (prefersDark ? 'dark' : 'light');
+        document.documentElement.setAttribute('data-theme', theme);
+      } catch (e) {
+        document.documentElement.setAttribute('data-theme', 'light');
+      }
+    })();
+  </script>
+</head>
+<body>
+  <section class="page-header">
+    {% if site.logo %}
+      <a href="{{ '/' | relative_url }}" class="page-header__logo-link">
+        <img src="{{ site.logo | relative_url }}" alt="{{ site.title }} logo" class="page-header__logo">
+      </a>
+    {% endif %}
+
+    <h1 class="project-name">{{ site.title }}</h1>
+    <h2 class="project-tagline">{{ site.description }}</h2>
+
+    <a href="{{ '/CHEATSHEET.html' | relative_url }}" class="btn">Cheatsheet</a>
+    <a href="https://github.com/kostiantyn-matsebora/ginee" class="btn">View on GitHub</a>
+    <a href="https://github.com/kostiantyn-matsebora/ginee/releases" class="btn">Releases</a>
+
+    <button class="btn theme-toggle" type="button" aria-label="Toggle dark mode" title="Toggle dark/light mode">
+      <span class="theme-toggle-icon" aria-hidden="true">
+        <span data-icon="light">☀</span>
+        <span data-icon="dark">☾</span>
+      </span>
+      <span class="theme-toggle-text"></span>
+    </button>
+  </section>
+
+  <nav class="site-nav" aria-label="Documentation">
+    <ul>
+      <li><a href="{{ '/' | relative_url }}"{% if page.url == '/' %} class="active"{% endif %}>Home</a></li>
+      <li><a href="{{ '/GETTING_STARTED.html' | relative_url }}"{% if page.url contains 'GETTING_STARTED' %} class="active"{% endif %}>Getting Started</a></li>
+      <li><a href="{{ '/CONCEPTS.html' | relative_url }}"{% if page.url contains 'CONCEPTS' %} class="active"{% endif %}>Concepts</a></li>
+      <li><a href="{{ '/ARCHITECTURE.html' | relative_url }}"{% if page.url contains 'ARCHITECTURE' %} class="active"{% endif %}>Architecture</a></li>
+      <li><a href="{{ '/reference/' | relative_url }}"{% if page.url contains '/reference/' or page.url contains 'PROCESS' or page.url contains 'ROLES' or page.url contains 'INDEX_PROTOCOL' %} class="active"{% endif %}>Reference</a></li>
+      <li><a href="{{ '/CHEATSHEET.html' | relative_url }}"{% if page.url contains 'CHEATSHEET' %} class="active"{% endif %}>Cheatsheet</a></li>
+      <li><a href="{{ '/CHANGELOG.html' | relative_url }}"{% if page.url contains 'CHANGELOG' %} class="active"{% endif %}>Changelog</a></li>
+      <li><a href="{{ '/CONTRIBUTING.html' | relative_url }}"{% if page.url contains 'CONTRIBUTING' %} class="active"{% endif %}>Contributing</a></li>
+    </ul>
+  </nav>
+
+  <section class="main-content">
+    {% unless page.no_toc %}
+      <aside class="page-toc" aria-label="On this page" data-auto-toc>
+        {% if page.url contains '/reference/' or page.url contains 'PROCESS' or page.url contains 'ROLES' or page.url contains 'INDEX_PROTOCOL' %}
+          {%- assign ref_index = '/reference/' | relative_url -%}
+          {%- assign ref_process = '/reference/PROCESS.html' | relative_url -%}
+          {%- assign ref_roles = '/reference/ROLES.html' | relative_url -%}
+          {%- assign ref_index_proto = '/reference/INDEX_PROTOCOL.html' | relative_url -%}
+          <nav class="section-nav" aria-label="Reference pages">
+            <h4>Reference pages</h4>
+            <ul>
+              <li{% if page.url == '/reference/' %} class="current"{% endif %}><a href="{{ ref_index }}">Overview</a></li>
+              <li{% if page.url contains 'PROCESS' %} class="current"{% endif %}><a href="{{ ref_process }}">Process spec</a></li>
+              <li{% if page.url contains 'ROLES' %} class="current"{% endif %}><a href="{{ ref_roles }}">Role kernels</a></li>
+              <li{% if page.url contains 'INDEX_PROTOCOL' %} class="current"{% endif %}><a href="{{ ref_index_proto }}">Index protocol</a></li>
+            </ul>
+          </nav>
+        {% endif %}
+      </aside>
+    {% endunless %}
+
+    {{ content }}
+
+    <footer class="site-footer">
+      <span class="site-footer-owner"><a href="https://github.com/kostiantyn-matsebora/ginee">ginee</a> is MIT-licensed. Built for any LLM coding tool.</span>
+    </footer>
+  </section>
+
+  <script src="{{ '/assets/js/theme-toggle.js' | relative_url }}"></script>
+  <script src="{{ '/assets/js/page-toc.js' | relative_url }}"></script>
+</body>
+</html>

@@ -1,0 +1,17 @@
+title: ginee
+description: An AI software engineering team that behaves like a real one. Drops into your project, self-onboards, and gets to work.
+
+theme: jekyll-theme-cayman
+
+url: https://kostiantyn-matsebora.github.io
+baseurl: /ginee
+
+logo: /assets/icons/ginee-icon.svg
+
+show_downloads: false
+
+exclude:
+  - README.md
+
+plugins:
+  - jekyll-seo-tag
