@@ -120,18 +120,26 @@ jobs:
           done
           echo "Subagent pointer cross-references: OK"
 
-      - name: Brand consistency — no stray `engineering-team` (excluding history notes)
+      - name: Brand consistency — no stray `engineering-team` (excluding history + legacy-migration contexts)
         run: |
           set -e
-          # Allowed: D8 / D11 history notes in CLAUDE.md + PLAN.md (documents the rebrand) +
-          # MIGRATIONS notes (per-release upgrade instructions).
+          # Allowed contexts (anything else is a regression):
+          #  - D8 / D11 history notes in CLAUDE.md + PLAN.md
+          #  - MIGRATIONS/* notes (per-release upgrade instructions)
+          #  - docs/CHANGELOG.md (release notes for the rebrand entry)
+          #  - install.ps1 + install.sh legacy-path migration code (renames .agents/engineering-team/ → .agents/ginee/)
+          #  - Adopter-facing docs explaining the legacy → new path migration (ARCHITECTURE, GETTING_STARTED troubleshooting row)
+          #  - ci.yml itself (this workflow scans for the string — it appears in the scanning regex)
           hits=$(grep -rn "engineering-team" \
             --include="*.md" --include="*.yaml" --include="*.yml" --include="*.ps1" --include="*.sh" \
+            --exclude="ci.yml" \
             --exclude-dir=.git --exclude-dir=node_modules \
             . 2>/dev/null \
-            | grep -v "CLAUDE.md.*D8\|CLAUDE.md.*D11\|PLAN.md.*D8\|PLAN.md.*D11\|MIGRATIONS/\|docs/CHANGELOG.md" || true)
+            | grep -v "CLAUDE\.md.*D8\|CLAUDE\.md.*D11\|PLAN\.md.*D8\|PLAN\.md.*D11\|MIGRATIONS/\|docs/CHANGELOG\.md" \
+            | grep -v -i "legacy\|pre-rebrand\|migrating\|migrate legacy\|auto-rename\|rename once\|legacy install path\|legacy-path migration" \
+            || true)
           if [ -n "$hits" ]; then
-            echo "::error::Stray 'engineering-team' references outside allowed history-note contexts:"
+            echo "::error::Stray 'engineering-team' references outside allowed history / legacy-migration contexts:"
             echo "$hits"
             exit 1
           fi
