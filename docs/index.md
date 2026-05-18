@@ -53,8 +53,8 @@ the same governance every single time.
     <p>Zero stack/domain opinions baked in. <code>team-lead</code> learns your project on first run — tech stack, architecture, SDLC artefacts, TODO conventions, doc layout.</p>
   </article>
   <article class="why-card">
-    <h3><span class="why-emoji">☐</span> TODO-driven workflow</h3>
-    <p>Reads root <code>TODO</code>, nested per-component TODOs, or your direct instruction. Flips ☐ → ☒ only on user approval; never auto-adds; honours "skip TODO" cues.</p>
+    <h3><span class="why-emoji">📥</span> Three task sources</h3>
+    <p>Freeform requests, TODO files (root + nested per-component), and GitHub issues (file / pick up / triage / promote). TODOs flip ☐ → ☒ only on user approval; PRs auto-close issues via <code>Closes #N</code>.</p>
   </article>
   <article class="why-card">
     <h3><span class="why-emoji">📚</span> Reference, not copy</h3>
@@ -97,22 +97,37 @@ Adapters: `claude` (Claude Code) · `copilot-cli` (GitHub Copilot CLI) · `agent
 Open your client in the project, then prompt:
 
 ```
-Run initial discovery
+/ginee-discovery                                # tier-1 slash command
+Run initial discovery                           # natural-language equivalent
 ```
 
 `team-lead` writes `local/project-profile.md`, `local/bindings.md`, `local/framework.config.yaml`, extracts a knowledge index under `local/index/`, scans external catalogs for specialist candidates, and reports recommended roles for your approval.
 
-### 3. Work
+### 3. Give it work
 
-Dispatch tasks by mentioning the role that owns the surface:
+Talk to *ginee* — the team self-dispatches per `local/bindings.md`. Two invocation paths:
+
+- **Freeform** (any tier): `Use ginee to ...`.
+- **Skill** (tier-1, Claude Code + Copilot CLI): `/ginee-<skill> [args]`. Natural-language phrasings also match.
+
+Three task sources:
 
 ```
-@frontend-engineer add a dark-mode toggle to the header
-@solution-architect this needs a new FR — write the CR
-@qa-engineer cover the new toggle with scenarios + a visual smoke
+# Freeform — any source, any tier
+Use ginee to add a dark-mode toggle to the header
+
+# TODO files — /ginee-pick-up on tier-1
+Use ginee to pick up the next TODO            # freeform
+/ginee-pick-up                                # skill, next unchecked TODO
+
+# GitHub issues — /ginee-* slash commands on tier-1
+Use ginee to pick up issue #42                # freeform
+/ginee-pick-up #42
+/ginee-file-bug Safari 17 dashboard blank
+/ginee-triage
 ```
 
-The orchestrator (`team-lead`) routes ambiguous scope. For long tasks, the iteration protocol kicks in automatically: 3–5 min batches with visible intermediate results and a stop-anywhere contract.
+Full 10-skill cheat sheet in [`adapters/claude/install.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/adapters/claude/install.md#how-to-invoke). For long tasks, the iteration protocol kicks in automatically: 3–5 min batches with visible intermediate results and a stop-anywhere contract.
 
 [**Full Getting Started guide →**]({{ '/GETTING_STARTED.html' | relative_url }})
 

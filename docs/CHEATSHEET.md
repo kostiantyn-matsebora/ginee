@@ -43,28 +43,30 @@ commit: <task>                         # commit-no-push
 auto: branch: <task>                   # combine — auto mode + branch+PR
 ```
 
-## PM commands (orchestrator)
+## Framework skills (tier-1: Claude Code, Copilot CLI)
+
+Slash commands `/ginee-<skill> [args]`. Natural-language phrasings also match. Tier-2/3 fallback: `act as team-lead and …`.
 
 ```
-@team-lead run initial discovery
-@team-lead rediscover                              # full re-discovery + re-extraction
-@team-lead file bug <title>                        # opens issue in primary repo (current)
-@team-lead file feature <title>
-@team-lead file framework-bug <title>              # opens issue in ginee upstream repo
-@team-lead file framework-feature <title>
-@team-lead pick up #<N>                            # primary repo only
-@team-lead triage                                  # list ready issues
-@team-lead triage framework                        # list ready framework upstream issues
-@team-lead promote discussion #<N>                 # discussion → draft issue
+/ginee-discovery                          # initial onboarding (Step 2 of install)
+/ginee-rediscover                         # full re-discovery + re-extraction
+/ginee-file-bug <title>                   # opens issue in primary repo (current)
+/ginee-file-feature <title>
+/ginee-file-framework-bug <title>         # opens issue in ginee upstream repo
+/ginee-file-framework-feature <title>
+/ginee-pick-up #<N>                       # GitHub issue (primary repo)
+/ginee-pick-up <todo-ref>                 # TODO line (path:line / "TODO about X")
+/ginee-pick-up <freeform-description>     # direct instruction
+/ginee-triage                             # list ready issues + TODOs
+/ginee-triage framework                   # list ready framework upstream issues
+/ginee-promote-discussion #<N>            # discussion → draft issue
+/ginee-reindex <source>                   # targeted re-extraction
 ```
 
-## AI-engineer commands (context + index)
+## Freeform requests (any tier)
 
 ```
-@ai-engineer reindex <source>                            # targeted re-extraction
-@ai-engineer extract code-derived sources                # D15 retro-extraction
-@ai-engineer extract <novel-class>                       # after wiring consumer in bindings.md
-@ai-engineer audit consumed-by                           # surface dormant indexes
+Use ginee to <task description>           # team self-dispatches; no skill needed
 ```
 
 ## Phase lifecycle
@@ -147,8 +149,8 @@ Framework defaults: `branch` for issue / TODO-sourced; `wt` for freeform. Auto-m
 |---|---|---|
 | Specialist refuses to edit a file | Forbidden role-crossing | Dispatch the owning role |
 | Index is dormant ("no consumer") | Novel class extracted but no kernel cites it | Wire via `local/bindings.md § Project-specific index citations` or remove the class |
-| `local/index/` &gt; 30% of `docs/` size | Recipe over-extracting | Run `@ai-engineer reindex` against the worst class; check compression target ≤ 0.5 |
-| Discovery flagged staleness on a doc | SHA-256 drift | `@ai-engineer reindex <source>` (targeted) or `@team-lead rediscover` |
+| `local/index/` &gt; 30% of `docs/` size | Recipe over-extracting | Run `/ginee-reindex` against the worst class; check compression target ≤ 0.5 |
+| Discovery flagged staleness on a doc | SHA-256 drift | `/ginee-reindex <source>` (targeted) or `/ginee-rediscover` |
 | PR didn't auto-close issue on merge | Stacked PR merged into non-default branch first | Manual `gh issue close <N> --comment "..."` |
 | Trivial task loads full 64 KB baseline | Role kernel `Load when` not honoured | Specialist should report loaded set; if it doesn't, your kernel may be stale — `--update-only` to refresh |
 

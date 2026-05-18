@@ -40,9 +40,10 @@ ginee
 │   ├── cross-domain bugs use a propose → implement → verify cycle, not single-agent guessing
 │   └── doc co-ownership pattern — solution-architect owns semantics, ai-engineer owns shape
 │
-├── ☐ TODO-DRIVEN WORKFLOW
-│   ├── reads root TODO, nested per-component TODOs, or just your direct instruction
-│   ├── flips ☐ → ☒ only on user approval; never auto-adds; honours "skip TODO" cues
+├── 📥 THREE TASK SOURCES
+│   ├── freeform requests ("Use ginee to add a /api/health endpoint")
+│   ├── TODO files (root + nested per-component) — flips ☐ → ☒ only on user approval; never auto-adds
+│   ├── GitHub issues — file / pick up / triage / promote; PRs auto-close via `Closes #N`
 │   └── post-acceptance hook — if docs changed, ai-engineer proposes optimization automatically
 │
 ├── 🎯 DETERMINISTIC
@@ -120,24 +121,49 @@ Pin a release with `--ref v0.1.0` / `$env:GINEE_REF='v0.1.0'`. Update in place l
 Open your client in the project, then prompt:
 
 ```
-@team-lead run initial discovery
+/ginee-discovery                                # tier-1 slash command (Claude Code, Copilot CLI)
+Run initial discovery                           # natural-language equivalent
+act as team-lead and run initial discovery      # tier-2/3 fallback
 ```
 
-(or `act as team-lead and run initial discovery` for tier-2/3 clients without `@mention` routing)
+Ginee scans the repo and writes `local/project-profile.md`, `local/bindings.md`, `local/framework.config.yaml`, then reports recommended specialists for your approval.
 
-`team-lead` writes `local/project-profile.md`, `local/bindings.md`, `local/framework.config.yaml`, scans external catalogs for additional candidates, and reports recommended specialists for your approval.
+### 3. Give it work
 
-### 3. Work
+Ginee is a team — once installed, you talk to *ginee*, not to a specific role. The team routes work internally per `local/bindings.md`. Two invocation paths:
 
-Dispatch tasks by mentioning the role that owns the surface:
+- **Freeform** (works on any tier): `Use ginee to ...` — catch-all; the team self-dispatches.
+- **Skill** (tier-1, Claude Code + Copilot CLI): `/ginee-<skill> [args]` — slash-command on the 10 framework skills. Natural-language phrasings like `Pick up #42` also match the skill description.
+
+Three task sources:
+
+**Freeform work** — describe what you want:
 
 ```
-@frontend-engineer add a dark-mode toggle to the header
-@solution-architect this needs a new FR — write the CR
-@qa-engineer cover the new toggle with scenarios + a visual smoke
+Use ginee to add a dark-mode toggle to the header
+Use ginee to add a /api/health endpoint returning { status, version }
 ```
 
-The orchestrator (`team-lead`) routes ambiguous scope. For long tasks the iteration protocol kicks in: 3–5 min batches with visible intermediate results and a stop-anywhere contract.
+**TODO files** — flips `☐` → `☒` on Phase 8 approval; never auto-adds:
+
+```
+Use ginee to pick up the next TODO                                  # freeform
+/ginee-pick-up                                                      # next unchecked TODO
+/ginee-pick-up the dark-mode TODO in components/header/TODO.md
+```
+
+**GitHub issues** — file, pick up, or triage:
+
+```
+Use ginee to pick up issue #42                                      # freeform
+/ginee-pick-up #42
+/ginee-file-bug dashboard renders blank on Safari 17
+/ginee-file-feature dark-mode toggle in header
+/ginee-triage
+/ginee-promote-discussion #17
+```
+
+PRs auto-close issues via `Closes #N`. Full 10-skill list + natural-language cheat sheet in [adapters/claude/install.md § How to invoke](adapters/claude/install.md). For tasks above ~15 minutes, the iteration protocol kicks in: 3–5 min stoppable batches with visible intermediate results. Interrupt anytime; resume next day with zero rework.
 
 ---
 

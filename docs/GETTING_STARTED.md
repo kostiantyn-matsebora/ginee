@@ -72,7 +72,9 @@ $env:GINEE_REF='v0.1.0'; $env:GINEE_ADAPTER='claude'; iwr ... | iex
 Open your client in the project. Type:
 
 ```
-Run initial discovery
+/ginee-discovery                                # tier-1 slash command (Claude Code, Copilot CLI)
+Run initial discovery                           # natural-language equivalent
+act as team-lead and run initial discovery      # tier-2/3 fallback
 ```
 
 What happens (a few minutes, fully visible):
@@ -87,17 +89,42 @@ What happens (a few minutes, fully visible):
 
 You'll see proposed changes before any file is written — approve or redirect each step.
 
-## 3. First dispatch
+## 3. Give it work
 
-Pick something concrete. Examples:
+Ginee is a team — talk to *ginee*, not to a specific role. The team routes work internally per `local/bindings.md`. Two invocation paths:
+
+- **Freeform** (any tier): `Use ginee to ...` — catch-all; the team self-dispatches.
+- **Skill** (tier-1, Claude Code + Copilot CLI): `/ginee-<skill> [args]` — slash-command on the 10 framework skills. Natural-language phrasings like `Pick up #42` also match the skill description. Cheat sheet in [adapters/claude/install.md § How to invoke](https://github.com/kostiantyn-matsebora/ginee/blob/main/adapters/claude/install.md#how-to-invoke).
+
+Three task sources:
+
+**Freeform work** — describe what you want:
 
 ```
-@frontend-engineer rename the dashboard header to "Operations Console"
-@backend-engineer add a /api/health endpoint returning {status:"ok", version:VERSION}
-@qa-engineer write a smoke scenario for the new health endpoint
+Use ginee to rename the dashboard header to "Operations Console"
+Use ginee to add a /api/health endpoint returning { status, version }
 ```
 
-The orchestrator (`team-lead`) routes the work. For tasks &gt; 15 minutes of estimated work, the [iteration protocol](https://github.com/kostiantyn-matsebora/ginee/blob/main/core/iteration-protocol.md) kicks in: each specialist returns a task decomposition + per-task estimate **before** editing, you approve, then 3–5 min stoppable batches.
+**TODO files** — flips `☐` → `☒` on Phase 8 approval; never auto-adds:
+
+```
+Use ginee to pick up the next TODO                          # freeform
+/ginee-pick-up                                              # next unchecked TODO
+/ginee-pick-up the health-endpoint TODO in api/TODO.md
+```
+
+**GitHub issues** — file, pick up, or triage:
+
+```
+Use ginee to pick up issue #42                              # freeform
+/ginee-pick-up #42
+/ginee-file-bug dashboard renders blank on Safari 17
+/ginee-file-feature dark-mode toggle in header
+/ginee-triage
+/ginee-promote-discussion #17
+```
+
+PRs auto-close issues via `Closes #N`. For tasks &gt; 15 minutes of estimated work, the [iteration protocol](https://github.com/kostiantyn-matsebora/ginee/blob/main/core/iteration-protocol.md) kicks in: each specialist returns a task decomposition + per-task estimate **before** editing, you approve, then 3–5 min stoppable batches.
 
 ## 4. Update later
 

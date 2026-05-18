@@ -115,12 +115,14 @@ Full spec: [`core/delivery-modes.md`](https://github.com/kostiantyn-matsebora/gi
 
 ## GitHub issues + discussions as a task source
 
-ginee picks up GitHub issues with the same Phase 1–8 lifecycle as TODO lines and direct instructions:
+ginee picks up GitHub issues with the same Phase 1–8 lifecycle as TODO lines and freeform requests:
 
-- **File** via `@team-lead file bug <title>` / `file feature <title>`. PM uses structured templates under `core/templates/issues/`, opens a labelled issue with `ginee:ready`.
-- **Pick up** via `@team-lead pick up #<N>`. PM swaps labels `:ready` → `:in-progress`, runs Phase 1–8, posts structured progress comments at transitions.
-- **Triage** via `@team-lead triage` — lists ready issues by age, scope, cross-references.
-- **Promote** via `@team-lead promote discussion #<N>` — surfaces a draft issue from a discussion thread.
+- **File** via `/ginee-file-bug <title>` / `/ginee-file-feature <title>`. team-lead uses structured templates under `core/templates/issues/`, opens a labelled issue with `ginee:ready`.
+- **Pick up** via `/ginee-pick-up #<N>`. team-lead swaps labels `:ready` → `:in-progress`, runs Phase 1–8, posts structured progress comments at transitions.
+- **Triage** via `/ginee-triage` — lists ready issues by age, scope, cross-references.
+- **Promote** via `/ginee-promote-discussion #<N>` — surfaces a draft issue from a discussion thread.
+
+Slash commands work on tier-1 clients (Claude Code, Copilot CLI). Natural-language phrasings (`File a bug titled X`, `Pick up #42`, `Triage`) also match the skill description. Tier-2/3 fallback uses `act as team-lead and ...`.
 
 PRs reference the issue with `Fixes #<N>` / `Closes #<N>` — GitHub auto-closes on merge.
 
