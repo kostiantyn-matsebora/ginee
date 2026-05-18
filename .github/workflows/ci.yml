@@ -136,7 +136,7 @@ jobs:
             --exclude="ci.yml" \
             --exclude-dir=.git --exclude-dir=node_modules \
             . 2>/dev/null \
-            | grep -v "CLAUDE\.md.*D8\|CLAUDE\.md.*D11\|PLAN\.md.*D8\|PLAN\.md.*D11\|MIGRATIONS/\|docs/CHANGELOG\.md\|migrate-engineering-team-to-ginee" \
+            | grep -v "CLAUDE\.md.*D8\|CLAUDE\.md.*D11\|PLAN\.md.*D8\|PLAN\.md.*D11\|MIGRATIONS/\|docs/CHANGELOG\.md\|migrate-engineering-team-to-ginee\|engineering-team-renamed-ginee" \
             | grep -v -i "legacy\|pre-rebrand\|migrating\|migrate legacy\|auto-rename\|rename once\|legacy install path\|legacy-path migration" \
             || true)
           if [ -n "$hits" ]; then

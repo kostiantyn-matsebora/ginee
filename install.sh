@@ -375,8 +375,30 @@ esac
 
 # --- 4. Final guidance -----------------------------------------------------
 
+# Detect lingering pre-D11 references in local/ (independent of step-0 dir rename —
+# the dir may have been renamed in a previous run while local/ text stayed stale).
+LEGACY_FRAMEWORK_NAME='engineering-team'  # codename retired in D11 rebrand (2026-05-18)
+STALE_LOCAL_HITS=0
+if [ -d "$FRAMEWORK_DIR/local" ] && grep -rqF "$LEGACY_FRAMEWORK_NAME" "$FRAMEWORK_DIR/local" 2>/dev/null; then
+  STALE_LOCAL_HITS=1
+fi
+
 echo ""
 echo "Install complete."
+
+if [ "$STALE_LOCAL_HITS" -eq 1 ]; then
+  MIGRATE_SCRIPT="$FRAMEWORK_DIR/core/scripts/migrate-engineering-team-to-ginee.sh"
+  echo ""
+  echo "ACTION REQUIRED — legacy 'engineering-team' references detected under local/"
+  echo "  Run the rename migration script to rewrite them:"
+  echo ""
+  echo "    $MIGRATE_SCRIPT --dry-run   # preview"
+  echo "    $MIGRATE_SCRIPT             # apply"
+  echo ""
+  echo "  Details: $FRAMEWORK_DIR/core/MIGRATIONS/engineering-team-renamed-ginee.md"
+  echo ""
+fi
+
 echo "Next steps:"
 echo "  1. Open your client in this project."
 echo "  2. Type:  Run initial discovery"
