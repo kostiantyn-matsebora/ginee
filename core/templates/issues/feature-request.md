@@ -1,12 +1,12 @@
 ---
 name: Feature request (ginee)
-about: New functionality that the ginee framework will pick up via @project-manager
+about: New functionality that the ginee framework will pick up via @team-lead
 title: "[Feature] <one-line title>"
 labels: [ginee:ready]
 ---
 
 <!--
-  Sections below are parsed by project-manager on pickup.
+  Sections below are parsed by team-lead on pickup.
   Keep headings (## Summary / ## Motivation / etc.) intact — do not rename.
   Drop a section only when truly inapplicable; leave the heading + write "(none)".
   Adopters: copy this file to .github/ISSUE_TEMPLATE/ to expose it as a GitHub issue form.

@@ -47,10 +47,10 @@ Flow:
 
 1. Install per `install.md`.
 2. Prompt: `read INSTRUCTIONS.md and confirm the cardinal roles + process spec are loaded`.
-3. Prompt: `act as project-manager and run initial discovery`.
+3. Prompt: `act as team-lead and run initial discovery`.
 
 ## Custom roles
 
 Same as other adapters:
 - Author at `.agents/ginee/local/roles/<role>.md`.
-- `project-manager` discovers them on next prompt.
+- `team-lead` discovers them on next prompt.

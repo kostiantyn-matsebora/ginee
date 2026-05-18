@@ -4,7 +4,7 @@
 
 `ginee` is an **AI software engineering team that behaves like a real one** — drops into your project, self-onboards, and gets to work. A vendor-neutral OSS framework that packages a **7-cardinal multi-agent collaboration model** + a **generic engineering process** for any LLM coding tool (Claude Code, GitHub Copilot, Cursor, Codex, or fallback generic).
 
-The framework ships **process knowledge only** — no domain, stack, architecture, or SDLC opinions. Project-specific knowledge is discovered on first run by the `project-manager` role and lives in a `local/` layer that survives upstream updates. Project knowledge sources (markdown docs, diagrams, mockups) are **referenced**, never copied — doc changes propagate instantly.
+The framework ships **process knowledge only** — no domain, stack, architecture, or SDLC opinions. Project-specific knowledge is discovered on first run by the `team-lead` role and lives in a `local/` layer that survives upstream updates. Project knowledge sources (markdown docs, diagrams, mockups) are **referenced**, never copied — doc changes propagate instantly.
 
 This is the **framework's own development repo**, not an adopter project.
 
@@ -41,7 +41,7 @@ ginee/
 │   ├── VERSION                 # SemVer (currently 0.1.0)
 │   ├── process.md              # 33K — phased lifecycle + coordination + principles
 │   ├── roles/                  # 7 cardinal role definitions
-│   │   ├── project-manager.md  # orchestrator + discovery flow
+│   │   ├── team-lead.md        # orchestrator + discovery flow (alias: project-manager)
 │   │   ├── ai-engineer.md      # context economy, doc shape, file splitting
 │   │   ├── solution-architect.md  # SAD freeze + CR/ADR governance
 │   │   ├── frontend-engineer.md   # alias: client-engineer
@@ -79,7 +79,7 @@ Canonical in the plan file. Summary:
 | D2 | MCP server deferred to v2.0 |
 | D3 | All four gap clusters addressed: client-agnosticism, self-learning, generic-vs-project split, update-safety |
 | D4 | Copy-paste distribution MUST be supported (+ tarball + curl-install + npx as fast-followers) |
-| D5 | **7 cardinal roles** (5 engineering + project-manager + ai-engineer; revised 6 → 7 on 2026-05-16) — extensible via `local/roles/` + `extras/roles/` library |
+| D5 | **7 cardinal roles** (5 engineering + team-lead + ai-engineer; revised 6 → 7 on 2026-05-16; orchestrator renamed `project-manager` → `team-lead` on 2026-05-18, `project-manager` retained as alias) — extensible via `local/roles/` + `extras/roles/` library |
 | D6 | Discovery refresh: both manual `rediscover` + auto-flag staleness |
 | D7 | Coexistence with existing instruction files: adopt (additive, pointer-line only) |
 | D8 | Install directory: `.agents/ginee/` (amended 2026-05-17 from a root-level dir; revised 2026-05-18 from `.agents/engineering-team/` per D11 rebrand — `.agents/` namespace for agent tooling; survives root clutter) |
@@ -87,7 +87,7 @@ Canonical in the plan file. Summary:
 | D10 | Custom-role extension: both pre-built library + free-form authoring under `local/roles/` |
 | D11 | Public framework name: **`ginee`** (revised 2026-05-18 from `engineering-team`). Tagline: *An AI software engineering team that behaves like a real one. Drops into your project, self-onboards, and gets to work.* Skill prefix `ginee-` consistent at every surface (formerly codename, now formal name). |
 | D12 | **Automatic mode** (2026-05-17). <ul><li>Per-task opt-in via `auto:` prefix.</li><li>Elides intermediate gates.</li><li>Phase 8 → Accept/Feedback/Reject delivery handoff.</li><li>Never commits silently.</li><li>Spec: `core/automatic-mode.md`.</li></ul> |
-| D13 | **Project-doc index** in `local/index/` (2026-05-17). <ul><li>Heavy adopter docs → lightweight summaries.</li><li>SHA-256 staleness in `manifest.yaml`.</li><li>Roles read index first; originals on demand.</li><li>`ai-engineer` extracts (built-in + novel-class recipes).</li><li>`project-manager` flags drift pre-dispatch.</li><li>Spec: `core/index-protocol.md`.</li></ul> |
+| D13 | **Project-doc index** in `local/index/` (2026-05-17). <ul><li>Heavy adopter docs → lightweight summaries.</li><li>SHA-256 staleness in `manifest.yaml`.</li><li>Roles read index first; originals on demand.</li><li>`ai-engineer` extracts (built-in + novel-class recipes).</li><li>`team-lead` flags drift pre-dispatch.</li><li>Spec: `core/index-protocol.md`.</li></ul> |
 | D14 | **GitHub issues + discussions** as 4th task source (2026-05-17). <ul><li>PM ops: file / pick up / triage / promote.</li><li>State: native `open`/`closed` + `ginee:*` labels (replace `☐`/`☒`).</li><li>PRs auto-close via `Closes #N`.</li><li>Two repos: primary (`github.repo`, origin-inferred) + framework upstream (`github.framework-repo`).</li><li>Framework variants (`file framework-bug` / `framework-feature` / `triage framework` / `promote discussion framework#<N>`) — metadata-only; no cross-repo pickup.</li><li>Spec: `core/github-integration.md`.</li></ul> |
 | D15 | **Code-derived knowledge index** in `local/index/` (2026-05-17). <ul><li>D13 broadens from "documentation-derived" to "extracted"; same machinery (manifest + SHA-256 + recipes + lossless rule).</li><li>6 new code-category templates: `stack.yaml` / `topology.yaml` / `commands.yaml` / `conventions.yaml` / `runtime-facts.yaml` / `repo-map.idx`.</li><li>Manifest entries carry `category: doc | code`.</li><li>Built-in recipes: `builtin:package-manifest` / `builtin:container-orchestration` (+ `builtin:iac`) / `builtin:commands` / `builtin:conventions` / `builtin:runtime-facts` / `builtin:repo-structure`.</li><li>**Never read real `.env` or production secrets** — schema lives in `.env.example`.</li><li>Spec: `core/index-protocol.md`. Migration: `core/MIGRATIONS/D15-code-derived-index.md`.</li></ul> |
 | D16 | **AgentSkills as per-adapter invocation surface** (2026-05-17). <ul><li>10 skills under `core/skills/ginee-*/SKILL.md` per the [AgentSkills standard](https://agentskills.io); cross-client (Claude Code, Cursor, Copilot, Codex, Gemini CLI, Goose, ~30+).</li><li>Skill names prefixed `ginee-` to avoid collisions.</li><li>`ginee-pick-up` + `ginee-triage` unified across task sources (issues + TODOs + freeform).</li><li>Each adapter's install step bridges `core/skills/ginee-*` into the client's expected path (`.claude/skills/`, `.github/skills/`, `.cursor/skills/`, ...).</li><li>Framework specs keep `@<role>` notation as vendor-neutral shorthand; adapters translate.</li><li>Migration: `core/MIGRATIONS/D16-agent-skills.md`.</li></ul> |

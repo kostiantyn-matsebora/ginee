@@ -18,7 +18,7 @@ Use the [issue templates](https://github.com/kostiantyn-matsebora/ginee/issues/n
 | **Feature request** | New role, new spec, new template, new adapter, new locked-decision proposal |
 | **Security issue** | **Do not file publicly.** Use [private vulnerability reporting](https://github.com/kostiantyn-matsebora/ginee/security/advisories/new) per [SECURITY.md](https://github.com/kostiantyn-matsebora/ginee/blob/main/SECURITY.md) |
 
-Each template surfaces the fields ginee's project-manager workflow consumes — area, reproduction, expected vs actual, version, adapter, locked-decision impact, acceptance criteria. Keep those filled in for a fast turn-around.
+Each template surfaces the fields ginee's team-lead workflow consumes — area, reproduction, expected vs actual, version, adapter, locked-decision impact, acceptance criteria. Keep those filled in for a fast turn-around.
 
 ## PR conventions
 
@@ -43,7 +43,7 @@ Add a new role under `local/roles/<role-name>.md` using [`core/templates/role-au
 4. **`## What you do NOT own`** — strict-domain forbidden table.
 5. **`## Forbidden actions (strict-domain)`** — role-specific negations.
 
-`project-manager` discovers `local/roles/*.md` on next dispatch — no registration needed.
+`team-lead` discovers `local/roles/*.md` on next dispatch — no registration needed.
 
 To **promote** a custom role into the framework (`extras/roles/<name>.md` or `core/roles/`), file a feature-request issue with the role's draft + a case for why it's useful across multiple adopters.
 

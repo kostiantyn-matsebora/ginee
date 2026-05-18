@@ -77,7 +77,7 @@ Run initial discovery
 
 What happens (a few minutes, fully visible):
 
-1. `project-manager` scans the repo — detects stack, architecture-doc location, mockup, ADR / CR directories, scenario files, TODO conventions.
+1. `team-lead` scans the repo — detects stack, architecture-doc location, mockup, ADR / CR directories, scenario files, TODO conventions.
 2. Writes three project-state files under `.agents/ginee/local/`:
    - `project-profile.md` — discovered tech / domain / SDLC artefacts.
    - `bindings.md` — role → owned paths, source-of-truth ownership, tie-breakers.
@@ -97,7 +97,7 @@ Pick something concrete. Examples:
 @qa-engineer write a smoke scenario for the new health endpoint
 ```
 
-The orchestrator (`project-manager`) routes the work. For tasks &gt; 15 minutes of estimated work, the [iteration protocol](https://github.com/kostiantyn-matsebora/ginee/blob/main/core/iteration-protocol.md) kicks in: each specialist returns a task decomposition + per-task estimate **before** editing, you approve, then 3–5 min stoppable batches.
+The orchestrator (`team-lead`) routes the work. For tasks &gt; 15 minutes of estimated work, the [iteration protocol](https://github.com/kostiantyn-matsebora/ginee/blob/main/core/iteration-protocol.md) kicks in: each specialist returns a task decomposition + per-task estimate **before** editing, you approve, then 3–5 min stoppable batches.
 
 ## 4. Update later
 
@@ -124,7 +124,7 @@ The orchestrator (`project-manager`) routes the work. For tasks &gt; 15 minutes 
 | `git clone` step fails | Network issue or `git` not on PATH | Check connectivity to github.com + `git --version`. ginee is public — no GitHub auth required for the default `--repo` |
 | `.agents/engineering-team/` exists after update | Pre-rebrand install path | The installer auto-renames on next `--update-only` run — re-run and it migrates once |
 | Specialist refuses to edit a file | Forbidden role-crossing per `local/bindings.md § Project role boundaries` | Dispatch the owning role instead — the strict-domain rule is intentional |
-| Discovery surfaces "no architecture doc" | Project has no `docs/architecture.md` (or similar) yet | OK; PM works without one. Author one when ready and `@project-manager rediscover` |
+| Discovery surfaces "no architecture doc" | Project has no `docs/architecture.md` (or similar) yet | OK; PM works without one. Author one when ready and `@team-lead rediscover` |
 | Index says "dormant" for a class | Class extracted but no role kernel cites it | Wire it via `local/bindings.md § Project-specific index citations`, or remove the class from extraction |
 
 More in [CONTRIBUTING]({{ '/CONTRIBUTING.html' | relative_url }}) and the [issue templates](https://github.com/kostiantyn-matsebora/ginee/issues/new/choose).

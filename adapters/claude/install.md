@@ -43,13 +43,13 @@
 
 4. **Run discovery.**
    - Open the project in Claude Code.
-   - In chat, ask Claude to run initial discovery — Claude auto-routes to `project-manager` via subagent description match. Equivalent phrasings:
+   - In chat, ask Claude to run initial discovery — Claude auto-routes to `team-lead` via subagent description match. Equivalent phrasings:
 
      ```
      Run initial discovery.
      ```
      ```
-     @project-manager run initial discovery     (works in Cursor; in Claude Code @ is not literal — see "How to invoke" below)
+     @team-lead run initial discovery     (works in Cursor; in Claude Code @ is not literal — see "How to invoke" below)
      ```
 
 5. **Verify.** Ask Claude for the status of each cardinal. Each should:

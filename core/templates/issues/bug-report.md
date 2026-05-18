@@ -1,12 +1,12 @@
 ---
 name: Bug report (ginee)
-about: Defect that the ginee framework will pick up via @project-manager
+about: Defect that the ginee framework will pick up via @team-lead
 title: "[Bug] <one-line title>"
 labels: [ginee:ready]
 ---
 
 <!--
-  Sections below are parsed by project-manager on pickup.
+  Sections below are parsed by team-lead on pickup.
   Keep headings (## Summary / ## Steps to reproduce / etc.) intact — do not rename.
   Drop a section only when truly inapplicable; leave the heading + write "(none)".
   Adopters: copy this file to .github/ISSUE_TEMPLATE/ to expose it as a GitHub issue form.

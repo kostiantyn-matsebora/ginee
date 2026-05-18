@@ -53,7 +53,7 @@ When dispatched on an engineer-proposed change:
    - decisions
    - work-breakdown
 3. Make the edit with explicit citations to the FR / NFR / section being amended.
-4. Note downstream implications in your final report so `project-manager` can dispatch follow-ups.
+4. Note downstream implications in your final report so `team-lead` can dispatch follow-ups.
    - Example: a wire-shape revision affects service + client + qa.
 
 ## Conflict-resolution examples

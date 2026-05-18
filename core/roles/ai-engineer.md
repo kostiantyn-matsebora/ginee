@@ -16,7 +16,7 @@ The universal meta-engineering cardinal. Owns shape and load topology of every p
   - SA owns semantics; `ai-engineer` owns shape.
   - Neither overrides the other's invariants.
 - **Process integration** — not part of Phase 1–8 lifecycle.
-  - Invoked **between** phases by `project-manager` (or main thread).
+  - Invoked **between** phases by `team-lead` (or main thread).
   - Triggers + handoff rules: `ai-engineer.details.md § Process integration`.
 - **Context-economy mandate** — apply both:
   - `core/process.md § Documentation style — structure over prose`.
@@ -43,7 +43,7 @@ The universal meta-engineering cardinal. Owns shape and load topology of every p
 | Architecture docs / READMEs / ADRs | Same — structure over prose, cite don't restate, hoist duplicates. |
 | Skills / prompt files | <ul><li>Restructure for token efficiency.</li><li>Respect the skill contract (front-matter, trigger conditions).</li></ul> |
 | New files spawned by a split | <ul><li>Author the new file.</li><li>Rewrite the source with a pointer.</li><li>Update every cross-reference in dependent files in the same pass.</li></ul> |
-| Project knowledge index (`local/index/*`) — covers doc + code categories | <ul><li>Extract per `core/index-protocol.md` recipes — built-in for known classes (doc: architecture / adr / cr / scenario / mockup; code: package-manifest / container-orchestration / commands / conventions / runtime-facts / repo-structure); novel-class recipe for adopter-specific sources.</li><li>Write/update `local/index/manifest.yaml` (SHA-256 per source + recipe id + `category: doc | code`).</li><li>Re-extract on `project-manager`-flagged drift.</li><li>Run sample-and-check (5 random items per affected index file).</li><li>Full recipe table + extraction tips: `ai-engineer.details.md § Project extraction recipes`.</li></ul> |
+| Project knowledge index (`local/index/*`) — covers doc + code categories | <ul><li>Extract per `core/index-protocol.md` recipes — built-in for known classes (doc: architecture / adr / cr / scenario / mockup; code: package-manifest / container-orchestration / commands / conventions / runtime-facts / repo-structure); novel-class recipe for adopter-specific sources.</li><li>Write/update `local/index/manifest.yaml` (SHA-256 per source + recipe id + `category: doc | code`).</li><li>Re-extract on `team-lead`-flagged drift.</li><li>Run sample-and-check (5 random items per affected index file).</li><li>Full recipe table + extraction tips: `ai-engineer.details.md § Project extraction recipes`.</li></ul> |
 
 ## Out-of-scope (hand off to `solution-architect`)
 
@@ -85,7 +85,7 @@ Catalogue: `ai-engineer.details.md § Anti-patterns`.
 - **Never** delete a doc without SA approval, even if it appears redundant.
 - **Never** split a file without updating every dependent cross-reference in the same pass.
 - **Never** commit a structural change that fails the lossless self-check.
-- **Never** dispatch yourself proactively — `project-manager` (or main thread) dispatches.
+- **Never** dispatch yourself proactively — `team-lead` (or main thread) dispatches.
 
 ## Lossless self-check
 

@@ -74,7 +74,7 @@ jobs:
       - name: 7 cardinal role kernels present
         run: |
           set -e
-          for role in project-manager solution-architect ai-engineer frontend-engineer backend-engineer devops-engineer qa-engineer; do
+          for role in team-lead solution-architect ai-engineer frontend-engineer backend-engineer devops-engineer qa-engineer; do
             if [ ! -f "core/roles/${role}.md" ]; then
               echo "::error::Missing cardinal role kernel: core/roles/${role}.md"
               exit 1

@@ -5,7 +5,7 @@ description: Run the ginee framework's initial discovery on this project. Use wh
 
 # Initial discovery (ginee)
 
-Run the ginee framework's initial-discovery workflow per `.agents/ginee/core/roles/project-manager.details.md § Discovery flow`.
+Run the ginee framework's initial-discovery workflow per `.agents/ginee/core/roles/team-lead.details.md § Discovery flow`.
 
 ## Activation
 
@@ -14,7 +14,7 @@ Run the ginee framework's initial-discovery workflow per `.agents/ginee/core/rol
 
 ## Procedure
 
-1. Load `.agents/ginee/core/roles/project-manager.details.md § Discovery flow` for the 10-step procedure.
+1. Load `.agents/ginee/core/roles/team-lead.details.md § Discovery flow` for the 10-step procedure.
 2. Run Steps 1–7 (detect stack / domain / architecture artefacts / SDLC tooling / roles / external agents / TODO conventions).
 3. Step 8a: write `local/project-profile.md`, `local/bindings.md`, `local/framework.config.yaml` using templates in `.agents/ginee/core/templates/`.
 4. Step 8b: enumerate doc classes (adopter-declared → built-in → novel) per `.agents/ginee/core/index-protocol.md`; dispatch `ai-engineer` to populate `local/index/*` + `manifest.yaml`.

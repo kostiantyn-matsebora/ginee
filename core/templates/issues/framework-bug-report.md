@@ -8,8 +8,8 @@ labels: [ginee:ready, framework]
 <!--
   Filed against the ginee framework upstream repo (per
   local/framework.config.yaml § github.framework-repo) via:
-    @project-manager file framework-bug <title>
-  Sections parsed by project-manager when picking up framework work.
+    @team-lead file framework-bug <title>
+  Sections parsed by team-lead when picking up framework work.
   Keep headings (## Summary / ## Reproduction / etc.) intact.
 -->
 

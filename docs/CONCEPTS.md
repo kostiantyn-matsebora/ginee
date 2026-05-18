@@ -14,7 +14,7 @@ ginee ships exactly **7 cardinal roles** — every adopter project has the same 
 
 | Role | Concerns |
 |---|---|
-| `project-manager` | Orchestrator. Dispatch routing, lifecycle gates, discovery / rediscovery, post-acceptance hook, staleness checks. |
+| `team-lead` | Orchestrator. Dispatch routing, lifecycle gates, discovery / rediscovery, post-acceptance hook, staleness checks. |
 | `solution-architect` | Architecture doc semantics, SAD freeze, CR / ADR governance, mockup review (no edits), tie-breaker resolution. |
 | `ai-engineer` | AI-asset + doc context economy, file-splitting, load topology, lossless restructures. Between-phase only. |
 | `frontend-engineer` | Client / UI implementation, mockup ownership, state, styling, fetch / realtime client wiring. |
@@ -26,7 +26,7 @@ ginee ships exactly **7 cardinal roles** — every adopter project has the same 
 
 **Specialists in `extras/roles/`** — security · ml · mobile · sre · data — are opt-in. Adopt them when discovery surfaces the matching domain.
 
-**Custom roles** live under `local/roles/` and register under `project-manager`. Use the `core/templates/role-authoring-template.md` shape.
+**Custom roles** live under `local/roles/` and register under `team-lead`. Use the `core/templates/role-authoring-template.md` shape.
 
 ## Phased task lifecycle
 
@@ -90,7 +90,7 @@ Roles **never** read raw `docs/**` "before any work." The index is the only defa
 - **Compression floor** — `index-bytes / source-bytes ≥ 0.5 = recipe failed`. Either drop bulk or mark `template: read-source-directly`.
 - **Consumer coupling** — every extracted class declares `consumed-by: [<role>...]` in `manifest.yaml`. Novel classes without a consumer aren't extracted.
 - **Per-file load triggers** — role kernel `Source of truth` tables carry a `Load when` column. `always` for foundational reads; trigger phrase for scope-loaded files. Specialist reports the loaded set in its first response.
-- **SHA-256 staleness** — `project-manager` checks drift pre-dispatch; offers `@ai-engineer reindex <source>` or `@project-manager rediscover` on mismatch. Never auto-reindexes.
+- **SHA-256 staleness** — `team-lead` checks drift pre-dispatch; offers `@ai-engineer reindex <source>` or `@team-lead rediscover` on mismatch. Never auto-reindexes.
 
 Full spec: [`core/index-protocol.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/core/index-protocol.md).
 
@@ -117,10 +117,10 @@ Full spec: [`core/delivery-modes.md`](https://github.com/kostiantyn-matsebora/gi
 
 ginee picks up GitHub issues with the same Phase 1–8 lifecycle as TODO lines and direct instructions:
 
-- **File** via `@project-manager file bug <title>` / `file feature <title>`. PM uses structured templates under `core/templates/issues/`, opens a labelled issue with `ginee:ready`.
-- **Pick up** via `@project-manager pick up #<N>`. PM swaps labels `:ready` → `:in-progress`, runs Phase 1–8, posts structured progress comments at transitions.
-- **Triage** via `@project-manager triage` — lists ready issues by age, scope, cross-references.
-- **Promote** via `@project-manager promote discussion #<N>` — surfaces a draft issue from a discussion thread.
+- **File** via `@team-lead file bug <title>` / `file feature <title>`. PM uses structured templates under `core/templates/issues/`, opens a labelled issue with `ginee:ready`.
+- **Pick up** via `@team-lead pick up #<N>`. PM swaps labels `:ready` → `:in-progress`, runs Phase 1–8, posts structured progress comments at transitions.
+- **Triage** via `@team-lead triage` — lists ready issues by age, scope, cross-references.
+- **Promote** via `@team-lead promote discussion #<N>` — surfaces a draft issue from a discussion thread.
 
 PRs reference the issue with `Fixes #<N>` / `Closes #<N>` — GitHub auto-closes on merge.
 

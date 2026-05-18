@@ -3,7 +3,7 @@
 <!--
   Scope:
   - Per-project.
-  - Authored by project-manager during discovery.
+  - Authored by team-lead during discovery.
   - Maintained as project evolves.
   Records:
   - Role → paths.
@@ -105,7 +105,7 @@ Violation → **stop, propose a doc update first**.
 
 | Role | Concerns |
 |---|---|
-| `project-manager` | Discovery / rediscovery; dispatch routing; parallel / serial decisions; TODO check-ins; lifecycle gate enforcement; post-acceptance doc-optimization trigger. |
+| `team-lead` | Discovery / rediscovery; dispatch routing; parallel / serial decisions; TODO check-ins; lifecycle gate enforcement; post-acceptance doc-optimization trigger. |
 | `solution-architect` | `<architecture-doc path>`; mockup governance review (no edits); `<CI/CD integration guide>`; project-instruction file rules / routing / repo-structure; ADRs / CRs; coherence audits; tie-breaker resolution. |
 | `frontend-engineer` (alias `client-engineer`) | `<client tier paths>`; `<mockup path>` (HTML/CSS/JS/SVG/fixtures); state; styling; client-side fetch / realtime. |
 | `backend-engineer` (alias `service-engineer`) | `<server tier paths>`; ORM entities / migrations; schema, indexes; realtime hub; auth middleware; wire-format JSON contract. |
@@ -134,7 +134,7 @@ Task spans two roles → dispatch in parallel per `core/process.md` § Dispatch 
 | `devops-engineer` | Application-tier manifests / lockfiles; application source; client config. |
 | `qa-engineer` | `<mockup path>`; production server / client code. Owns test code, fixtures, scenarios, runners only. |
 | `ai-engineer` | Rules / invariants / routing / requirements (semantics → `solution-architect`); production code; test code; IaC; CI workflows. |
-| `project-manager` | Everything except `local/*` written during discovery. Never edits production surfaces. |
+| `team-lead` | Everything except `local/*` written during discovery. Never edits production surfaces. |
 
 ## Project-specific index citations
 
@@ -143,7 +143,7 @@ Task spans two roles → dispatch in parallel per `core/process.md` § Dispatch 
   - Per-project; wires novel-class index files to cardinal role baselines
     without editing upstream `core/roles/*.md` kernels (those are
     framework-owned and replaced on upgrade).
-  - Read by `project-manager` at dispatch time + `ai-engineer` at
+  - Read by `team-lead` at dispatch time + `ai-engineer` at
     dormant-index audit time (per `core/index-protocol.md § Consumer coupling`
     + `§ Dormant-index audit`).
   Rule:
@@ -179,7 +179,7 @@ Empty table → no novel-class citations declared. Discovery will surface any un
   - `Override` column: `always` to promote a scope-load file to always-load
     for this role on this project, OR a trigger phrase to demote always-load
     to scope-load.
-  - Read by `project-manager` at dispatch time + the dispatched specialist
+  - Read by `team-lead` at dispatch time + the dispatched specialist
     on its first reasoning step.
   When to use:
   - Project where backend tasks routinely touch infra (topology.yaml goes

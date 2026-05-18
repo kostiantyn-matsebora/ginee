@@ -108,7 +108,7 @@ When you encounter an adopter doc class not covered by a built-in recipe (or the
 1. **Resolve the consumer FIRST** (per `core/index-protocol.md § Consumer coupling`). Check, in priority order:
    - `local/framework.config.yaml § index.classes[].consumed-by` — adopter pre-declaration.
    - `local/bindings.md § Project-specific index citations` — adopter-side wiring to cardinal kernels.
-   - Interactive — `project-manager` already asked the user during discovery; if not, escalate back.
+   - Interactive — `team-lead` already asked the user during discovery; if not, escalate back.
    - **No consumer → SKIP extraction.** Log the skipped class; do not write an index file; do not add a manifest entry. The class will sit in source; the discovery report flags the skip with the detection heuristic so the adopter can wire later via `@ai-engineer extract <class>`.
 2. **Sample 3–5 files** in the class. Read the full body of each.
 3. **Identify signal structure:**

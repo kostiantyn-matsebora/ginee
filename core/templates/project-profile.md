@@ -5,7 +5,7 @@
   - Per-project.
   - Path: local/project-profile.md.
   Authored by:
-  - project-manager during discovery.
+  - team-lead during discovery.
   - Refreshed on rediscover OR staleness flag.
   Contents — detected snapshot of project shape:
   - Stack.
@@ -17,7 +17,7 @@
   - local/framework.config.yaml — concept → file-path mappings (machine-readable).
   Lifecycle:
   - Read-mostly for roles.
-  - project-manager OVERWRITES on rediscover.
+  - team-lead OVERWRITES on rediscover.
   Usage:
   - Replace bracketed placeholders.
   - Drop sections with no content (mark "(none detected)").
@@ -27,7 +27,7 @@
 
 # Project Profile — `<project name>`
 
-**Generated:** `<YYYY-MM-DD>` by `project-manager`
+**Generated:** `<YYYY-MM-DD>` by `team-lead`
 **Source:** `initial discovery | rediscovery | staleness refresh`
 **Revision:** `<N>` (incremented on each rediscovery)
 
@@ -121,7 +121,7 @@ Source-doc summaries land in `local/index/` (one file per detected doc class —
 
 | Role | Status |
 |---|---|
-| `project-manager` | always active |
+| `team-lead` | always active |
 | `solution-architect` | `active | inactive` |
 | `frontend-engineer` | `active | inactive — no client tier detected` |
 | `backend-engineer` | `active | inactive — no server tier detected` |
@@ -157,7 +157,7 @@ Source-doc summaries land in `local/index/` (one file per detected doc class —
 
 ## Staleness watchlist
 
-<!-- Triggers auto-staleness flag (per core/roles/project-manager.md § Auto-flag staleness). -->
+<!-- Triggers auto-staleness flag (per core/roles/team-lead.md § Auto-flag staleness). -->
 
 | Trigger | Where |
 |---|---|

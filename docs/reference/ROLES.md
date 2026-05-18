@@ -12,7 +12,7 @@ permalink: /reference/ROLES.html
 
 | Role | Canonical kernel | Details (load-on-demand) |
 |---|---|---|
-| `project-manager` | [`core/roles/project-manager.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/core/roles/project-manager.md) | [`core/roles/project-manager.details.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/core/roles/project-manager.details.md) |
+| `team-lead` | [`core/roles/team-lead.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/core/roles/team-lead.md) | [`core/roles/team-lead.details.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/core/roles/team-lead.details.md) |
 | `solution-architect` | [`core/roles/solution-architect.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/core/roles/solution-architect.md) | [`core/roles/solution-architect.details.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/core/roles/solution-architect.details.md) |
 | `ai-engineer` | [`core/roles/ai-engineer.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/core/roles/ai-engineer.md) | [`core/roles/ai-engineer.details.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/core/roles/ai-engineer.details.md) |
 | `frontend-engineer` | [`core/roles/frontend-engineer.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/core/roles/frontend-engineer.md) | [`core/roles/frontend-engineer.details.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/core/roles/frontend-engineer.details.md) |
@@ -34,7 +34,7 @@ permalink: /reference/ROLES.html
 
 Author under `local/roles/<your-role>.md` using [`core/templates/role-authoring-template.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/core/templates/role-authoring-template.md).
 
-`project-manager` discovers new `local/roles/*.md` files on next dispatch — no registration needed.
+`team-lead` discovers new `local/roles/*.md` files on next dispatch — no registration needed.
 
 ## Role kernel anatomy
 
@@ -59,4 +59,4 @@ Each cardinal carries `aliases` in its front-matter so adopters can use the more
 | `qa-engineer` | `quality-engineer`, `test-engineer`, `sdet` |
 | `solution-architect` | `architect`, `system-architect` |
 
-`project-manager` and `ai-engineer` are role-name-canonical — no aliases.
+`ai-engineer` is role-name-canonical — no aliases. `team-lead` accepts `orchestrator` + `project-manager` (legacy name pre-2026-05-18) as aliases.

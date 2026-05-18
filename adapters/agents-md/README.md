@@ -62,13 +62,13 @@ See AGENTS.md at the project root.
 2. Open the project in your client (Cursor / Codex / Windsurf / etc.).
 3. Prompt: `read AGENTS.md and confirm the cardinal roles + process spec are loaded`.
 4. Prompt:
-   - `@project-manager run initial discovery`.
-   - Clients without `@mention` routing — use `act as project-manager and run initial discovery` instead.
+   - `@team-lead run initial discovery`.
+   - Clients without `@mention` routing — use `act as team-lead and run initial discovery` instead.
 
 ## Custom roles
 
 - Location — `.agents/ginee/local/roles/<role>.md`.
 - Discovery:
-  - `project-manager` picks them up automatically.
+  - `team-lead` picks them up automatically.
   - Adds them to routing.
   - No AGENTS.md edit needed.

@@ -13,10 +13,10 @@ aliases: [<generic-alias-1>, <generic-alias-2>]
   3. Drop sections you don't need.
   4. NEVER leave empty headings.
   Discovery:
-  - project-manager scans local/roles/*.md on next prompt.
-  - project-manager adds the role to routing.
+  - team-lead scans local/roles/*.md on next prompt.
+  - team-lead adds the role to routing.
   Hierarchy:
-  - Custom roles register UNDER project-manager.
+  - Custom roles register UNDER team-lead.
   - NEVER alongside.
   Shape:
   - Mirrors core/roles/*.md (the 7 cardinals).

@@ -49,7 +49,7 @@
    - Prompt:
 
      ```
-     act as project-manager and run initial discovery
+     act as team-lead and run initial discovery
      ```
 
 5. **Verify** — prompt `act as solution-architect and report status`. Confirm it loads:
@@ -62,12 +62,12 @@ Generic adapter has no auto-routing — every framework workflow runs via natura
 
 | Want to | Prompt |
 |---|---|
-| Run discovery | `act as project-manager and run initial discovery` |
-| File a bug | `act as project-manager and file a bug titled "<title>"` |
-| File a framework feature | `act as project-manager and file a framework feature request titled "<title>"` |
-| Pick up a task | `act as project-manager and pick up issue #<N>` (or TODO line or freeform description) |
-| Triage | `act as project-manager and triage / list ready work` |
-| Promote discussion | `act as project-manager and promote discussion #<N>` |
+| Run discovery | `act as team-lead and run initial discovery` |
+| File a bug | `act as team-lead and file a bug titled "<title>"` |
+| File a framework feature | `act as team-lead and file a framework feature request titled "<title>"` |
+| Pick up a task | `act as team-lead and pick up issue #<N>` (or TODO line or freeform description) |
+| Triage | `act as team-lead and triage / list ready work` |
+| Promote discussion | `act as team-lead and promote discussion #<N>` |
 | Reindex | `act as ai-engineer and reindex <source>` |
 
 If your client supports AgentSkills (step 3 above), each of these phrasings also auto-activates the matching `ginee-*` skill — same behaviour, fewer keystrokes.

@@ -2,8 +2,8 @@
 
 <!--
   Produced by:
-  - project-manager on first run.
-  - project-manager on @project-manager rediscover.
+  - team-lead on first run.
+  - team-lead on @team-lead rediscover.
   Purpose:
   - Surface detected project shape.
   - Recommend optional specialists from extras/roles/.
@@ -19,7 +19,7 @@
 **Project:** `<project name>` (`<repo root>`)
 **Generated:** `<YYYY-MM-DD>`
 **Trigger:** `initial discovery | rediscovery | profile-staleness flag`
-**By:** `project-manager`
+**By:** `team-lead`
 
 ## Detected stack
 
@@ -68,7 +68,7 @@
 
 | Role | Status | Bindings file ref |
 |---|---|---|
-| `project-manager` | always active | n/a |
+| `team-lead` | always active | n/a |
 | `solution-architect` | `active | inactive` | `local/bindings.md` |
 | `frontend-engineer` | `active | inactive — no client tier detected` | `local/bindings.md` |
 | `backend-engineer` | `active | inactive — no server tier detected` | `local/bindings.md` |
@@ -127,4 +127,4 @@ Canonical record: `local/index/manifest.yaml`. Pre-dispatch staleness checks com
 1. Review the three `local/*` files.
 2. Refine `local/bindings.md` if auto-detected forbidden-role-crossings need project-specific entries.
 3. *(Optional)* Copy any suggested specialist from `extras/roles/` into `local/roles/`.
-4. Begin work — dispatch `@project-manager <task>` per `core/process.md` § Task model.
+4. Begin work — dispatch `@team-lead <task>` per `core/process.md` § Task model.

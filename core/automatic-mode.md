@@ -2,7 +2,7 @@
 
 **Load-on-demand.**
 
-- `project-manager` fetches this file when activation is detected (`auto:` prefix or PM-proposed-then-user-accepted).
+- `team-lead` fetches this file when activation is detected (`auto:` prefix or PM-proposed-then-user-accepted).
 - Default tasks run interactive — do not load this file.
 
 **Effect.**
@@ -18,8 +18,8 @@
   - Never inherited across tasks.
 - **Triggers:**
   - User prefixes the task with `auto:`.
-  - User addresses `project-manager` with `auto`.
-  - `project-manager` proposes auto mode for a low-risk task AND user replies "yes, auto" or equivalent.
+  - User addresses `team-lead` with `auto`.
+  - `team-lead` proposes auto mode for a low-risk task AND user replies "yes, auto" or equivalent.
     - **Low-risk** = docs-only edit, isolated bug fix in a single owned path, mechanical refactor.
 - **Never silent.** Orchestrator never enters auto mode without one of the triggers above.
 - Recorded in orchestrator's plan for that task.
@@ -66,7 +66,7 @@
 | Token-budget consumed exceeds 1.5× the Phase 4/5 estimate OR wall-clock exceeds 2× the estimate | Pause; surface burn rate; request continue-or-stop. |
 | Any planned action enters the "destructive / external" set above | Pause; surface action + reason + alternatives. |
 
-On any trigger: `project-manager` halts dispatch, presents a short interactive-fallback report, resumes auto mode only on explicit user direction.
+On any trigger: `team-lead` halts dispatch, presents a short interactive-fallback report, resumes auto mode only on explicit user direction.
 
 ## Delivery handoff (replaces Phase 8 in auto mode)
 
@@ -79,7 +79,7 @@ On any trigger: `project-manager` halts dispatch, presents a short interactive-f
   | Mode 3 (commit-no-push) | Commits already on current branch; nothing pushed. |
 
 - **Auto-mode default = Mode 2 (`wt`).** Aligns with the "nothing committed yet" invariant. Adopter can override via `local/framework.config.yaml § delivery.default-mode` or per-task prefix.
-- `project-manager` produces a **delivery report**:
+- `team-lead` produces a **delivery report**:
   - TODO line(s) / issue / freeform task addressed.
   - Phase 2 / 4 / 5 artefact deltas (files touched, contracts changed).
   - Change-scoped test results (pass/fail per suite, manual-smoke note).
@@ -88,7 +88,7 @@ On any trigger: `project-manager` halts dispatch, presents a short interactive-f
   - Any forced-interactive escalations during the run.
   - Resolved delivery mode + per-mode state (commit list / working-tree diff / branch name).
   - Suggested commit message(s) per project's commit convention from `local/bindings.md` (Mode 2 only — already committed for Modes 1 and 3).
-- `project-manager` presents three actions:
+- `team-lead` presents three actions:
 
   | Action | Effect (branches by resolved mode) |
   |---|---|
@@ -98,14 +98,14 @@ On any trigger: `project-manager` halts dispatch, presents a short interactive-f
 
 - **Invariant.** Auto mode NEVER pushes or transitions task state without the user's explicit Accept at this gate. Mode 2 also never commits without Accept.
 
-## Orchestrator duties (project-manager)
+## Orchestrator duties (team-lead)
 
 - **Who runs auto mode.**
-  - `project-manager` is the only role that detects, sustains, and exits auto mode.
+  - `team-lead` is the only role that detects, sustains, and exits auto mode.
   - Other specialists operate normally; they receive dispatches that skip intermediate user-confirmation pauses.
 - **Detect activation.**
   - User prefixed the task with `auto:`, OR
-  - User addressed `project-manager` with `auto`, OR
+  - User addressed `team-lead` with `auto`, OR
   - PM proposed auto mode AND user said yes.
     - Low-risk = docs-only, isolated bug fix in a single owned path, mechanical refactor.
   - **Never silent.** Proposal without explicit yes → run the task interactively.

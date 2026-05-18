@@ -17,7 +17,7 @@ the same governance every single time.
 
 **ginee makes the team portable, the process deterministic, and your project the source of truth.**
 
-> Drop the framework into a repo, prompt `@project-manager run initial discovery`,
+> Drop the framework into a repo, prompt `@team-lead run initial discovery`,
 > and you have a 7-role engineering team that works the same way on Claude Code,
 > Copilot CLI, Cursor, Codex, Windsurf, and anything that reads `AGENTS.md`.
 
@@ -54,7 +54,7 @@ ginee
 │   └── one set of role definitions; per-client renderings are pointer files only
 │
 ├── 🔎 SELF-LEARNING
-│   ├── zero stack/domain opinions baked in — project-manager learns your project on first run
+│   ├── zero stack/domain opinions baked in — team-lead learns your project on first run
 │   ├── discovers tech stack, architecture, SDLC artefacts, TODO conventions
 │   └── scans external catalogs (awesome-copilot) for additional specialist agents
 │
@@ -120,12 +120,12 @@ Pin a release with `--ref v0.1.0` / `$env:GINEE_REF='v0.1.0'`. Update in place l
 Open your client in the project, then prompt:
 
 ```
-@project-manager run initial discovery
+@team-lead run initial discovery
 ```
 
-(or `act as project-manager and run initial discovery` for tier-2/3 clients without `@mention` routing)
+(or `act as team-lead and run initial discovery` for tier-2/3 clients without `@mention` routing)
 
-`project-manager` writes `local/project-profile.md`, `local/bindings.md`, `local/framework.config.yaml`, scans external catalogs for additional candidates, and reports recommended specialists for your approval.
+`team-lead` writes `local/project-profile.md`, `local/bindings.md`, `local/framework.config.yaml`, scans external catalogs for additional candidates, and reports recommended specialists for your approval.
 
 ### 3. Work
 
@@ -137,7 +137,7 @@ Dispatch tasks by mentioning the role that owns the surface:
 @qa-engineer cover the new toggle with scenarios + a visual smoke
 ```
 
-The orchestrator (`project-manager`) routes ambiguous scope. For long tasks the iteration protocol kicks in: 3–5 min batches with visible intermediate results and a stop-anywhere contract.
+The orchestrator (`team-lead`) routes ambiguous scope. For long tasks the iteration protocol kicks in: 3–5 min batches with visible intermediate results and a stop-anywhere contract.
 
 ---
 
@@ -168,7 +168,7 @@ The 7 cardinals:
 
 | Role | Owns | Generic alias |
 |---|---|---|
-| `project-manager` | Dispatch routing, lifecycle gates, discovery, post-acceptance hook | orchestrator |
+| `team-lead` | Dispatch routing, lifecycle gates, discovery, post-acceptance hook | orchestrator, project-manager |
 | `solution-architect` | Architecture doc semantics, SAD freeze + CR/ADR governance | architect |
 | `ai-engineer` | AI-asset + doc context economy, file-splitting, load topology | context-engineer |
 | `frontend-engineer` | Client / UI engineering | client-engineer |

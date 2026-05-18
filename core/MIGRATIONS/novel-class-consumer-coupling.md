@@ -43,7 +43,7 @@ After re-fetching framework files on upgrade:
 
    | Class | Index file | Size | Suggested action |
    |---|---|---|---|
-   | wbs | `wbs-index.yaml` | 23 KB | Wire to `project-manager` (WBS is operational state, not architecture) — add row to `bindings.md § Project-specific index citations`. OR skip extraction; WBS is read directly by PM only when planning phase work. |
+   | wbs | `wbs-index.yaml` | 23 KB | Wire to `team-lead` (WBS is operational state, not architecture) — add row to `bindings.md § Project-specific index citations`. OR skip extraction; WBS is read directly by PM only when planning phase work. |
    | ci-cd-integration | `ci-cd-integration-index.yaml` | 10 KB | Wire to `devops-engineer` (operational companion to architecture's CI/CD section). Add row to `bindings.md`. |
    | ui-options | `ui-options-index.idx` | 4 KB | Wire to `frontend-engineer` (UI proposal governance during Phase 2). Add row to `bindings.md`. |
    | glossary | `glossary.idx` | 6 KB | Already cited by `extras/data-engineer.md` (when enabled). For cardinal-only projects, either wire to `solution-architect` (governance) or accept skip. |
@@ -57,7 +57,7 @@ After re-fetching framework files on upgrade:
          category: doc
          source-glob: docs/WBS.md
          template: novel
-         consumed-by: [project-manager]
+         consumed-by: [team-lead]
        - name: ci-cd-integration
          category: doc
          source-glob: docs/ci-cd-integration.md
