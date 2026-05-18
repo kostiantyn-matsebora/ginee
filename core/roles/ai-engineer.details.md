@@ -105,19 +105,24 @@ You own the project knowledge index under `local/index/`. Full protocol: `core/i
 
 When you encounter an adopter doc class not covered by a built-in recipe (or the user pre-declared `template: novel` in `framework.config.yaml § index.classes`):
 
-1. **Sample 3–5 files** in the class. Read the full body of each.
-2. **Identify signal structure:**
+1. **Resolve the consumer FIRST** (per `core/index-protocol.md § Consumer coupling`). Check, in priority order:
+   - `local/framework.config.yaml § index.classes[].consumed-by` — adopter pre-declaration.
+   - `local/bindings.md § Project-specific index citations` — adopter-side wiring to cardinal kernels.
+   - Interactive — `project-manager` already asked the user during discovery; if not, escalate back.
+   - **No consumer → SKIP extraction.** Log the skipped class; do not write an index file; do not add a manifest entry. The class will sit in source; the discovery report flags the skip with the detection heuristic so the adopter can wire later via `@ai-engineer extract <class>`.
+2. **Sample 3–5 files** in the class. Read the full body of each.
+3. **Identify signal structure:**
    - What fields repeat across files?
    - What's the unit of indexing — per-file, per-section, per-row?
    - Are values flat strings or nested sub-trees?
-3. **Pick the format:**
+4. **Pick the format:**
    - Flat-record uniform shape (every "thing" has the same fields) → `.idx` per `core/index-syntax.md`.
    - Genuinely nested (sub-trees with arrays/maps) → YAML.
-4. **Propose a per-record schema** of 3–7 fields max — typically `id | title | status | key-signal | source` for flat records. Prefer fewer fields; add only what at least one consumer role will read.
-5. **Emit two files:**
+5. **Propose a per-record schema** of 3–7 fields max — typically `id | title | status | key-signal | source` for flat records. Prefer fewer fields; add only what at least one consumer role will read. (Reading-role identity now known from step 1 — bias schema to their needs.)
+6. **Emit two files:**
    - Template at `core/templates/index/<class>-index.<ext>` (header block + 1–2 example rows showing shape + brief recipe comment + lossless rule).
    - Populated index at `local/index/<class>-index.<ext>`.
-6. **Record the recipe inline** in `local/index/manifest.yaml § indexed[]`:
+7. **Record the recipe inline** in `local/index/manifest.yaml § indexed[]`, INCLUDING `consumed-by`:
    ```yaml
    - class: <class>
      template: novel
@@ -128,9 +133,13 @@ When you encounter an adopter doc class not covered by a built-in recipe (or the
      sha256-by-file: { ... }
      indexed-on: <date>
      index-files: [<class>-index.<ext>]
+     source-bytes: <N>
+     index-bytes: <N>
+     compression: <N/N>
+     consumed-by: [<role>, ...]            # REQUIRED — from step 1
    ```
 
-Bodies are NOT copied. Source path + anchor cited per row.
+Bodies are NOT copied. Source path + anchor cited per row. Compression target ≤ 0.25 for list-of-records novel classes (per `core/index-protocol.md § Compression floor`).
 
 ### Lossless sample-and-check
 
