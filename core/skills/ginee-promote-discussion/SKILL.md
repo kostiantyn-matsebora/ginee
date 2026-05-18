@@ -1,11 +1,11 @@
 ---
 name: ginee-promote-discussion
-description: Promote a GitHub discussion to a labelled issue via the engineering-team framework. Use when the user asks to 'promote discussion #N', 'turn discussion N into an issue', 'convert discussion N to issue'. Fetches the discussion + top comments, drafts an issue using the appropriate template (bug/feature; primary or framework target), surfaces for approval, then creates the issue and links it back on the discussion.
+description: Promote a GitHub discussion to a labelled issue via the ginee framework. Use when the user asks to 'promote discussion #N', 'turn discussion N into an issue', 'convert discussion N to issue'. Fetches the discussion + top comments, drafts an issue using the appropriate template (bug/feature; primary or framework target), surfaces for approval, then creates the issue and links it back on the discussion.
 ---
 
 # Promote discussion → issue
 
-Run the promote workflow per `.agents/engineering-team/core/github-integration.md § Promote — discussion → issue`.
+Run the promote workflow per `.agents/ginee/core/github-integration.md § Promote — discussion → issue`.
 
 ## Activation
 
@@ -14,7 +14,7 @@ Run the promote workflow per `.agents/engineering-team/core/github-integration.m
 
 ## Procedure
 
-1. Load `.agents/engineering-team/core/github-integration.md § Promote`.
+1. Load `.agents/ginee/core/github-integration.md § Promote`.
 2. Resolve target repo:
    - Default: primary repo.
    - With 'framework' / `framework#N`: `github.framework-repo` — fail fast if unset.

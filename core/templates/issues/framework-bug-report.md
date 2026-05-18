@@ -1,12 +1,12 @@
 ---
-name: Framework bug report (engineering-team)
-about: Defect in the engineering-team framework itself (role definitions, process docs, adapters, templates, extras)
+name: Framework bug report (ginee)
+about: Defect in the ginee framework itself (role definitions, process docs, adapters, templates, extras)
 title: "[Framework Bug] <one-line title>"
-labels: [engineering-team:ready, framework]
+labels: [ginee:ready, framework]
 ---
 
 <!--
-  Filed against the engineering-team framework upstream repo (per
+  Filed against the ginee framework upstream repo (per
   local/framework.config.yaml § github.framework-repo) via:
     @project-manager file framework-bug <title>
   Sections parsed by project-manager when picking up framework work.
@@ -30,7 +30,7 @@ labels: [engineering-team:ready, framework]
 
 ## Framework version
 
-- `core/VERSION`: `<value from .agents/engineering-team/core/VERSION>`
+- `core/VERSION`: `<value from .agents/ginee/core/VERSION>`
 - Last upstream sync: `<date or commit SHA — from install-script record if known>`
 
 ## Adapter in use

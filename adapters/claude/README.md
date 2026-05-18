@@ -17,7 +17,7 @@ The 7 cardinal roles install as native Claude Code subagents at `.claude/agents/
 | `install.md` | Step-by-step install procedure |
 
 **Subagent pointer files:**
-- Live in `.agents/engineering-team/adapters/_shared/agents/*.md`.
+- Live in `.agents/ginee/adapters/_shared/agents/*.md`.
 - Shared with the Copilot CLI adapter.
 - No duplication.
 
@@ -27,7 +27,7 @@ Subagent files at `.claude/agents/<role>.md` carry only:
 
 - Front-matter (`name`, `description`) — what Claude Code uses for routing.
 - A 4-line body instructing the subagent to read:
-  - `.agents/engineering-team/core/roles/<role>.md` (canonical charter)
+  - `.agents/ginee/core/roles/<role>.md` (canonical charter)
   - `core/process.md`
   - `local/bindings.md`
   - `local/project-profile.md`
@@ -40,7 +40,7 @@ Key properties:
 ## Pointer line (for your `CLAUDE.md`)
 
 ```
-Engineering team framework: see .agents/engineering-team/core/process.md + .agents/engineering-team/adapters/claude/CLAUDE-pointer.md
+Engineering team framework: see .agents/ginee/core/process.md + .agents/ginee/adapters/claude/CLAUDE-pointer.md
 ```
 
 Or paste the full block from `CLAUDE-pointer.md` for context-rich onboarding.
@@ -54,6 +54,6 @@ Or paste the full block from `CLAUDE-pointer.md` for context-rich onboarding.
 
 ## Custom roles
 
-1. Place custom subagent definitions in `.agents/engineering-team/local/roles/<role>.md` (use `core/templates/role-authoring-template.md`).
+1. Place custom subagent definitions in `.agents/ginee/local/roles/<role>.md` (use `core/templates/role-authoring-template.md`).
 2. Create a matching `.claude/agents/<role>.md` pointer (copy the shape from `_shared/agents/`).
 3. `project-manager` discovers them on next prompt.

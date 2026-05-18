@@ -2,7 +2,7 @@
 
 ## Prerequisites
 
-- `.agents/engineering-team/` directory present at the project root.
+- `.agents/ginee/` directory present at the project root.
 - An LLM client that lets you specify instructions / system prompt manually.
 
 ## Steps
@@ -20,7 +20,7 @@
    - Point its instructions at:
 
      ```
-     .agents/engineering-team/adapters/generic/INSTRUCTIONS.md
+     .agents/ginee/adapters/generic/INSTRUCTIONS.md
      ```
 
    - Configure the client to read this file at the start of every session.
@@ -30,17 +30,17 @@
    If your client only accepts inline text:
 
    ```powershell
-   Get-Content .agents\engineering-team\adapters\generic\INSTRUCTIONS.md | Set-Clipboard
+   Get-Content .agents\ginee\adapters\generic\INSTRUCTIONS.md | Set-Clipboard
    ```
 
    ```bash
-   cat .agents/engineering-team/adapters/generic/INSTRUCTIONS.md | pbcopy  # macOS
-   xclip -selection clipboard < .agents/engineering-team/adapters/generic/INSTRUCTIONS.md  # Linux
+   cat .agents/ginee/adapters/generic/INSTRUCTIONS.md | pbcopy  # macOS
+   xclip -selection clipboard < .agents/ginee/adapters/generic/INSTRUCTIONS.md  # Linux
    ```
 
    Paste into your client's instructions / system-prompt field.
 
-3. **(If your client supports the [AgentSkills standard](https://agentskills.io))** Bridge the framework skills to its skill-discovery path. Source: `.agents/engineering-team/core/skills/ginee-*/`. Check your client's docs for the expected destination. Most clients use `.<client>/skills/`.
+3. **(If your client supports the [AgentSkills standard](https://agentskills.io))** Bridge the framework skills to its skill-discovery path. Source: `.agents/ginee/core/skills/ginee-*/`. Check your client's docs for the expected destination. Most clients use `.<client>/skills/`.
 
    Skips for non-AgentSkills clients — framework workflows still work via natural-language routing in `INSTRUCTIONS.md`, just without per-workflow skill activation.
 
@@ -84,12 +84,12 @@ If your client matures to support `AGENTS.md`, a subagent directory, or AgentSki
 
 On new framework release:
 
-1. Re-fetch `.agents/engineering-team/` (your `local/` survives).
+1. Re-fetch `.agents/ginee/` (your `local/` survives).
 2. Client reads `INSTRUCTIONS.md` by path → no further action.
 3. Pasted content → re-paste with the updated file.
-4. Read `.agents/engineering-team/core/MIGRATIONS/` for breaking-change notes.
+4. Read `.agents/ginee/core/MIGRATIONS/` for breaking-change notes.
 
 ## Uninstall
 
 1. Clear the client's instructions / system-prompt field (or remove the path reference).
-2. Optionally delete `.agents/engineering-team/`.
+2. Optionally delete `.agents/ginee/`.

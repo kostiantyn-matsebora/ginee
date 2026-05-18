@@ -1,0 +1,75 @@
+name: Bug report
+description: Report incorrect framework behaviour, role-domain leakage, install-script issues, or doc-vs-code mismatches.
+title: "bug: "
+labels:
+  - bug
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for reporting an issue. Include enough detail to reproduce it reliably.
+
+        For framework-level bugs (process spec, role kernels, adapters, templates, extras), prefer the deeper `framework-bug-report.md` template under `core/templates/issues/` if you're picking this up via the PM workflow.
+  - type: dropdown
+    id: area
+    attributes:
+      label: Area
+      options:
+        - README / docs
+        - core/process.md (lifecycle / dispatch / iteration)
+        - core/roles/* (cardinal role kernels)
+        - core/templates/* (bindings / pr-description / hand-off-note / etc.)
+        - core/index-protocol.md (`local/index/` extraction, manifest, recipes)
+        - core/github-integration.md (issue/PR/label flow)
+        - core/delivery-modes.md (branch / wt / commit)
+        - adapters/* (claude / copilot-cli / agents-md / generic)
+        - extras/roles/* (security / ml / mobile / sre / data)
+        - install scripts (install.sh / install.ps1)
+        - skills (core/skills/ginee-*)
+        - other
+    validations:
+      required: true
+  - type: textarea
+    id: description
+    attributes:
+      label: What happened?
+      description: Describe the bug clearly and concretely. What did the framework dispatch / write / report?
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      placeholder: |
+        1. ...
+        2. ...
+        3. ...
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behaviour
+      description: Cite the spec section that says what should happen (e.g. `core/process.md § Phase 3`).
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: ginee version or commit
+      placeholder: e.g. v0.1.0 or a commit SHA from `core/VERSION` or git log
+  - type: dropdown
+    id: adapter
+    attributes:
+      label: Adapter in use
+      options:
+        - claude
+        - copilot-cli
+        - agents-md
+        - generic
+        - n/a (framework-internal)
+  - type: textarea
+    id: context
+    attributes:
+      label: Additional context
+      description: Error output, fixture details, repo layout, locked-decision impact (D1–D17), or anything else useful.

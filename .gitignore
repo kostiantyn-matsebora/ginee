@@ -15,7 +15,7 @@ _stage/
 .scratch/
 
 # Local project artefacts (the framework's own dogfood — when used to build itself)
-# Each adopting project has its own engineering-team/local/ which is per-project; here we
+# Each adopting project has its own ginee/local/ which is per-project; here we
 # intentionally keep local/.gitkeep and local/roles/.gitkeep tracked so the structure is visible.
 local/**
 !local/.gitkeep

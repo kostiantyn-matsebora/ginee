@@ -55,4 +55,4 @@ After re-fetching framework files on upgrade:
 
 ## Issue reference
 
-Implemented per [issue #3](https://github.com/kostiantyn-matsebora/engineering-team/issues/3) — "Delivery modes — branch+PR / working-tree-only / commit-no-push."
+Implemented per [issue #3](https://github.com/kostiantyn-matsebora/ginee/issues/3) — "Delivery modes — branch+PR / working-tree-only / commit-no-push."

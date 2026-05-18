@@ -409,7 +409,7 @@ Phase 1–8 applies to any task. A task originates from one of four sources:
 | Repo-root `TODO` (file name per `local/framework.config.yaml` → `todo`) | Project-wide | Glyphs `☐` / `☒`; orchestrator updates the line on completion |
 | Nested `TODO` (e.g., `client/TODO`, `service/api/TODO`) | Component-scoped | Same glyph mechanic, scoped to that component file |
 | Direct user instruction | Ad hoc; scope inferred from the instruction | No `TODO` file; no glyph mechanic |
-| GitHub issue (per `local/framework.config.yaml § github.repo`) | Project-wide; routed via `## Affected area` field in issue body | Native `open`/`closed` + configurable labels (`engineering-team:ready` / `:in-progress` / `:blocked`); PM swaps labels per phase; closes on Phase 8 acceptance. Full spec: `core/github-integration.md`. |
+| GitHub issue (per `local/framework.config.yaml § github.repo`) | Project-wide; routed via `## Affected area` field in issue body | Native `open`/`closed` + configurable labels (`ginee:ready` / `:in-progress` / `:blocked`); PM swaps labels per phase; closes on Phase 8 acceptance. Full spec: `core/github-integration.md`. |
 
 **TODO file rules.**
 

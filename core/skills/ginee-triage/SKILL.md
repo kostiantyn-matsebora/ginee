@@ -5,7 +5,7 @@ description: List ready work across all task sources (GitHub issues + TODO files
 
 # Triage — list ready work
 
-Single backlog view across all task sources per `.agents/engineering-team/core/process.md § Task model`. Reads-only — never picks.
+Single backlog view across all task sources per `.agents/ginee/core/process.md § Task model`. Reads-only — never picks.
 
 ## Activation
 

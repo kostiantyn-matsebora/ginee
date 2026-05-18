@@ -89,4 +89,4 @@ D13 doc-category index remains intact through any rollback.
 
 ## Issue reference
 
-Implemented per [issue #1](https://github.com/kostiantyn-matsebora/engineering-team/issues/1) — "Code-derived knowledge index alongside doc-derived (D13 follow-on)."
+Implemented per [issue #1](https://github.com/kostiantyn-matsebora/ginee/issues/1) — "Code-derived knowledge index alongside doc-derived (D13 follow-on)."

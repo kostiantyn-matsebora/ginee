@@ -1,4 +1,4 @@
-# engineering-team — framework.config.yaml template
+# ginee — framework.config.yaml template
 # Header:
 #   - Path: local/framework.config.yaml.
 #   - Authored by: project-manager (during discovery).
@@ -145,7 +145,7 @@ test-runners:
 #
 # Two repos:
 #   repo            — primary (this adopter project). Defaults to `git remote get-url origin`.
-#   framework-repo  — upstream engineering-team framework. Lets adopters file feedback
+#   framework-repo  — upstream ginee framework. Lets adopters file feedback
 #                     against the framework with `@project-manager file framework-bug`
 #                     / `file framework-feature` / `pick up framework#<N>`.
 #                     Set during install (curl/tarball script populates it from the
@@ -154,7 +154,7 @@ test-runners:
 # Labels are configurable; PM creates missing ones on first use (default color).
 github:
   # repo: <owner>/<repo>
-  # framework-repo: <owner>/engineering-team
-  ready-label: engineering-team:ready
-  in-progress-label: engineering-team:in-progress
-  blocked-label: engineering-team:blocked
+  # framework-repo: <owner>/ginee
+  ready-label: ginee:ready
+  in-progress-label: ginee:in-progress
+  blocked-label: ginee:blocked

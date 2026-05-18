@@ -59,4 +59,4 @@ Alternatively, run `@project-manager rediscover` (or the natural-language equiva
 
 ## Issue reference
 
-Implemented per [issue #7](https://github.com/kostiantyn-matsebora/engineering-team/issues/7) — `bindings.md "Source of truth (read before any work)" defeats local/index/ token-economy contract`.
+Implemented per [issue #7](https://github.com/kostiantyn-matsebora/ginee/issues/7) — `bindings.md "Source of truth (read before any work)" defeats local/index/ token-economy contract`.

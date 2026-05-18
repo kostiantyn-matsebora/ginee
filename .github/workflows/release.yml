@@ -95,7 +95,7 @@ jobs:
       - name: Build tarball + zip
         run: |
           TAG="${{ steps.version.outputs.tag }}"
-          PKG="engineering-team-${TAG}"
+          PKG="ginee-${TAG}"
           mkdir -p _dist
           # Stage a clean copy WITHOUT local/ contents + WITHOUT .github/ + WITHOUT _dist itself
           mkdir -p "_stage/${PKG}"
@@ -138,6 +138,6 @@ jobs:
         run: |
           TAG="${{ needs.package.outputs.tag }}"
           gh release create "$TAG" \
-            --title "engineering-team $TAG" \
+            --title "ginee $TAG" \
             --notes "Release ${TAG}. See [PLAN.md](PLAN.md) for design + locked decisions, and [README.md](README.md) for install instructions." \
             _dist/*.tar.gz _dist/*.zip _dist/SHA256SUMS.txt

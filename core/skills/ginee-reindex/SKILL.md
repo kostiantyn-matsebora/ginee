@@ -1,11 +1,11 @@
 ---
 name: ginee-reindex
-description: Re-extract a single source file (architecture doc, ADR set, scenario set, mockup, novel-class corpus) into local/index/* per the engineering-team D13 index protocol. Use when the user asks to 'reindex <file>', 'refresh the index for <file>', 're-extract <source>', or when SHA-256 drift is detected pre-dispatch on a specific doc.
+description: Re-extract a single source file (architecture doc, ADR set, scenario set, mockup, novel-class corpus) into local/index/* per the ginee D13 index protocol. Use when the user asks to 'reindex <file>', 'refresh the index for <file>', 're-extract <source>', or when SHA-256 drift is detected pre-dispatch on a specific doc.
 ---
 
 # Re-extract source — D13 index
 
-Run the targeted re-extraction workflow per `.agents/engineering-team/core/index-protocol.md § Re-extraction`. Dispatches `ai-engineer` against a single source; rebuilds the affected index files; updates `manifest.yaml` SHA-256.
+Run the targeted re-extraction workflow per `.agents/ginee/core/index-protocol.md § Re-extraction`. Dispatches `ai-engineer` against a single source; rebuilds the affected index files; updates `manifest.yaml` SHA-256.
 
 ## Activation
 
@@ -14,7 +14,7 @@ Run the targeted re-extraction workflow per `.agents/engineering-team/core/index
 
 ## Procedure
 
-1. Load `.agents/engineering-team/core/index-protocol.md` and `.agents/engineering-team/core/roles/ai-engineer.details.md § Project-doc extraction recipes`.
+1. Load `.agents/ginee/core/index-protocol.md` and `.agents/ginee/core/roles/ai-engineer.details.md § Project-doc extraction recipes`.
 2. Identify the source from the user's argument:
    - Match against `local/index/manifest.yaml § indexed[]` entries.
    - If ambiguous (multiple classes touch this file) → ask which class to re-extract.

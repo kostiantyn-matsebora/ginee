@@ -33,7 +33,7 @@ Behavior:
 
 `INSTRUCTIONS.md` is a single document that:
 
-- Points at `.agents/engineering-team/core/process.md` for the process spec.
+- Points at `.agents/ginee/core/process.md` for the process spec.
 - Lists the 7 cardinal roles with paths to their canonical charters.
 - Includes the always-apply coordination rules in summary form.
 
@@ -52,5 +52,5 @@ Flow:
 ## Custom roles
 
 Same as other adapters:
-- Author at `.agents/engineering-team/local/roles/<role>.md`.
+- Author at `.agents/ginee/local/roles/<role>.md`.
 - `project-manager` discovers them on next prompt.

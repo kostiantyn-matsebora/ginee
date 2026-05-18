@@ -1,0 +1,30 @@
+name: Feature request
+description: Suggest a framework improvement, new role / template / spec, or documentation enhancement.
+title: "feat: "
+labels:
+  - enhancement
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem to solve
+      description: What is difficult or missing today? Reference a real adopter pain-point if possible.
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed change
+      description: Describe the change you want, how it would work, and what surfaces it touches (role kernels, process spec, templates, adapters).
+    validations:
+      required: true
+  - type: textarea
+    id: tradeoffs
+    attributes:
+      label: Tradeoffs or constraints
+      description: Backwards compatibility, locked-decision impact (D1–D17), context-economy cost, complexity, adopter migration effort.
+  - type: textarea
+    id: examples
+    attributes:
+      label: Example usage
+      description: Show how the feature would look in a role kernel, template, or adopter project.

@@ -67,7 +67,7 @@ See AGENTS.md at the project root.
 
 ## Custom roles
 
-- Location — `.agents/engineering-team/local/roles/<role>.md`.
+- Location — `.agents/ginee/local/roles/<role>.md`.
 - Discovery:
   - `project-manager` picks them up automatically.
   - Adds them to routing.

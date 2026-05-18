@@ -88,4 +88,4 @@ After re-fetching framework files on upgrade:
 
 ## Issue reference
 
-Implemented per [issue #10](https://github.com/kostiantyn-matsebora/engineering-team/issues/10) — `Novel-class index files extracted but no role kernel cites them — dormant 43 KB on deployment-dashboard`. Stacked on [issue #9](https://github.com/kostiantyn-matsebora/engineering-team/issues/9) (compression floor).
+Implemented per [issue #10](https://github.com/kostiantyn-matsebora/ginee/issues/10) — `Novel-class index files extracted but no role kernel cites them — dormant 43 KB on deployment-dashboard`. Stacked on [issue #9](https://github.com/kostiantyn-matsebora/ginee/issues/9) (compression floor).

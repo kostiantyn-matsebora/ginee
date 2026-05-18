@@ -30,21 +30,21 @@ After re-fetching framework files on upgrade:
 
 ```bash
 mkdir -p .claude/skills
-cp -r .agents/engineering-team/core/skills/ginee-* .claude/skills/
+cp -r .agents/ginee/core/skills/ginee-* .claude/skills/
 ```
 
 Or use symlinks (POSIX) for auto-update on framework upgrade.
 
-See `.agents/engineering-team/adapters/claude/install.md § Step 2`.
+See `.agents/ginee/adapters/claude/install.md § Step 2`.
 
 ### GitHub Copilot CLI / VS Code Copilot
 
 ```bash
 mkdir -p .github/skills
-cp -r .agents/engineering-team/core/skills/ginee-* .github/skills/
+cp -r .agents/ginee/core/skills/ginee-* .github/skills/
 ```
 
-See `.agents/engineering-team/adapters/copilot-cli/install.md § Step 3`.
+See `.agents/ginee/adapters/copilot-cli/install.md § Step 3`.
 
 ### AGENTS.md adopters (Cursor / Codex / Gemini CLI / Goose / etc.)
 
@@ -60,14 +60,14 @@ Per-client destination:
 
 ```bash
 mkdir -p <destination>
-cp -r .agents/engineering-team/core/skills/ginee-* <destination>/
+cp -r .agents/ginee/core/skills/ginee-* <destination>/
 ```
 
-See `.agents/engineering-team/adapters/agents-md/install.md § Step 3`.
+See `.agents/ginee/adapters/agents-md/install.md § Step 3`.
 
 ### Generic adapter
 
-Skills only auto-activate in AgentSkills-compatible clients. For clients without AgentSkills support, framework workflows still work via natural-language routing to the orchestrator (no change). See `.agents/engineering-team/adapters/generic/install.md § Step 3`.
+Skills only auto-activate in AgentSkills-compatible clients. For clients without AgentSkills support, framework workflows still work via natural-language routing to the orchestrator (no change). See `.agents/ginee/adapters/generic/install.md § Step 3`.
 
 ## Documentation changes
 
@@ -86,4 +86,4 @@ Delete `ginee-*` directories from the client's skill path. Framework workflows r
 
 ## Issue reference
 
-Implemented per [issue #2](https://github.com/kostiantyn-matsebora/engineering-team/issues/2) — "Per-adapter invocation surfaces — make framework workflows actually runnable per tool."
+Implemented per [issue #2](https://github.com/kostiantyn-matsebora/ginee/issues/2) — "Per-adapter invocation surfaces — make framework workflows actually runnable per tool."

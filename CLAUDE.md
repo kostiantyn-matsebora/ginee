@@ -1,8 +1,8 @@
-# Engineering Team — Project Instructions
+# ginee — Project Instructions
 
 ## What this project is
 
-`engineering-team` is a vendor-neutral OSS framework that packages a **7-cardinal multi-agent collaboration model** + a **generic engineering process** for any LLM coding tool (Claude Code, GitHub Copilot, Cursor, Codex, or fallback generic).
+`ginee` is an **AI software engineering team that behaves like a real one** — drops into your project, self-onboards, and gets to work. A vendor-neutral OSS framework that packages a **7-cardinal multi-agent collaboration model** + a **generic engineering process** for any LLM coding tool (Claude Code, GitHub Copilot, Cursor, Codex, or fallback generic).
 
 The framework ships **process knowledge only** — no domain, stack, architecture, or SDLC opinions. Project-specific knowledge is discovered on first run by the `project-manager` role and lives in a `local/` layer that survives upstream updates. Project knowledge sources (markdown docs, diagrams, mockups) are **referenced**, never copied — doc changes propagate instantly.
 
@@ -12,7 +12,7 @@ This is the **framework's own development repo**, not an adopter project.
 
 | File / location | Role |
 |---|---|
-| `PLAN.md` | Design document + 11 locked decisions (D1–D11) + phased roadmap + verification |
+| `PLAN.md` | Design document + 17 locked decisions (D1–D17) + phased roadmap + verification |
 | `core/process.md` | Vendor-neutral process spec (lifecycle, dispatch rules, iteration protocol, doc co-ownership) |
 | `core/roles/*.md` | 7 cardinal role definitions |
 | `core/templates/*.md` | Standardized templates (phase-report, hand-off-note, etc.) |
@@ -36,7 +36,7 @@ This project follows the process it defines. Before any non-trivial work, read `
 ## Repository structure
 
 ```
-engineering-team/
+ginee/
 ├── core/                       # vendor-neutral spec — IMMUTABLE for adopters; we author here
 │   ├── VERSION                 # SemVer (currently 0.1.0)
 │   ├── process.md              # 33K — phased lifecycle + coordination + principles
@@ -69,7 +69,7 @@ engineering-team/
 └── CLAUDE.md                   # this file
 ```
 
-## Locked decisions (D1–D11)
+## Locked decisions (D1–D17)
 
 Canonical in the plan file. Summary:
 
@@ -82,13 +82,13 @@ Canonical in the plan file. Summary:
 | D5 | **7 cardinal roles** (5 engineering + project-manager + ai-engineer; revised 6 → 7 on 2026-05-16) — extensible via `local/roles/` + `extras/roles/` library |
 | D6 | Discovery refresh: both manual `rediscover` + auto-flag staleness |
 | D7 | Coexistence with existing instruction files: adopt (additive, pointer-line only) |
-| D8 | Install directory: `.agents/engineering-team/` (amended 2026-05-17 from `engineering-team/` — dot-prefix convention + `.agents/` namespace for agent tooling; survives root clutter) |
+| D8 | Install directory: `.agents/ginee/` (amended 2026-05-17 from a root-level dir; revised 2026-05-18 from `.agents/engineering-team/` per D11 rebrand — `.agents/` namespace for agent tooling; survives root clutter) |
 | D9 | Role names: hybrid — current names canonical + generic aliases (`client-engineer`, `service-engineer`, `platform-engineer`, `quality-engineer`) |
 | D10 | Custom-role extension: both pre-built library + free-form authoring under `local/roles/` |
-| D11 | Public name: `engineering-team`. Codename: `ginee` (used for skill prefixes + informal references; formal name unchanged) |
+| D11 | Public framework name: **`ginee`** (revised 2026-05-18 from `engineering-team`). Tagline: *An AI software engineering team that behaves like a real one. Drops into your project, self-onboards, and gets to work.* Skill prefix `ginee-` consistent at every surface (formerly codename, now formal name). |
 | D12 | **Automatic mode** (2026-05-17). <ul><li>Per-task opt-in via `auto:` prefix.</li><li>Elides intermediate gates.</li><li>Phase 8 → Accept/Feedback/Reject delivery handoff.</li><li>Never commits silently.</li><li>Spec: `core/automatic-mode.md`.</li></ul> |
 | D13 | **Project-doc index** in `local/index/` (2026-05-17). <ul><li>Heavy adopter docs → lightweight summaries.</li><li>SHA-256 staleness in `manifest.yaml`.</li><li>Roles read index first; originals on demand.</li><li>`ai-engineer` extracts (built-in + novel-class recipes).</li><li>`project-manager` flags drift pre-dispatch.</li><li>Spec: `core/index-protocol.md`.</li></ul> |
-| D14 | **GitHub issues + discussions** as 4th task source (2026-05-17). <ul><li>PM ops: file / pick up / triage / promote.</li><li>State: native `open`/`closed` + `engineering-team:*` labels (replace `☐`/`☒`).</li><li>PRs auto-close via `Closes #N`.</li><li>Two repos: primary (`github.repo`, origin-inferred) + framework upstream (`github.framework-repo`).</li><li>Framework variants (`file framework-bug` / `framework-feature` / `triage framework` / `promote discussion framework#<N>`) — metadata-only; no cross-repo pickup.</li><li>Spec: `core/github-integration.md`.</li></ul> |
+| D14 | **GitHub issues + discussions** as 4th task source (2026-05-17). <ul><li>PM ops: file / pick up / triage / promote.</li><li>State: native `open`/`closed` + `ginee:*` labels (replace `☐`/`☒`).</li><li>PRs auto-close via `Closes #N`.</li><li>Two repos: primary (`github.repo`, origin-inferred) + framework upstream (`github.framework-repo`).</li><li>Framework variants (`file framework-bug` / `framework-feature` / `triage framework` / `promote discussion framework#<N>`) — metadata-only; no cross-repo pickup.</li><li>Spec: `core/github-integration.md`.</li></ul> |
 | D15 | **Code-derived knowledge index** in `local/index/` (2026-05-17). <ul><li>D13 broadens from "documentation-derived" to "extracted"; same machinery (manifest + SHA-256 + recipes + lossless rule).</li><li>6 new code-category templates: `stack.yaml` / `topology.yaml` / `commands.yaml` / `conventions.yaml` / `runtime-facts.yaml` / `repo-map.idx`.</li><li>Manifest entries carry `category: doc | code`.</li><li>Built-in recipes: `builtin:package-manifest` / `builtin:container-orchestration` (+ `builtin:iac`) / `builtin:commands` / `builtin:conventions` / `builtin:runtime-facts` / `builtin:repo-structure`.</li><li>**Never read real `.env` or production secrets** — schema lives in `.env.example`.</li><li>Spec: `core/index-protocol.md`. Migration: `core/MIGRATIONS/D15-code-derived-index.md`.</li></ul> |
 | D16 | **AgentSkills as per-adapter invocation surface** (2026-05-17). <ul><li>10 skills under `core/skills/ginee-*/SKILL.md` per the [AgentSkills standard](https://agentskills.io); cross-client (Claude Code, Cursor, Copilot, Codex, Gemini CLI, Goose, ~30+).</li><li>Skill names prefixed `ginee-` to avoid collisions.</li><li>`ginee-pick-up` + `ginee-triage` unified across task sources (issues + TODOs + freeform).</li><li>Each adapter's install step bridges `core/skills/ginee-*` into the client's expected path (`.claude/skills/`, `.github/skills/`, `.cursor/skills/`, ...).</li><li>Framework specs keep `@<role>` notation as vendor-neutral shorthand; adapters translate.</li><li>Migration: `core/MIGRATIONS/D16-agent-skills.md`.</li></ul> |
 | D17 | **Delivery modes** (2026-05-17). <ul><li>Three modes: **1** feature branch + PR / **2** working-tree only / **3** commit-no-push.</li><li>Approach C — resolution by precedence: per-task prefix (`branch:` / `wt:` / `commit:`) → Phase-3 user answer → `local/framework.config.yaml § delivery.default-mode` → framework default (`branch` for issue/TODO-sourced; `wt` for freeform).</li><li>Combinable with `auto:` per D12. Auto-mode framework default = `wt`.</li><li>PM resolves + reports the mode at Phase 3; honours through Phase 8 finalize.</li><li>Spec: `core/delivery-modes.md`. Migration: `core/MIGRATIONS/D17-delivery-modes.md`.</li></ul> |
@@ -98,9 +98,9 @@ Canonical in the plan file. Summary:
 | Layer | Choice |
 |---|---|
 | Authoring | Markdown only |
-| Distribution baseline | Copy-paste of the framework source into `.agents/engineering-team/` in the adopter project |
+| Distribution baseline | Copy-paste of the framework source into `.agents/ginee/` in the adopter project |
 | Distribution upgrades | Tarball (GitHub Releases) + one-line shell installer (`iwr...iex` / `curl...sh`) |
-| Future fast-follower | `npx @org/engineering-team init / update` (Node.js) |
+| Future fast-follower | `npx @org/ginee init / update` (Node.js) |
 | Versioning | SemVer in `core/VERSION`; migration notes in `core/MIGRATIONS/` |
 | Update mechanism | User re-fetches `core/` + `adapters/` + `extras/`; `local/` survives |
 
@@ -116,7 +116,7 @@ Canonical in the plan file. Summary:
 
 ## Hard constraints
 
-- All files under this `engineering-team/` framework repo only — do not modify any other project from this directory. (This refers to the framework's own source repo; in adopter projects the framework lives at `.agents/engineering-team/`.)
+- All files under this `ginee/` framework repo only — do not modify any other project from this directory. (This refers to the framework's own source repo; in adopter projects the framework lives at `.agents/ginee/`.)
 - `core/`, `adapters/`, `extras/` are upstream-owned — replaced on update for adopters; we author them here.
 - `local/` is adopter-owned — survives updates.
 - Lossless rule for restructuring: any pass that touches structure must prove every rule/invariant survives (per `core/roles/ai-engineer.md`).

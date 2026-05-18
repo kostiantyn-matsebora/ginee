@@ -2,24 +2,24 @@
 
 ## Prerequisites
 
-- `.agents/engineering-team/` directory present at the project root.
+- `.agents/ginee/` directory present at the project root.
 - Copilot CLI installed and authenticated (`copilot --help`).
 - `.github/agents/` directory (create if absent).
 
 ## Steps
 
-1. **Copy + rename the shared pointer subagents** — from `.agents/engineering-team/adapters/_shared/agents/*.md` into `.github/agents/`, renaming to `.agent.md`.
+1. **Copy + rename the shared pointer subagents** — from `.agents/ginee/adapters/_shared/agents/*.md` into `.github/agents/`, renaming to `.agent.md`.
 
    ```powershell
    New-Item -ItemType Directory -Force .github\agents | Out-Null
-   Get-ChildItem .agents\engineering-team\adapters\_shared\agents\*.md | ForEach-Object {
+   Get-ChildItem .agents\ginee\adapters\_shared\agents\*.md | ForEach-Object {
      Copy-Item $_.FullName ".github\agents\$($_.BaseName).agent.md"
    }
    ```
 
    ```bash
    mkdir -p .github/agents
-   for f in .agents/engineering-team/adapters/_shared/agents/*.md; do
+   for f in .agents/ginee/adapters/_shared/agents/*.md; do
      name=$(basename "$f" .md)
      cp "$f" ".github/agents/${name}.agent.md"
    done
@@ -27,21 +27,21 @@
 
 2. **(Recommended) Install the `agents-md` adapter alongside.**
    - Copilot CLI also reads `AGENTS.md` at the project root for cross-tool consistency.
-   - See `.agents/engineering-team/adapters/agents-md/install.md`.
+   - See `.agents/ginee/adapters/agents-md/install.md`.
 
-3. **Bridge the framework skills** to a path Copilot discovers. Skills follow the [AgentSkills standard](https://agentskills.io) and live at `.agents/engineering-team/core/skills/ginee-*/`. Per [GitHub Copilot agent skills docs](https://docs.github.com/en/copilot/concepts/agents/about-agent-skills), Copilot reads three project-level paths: `.github/skills`, `.claude/skills`, **`.agents/skills`**. The framework uses **`.agents/skills/`** — explicit cross-tool path, sibling to `.agents/engineering-team/`, no per-client fingerprint.
+3. **Bridge the framework skills** to a path Copilot discovers. Skills follow the [AgentSkills standard](https://agentskills.io) and live at `.agents/ginee/core/skills/ginee-*/`. Per [GitHub Copilot agent skills docs](https://docs.github.com/en/copilot/concepts/agents/about-agent-skills), Copilot reads three project-level paths: `.github/skills`, `.claude/skills`, **`.agents/skills`**. The framework uses **`.agents/skills/`** — explicit cross-tool path, sibling to `.agents/ginee/`, no per-client fingerprint.
 
    ```powershell
    New-Item -ItemType Directory -Force .agents\skills | Out-Null
-   Copy-Item -Recurse .agents\engineering-team\core\skills\ginee-* .agents\skills\
+   Copy-Item -Recurse .agents\ginee\core\skills\ginee-* .agents\skills\
    ```
 
    ```bash
    mkdir -p .agents/skills
-   cp -r .agents/engineering-team/core/skills/ginee-* .agents/skills/
+   cp -r .agents/ginee/core/skills/ginee-* .agents/skills/
    ```
 
-   Symlinks (POSIX): `ln -s engineering-team/core/skills/ginee-* .agents/skills/` — preferred over copies for auto-update.
+   Symlinks (POSIX): `ln -s ginee/core/skills/ginee-* .agents/skills/` — preferred over copies for auto-update.
 
 4. **Run discovery.**
    - Open Copilot CLI in the project:
@@ -56,7 +56,7 @@
      Run initial discovery.
      ```
 
-5. **Verify** — ask Copilot to report status of `solution-architect` and `qa-engineer`. Confirm each loads its charter from `.agents/engineering-team/core/roles/<role>.md`.
+5. **Verify** — ask Copilot to report status of `solution-architect` and `qa-engineer`. Confirm each loads its charter from `.agents/ginee/core/roles/<role>.md`.
 
 6. **Try parallel orchestration.**
    - Run `/fleet`.
@@ -87,14 +87,14 @@ Subagent dispatch (`solution-architect`, `backend-engineer`, etc.) — natural-l
 
 On new framework release:
 
-1. Re-fetch `.agents/engineering-team/core/` + `.agents/engineering-team/adapters/` + `.agents/engineering-team/extras/` (your `local/` survives).
+1. Re-fetch `.agents/ginee/core/` + `.agents/ginee/adapters/` + `.agents/ginee/extras/` (your `local/` survives).
 2. Re-run step 1 above — pointers may have been refined.
-3. Re-copy `.agents/engineering-team/core/skills/ginee-*` to `.github/skills/`. Skip if you used symlinks.
-4. Read `.agents/engineering-team/core/MIGRATIONS/` for breaking-change notes.
+3. Re-copy `.agents/ginee/core/skills/ginee-*` to `.github/skills/`. Skip if you used symlinks.
+4. Read `.agents/ginee/core/MIGRATIONS/` for breaking-change notes.
 
 ## Uninstall
 
 1. Delete the 7 cardinal files from `.github/agents/` (and any custom roles).
 2. Delete `ginee-*` from `.github/skills/`.
 3. (If installed) Uninstall the `agents-md` adapter per its `install.md`.
-4. Optionally delete `.agents/engineering-team/`.
+4. Optionally delete `.agents/ginee/`.

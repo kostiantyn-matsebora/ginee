@@ -1,12 +1,12 @@
 ---
-name: Framework feature request (engineering-team)
-about: New capability or improvement to the engineering-team framework itself
+name: Framework feature request (ginee)
+about: New capability or improvement to the ginee framework itself
 title: "[Framework Feature] <one-line title>"
-labels: [engineering-team:ready, framework]
+labels: [ginee:ready, framework]
 ---
 
 <!--
-  Filed against the engineering-team framework upstream repo (per
+  Filed against the ginee framework upstream repo (per
   local/framework.config.yaml § github.framework-repo) via:
     @project-manager file framework-feature <title>
   Sections parsed by project-manager when picking up framework work.
