@@ -53,8 +53,8 @@ the same governance every single time.
     <p>Zero stack/domain opinions baked in. <code>team-lead</code> learns your project on first run — tech stack, architecture, SDLC artefacts, TODO conventions, doc layout.</p>
   </article>
   <article class="why-card">
-    <h3><span class="why-emoji">☐</span> TODO-driven workflow</h3>
-    <p>Reads root <code>TODO</code>, nested per-component TODOs, or your direct instruction. Flips ☐ → ☒ only on user approval; never auto-adds; honours "skip TODO" cues.</p>
+    <h3><span class="why-emoji">📥</span> Three task sources</h3>
+    <p>Freeform requests, TODO files (root + nested per-component), and GitHub issues (file / pick up / triage / promote). TODOs flip ☐ → ☒ only on user approval; PRs auto-close issues via <code>Closes #N</code>.</p>
   </article>
   <article class="why-card">
     <h3><span class="why-emoji">📚</span> Reference, not copy</h3>
