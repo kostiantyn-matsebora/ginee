@@ -31,7 +31,10 @@
 param(
   # WHERE TO INSTALL INTO — adopter project root. Default = cwd.
   [string] $Target = (Get-Location).Path,
-  [ValidateSet('claude','copilot-cli','agents-md','generic')]
+  # Note: validated manually below (not via [ValidateSet]) so that `iwr | iex`
+  # doesn't fail with "The attribute cannot be added because variable Adapter
+  # with value would no longer be valid" when an empty $Adapter pre-exists in
+  # the caller's scope.
   [string] $Adapter,
   [string] $Ref = 'main',
   # WHERE TO FETCH THE FRAMEWORK FROM. Override for forks / local-checkout testing.
@@ -45,6 +48,12 @@ if ($env:GINEE_REF)    { $Ref = $env:GINEE_REF }
 if ($env:GINEE_TARGET) { $Target = $env:GINEE_TARGET }
 if ($env:GINEE_REPO)   { $RepoUrl = $env:GINEE_REPO }
 if ($env:GINEE_UPDATE_ONLY -eq '1' -or $env:GINEE_UPDATE_ONLY -eq 'true') { $UpdateOnly = $true }
+
+$validAdapters = @('claude','copilot-cli','agents-md','generic')
+if ($Adapter -and $Adapter -notin $validAdapters) {
+  Write-Error "Invalid -Adapter '$Adapter'. Must be one of: $($validAdapters -join ', ')."
+  exit 1
+}
 
 $ErrorActionPreference = 'Stop'
 $frameworkDir = Join-Path $Target '.agents\ginee'
