@@ -85,12 +85,18 @@ Subagent dispatch (`solution-architect`, `backend-engineer`, etc.) — natural-l
 
 ## Updates
 
-On new framework release:
+**Recommended — re-run the installer**: `.\install.ps1 -UpdateOnly -Adapter copilot-cli` (or `./install.sh --update-only --adapter copilot-cli`). Automates steps 1–3.
+
+Manual equivalent:
 
 1. Re-fetch `.agents/ginee/core/` + `.agents/ginee/adapters/` + `.agents/ginee/extras/` (your `local/` survives).
 2. Re-run step 1 above — pointers may have been refined.
 3. Re-copy `.agents/ginee/core/skills/ginee-*` to `.github/skills/`. Skip if you used symlinks.
 4. Read `.agents/ginee/core/MIGRATIONS/` for breaking-change notes.
+5. **For pre-D11 (pre-2026-05-18) upgrades** — run the rename migration script once:
+   - `.\.agents\ginee\core\scripts\migrate-engineering-team-to-ginee.ps1` (or `.sh`).
+   - Rewrites legacy `engineering-team` references under `local/*`. Idempotent.
+   - Full notes: `.agents/ginee/core/MIGRATIONS/engineering-team-renamed-ginee.md`.
 
 ## Uninstall
 

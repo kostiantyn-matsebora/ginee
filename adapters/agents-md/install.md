@@ -90,12 +90,18 @@ Framework workflows (file / pick-up / triage / promote / discovery / reindex) ac
 
 ## Updates
 
-On new framework release:
+**Recommended — re-run the installer**: `.\install.ps1 -UpdateOnly -Adapter agents-md` (or `./install.sh --update-only --adapter agents-md`). Automates steps 1–2. **Warning** — the installer copies `AGENTS.md` wholesale; back up first if you merged project-specific content into it.
+
+Manual equivalent:
 
 1. Re-fetch `.agents/ginee/core/` + `.agents/ginee/adapters/` + `.agents/ginee/extras/` (your `local/` survives).
 2. Re-copy `.agents/ginee/adapters/agents-md/AGENTS.md` to project root (merge if project-specific content was added).
 3. Re-copy `.agents/ginee/core/skills/ginee-*` to your client's skill directory (skill bodies / descriptions may have been refined). Skip if you used symlinks.
 4. Read `.agents/ginee/core/MIGRATIONS/` for breaking-change notes.
+5. **For pre-D11 (pre-2026-05-18) upgrades** — run the rename migration script once:
+   - `.\.agents\ginee\core\scripts\migrate-engineering-team-to-ginee.ps1` (or `.sh`).
+   - Rewrites legacy `engineering-team` references under `local/*`. Idempotent.
+   - Full notes: `.agents/ginee/core/MIGRATIONS/engineering-team-renamed-ginee.md`.
 
 ## Uninstall
 

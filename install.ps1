@@ -320,21 +320,37 @@ switch ($Adapter) {
     Copy-Item -Recurse (Join-Path $frameworkDir 'core\skills\ginee-*') $skillsDir
     Write-Host "Copied 10 ginee-* skills to .claude/skills/" -ForegroundColor Green
 
-    # Append CLAUDE-pointer.md to project's CLAUDE.md (idempotent via sentinel header)
+    # Sync CLAUDE-pointer.md block into project's CLAUDE.md.
+    # - Existing block (sentinel present): refresh body in place — pointer blocks
+    #   evolve across releases (D11 rename being the most extreme case).
+    # - No block yet: append.
+    # - No CLAUDE.md: create.
     $claudeMd = Join-Path $Target 'CLAUDE.md'
     $pointerSrc = Join-Path $frameworkDir 'adapters\claude\CLAUDE-pointer.md'
     $sentinel = '## Engineering team framework'
+    $sentinelEscaped = [regex]::Escape($sentinel)
+    $blockPattern = "(?ms)^$sentinelEscaped.*?^---\s*$"
+    $tmplContent = Get-Content $pointerSrc -Raw
+    $blockMatch = [regex]::Match($tmplContent, $blockPattern)
+    $tmplBlock = if ($blockMatch.Success) { $blockMatch.Value } else { $tmplContent }
     if (Test-Path $claudeMd) {
       $existing = Get-Content $claudeMd -Raw
-      if ($existing -like "*$sentinel*") {
-        Write-Host "CLAUDE.md already contains the ginee pointer — skipped append" -ForegroundColor Yellow
+      if ([regex]::IsMatch($existing, $blockPattern)) {
+        # MatchEvaluator delegate bypasses $-substitution in the replacement string
+        $updated = [regex]::Replace($existing, $blockPattern, { param($m) $tmplBlock }, 1)
+        if ($updated -ne $existing) {
+          Set-Content -Path $claudeMd -Value $updated -NoNewline
+          Write-Host "Refreshed ginee pointer block in CLAUDE.md" -ForegroundColor Green
+        } else {
+          Write-Host "CLAUDE.md pointer block already current — no change" -ForegroundColor Yellow
+        }
       } else {
         Add-Content -Path $claudeMd -Value ""
-        Add-Content -Path $claudeMd -Value (Get-Content $pointerSrc -Raw)
+        Add-Content -Path $claudeMd -Value $tmplBlock
         Write-Host "Appended ginee pointer block to CLAUDE.md" -ForegroundColor Green
       }
     } else {
-      Copy-Item $pointerSrc $claudeMd
+      Set-Content -Path $claudeMd -Value $tmplBlock -NoNewline
       Write-Host "Created CLAUDE.md from pointer template" -ForegroundColor Green
     }
   }

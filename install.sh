@@ -289,22 +289,51 @@ case "$ADAPTER" in
     cp -r "$FRAMEWORK_DIR"/core/skills/ginee-* "$TARGET/.claude/skills/"
     echo "Copied 10 ginee-* skills to .claude/skills/"
 
-    # Append CLAUDE-pointer.md to project's CLAUDE.md (idempotent via sentinel header)
+    # Sync CLAUDE-pointer.md block into project's CLAUDE.md.
+    #  - Existing block (sentinel present): refresh body in place — pointer blocks
+    #    evolve across releases (D11 rename being the most extreme case).
+    #  - No block yet: append.
+    #  - No CLAUDE.md: create.
     CLAUDE_MD="$TARGET/CLAUDE.md"
     POINTER_SRC="$FRAMEWORK_DIR/adapters/claude/CLAUDE-pointer.md"
     SENTINEL='## Engineering team framework'
+    # Extract just the pointer block (sentinel line through next --- on its own line)
+    TMPL_BLOCK_FILE="$(mktemp)"
+    sed -n "/^${SENTINEL}\$/,/^---\$/p" "$POINTER_SRC" > "$TMPL_BLOCK_FILE"
+    if [ ! -s "$TMPL_BLOCK_FILE" ]; then
+      cp "$POINTER_SRC" "$TMPL_BLOCK_FILE"  # Fallback for malformed templates
+    fi
     if [ -f "$CLAUDE_MD" ]; then
-      if grep -qF "$SENTINEL" "$CLAUDE_MD"; then
-        echo "CLAUDE.md already contains the ginee pointer — skipped append"
+      if grep -qxF "$SENTINEL" "$CLAUDE_MD"; then
+        # Refresh: replace existing block (sentinel line through next ---) with template block
+        awk -v block_file="$TMPL_BLOCK_FILE" -v sentinel="$SENTINEL" '
+          BEGIN {
+            while ((getline line < block_file) > 0) {
+              block = block (NR_block++ ? "\n" : "") line
+            }
+            close(block_file)
+          }
+          $0 == sentinel { in_block=1; print block; next }
+          in_block && /^---[[:space:]]*$/ { in_block=0; next }
+          !in_block { print }
+        ' "$CLAUDE_MD" > "$CLAUDE_MD.new"
+        if cmp -s "$CLAUDE_MD" "$CLAUDE_MD.new"; then
+          rm "$CLAUDE_MD.new"
+          echo "CLAUDE.md pointer block already current — no change"
+        else
+          mv "$CLAUDE_MD.new" "$CLAUDE_MD"
+          echo "Refreshed ginee pointer block in CLAUDE.md"
+        fi
       else
         printf '\n' >> "$CLAUDE_MD"
-        cat "$POINTER_SRC" >> "$CLAUDE_MD"
+        cat "$TMPL_BLOCK_FILE" >> "$CLAUDE_MD"
         echo "Appended ginee pointer block to CLAUDE.md"
       fi
     else
-      cp "$POINTER_SRC" "$CLAUDE_MD"
+      cp "$TMPL_BLOCK_FILE" "$CLAUDE_MD"
       echo "Created CLAUDE.md from pointer template"
     fi
+    rm -f "$TMPL_BLOCK_FILE"
     ;;
   copilot-cli)
     step "Installing copilot-cli adapter to .github/agents/ + .agents/skills/"
