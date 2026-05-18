@@ -121,7 +121,7 @@ The orchestrator (`project-manager`) routes the work. For tasks &gt; 15 minutes 
 
 | Symptom | Likely cause | Fix |
 |---|---|---|
-| `git clone` step fails on private repo | ginee repo's auth not set up | `gh auth login` and configure git credentials; or pass `--repo` pointing at a local checkout |
+| `git clone` step fails | Network issue or `git` not on PATH | Check connectivity to github.com + `git --version`. ginee is public — no GitHub auth required for the default `--repo` |
 | `.agents/engineering-team/` exists after update | Pre-rebrand install path | The installer auto-renames on next `--update-only` run — re-run and it migrates once |
 | Specialist refuses to edit a file | Forbidden role-crossing per `local/bindings.md § Project role boundaries` | Dispatch the owning role instead — the strict-domain rule is intentional |
 | Discovery surfaces "no architecture doc" | Project has no `docs/architecture.md` (or similar) yet | OK; PM works without one. Author one when ready and `@project-manager rediscover` |

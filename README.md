@@ -84,28 +84,11 @@ ginee
 
 ## Quick Start
 
-### 1. Get the framework into your project
+### 1. Install
 
-> **Project-level install.** The framework lives inside your project (it creates `./.agents/ginee/` and writes adapter files into `./.claude/`, `./.github/agents/`, or `./AGENTS.md`). Always run the installer **from the root of the project / git repo you want to set up** — the current working directory becomes the install target.
+> **Project-level install.** The framework lives inside your project. Run the installer **from the root of the project / git repo you want to set up** — the current working directory becomes the install target. No GitHub auth required.
 
-**Option A — download the installer into your project root, then run it** (recommended while the framework repo is private):
-
-```bash
-cd /path/to/your-project
-curl -fsSLO https://raw.githubusercontent.com/kostiantyn-matsebora/ginee/main/install.sh
-chmod +x install.sh
-./install.sh --adapter claude          # or copilot-cli | agents-md | generic
-```
-
-```powershell
-cd C:\path\to\your-project
-iwr -useb https://raw.githubusercontent.com/kostiantyn-matsebora/ginee/main/install.ps1 -OutFile install.ps1
-.\install.ps1 -Adapter claude          # or copilot-cli | agents-md | generic
-```
-
-> The `raw.githubusercontent.com` URL returns 404 while this repo is private — authenticate first (`gh auth login` and configure git credentials) so the script's `git clone` step can fetch the framework. Once the repo is public, both downloads work anonymously.
-
-**Option B — one-liner pipe** (works once the framework repo is public):
+**One-liner** (recommended):
 
 ```bash
 cd /path/to/your-project && curl -fsSL https://raw.githubusercontent.com/kostiantyn-matsebora/ginee/main/install.sh | bash -s -- --adapter claude
@@ -115,9 +98,22 @@ cd /path/to/your-project && curl -fsSL https://raw.githubusercontent.com/kostian
 cd C:\path\to\your-project; $env:GINEE_ADAPTER='claude'; iwr -useb https://raw.githubusercontent.com/kostiantyn-matsebora/ginee/main/install.ps1 | iex
 ```
 
-Pin a release with `--ref v0.1.0` / `$env:GINEE_REF='v0.1.0'`.
+Adapters: `claude` · `copilot-cli` · `agents-md` · `generic`.
 
-> Copy-paste is the canonical baseline. The installer is a convenience: drop the `.agents/ginee/` directory into your project root and run the install steps in [`adapters/<your-client>/install.md`](adapters/) manually.
+**Download, inspect, then run** (when you want to read the installer first):
+
+```bash
+curl -fsSLO https://raw.githubusercontent.com/kostiantyn-matsebora/ginee/main/install.sh
+chmod +x install.sh
+./install.sh --adapter claude
+```
+
+```powershell
+iwr -useb https://raw.githubusercontent.com/kostiantyn-matsebora/ginee/main/install.ps1 -OutFile install.ps1
+.\install.ps1 -Adapter claude
+```
+
+Pin a release with `--ref v0.1.0` / `$env:GINEE_REF='v0.1.0'`. Update in place later with `--update-only` / `-UpdateOnly` (preserves `local/`).
 
 ### 2. Run discovery
 
