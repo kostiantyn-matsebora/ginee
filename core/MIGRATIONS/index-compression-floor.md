@@ -77,4 +77,4 @@ After re-fetching framework files on upgrade:
 
 ## Issue reference
 
-Implemented per [issue #9](https://github.com/kostiantyn-matsebora/engineering-team/issues/9) — `Index protocol's lossless rule produces near-1:1 size on already-structured sources`. Followed by [issue #10](https://github.com/kostiantyn-matsebora/engineering-team/issues/10) (dormant novel-class indexes) and [issue #11](https://github.com/kostiantyn-matsebora/engineering-team/issues/11) (per-file load triggers).
+Implemented per [issue #9](https://github.com/kostiantyn-matsebora/ginee/issues/9) — `Index protocol's lossless rule produces near-1:1 size on already-structured sources`. Followed by [issue #10](https://github.com/kostiantyn-matsebora/ginee/issues/10) (dormant novel-class indexes) and [issue #11](https://github.com/kostiantyn-matsebora/ginee/issues/11) (per-file load triggers).

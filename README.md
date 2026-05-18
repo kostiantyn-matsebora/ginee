@@ -1,21 +1,21 @@
-# engineering-team
+# ginee
 
-[![Latest Release](https://img.shields.io/github/v/release/kostiantyn-matsebora/engineering-team?label=release&color=0969da)](https://github.com/kostiantyn-matsebora/engineering-team/releases/latest)
-[![License](https://img.shields.io/badge/license-TBD-lightgrey)](LICENSE)
+**AI software engineering team. Behaves like a real team, assigned to project, does self-onboarding and ready to work.**
+
+[![Latest Release](https://img.shields.io/github/v/release/kostiantyn-matsebora/ginee?label=release&color=0969da)](https://github.com/kostiantyn-matsebora/ginee/releases/latest)
+[![License](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 
 [![Claude Code](https://img.shields.io/badge/Claude%20Code-tier--1-D97757?logo=anthropic&logoColor=white)](adapters/claude/README.md)
 [![GitHub Copilot CLI](https://img.shields.io/badge/Copilot%20CLI-tier--1-000?logo=githubcopilot&logoColor=white)](adapters/copilot-cli/README.md)
 [![AGENTS.md](https://img.shields.io/badge/AGENTS.md-tier--2-0969da)](adapters/agents-md/README.md)
 [![Generic](https://img.shields.io/badge/Generic-tier--3-lightgrey)](adapters/generic/README.md)
 
-**A 7-cardinal AI engineering team for any LLM coding tool.**
-
 You're running AI coding agents across projects. Each tool has its own quirks, prompts,
 agent files, slash commands. The team works differently in every repo. Phases get
 skipped. Roles overlap. Long tasks crash with nothing to resume from. You re-explain
 the same governance every single time.
 
-**engineering-team makes the team portable, the process deterministic, and your project the source of truth.**
+**ginee makes the team portable, the process deterministic, and your project the source of truth.**
 
 > Drop the framework into a repo, prompt `@project-manager run initial discovery`,
 > and you have a 7-role engineering team that works the same way on Claude Code,
@@ -23,10 +23,10 @@ the same governance every single time.
 
 ---
 
-## Why engineering-team?
+## Why ginee?
 
 ```
-engineering-team
+ginee
 ├── 👥 WORKS LIKE A REAL TEAM
 │   ├── roles dispatch each other, hand off, and review each other's work
 │   ├── strict-domain rule — no role works outside its lane; mockup edits go to frontend,
@@ -80,20 +80,20 @@ engineering-team
 
 ### 1. Get the framework into your project
 
-> **Project-level install.** The framework lives inside your project (it creates `./.agents/engineering-team/` and writes adapter files into `./.claude/`, `./.github/agents/`, or `./AGENTS.md`). Always run the installer **from the root of the project / git repo you want to set up** — the current working directory becomes the install target.
+> **Project-level install.** The framework lives inside your project (it creates `./.agents/ginee/` and writes adapter files into `./.claude/`, `./.github/agents/`, or `./AGENTS.md`). Always run the installer **from the root of the project / git repo you want to set up** — the current working directory becomes the install target.
 
 **Option A — download the installer into your project root, then run it** (recommended while the framework repo is private):
 
 ```bash
 cd /path/to/your-project
-curl -fsSLO https://raw.githubusercontent.com/kostiantyn-matsebora/engineering-team/main/install.sh
+curl -fsSLO https://raw.githubusercontent.com/kostiantyn-matsebora/ginee/main/install.sh
 chmod +x install.sh
 ./install.sh --adapter claude          # or copilot-cli | agents-md | generic
 ```
 
 ```powershell
 cd C:\path\to\your-project
-iwr -useb https://raw.githubusercontent.com/kostiantyn-matsebora/engineering-team/main/install.ps1 -OutFile install.ps1
+iwr -useb https://raw.githubusercontent.com/kostiantyn-matsebora/ginee/main/install.ps1 -OutFile install.ps1
 .\install.ps1 -Adapter claude          # or copilot-cli | agents-md | generic
 ```
 
@@ -102,16 +102,16 @@ iwr -useb https://raw.githubusercontent.com/kostiantyn-matsebora/engineering-tea
 **Option B — one-liner pipe** (works once the framework repo is public):
 
 ```bash
-cd /path/to/your-project && curl -fsSL https://raw.githubusercontent.com/kostiantyn-matsebora/engineering-team/main/install.sh | bash -s -- --adapter claude
+cd /path/to/your-project && curl -fsSL https://raw.githubusercontent.com/kostiantyn-matsebora/ginee/main/install.sh | bash -s -- --adapter claude
 ```
 
 ```powershell
-cd C:\path\to\your-project; $env:ET_ADAPTER='claude'; iwr -useb https://raw.githubusercontent.com/kostiantyn-matsebora/engineering-team/main/install.ps1 | iex
+cd C:\path\to\your-project; $env:GINEE_ADAPTER='claude'; iwr -useb https://raw.githubusercontent.com/kostiantyn-matsebora/ginee/main/install.ps1 | iex
 ```
 
-Pin a release with `--ref v0.1.0` / `$env:ET_REF='v0.1.0'`.
+Pin a release with `--ref v0.1.0` / `$env:GINEE_REF='v0.1.0'`.
 
-> Copy-paste is the canonical baseline. The installer is a convenience: drop the `.agents/engineering-team/` directory into your project root and run the install steps in [`adapters/<your-client>/install.md`](adapters/) manually.
+> Copy-paste is the canonical baseline. The installer is a convenience: drop the `.agents/ginee/` directory into your project root and run the install steps in [`adapters/<your-client>/install.md`](adapters/) manually.
 
 ### 2. Run discovery
 
@@ -147,7 +147,7 @@ Every adopter project has:
 
 ```
 your-project/
-├── .agents/engineering-team/   ← framework (replaced on update; local/ survives)
+├── .agents/ginee/   ← framework (replaced on update; local/ survives)
 │   ├── core/                   ← process spec + 7 cardinal role definitions + templates
 │   ├── adapters/<client>/      ← per-client renderings (pointer files only)
 │   ├── extras/roles/           ← pre-built specialists (opt-in)
@@ -157,7 +157,7 @@ your-project/
 │       ├── framework.config.yaml
 │       └── roles/              ← your custom roles
 │
-├── .claude/agents/             ← (Claude adopters) thin pointers to .agents/engineering-team/core/roles/
+├── .claude/agents/             ← (Claude adopters) thin pointers to .agents/ginee/core/roles/
 ├── AGENTS.md                   ← (AGENTS.md adopters) one pointer file
 └── ... (your code, docs, mockups, tests — untouched)
 ```
@@ -196,4 +196,4 @@ Plus 5 opt-in specialists in `extras/roles/` (security · ml · mobile · sre ·
 
 ## License
 
-TBD — see [LICENSE](LICENSE).
+[MIT](LICENSE) © 2026 Kostiantyn Matsebora.

@@ -70,4 +70,4 @@ After re-fetching framework files on upgrade:
 
 ## Issue reference
 
-Implemented per [issue #11](https://github.com/kostiantyn-matsebora/engineering-team/issues/11) — `Index files have no load-triggers — role baseline loads in full even for trivial dispatches`. Stacked on [issue #9](https://github.com/kostiantyn-matsebora/engineering-team/issues/9) (compression floor) + [issue #10](https://github.com/kostiantyn-matsebora/engineering-team/issues/10) (consumer coupling). Combined effect: per-dispatch baseline drops 3–4× on trivial tasks.
+Implemented per [issue #11](https://github.com/kostiantyn-matsebora/ginee/issues/11) — `Index files have no load-triggers — role baseline loads in full even for trivial dispatches`. Stacked on [issue #9](https://github.com/kostiantyn-matsebora/ginee/issues/9) (compression floor) + [issue #10](https://github.com/kostiantyn-matsebora/ginee/issues/10) (consumer coupling). Combined effect: per-dispatch baseline drops 3–4× on trivial tasks.

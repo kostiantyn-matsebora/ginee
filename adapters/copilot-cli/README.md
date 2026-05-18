@@ -21,7 +21,7 @@ Re-check per release.
 | `install.md` | Step-by-step install procedure |
 
 **Subagent pointer files:**
-- Live in `.agents/engineering-team/adapters/_shared/agents/*.md`.
+- Live in `.agents/ginee/adapters/_shared/agents/*.md`.
 - Shared with the Claude Code adapter.
 - Install copies them into `.github/agents/` and renames to `.agent.md`.
 - No duplication.
@@ -34,7 +34,7 @@ Shared pointer files carry only:
 
 - Front-matter (`name`, `description`) — Copilot CLI's routing fields.
 - A 4-line body instructing the subagent to read:
-  - `.agents/engineering-team/core/roles/<role>.md` (canonical charter)
+  - `.agents/ginee/core/roles/<role>.md` (canonical charter)
   - `core/process.md`
   - `local/bindings.md`
   - `local/project-profile.md`
@@ -60,5 +60,5 @@ Key properties:
 
 ## Custom roles
 
-1. Place custom subagent definitions in `.agents/engineering-team/local/roles/<role>.md`.
+1. Place custom subagent definitions in `.agents/ginee/local/roles/<role>.md`.
 2. Create a matching `.github/agents/<role>.agent.md` thin pointer.

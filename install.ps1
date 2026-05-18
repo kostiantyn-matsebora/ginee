@@ -1,14 +1,14 @@
-# engineering-team installer (PowerShell)
+# ginee installer (PowerShell)
 #
 # Parameter cheat-sheet (do not confuse the two paths):
 #   -Target   = WHERE TO INSTALL INTO (the adopter project root — e.g. your dashboard repo).
 #               Defaults to current working directory.
-#   -RepoUrl  = WHERE TO FETCH THE FRAMEWORK FROM (the engineering-team git repo).
+#   -RepoUrl  = WHERE TO FETCH THE FRAMEWORK FROM (the ginee git repo).
 #               Defaults to the public GitHub URL. Pass a local checkout path
-#               (e.g. C:\path\to\engineering-team) while the repo is private.
+#               (e.g. C:\path\to\ginee) while the repo is private.
 #
 # The installer creates inside -Target:
-#   .\.agents\engineering-team\   — the framework (core, adapters, extras, local)
+#   .\.agents\ginee\   — the framework (core, adapters, extras, local)
 #   .\.claude\agents\             — Claude adapter (when -Adapter claude)
 #   .\.claude\skills\             — Claude adapter skills
 #   .\.github\agents\             — Copilot CLI adapter (when -Adapter copilot-cli)
@@ -16,18 +16,18 @@
 #   .\AGENTS.md                   — AGENTS.md adapter (when -Adapter agents-md)
 #
 # Field-trial example (private repo, local framework checkout, explicit -Target so cwd is irrelevant):
-#   C:\path\to\engineering-team\install.ps1 `
+#   C:\path\to\ginee\install.ps1 `
 #     -Target  C:\path\to\your-project `
-#     -RepoUrl C:\path\to\engineering-team `
+#     -RepoUrl C:\path\to\ginee `
 #     -Adapter claude
 #
 # Usage (download once, run from project root, no -Target):
-#   iwr -useb https://raw.githubusercontent.com/kostiantyn-matsebora/engineering-team/main/install.ps1 -OutFile install.ps1
+#   iwr -useb https://raw.githubusercontent.com/kostiantyn-matsebora/ginee/main/install.ps1 -OutFile install.ps1
 #   .\install.ps1 [-Target <path>] [-Adapter <claude|copilot-cli|agents-md|generic>] [-Ref <branch-or-tag>] [-RepoUrl <url-or-local-path>] [-UpdateOnly]
 #
 # Usage (remote one-liner — works once the framework repo is public; env vars carry arguments since `iex` can't accept params):
-#   $env:ET_ADAPTER='claude'; iwr -useb https://raw.githubusercontent.com/kostiantyn-matsebora/engineering-team/main/install.ps1 | iex
-#   $env:ET_ADAPTER='claude'; $env:ET_REF='v0.1.0'; iwr -useb <url>/install.ps1 | iex
+#   $env:GINEE_ADAPTER='claude'; iwr -useb https://raw.githubusercontent.com/kostiantyn-matsebora/ginee/main/install.ps1 | iex
+#   $env:GINEE_ADAPTER='claude'; $env:GINEE_REF='v0.1.0'; iwr -useb <url>/install.ps1 | iex
 
 [CmdletBinding()]
 param(
@@ -37,21 +37,21 @@ param(
   [string] $Adapter,
   [string] $Ref = 'main',
   # WHERE TO FETCH THE FRAMEWORK FROM — git URL or local checkout path.
-  [string] $RepoUrl = 'https://github.com/kostiantyn-matsebora/engineering-team',
+  [string] $RepoUrl = 'https://github.com/kostiantyn-matsebora/ginee',
   [switch] $UpdateOnly
 )
 
 # Fallback to env vars when invoked via `iwr | iex` (which cannot pass parameters)
-if (-not $Adapter -and $env:ET_ADAPTER) { $Adapter = $env:ET_ADAPTER }
-if ($env:ET_REF)    { $Ref = $env:ET_REF }
-if ($env:ET_TARGET) { $Target = $env:ET_TARGET }
-if ($env:ET_REPO)   { $RepoUrl = $env:ET_REPO }
-if ($env:ET_UPDATE_ONLY -eq '1' -or $env:ET_UPDATE_ONLY -eq 'true') { $UpdateOnly = $true }
+if (-not $Adapter -and $env:GINEE_ADAPTER) { $Adapter = $env:GINEE_ADAPTER }
+if ($env:GINEE_REF)    { $Ref = $env:GINEE_REF }
+if ($env:GINEE_TARGET) { $Target = $env:GINEE_TARGET }
+if ($env:GINEE_REPO)   { $RepoUrl = $env:GINEE_REPO }
+if ($env:GINEE_UPDATE_ONLY -eq '1' -or $env:GINEE_UPDATE_ONLY -eq 'true') { $UpdateOnly = $true }
 
 $ErrorActionPreference = 'Stop'
-$frameworkDir = Join-Path $Target '.agents\engineering-team'
+$frameworkDir = Join-Path $Target '.agents\ginee'
 
-Write-Host "engineering-team installer" -ForegroundColor Cyan
+Write-Host "ginee installer" -ForegroundColor Cyan
 Write-Host "  Install into (-Target)  : $Target   (defaults to cwd)"
 Write-Host "  Fetch from   (-RepoUrl) : $RepoUrl"
 Write-Host "  Framework dir           : $frameworkDir"
@@ -59,7 +59,7 @@ Write-Host "  Adapter                 : $(if ($Adapter) { $Adapter } else { 'det
 Write-Host "  Ref                     : $Ref"
 Write-Host ""
 Write-Host "This installer must be run from the root of the project / git repo you want to set up." -ForegroundColor Yellow
-Write-Host "It writes the framework into .\.agents\engineering-team\ and adapter files into your project tree."
+Write-Host "It writes the framework into .\.agents\ginee\ and adapter files into your project tree."
 Write-Host ""
 
 # --- 1. Fetch framework ----------------------------------------------------
@@ -172,11 +172,11 @@ switch ($Adapter) {
     if (Test-Path $claudeMd) {
       $existing = Get-Content $claudeMd -Raw
       if ($existing -like "*$sentinel*") {
-        Write-Host "CLAUDE.md already contains the engineering-team pointer — skipped append" -ForegroundColor Yellow
+        Write-Host "CLAUDE.md already contains the ginee pointer — skipped append" -ForegroundColor Yellow
       } else {
         Add-Content -Path $claudeMd -Value ""
         Add-Content -Path $claudeMd -Value (Get-Content $pointerSrc -Raw)
-        Write-Host "Appended engineering-team pointer block to CLAUDE.md" -ForegroundColor Green
+        Write-Host "Appended ginee pointer block to CLAUDE.md" -ForegroundColor Green
       }
     } else {
       Copy-Item $pointerSrc $claudeMd

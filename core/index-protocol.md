@@ -195,7 +195,7 @@ Every extracted class MUST have at least one consumer role. Extracting an index 
      - <class>: <index-files> (<size KB>) — no consumer cites these. Remedies:
        (a) Wire in local/bindings.md § Project-specific index citations
        (b) Skip extraction: remove from local/framework.config.yaml § index.classes
-       (c) Reframe as a built-in class via PR to engineering-team upstream
+       (c) Reframe as a built-in class via PR to ginee upstream
    ```
 
 Adopter decides per class. No silent removal — dormancy is a signal, not an auto-pruner.

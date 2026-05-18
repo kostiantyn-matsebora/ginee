@@ -35,7 +35,7 @@ Framework tracks two repo handles:
 | Handle | Purpose | Source |
 |---|---|---|
 | **primary** (`github.repo`) | Adopter's own project. Default target for issue ops. | Inferred from `git remote get-url origin`; override in `local/framework.config.yaml § github.repo`. |
-| **framework** (`github.framework-repo`) | Upstream engineering-team framework. Lets adopters file feedback against the framework. | Set at install time by the curl/tarball script (or hand-set after copy-paste install). Leave unset to disable framework-targeted ops. |
+| **framework** (`github.framework-repo`) | Upstream ginee framework. Lets adopters file feedback against the framework. | Set at install time by the curl/tarball script (or hand-set after copy-paste install). Leave unset to disable framework-targeted ops. |
 
 Resolution rules:
 
@@ -81,9 +81,9 @@ Defaults declared under `local/framework.config.yaml § github`:
 
 | Config key | Default | Meaning |
 |---|---|---|
-| `ready-label` | `engineering-team:ready` | Pickup candidate (`☐` equivalent). |
-| `in-progress-label` | `engineering-team:in-progress` | PM has dispatched; phases 1–7 in flight. |
-| `blocked-label` | `engineering-team:blocked` | Stoppable intermediate state; waiting on user / external. |
+| `ready-label` | `ginee:ready` | Pickup candidate (`☐` equivalent). |
+| `in-progress-label` | `ginee:in-progress` | PM has dispatched; phases 1–7 in flight. |
+| `blocked-label` | `ginee:blocked` | Stoppable intermediate state; waiting on user / external. |
 
 PM creates any missing label on first use via `gh label create <name>` (default color). "Done" is implicit — issue closed.
 

@@ -1,0 +1,8 @@
+blank_issues_enabled: true
+contact_links:
+  - name: Documentation
+    url: https://github.com/kostiantyn-matsebora/ginee#readme
+    about: Start here — README + PLAN.md + core/process.md.
+  - name: Security vulnerability
+    url: https://github.com/kostiantyn-matsebora/ginee/security/advisories/new
+    about: Use private vulnerability reporting (NOT a public issue) per SECURITY.md.

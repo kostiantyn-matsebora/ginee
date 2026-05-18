@@ -2,23 +2,23 @@
 
 ## Prerequisites
 
-- `.agents/engineering-team/` directory present at the project root.
+- `.agents/ginee/` directory present at the project root.
 
 ## Steps
 
 1. **Copy `AGENTS.md` to the project root.**
 
    ```powershell
-   Copy-Item .agents\engineering-team\adapters\agents-md\AGENTS.md .\AGENTS.md
+   Copy-Item .agents\ginee\adapters\agents-md\AGENTS.md .\AGENTS.md
    ```
 
    ```bash
-   cp .agents/engineering-team/adapters/agents-md/AGENTS.md ./AGENTS.md
+   cp .agents/ginee/adapters/agents-md/AGENTS.md ./AGENTS.md
    ```
 
    If a project-root `AGENTS.md` already exists:
    - Merge (don't overwrite).
-   - Append the engineering-team section to existing project-specific rules.
+   - Append the ginee section to existing project-specific rules.
 
 2. **(Gemini users only)** Copy the same content to `GEMINI.md`:
 
@@ -26,7 +26,7 @@
    cp AGENTS.md GEMINI.md
    ```
 
-3. **Bridge the framework skills** to your client's skill-discovery path. Source: `.agents/engineering-team/core/skills/ginee-*/`. Each is a directory containing `SKILL.md` per the [AgentSkills standard](https://agentskills.io).
+3. **Bridge the framework skills** to your client's skill-discovery path. Source: `.agents/ginee/core/skills/ginee-*/`. Each is a directory containing `SKILL.md` per the [AgentSkills standard](https://agentskills.io).
 
    | Client | Destination |
    |---|---|
@@ -39,7 +39,7 @@
    ```bash
    # Example — Cursor
    mkdir -p .cursor/skills
-   cp -r .agents/engineering-team/core/skills/ginee-* .cursor/skills/
+   cp -r .agents/ginee/core/skills/ginee-* .cursor/skills/
    ```
 
    Symlinks (POSIX) are preferred over copies — auto-pick up framework updates.
@@ -59,7 +59,7 @@
      ```
 
 5. **Verify** — ask the client to report status of each cardinal. Each should:
-   - Load its charter from `.agents/engineering-team/core/roles/<role>.md`.
+   - Load its charter from `.agents/ginee/core/roles/<role>.md`.
    - Confirm project bindings.
 
 ## How to invoke
@@ -92,17 +92,17 @@ Framework workflows (file / pick-up / triage / promote / discovery / reindex) ac
 
 On new framework release:
 
-1. Re-fetch `.agents/engineering-team/core/` + `.agents/engineering-team/adapters/` + `.agents/engineering-team/extras/` (your `local/` survives).
-2. Re-copy `.agents/engineering-team/adapters/agents-md/AGENTS.md` to project root (merge if project-specific content was added).
-3. Re-copy `.agents/engineering-team/core/skills/ginee-*` to your client's skill directory (skill bodies / descriptions may have been refined). Skip if you used symlinks.
-4. Read `.agents/engineering-team/core/MIGRATIONS/` for breaking-change notes.
+1. Re-fetch `.agents/ginee/core/` + `.agents/ginee/adapters/` + `.agents/ginee/extras/` (your `local/` survives).
+2. Re-copy `.agents/ginee/adapters/agents-md/AGENTS.md` to project root (merge if project-specific content was added).
+3. Re-copy `.agents/ginee/core/skills/ginee-*` to your client's skill directory (skill bodies / descriptions may have been refined). Skip if you used symlinks.
+4. Read `.agents/ginee/core/MIGRATIONS/` for breaking-change notes.
 
 ## Uninstall
 
-1. Remove the engineering-team section from `AGENTS.md` (or delete the file if framework-only).
+1. Remove the ginee section from `AGENTS.md` (or delete the file if framework-only).
 2. (Gemini) Same for `GEMINI.md`.
 3. Delete `ginee-*` skill directories from your client's skill path.
-4. Optionally delete `.agents/engineering-team/`.
+4. Optionally delete `.agents/ginee/`.
 
 ## Cross-tool layering
 
@@ -112,8 +112,8 @@ For clients with native subagent support, layer the dedicated adapter on top:
 
 | Client | Layer also |
 |---|---|
-| Claude Code | `.agents/engineering-team/adapters/claude/` |
-| Copilot CLI | `.agents/engineering-team/adapters/copilot-cli/` |
+| Claude Code | `.agents/ginee/adapters/claude/` |
+| Copilot CLI | `.agents/ginee/adapters/copilot-cli/` |
 
 Layered installs do not conflict:
 - AGENTS.md provides cross-tool context.

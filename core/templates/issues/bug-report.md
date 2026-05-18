@@ -1,8 +1,8 @@
 ---
-name: Bug report (engineering-team)
-about: Defect that the engineering-team framework will pick up via @project-manager
+name: Bug report (ginee)
+about: Defect that the ginee framework will pick up via @project-manager
 title: "[Bug] <one-line title>"
-labels: [engineering-team:ready]
+labels: [ginee:ready]
 ---
 
 <!--

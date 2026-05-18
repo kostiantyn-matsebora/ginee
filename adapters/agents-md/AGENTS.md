@@ -1,29 +1,29 @@
 # AGENTS.md — Engineering Team Framework
 
-Project uses the [`engineering-team`](.agents/engineering-team/) framework — vendor-neutral multi-agent collaboration model + generic engineering process.
+Project uses the [`ginee`](.agents/ginee/) framework — vendor-neutral multi-agent collaboration model + generic engineering process.
 
 ## Read before any work
 
-1. `.agents/engineering-team/core/process.md` — process spec (lifecycle, dispatch & parallelism, iteration protocol, doc co-ownership, task model, post-acceptance hooks).
-2. `.agents/engineering-team/local/bindings.md` — project routing, role boundaries, stack.
-3. `.agents/engineering-team/local/project-profile.md` — discovered project context.
+1. `.agents/ginee/core/process.md` — process spec (lifecycle, dispatch & parallelism, iteration protocol, doc co-ownership, task model, post-acceptance hooks).
+2. `.agents/ginee/local/bindings.md` — project routing, role boundaries, stack.
+3. `.agents/ginee/local/project-profile.md` — discovered project context.
 
 ## Cardinal roles (read on demand)
 
 | Role | Charter at | Alias |
 |---|---|---|
-| `project-manager` | `.agents/engineering-team/core/roles/project-manager.md` | — (orchestrator) |
-| `solution-architect` | `.agents/engineering-team/core/roles/solution-architect.md` | architect |
-| `ai-engineer` | `.agents/engineering-team/core/roles/ai-engineer.md` | context-engineer |
-| `frontend-engineer` | `.agents/engineering-team/core/roles/frontend-engineer.md` | client-engineer |
-| `backend-engineer` | `.agents/engineering-team/core/roles/backend-engineer.md` | service-engineer |
-| `devops-engineer` | `.agents/engineering-team/core/roles/devops-engineer.md` | platform-engineer |
-| `qa-engineer` | `.agents/engineering-team/core/roles/qa-engineer.md` | quality-engineer |
+| `project-manager` | `.agents/ginee/core/roles/project-manager.md` | — (orchestrator) |
+| `solution-architect` | `.agents/ginee/core/roles/solution-architect.md` | architect |
+| `ai-engineer` | `.agents/ginee/core/roles/ai-engineer.md` | context-engineer |
+| `frontend-engineer` | `.agents/ginee/core/roles/frontend-engineer.md` | client-engineer |
+| `backend-engineer` | `.agents/ginee/core/roles/backend-engineer.md` | service-engineer |
+| `devops-engineer` | `.agents/ginee/core/roles/devops-engineer.md` | platform-engineer |
+| `qa-engineer` | `.agents/ginee/core/roles/qa-engineer.md` | quality-engineer |
 
 ## Custom roles (project-specific)
 
-- Location — `.agents/engineering-team/local/roles/`.
-- Source — copy from `.agents/engineering-team/extras/roles/` (security, ml, mobile, sre, data) or author per `.agents/engineering-team/core/templates/role-authoring-template.md`.
+- Location — `.agents/ginee/local/roles/`.
+- Source — copy from `.agents/ginee/extras/roles/` (security, ml, mobile, sre, data) or author per `.agents/ginee/core/templates/role-authoring-template.md`.
 
 ## Orchestration
 

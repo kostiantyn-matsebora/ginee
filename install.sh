@@ -1,15 +1,15 @@
 #!/usr/bin/env bash
-# engineering-team installer (POSIX shell)
+# ginee installer (POSIX shell)
 #
 # Parameter cheat-sheet (do not confuse the two paths):
 #   --target  = WHERE TO INSTALL INTO (the adopter project root — e.g. your dashboard repo).
 #               Defaults to $PWD.
-#   --repo    = WHERE TO FETCH THE FRAMEWORK FROM (the engineering-team git repo).
+#   --repo    = WHERE TO FETCH THE FRAMEWORK FROM (the ginee git repo).
 #               Defaults to the public GitHub URL. Pass a local checkout path
-#               (e.g. /path/to/engineering-team) while the repo is private.
+#               (e.g. /path/to/ginee) while the repo is private.
 #
 # The installer creates inside --target:
-#   ./.agents/engineering-team/   — the framework (core/, adapters/, extras/, local/)
+#   ./.agents/ginee/   — the framework (core/, adapters/, extras/, local/)
 #   ./.claude/agents/             — Claude adapter (when --adapter claude)
 #   ./.claude/skills/             — Claude adapter skills
 #   ./.github/agents/             — Copilot CLI adapter (when --adapter copilot-cli)
@@ -17,25 +17,25 @@
 #   ./AGENTS.md                   — AGENTS.md adapter (when --adapter agents-md)
 #
 # Field-trial example (private repo, local framework checkout, explicit --target so $PWD is irrelevant):
-#   /path/to/engineering-team/install.sh \
+#   /path/to/ginee/install.sh \
 #     --target  /path/to/your-project \
-#     --repo    /path/to/engineering-team \
+#     --repo    /path/to/ginee \
 #     --adapter claude
 #
 # Usage (download once, run from project root):
-#   curl -fsSLO https://raw.githubusercontent.com/kostiantyn-matsebora/engineering-team/main/install.sh
+#   curl -fsSLO https://raw.githubusercontent.com/kostiantyn-matsebora/ginee/main/install.sh
 #   chmod +x install.sh
 #   ./install.sh [--target <path>] [--adapter <claude|copilot-cli|agents-md|generic>] [--ref <branch-or-tag>] [--repo <url-or-local-path>] [--update-only]
 #
 # Usage (remote one-liner — works once the framework repo is public):
-#   curl -fsSL https://raw.githubusercontent.com/kostiantyn-matsebora/engineering-team/main/install.sh | bash -s -- --adapter claude
+#   curl -fsSL https://raw.githubusercontent.com/kostiantyn-matsebora/ginee/main/install.sh | bash -s -- --adapter claude
 
 set -euo pipefail
 
 TARGET="$(pwd)"
 ADAPTER=""
 REF="main"
-REPO_URL="https://github.com/kostiantyn-matsebora/engineering-team"
+REPO_URL="https://github.com/kostiantyn-matsebora/ginee"
 UPDATE_ONLY=0
 
 while [ $# -gt 0 ]; do
@@ -53,9 +53,9 @@ while [ $# -gt 0 ]; do
   esac
 done
 
-FRAMEWORK_DIR="$TARGET/.agents/engineering-team"
+FRAMEWORK_DIR="$TARGET/.agents/ginee"
 
-echo "engineering-team installer"
+echo "ginee installer"
 echo "  Install into (--target) : $TARGET   (defaults to \$PWD)"
 echo "  Fetch from   (--repo)   : $REPO_URL"
 echo "  Framework dir           : $FRAMEWORK_DIR"
@@ -63,7 +63,7 @@ echo "  Adapter                 : ${ADAPTER:-detect interactively}"
 echo "  Ref                     : $REF"
 echo ""
 echo "This installer must be run from the root of the project / git repo you want to set up."
-echo "It writes the framework into ./.agents/engineering-team/ and adapter files into your project tree."
+echo "It writes the framework into ./.agents/ginee/ and adapter files into your project tree."
 echo ""
 
 # --- 1. Fetch framework ----------------------------------------------------
@@ -172,11 +172,11 @@ case "$ADAPTER" in
     SENTINEL='## Engineering team framework'
     if [ -f "$CLAUDE_MD" ]; then
       if grep -qF "$SENTINEL" "$CLAUDE_MD"; then
-        echo "CLAUDE.md already contains the engineering-team pointer — skipped append"
+        echo "CLAUDE.md already contains the ginee pointer — skipped append"
       else
         printf '\n' >> "$CLAUDE_MD"
         cat "$POINTER_SRC" >> "$CLAUDE_MD"
-        echo "Appended engineering-team pointer block to CLAUDE.md"
+        echo "Appended ginee pointer block to CLAUDE.md"
       fi
     else
       cp "$POINTER_SRC" "$CLAUDE_MD"

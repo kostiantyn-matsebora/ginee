@@ -1,8 +1,8 @@
 ---
-name: Feature request (engineering-team)
-about: New functionality that the engineering-team framework will pick up via @project-manager
+name: Feature request (ginee)
+about: New functionality that the ginee framework will pick up via @project-manager
 title: "[Feature] <one-line title>"
-labels: [engineering-team:ready]
+labels: [ginee:ready]
 ---
 
 <!--
