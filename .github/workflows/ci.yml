@@ -1,0 +1,153 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+
+jobs:
+  validate:
+    name: Validate framework structure
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Required directories
+        run: |
+          set -e
+          for d in \
+            core \
+            core/roles \
+            core/templates \
+            core/templates/index \
+            core/templates/issues \
+            core/MIGRATIONS \
+            core/skills \
+            adapters \
+            adapters/_shared/agents \
+            adapters/claude \
+            adapters/copilot-cli \
+            adapters/agents-md \
+            adapters/generic \
+            extras/roles \
+            local; do
+            if [ ! -d "$d" ]; then
+              echo "::error::Missing required directory: $d"
+              exit 1
+            fi
+          done
+          echo "Required directories: OK"
+
+      - name: Required top-level files
+        run: |
+          set -e
+          for f in \
+            core/VERSION \
+            core/process.md \
+            core/index-protocol.md \
+            core/index-syntax.md \
+            core/github-integration.md \
+            core/delivery-modes.md \
+            core/iteration-protocol.md \
+            core/automatic-mode.md \
+            core/doc-co-ownership.md \
+            core/cross-domain-bugs.md \
+            core/cross-agent-handoff.md \
+            core/post-task-check-in.md \
+            README.md \
+            LICENSE \
+            SECURITY.md \
+            CLAUDE.md \
+            PLAN.md \
+            install.sh \
+            install.ps1 \
+            adapters/agents-md/AGENTS.md \
+            adapters/generic/INSTRUCTIONS.md; do
+            if [ ! -f "$f" ]; then
+              echo "::error::Missing required file: $f"
+              exit 1
+            fi
+          done
+          echo "Required files: OK"
+
+      - name: 7 cardinal role kernels present
+        run: |
+          set -e
+          for role in project-manager solution-architect ai-engineer frontend-engineer backend-engineer devops-engineer qa-engineer; do
+            if [ ! -f "core/roles/${role}.md" ]; then
+              echo "::error::Missing cardinal role kernel: core/roles/${role}.md"
+              exit 1
+            fi
+            if [ ! -f "adapters/_shared/agents/${role}.md" ]; then
+              echo "::error::Missing shared subagent pointer: adapters/_shared/agents/${role}.md"
+              exit 1
+            fi
+          done
+          echo "7 cardinal roles: OK"
+
+      - name: 5 specialist role kernels present
+        run: |
+          set -e
+          for sp in security-engineer ml-engineer mobile-engineer sre data-engineer; do
+            if [ ! -f "extras/roles/${sp}.md" ]; then
+              echo "::error::Missing specialist: extras/roles/${sp}.md"
+              exit 1
+            fi
+          done
+          echo "5 specialists: OK"
+
+      - name: 10 ginee-* skills present
+        run: |
+          set -e
+          for skill in ginee-discovery ginee-rediscover ginee-pick-up ginee-triage ginee-file-bug ginee-file-feature ginee-file-framework-bug ginee-file-framework-feature ginee-promote-discussion ginee-reindex; do
+            if [ ! -f "core/skills/${skill}/SKILL.md" ]; then
+              echo "::error::Missing skill: core/skills/${skill}/SKILL.md"
+              exit 1
+            fi
+          done
+          echo "10 ginee-* skills: OK"
+
+      - name: Shared subagent pointers cite core/roles/
+        run: |
+          set -e
+          for f in adapters/_shared/agents/*.md; do
+            role="$(basename "$f" .md)"
+            if ! grep -q "core/roles/${role}.md" "$f"; then
+              echo "::error::Pointer $f does not cite core/roles/${role}.md"
+              exit 1
+            fi
+          done
+          echo "Subagent pointer cross-references: OK"
+
+      - name: Brand consistency — no stray `engineering-team` (excluding history notes)
+        run: |
+          set -e
+          # Allowed: D8 / D11 history notes in CLAUDE.md + PLAN.md (documents the rebrand) +
+          # MIGRATIONS notes (per-release upgrade instructions).
+          hits=$(grep -rn "engineering-team" \
+            --include="*.md" --include="*.yaml" --include="*.yml" --include="*.ps1" --include="*.sh" \
+            --exclude-dir=.git --exclude-dir=node_modules \
+            . 2>/dev/null \
+            | grep -v "CLAUDE.md.*D8\|CLAUDE.md.*D11\|PLAN.md.*D8\|PLAN.md.*D11\|MIGRATIONS/\|docs/CHANGELOG.md" || true)
+          if [ -n "$hits" ]; then
+            echo "::error::Stray 'engineering-team' references outside allowed history-note contexts:"
+            echo "$hits"
+            exit 1
+          fi
+          echo "Brand consistency: OK"
+
+      - name: Installer help comments are current
+        run: |
+          set -e
+          # install.sh + install.ps1 should mention ginee + GINEE_* env vars, not ET_*
+          if grep -q 'ET_ADAPTER\|ET_REF\|ET_TARGET\|ET_REPO\|ET_UPDATE_ONLY' install.sh install.ps1; then
+            echo "::error::Stale ET_* env var reference in installer scripts (should be GINEE_*)"
+            grep -n 'ET_ADAPTER\|ET_REF\|ET_TARGET\|ET_REPO\|ET_UPDATE_ONLY' install.sh install.ps1
+            exit 1
+          fi
+          if ! grep -q 'GINEE_ADAPTER' install.ps1; then
+            echo "::error::install.ps1 should reference GINEE_ADAPTER in its usage comments"
+            exit 1
+          fi
+          echo "Installer help comments: OK"
