@@ -54,6 +54,7 @@
       <li><a href="{{ '/' | relative_url }}"{% if page.url == '/' %} class="active"{% endif %}>Home</a></li>
       <li><a href="{{ '/GETTING_STARTED.html' | relative_url }}"{% if page.url contains 'GETTING_STARTED' %} class="active"{% endif %}>Getting Started</a></li>
       <li><a href="{{ '/CONCEPTS.html' | relative_url }}"{% if page.url contains 'CONCEPTS' %} class="active"{% endif %}>Concepts</a></li>
+      <li><a href="{{ '/ARCHITECTURE.html' | relative_url }}"{% if page.url contains 'ARCHITECTURE' %} class="active"{% endif %}>Architecture</a></li>
       <li><a href="{{ '/reference/' | relative_url }}"{% if page.url contains '/reference/' or page.url contains 'PROCESS' or page.url contains 'ROLES' or page.url contains 'INDEX_PROTOCOL' %} class="active"{% endif %}>Reference</a></li>
       <li><a href="{{ '/CHEATSHEET.html' | relative_url }}"{% if page.url contains 'CHEATSHEET' %} class="active"{% endif %}>Cheatsheet</a></li>
       <li><a href="{{ '/CHANGELOG.html' | relative_url }}"{% if page.url contains 'CHANGELOG' %} class="active"{% endif %}>Changelog</a></li>
