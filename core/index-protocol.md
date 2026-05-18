@@ -280,14 +280,41 @@ After extraction or re-extraction, `ai-engineer` runs:
 
 ## Role consumption pattern
 
-Every role's "Source of truth" reads the index first; originals only on demand.
+Every role's "Source of truth" table declares **per-file load triggers** — not a flat "Read first" list. A trivial dispatch shouldn't load the full role baseline; a deep-work dispatch should pick up exactly the indexes its task touches.
 
-- `local/index/<file>` provides:
-  - The signals the role needs (FR list, endpoint matrix, state set, ADR titles, dependency list, service inventory, command map, lint rules, etc.).
-  - A `source` path + section anchor per entry.
-- Role reads the source-doc / source-config section ONLY when:
-  - The index entry says "see source for full statement" AND the role needs the verbatim wording.
-  - The role is authoring new content (e.g. `qa-engineer` writing a new scenario file, `devops-engineer` editing a Helm chart).
+### Two-tier load model
+
+Each row in a role's `## Source of truth` table carries a `Load when` column:
+
+| Tier | `Load when` value | When to use |
+|---|---|---|
+| **always** | `always` | Foundational index — loaded on every dispatch to this role. Reserved for small, high-signal files (FR table, NFR list, top-level architecture map). Target: single-digit-KB combined. |
+| **scope** | Trigger phrase (e.g. `wire/endpoint/serializer touch`, `Phase 5/6 testing`, `deploy/infra work`, `dep bump`, `env-var work`) | Conditional — loaded only when the task description matches the trigger. The dispatched specialist evaluates triggers on its first reasoning step. |
+
+### Trigger evaluation
+
+When dispatched:
+
+1. Read the kernel's `## Source of truth § always` rows. Load all listed index files unconditionally.
+2. Read the `## Source of truth § scope` rows. For each, evaluate whether the task description matches the trigger phrase. Load matching files; skip the rest.
+3. Source-doc full reads remain on-demand per the existing rule — "ONLY when the index entry points at the source and the role needs verbatim text" OR "the role is authoring new content."
+
+### Reporting
+
+The dispatched specialist reports its load decision in the first response (Phase 4/5/6/7 estimation-first dispatch, or directly in trivial dispatches):
+
+```
+Loaded baselines (this dispatch):
+  always:    architecture-fr.idx, constraints.yaml
+  scope:     api-matrix.yaml (wire-touch trigger matched)
+  skipped:   scenario-index.idx (no test-authoring trigger), stack.yaml (no dep bump)
+```
+
+Gives the adopter visibility into the per-dispatch baseline cost.
+
+### Adopter overrides
+
+The role kernel's `Load when` values are **defaults**. Per-project overrides land in `local/bindings.md § Per-role load-trigger overrides` (when present) — adopter raises or lowers a file's tier based on project specifics (e.g. a project where `topology.yaml` is hit by every backend dispatch, not just devops).
 
 ## Extension — adopter-declared classes
 
