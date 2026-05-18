@@ -1,6 +1,6 @@
 ---
 title: Home
-description: "ginee — AI software engineering team. Behaves like a real team, assigned to project, does self-onboarding and ready to work."
+description: "ginee — an AI software engineering team that behaves like a real one. Drops into your project, self-onboards, and gets to work."
 permalink: /
 ---
 
@@ -14,7 +14,7 @@ permalink: /
 [![AGENTS.md](https://img.shields.io/badge/AGENTS.md-tier--2-4f46e5)](https://github.com/kostiantyn-matsebora/ginee/blob/main/adapters/agents-md/README.md)
 [![Generic](https://img.shields.io/badge/Generic-tier--3-64748b)](https://github.com/kostiantyn-matsebora/ginee/blob/main/adapters/generic/README.md)
 
-**AI software engineering team. Behaves like a real team, assigned to project, does self-onboarding and ready to work.**
+**An AI software engineering team that behaves like a real one. Drops into your project, self-onboards, and gets to work.**
 
 You're running AI coding agents across projects. Each tool has its own quirks, prompts,
 agent files, slash commands. The team works differently in every repo. Phases get
