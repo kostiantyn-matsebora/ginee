@@ -128,6 +128,7 @@ jobs:
           #  - MIGRATIONS/* notes (per-release upgrade instructions)
           #  - docs/CHANGELOG.md (release notes for the rebrand entry)
           #  - install.ps1 + install.sh legacy-path migration code (renames .agents/engineering-team/ → .agents/ginee/)
+          #  - core/scripts/migrate-engineering-team-to-ginee.{sh,ps1} (rename-migration script; explicit name is its purpose)
           #  - Adopter-facing docs explaining the legacy → new path migration (ARCHITECTURE, GETTING_STARTED troubleshooting row)
           #  - ci.yml itself (this workflow scans for the string — it appears in the scanning regex)
           hits=$(grep -rn "engineering-team" \
@@ -135,7 +136,7 @@ jobs:
             --exclude="ci.yml" \
             --exclude-dir=.git --exclude-dir=node_modules \
             . 2>/dev/null \
-            | grep -v "CLAUDE\.md.*D8\|CLAUDE\.md.*D11\|PLAN\.md.*D8\|PLAN\.md.*D11\|MIGRATIONS/\|docs/CHANGELOG\.md" \
+            | grep -v "CLAUDE\.md.*D8\|CLAUDE\.md.*D11\|PLAN\.md.*D8\|PLAN\.md.*D11\|MIGRATIONS/\|docs/CHANGELOG\.md\|migrate-engineering-team-to-ginee" \
             | grep -v -i "legacy\|pre-rebrand\|migrating\|migrate legacy\|auto-rename\|rename once\|legacy install path\|legacy-path migration" \
             || true)
           if [ -n "$hits" ]; then
@@ -277,7 +278,7 @@ jobs:
           ROOT=/tmp/fake-project/.agents/ginee
           # Allowlist same as the source repo's brand check (legacy migration contexts)
           hits=$(grep -rn "engineering-team" "$ROOT" 2>/dev/null \
-            | grep -v "MIGRATIONS/\|CLAUDE\.md.*D8\|CLAUDE\.md.*D11\|PLAN\.md.*D8\|PLAN\.md.*D11" \
+            | grep -v "MIGRATIONS/\|CLAUDE\.md.*D8\|CLAUDE\.md.*D11\|PLAN\.md.*D8\|PLAN\.md.*D11\|migrate-engineering-team-to-ginee" \
             | grep -v -i "legacy\|pre-rebrand\|migrating\|migrate legacy\|auto-rename\|rename once\|legacy install path\|legacy-path migration\|engineering team framework" \
             || true)
           if [ -n "$hits" ]; then

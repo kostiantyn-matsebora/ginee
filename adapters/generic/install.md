@@ -82,12 +82,18 @@ If your client matures to support `AGENTS.md`, a subagent directory, or AgentSki
 
 ## Updates
 
-On new framework release:
+**Recommended — re-run the installer**: `.\install.ps1 -UpdateOnly -Adapter generic` (or `./install.sh --update-only --adapter generic`). Refreshes the framework dirs.
+
+Manual equivalent:
 
 1. Re-fetch `.agents/ginee/` (your `local/` survives).
 2. Client reads `INSTRUCTIONS.md` by path → no further action.
 3. Pasted content → re-paste with the updated file.
 4. Read `.agents/ginee/core/MIGRATIONS/` for breaking-change notes.
+5. **For pre-D11 (pre-2026-05-18) upgrades** — run the rename migration script once:
+   - `.\.agents\ginee\core\scripts\migrate-engineering-team-to-ginee.ps1` (or `.sh`).
+   - Rewrites legacy `engineering-team` references under `local/*`. Idempotent.
+   - Full notes: `.agents/ginee/core/MIGRATIONS/engineering-team-renamed-ginee.md`.
 
 ## Uninstall
 
