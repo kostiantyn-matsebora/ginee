@@ -57,7 +57,6 @@ github:
     }
 
     It 'reports zero hits when local/ is already clean' {
-      $cfgPath = "$script:tmp/.agents/ginee/local/framework.config.yaml"
       & $script:scriptCopy *>&1 | Out-Null  # first pass rewrites
       $output = & $script:scriptCopy *>&1   # second pass should be clean
       ($output -join "`n") | Should -Match 'local/ is clean'

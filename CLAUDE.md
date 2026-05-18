@@ -122,7 +122,7 @@ Canonical in the plan file. Summary:
 - Lossless rule for restructuring: any pass that touches structure must prove every rule/invariant survives (per `core/roles/ai-engineer.md`).
 - SAD-freeze + CR/ADR pattern applies once this project's own architecture doc is finalized (not yet — currently in design phase).
 - Follow `core/process.md § Documentation style — structure over prose` and `## Framework authoring — context economy` below for all new docs.
-- PowerShell scripts (`*.ps1` anywhere in this repo): every change passes [PSScriptAnalyzer](https://github.com/PowerShell/PSScriptAnalyzer) (default ruleset, no findings) AND is covered by passing [Pester](https://pester.dev) tests under `tests/<script>.Tests.ps1`. Merge gate.
+- PowerShell scripts (`*.ps1` anywhere in this repo): every change passes [PSScriptAnalyzer](https://github.com/PowerShell/PSScriptAnalyzer) (rules per `PSScriptAnalyzerSettings.psd1` — default minus narrow, justified exclusions) AND is covered by passing [Pester](https://pester.dev) tests under `tests/<script>.Tests.ps1`. Both enforced as merge gates by `lint-powershell` + `test-powershell` CI jobs.
 
 ## Framework authoring — context economy
 
