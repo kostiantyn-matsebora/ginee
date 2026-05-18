@@ -395,8 +395,32 @@ switch ($Adapter) {
 
 # --- 4. Final guidance ------------------------------------------------------
 
+# Detect lingering pre-D11 references in local/ (independent of step-0 dir rename —
+# the dir may have been renamed in a previous run while local/ text stayed stale).
+$staleLocalHits = $false
+$localDir = Join-Path $frameworkDir 'local'
+if (Test-Path $localDir) {
+  $staleLocalHits = [bool](Get-ChildItem $localDir -Recurse -File -ErrorAction SilentlyContinue |
+    Select-String -Pattern 'engineering-team' -SimpleMatch -List -ErrorAction SilentlyContinue |
+    Select-Object -First 1)
+}
+
 Write-Host ""
 Write-Host "Install complete." -ForegroundColor Green
+
+if ($staleLocalHits) {
+  $migrateScript = Join-Path $frameworkDir 'core\scripts\migrate-engineering-team-to-ginee.ps1'
+  Write-Host ""
+  Write-Host "ACTION REQUIRED — legacy 'engineering-team' references detected under local/" -ForegroundColor Yellow
+  Write-Host "  Run the rename migration script to rewrite them:" -ForegroundColor Yellow
+  Write-Host ""
+  Write-Host "    $migrateScript -DryRun   # preview"
+  Write-Host "    $migrateScript           # apply"
+  Write-Host ""
+  Write-Host "  Details: $(Join-Path $frameworkDir 'core\MIGRATIONS\engineering-team-renamed-ginee.md')" -ForegroundColor Yellow
+  Write-Host ""
+}
+
 Write-Host "Next steps:" -ForegroundColor Cyan
 Write-Host "  1. Open your client in this project."
 Write-Host "  2. Type:  Run initial discovery"
