@@ -46,16 +46,16 @@ auto: branch: <task>                   # combine — auto mode + branch+PR
 ## PM commands (orchestrator)
 
 ```
-@project-manager run initial discovery
-@project-manager rediscover                              # full re-discovery + re-extraction
-@project-manager file bug <title>                        # opens issue in primary repo (current)
-@project-manager file feature <title>
-@project-manager file framework-bug <title>              # opens issue in ginee upstream repo
-@project-manager file framework-feature <title>
-@project-manager pick up #<N>                            # primary repo only
-@project-manager triage                                  # list ready issues
-@project-manager triage framework                        # list ready framework upstream issues
-@project-manager promote discussion #<N>                 # discussion → draft issue
+@team-lead run initial discovery
+@team-lead rediscover                              # full re-discovery + re-extraction
+@team-lead file bug <title>                        # opens issue in primary repo (current)
+@team-lead file feature <title>
+@team-lead file framework-bug <title>              # opens issue in ginee upstream repo
+@team-lead file framework-feature <title>
+@team-lead pick up #<N>                            # primary repo only
+@team-lead triage                                  # list ready issues
+@team-lead triage framework                        # list ready framework upstream issues
+@team-lead promote discussion #<N>                 # discussion → draft issue
 ```
 
 ## AI-engineer commands (context + index)
@@ -111,7 +111,7 @@ Per `local/bindings.md § Project role boundaries`. Each row is a hard stop.
 | `devops-engineer` | application code, schema migrations, application config content |
 | `qa-engineer` | mockup, production server / client code (owns test code only) |
 | `ai-engineer` | rules / invariants / requirements (semantics → SA); production / test / IaC code |
-| `project-manager` | everything except `local/*` written during discovery |
+| `team-lead` | everything except `local/*` written during discovery |
 
 Cross-domain need surfaced mid-task → **propose hand-off in final report**. Never patch across.
 
@@ -148,7 +148,7 @@ Framework defaults: `branch` for issue / TODO-sourced; `wt` for freeform. Auto-m
 | Specialist refuses to edit a file | Forbidden role-crossing | Dispatch the owning role |
 | Index is dormant ("no consumer") | Novel class extracted but no kernel cites it | Wire via `local/bindings.md § Project-specific index citations` or remove the class |
 | `local/index/` &gt; 30% of `docs/` size | Recipe over-extracting | Run `@ai-engineer reindex` against the worst class; check compression target ≤ 0.5 |
-| Discovery flagged staleness on a doc | SHA-256 drift | `@ai-engineer reindex <source>` (targeted) or `@project-manager rediscover` |
+| Discovery flagged staleness on a doc | SHA-256 drift | `@ai-engineer reindex <source>` (targeted) or `@team-lead rediscover` |
 | PR didn't auto-close issue on merge | Stacked PR merged into non-default branch first | Manual `gh issue close <N> --comment "..."` |
 | Trivial task loads full 64 KB baseline | Role kernel `Load when` not honoured | Specialist should report loaded set; if it doesn't, your kernel may be stale — `--update-only` to refresh |
 

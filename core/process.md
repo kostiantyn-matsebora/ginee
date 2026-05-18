@@ -14,7 +14,7 @@
 | `core/process.md` (this file) | Generic lifecycle, dispatch rules, principles | upstream framework |
 | `core/roles/*.md` | Generic role charters (7 cardinals) | upstream framework |
 | `local/bindings.md` | Per-project role → owned paths/concerns table | the project |
-| `local/project-profile.md` | Per-project stack, domain, architecture artefacts | the project (written by `project-manager` on discovery) |
+| `local/project-profile.md` | Per-project stack, domain, architecture artefacts | the project (written by `team-lead` on discovery) |
 | `local/framework.config.yaml` | Concept → file-path mapping (architecture doc, mockup, API contract, ADR dir, TODO file, ...) | the project |
 
 **Conflict resolution:**
@@ -134,8 +134,8 @@ Bindings may NOT override generic process.
 
 - **Full regression — opt-in only.**
   - User must explicitly request it.
-  - `project-manager` MAY remind it's available (wide-reach refactor / infra change / risky touch).
-  - `project-manager` MUST warn of significant wall-clock + token cost.
+  - `team-lead` MAY remind it's available (wide-reach refactor / infra change / risky touch).
+  - `team-lead` MUST warn of significant wall-clock + token cost.
   - Runs separately AFTER change-scoped pass is green.
   - Reports: pass/fail per suite + wall-clock + approximate token cost.
 - **Discipline.**
@@ -227,10 +227,10 @@ Bindings may NOT override generic process.
 
 ## Automatic mode
 
-- **Trigger.** Task prefixed `auto:`, OR `project-manager`-proposed and user-accepted.
+- **Trigger.** Task prefixed `auto:`, OR `team-lead`-proposed and user-accepted.
 - **Effect.** Lifecycle runs end-to-end without per-phase user gates; presents a single final delivery handoff.
 - **Default.** Interactive (no auto mode).
-- **Full definition** — activation triggers, gates elided/respected, forced-interactive triggers, delivery handoff procedure: `core/automatic-mode.md`. `project-manager` loads on activation.
+- **Full definition** — activation triggers, gates elided/respected, forced-interactive triggers, delivery handoff procedure: `core/automatic-mode.md`. `team-lead` loads on activation.
 - **Invariant preserved.** Phase 8 user-approval = the single delivery-handoff gate.
 
 ## Engineering principles — apply across all roles
@@ -312,8 +312,8 @@ Heavy project docs (architecture, mockup, ADRs, CRs, scenarios, plus any adopter
 
 **Load triggers:**
 
-- `project-manager` enumerates classes during initial discovery or `rediscover`.
-- `project-manager` detects SHA-256 drift in `local/index/manifest.yaml` pre-dispatch.
+- `team-lead` enumerates classes during initial discovery or `rediscover`.
+- `team-lead` detects SHA-256 drift in `local/index/manifest.yaml` pre-dispatch.
 - `ai-engineer` is dispatched to extract or re-extract.
 - Role's "Source of truth" lookup pointed at `local/index/<file>` and the role needs the protocol contract (rare).
 
@@ -321,13 +321,13 @@ Default short tasks do not load these specs.
 
 ### GitHub integration — issues + discussions
 
-`project-manager` files, picks up, triages, and closes GitHub issues as a task source alongside TODO files and direct instructions; promotes discussions to issues on user request; threads phase progress as issue comments; links resulting PRs to issues via `Closes #N`. Full spec — tool surface (gh CLI / MCP / HTTPS), repo discovery (origin inference + override), label scheme, state mapping, outbound/inbound/triage/promote workflows, forbidden actions: **`core/github-integration.md`**.
+`team-lead` files, picks up, triages, and closes GitHub issues as a task source alongside TODO files and direct instructions; promotes discussions to issues on user request; threads phase progress as issue comments; links resulting PRs to issues via `Closes #N`. Full spec — tool surface (gh CLI / MCP / HTTPS), repo discovery (origin inference + override), label scheme, state mapping, outbound/inbound/triage/promote workflows, forbidden actions: **`core/github-integration.md`**.
 
 **Load triggers:**
 
-- `project-manager` dispatched to file an issue (`file bug` / `file feature`).
-- `project-manager` dispatched to pick up / triage an issue (`pick up #<N>` / `triage`).
-- `project-manager` dispatched to promote a discussion (`promote discussion #<N>`).
+- `team-lead` dispatched to file an issue (`file bug` / `file feature`).
+- `team-lead` dispatched to pick up / triage an issue (`pick up #<N>` / `triage`).
+- `team-lead` dispatched to promote a discussion (`promote discussion #<N>`).
 - Specialist needs to post phase-transition progress on a tracking issue mid-task.
 
 Default tasks not sourced from a GitHub issue (TODO files, direct instructions) do not load this file.
@@ -338,9 +338,9 @@ Every task resolves to one of three delivery modes — **Mode 1 (feature branch 
 
 **Load triggers:**
 
-- `project-manager` is about to dispatch a task and needs to resolve / propose the mode.
+- `team-lead` is about to dispatch a task and needs to resolve / propose the mode.
 - A specialist enters Phase 4 and needs to know the commit cadence.
-- `project-manager` is at Phase 8 finalize.
+- `team-lead` is at Phase 8 finalize.
 - Auto-mode delivery-handoff (D12) Accept action fires.
 
 ### Strict-domain rule — no specialist works outside its domain
@@ -421,7 +421,7 @@ Phase 1–8 applies to any task. A task originates from one of four sources:
 **GitHub issue rules.**
 
 - Reporter-authored (user or anyone with repo access) — never auto-created without explicit user approval.
-- Pickup is always explicit (`@project-manager pick up #<N>` / `triage`). Never auto-picked on session start.
+- Pickup is always explicit (`@team-lead pick up #<N>` / `triage`). Never auto-picked on session start.
 - Issue body is reporter-owned; PM may add comments + swap framework labels but does not edit the body.
 - PR descriptions for issue-sourced tasks include `Closes #<N>` so GitHub auto-closes the issue on merge.
 

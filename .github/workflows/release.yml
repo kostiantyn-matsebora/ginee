@@ -65,7 +65,7 @@ jobs:
             fi
           done
           # 7 cardinal roles
-          for role in project-manager solution-architect ai-engineer frontend-engineer backend-engineer devops-engineer qa-engineer; do
+          for role in team-lead solution-architect ai-engineer frontend-engineer backend-engineer devops-engineer qa-engineer; do
             if [ ! -f "core/roles/${role}.md" ]; then
               echo "::error::Missing cardinal role: core/roles/${role}.md"
               exit 1

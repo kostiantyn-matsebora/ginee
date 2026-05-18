@@ -10,7 +10,7 @@ Run the targeted re-extraction workflow per `.agents/ginee/core/index-protocol.m
 ## Activation
 
 - User asks "reindex <file>" / "refresh the index for <file>" / "re-extract <source>".
-- `project-manager` detected SHA-256 drift pre-dispatch and the user picked targeted re-extraction.
+- `team-lead` detected SHA-256 drift pre-dispatch and the user picked targeted re-extraction.
 
 ## Procedure
 

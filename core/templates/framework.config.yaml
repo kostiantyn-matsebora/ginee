@@ -1,7 +1,7 @@
 # ginee — framework.config.yaml template
 # Header:
 #   - Path: local/framework.config.yaml.
-#   - Authored by: project-manager (during discovery).
+#   - Authored by: team-lead (during discovery).
 # Purpose:
 #   - Map abstract concepts → concrete project file paths.
 #   - Reference, never copy (D5/G5).
@@ -64,7 +64,7 @@ nested-todos-glob: "**/TODO"
 project-instruction-file: CLAUDE.md
 
 # --- Repository structure ---
-# Used by project-manager to attribute paths to roles.
+# Used by team-lead to attribute paths to roles.
 server-tier-path: backend/
 client-tier-path: frontend/
 infrastructure-path: infrastructure/
@@ -96,7 +96,7 @@ constraints:
 
 # --- Tooling commands ---
 local-dev-startup-command: pwsh -NoProfile -File dev_env/start.ps1
-# Surfaced by project-manager when asking for manual smoke.
+# Surfaced by team-lead when asking for manual smoke.
 
 # Test-runner entry points.
 #   - Per core/roles/qa-engineer.md § Zero-setup rule for test runners.
@@ -139,14 +139,14 @@ test-runners:
 #   default-mode: branch
 
 # --- GitHub integration (D14) ---
-# Lets project-manager pick up GitHub issues as a task source alongside
+# Lets team-lead pick up GitHub issues as a task source alongside
 # TODO files + direct instructions, file new issues from user requests,
 # and promote discussions to issues. Full spec: core/github-integration.md.
 #
 # Two repos:
 #   repo            — primary (this adopter project). Defaults to `git remote get-url origin`.
 #   framework-repo  — upstream ginee framework. Lets adopters file feedback
-#                     against the framework with `@project-manager file framework-bug`
+#                     against the framework with `@team-lead file framework-bug`
 #                     / `file framework-feature` / `pick up framework#<N>`.
 #                     Set during install (curl/tarball script populates it from the
 #                     install source); override for forks.

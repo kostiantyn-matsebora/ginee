@@ -49,11 +49,11 @@ Or paste the full block from `CLAUDE-pointer.md` for context-rich onboarding.
 
 1. Install per `install.md`.
 2. Open in Claude Code.
-3. Prompt `@project-manager status` — confirm it loads.
-4. Prompt `@project-manager run initial discovery` — confirm it produces `local/project-profile.md`, `local/bindings.md`, `local/framework.config.yaml`.
+3. Prompt `@team-lead status` — confirm it loads.
+4. Prompt `@team-lead run initial discovery` — confirm it produces `local/project-profile.md`, `local/bindings.md`, `local/framework.config.yaml`.
 
 ## Custom roles
 
 1. Place custom subagent definitions in `.agents/ginee/local/roles/<role>.md` (use `core/templates/role-authoring-template.md`).
 2. Create a matching `.claude/agents/<role>.md` pointer (copy the shape from `_shared/agents/`).
-3. `project-manager` discovers them on next prompt.
+3. `team-lead` discovers them on next prompt.

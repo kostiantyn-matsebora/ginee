@@ -2,10 +2,10 @@
 
 **Load-on-demand.** Fetched when:
 
-- `project-manager` is dispatched to **file** an issue (`@project-manager file bug` / `file feature`).
-- `project-manager` is dispatched to **pick up** an issue (`@project-manager pick up #<N>`).
-- `project-manager` is dispatched to **triage** ready issues (`@project-manager triage`).
-- `project-manager` is dispatched to **promote** a discussion to an issue (`@project-manager promote discussion #<N>`).
+- `team-lead` is dispatched to **file** an issue (`@team-lead file bug` / `file feature`).
+- `team-lead` is dispatched to **pick up** an issue (`@team-lead pick up #<N>`).
+- `team-lead` is dispatched to **triage** ready issues (`@team-lead triage`).
+- `team-lead` is dispatched to **promote** a discussion to an issue (`@team-lead promote discussion #<N>`).
 - A specialist needs to post phase-transition progress on a tracking issue mid-task.
 
 Default short tasks (TODO / direct instruction sources) do not load this file.
@@ -55,12 +55,12 @@ Default target is the primary repo. The `framework-` prefix routes **metadata-on
 
 | Default (primary) | Framework-targeted variant |
 |---|---|
-| `@project-manager file bug <title>` | `@project-manager file framework-bug <title>` |
-| `@project-manager file feature <title>` | `@project-manager file framework-feature <title>` |
-| `@project-manager triage` | `@project-manager triage framework` |
-| `@project-manager promote discussion #<N>` | `@project-manager promote discussion framework#<N>` |
+| `@team-lead file bug <title>` | `@team-lead file framework-bug <title>` |
+| `@team-lead file feature <title>` | `@team-lead file framework-feature <title>` |
+| `@team-lead triage` | `@team-lead triage framework` |
+| `@team-lead promote discussion #<N>` | `@team-lead promote discussion framework#<N>` |
 
-`pick up` has **no `framework-` variant.** Addressing an issue requires the source — that means working in the framework repo, where target = origin = framework and standard `@project-manager pick up #<N>` applies. From an adopter project (no framework source available), PM rejects framework-issue pickup attempts with: *"Clone `<framework-repo>` separately, cd into it, then `@project-manager pick up #<N>`."*
+`pick up` has **no `framework-` variant.** Addressing an issue requires the source — that means working in the framework repo, where target = origin = framework and standard `@team-lead pick up #<N>` applies. From an adopter project (no framework source available), PM rejects framework-issue pickup attempts with: *"Clone `<framework-repo>` separately, cd into it, then `@team-lead pick up #<N>`."*
 
 If `github.framework-repo` is unset, framework-targeted commands fail fast with a one-line "framework-repo not configured" message + an offer to populate the key. No silent fallback to primary.
 
@@ -99,7 +99,7 @@ PM creates any missing label on first use via `gh label create <name>` (default 
 
 ## Outbound — file an issue
 
-Trigger: `@project-manager file bug <title>` / `file feature <title>` (→ primary) or `file framework-bug <title>` / `file framework-feature <title>` (→ framework upstream).
+Trigger: `@team-lead file bug <title>` / `file feature <title>` (→ primary) or `file framework-bug <title>` / `file framework-feature <title>` (→ framework upstream).
 
 1. PM resolves target repo (primary unless `framework-` prefix) and picks the template per § Template selection.
 2. PM drafts the body — populates the template's structured sections from user input + project context.
@@ -113,7 +113,7 @@ Trigger: `@project-manager file bug <title>` / `file feature <title>` (→ prima
 
 ## Inbound — pick up an issue
 
-Trigger: `@project-manager pick up #<N>` — always targets the primary repo (= the working tree's origin). **Never auto-picks.** **No `framework-` variant** — see § Command targeting.
+Trigger: `@team-lead pick up #<N>` — always targets the primary repo (= the working tree's origin). **Never auto-picks.** **No `framework-` variant** — see § Command targeting.
 
 1. Fetch:
    ```
@@ -145,7 +145,7 @@ Trigger: `@project-manager pick up #<N>` — always targets the primary repo (= 
 
 ## Triage — list ready issues
 
-Trigger: `@project-manager triage` (→ primary) or `@project-manager triage framework` (→ framework upstream).
+Trigger: `@team-lead triage` (→ primary) or `@team-lead triage framework` (→ framework upstream).
 
 1. Resolve target repo. List:
    ```
@@ -162,7 +162,7 @@ Triage **never picks**. It only enumerates and proposes.
 
 ## Promote — discussion → issue
 
-Trigger: `@project-manager promote discussion #<N>` (→ primary) or `@project-manager promote discussion framework#<N>` (→ framework upstream).
+Trigger: `@team-lead promote discussion #<N>` (→ primary) or `@team-lead promote discussion framework#<N>` (→ framework upstream).
 
 1. Resolve target repo. Fetch the discussion:
    ```

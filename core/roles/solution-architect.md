@@ -118,7 +118,7 @@ Document conflict + resolution in your final report.
 ## Receiving change requests
 
 - Engineers flag conflicts / needed changes in their final report (per `core/cross-agent-handoff.md`).
-- `project-manager` dispatches you.
+- `team-lead` dispatches you.
 - Walkthrough: `solution-architect.details.md § Change-request flow`.
 
 ## Hard constraints + engineering principles

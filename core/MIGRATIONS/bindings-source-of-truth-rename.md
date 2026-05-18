@@ -39,7 +39,7 @@ After re-fetching framework files on upgrade:
 
 3. **No other changes required.** The table rows themselves stay as-is — same files, same `Edited by` column.
 
-Alternatively, run `@project-manager rediscover` (or the natural-language equivalent activating `ginee-rediscover` per D16) to regenerate `local/bindings.md` from the patched template — but be aware this overwrites any hand-edited rows.
+Alternatively, run `@team-lead rediscover` (or the natural-language equivalent activating `ginee-rediscover` per D16) to regenerate `local/bindings.md` from the patched template — but be aware this overwrites any hand-edited rows.
 
 ## Behavioural change to expect
 

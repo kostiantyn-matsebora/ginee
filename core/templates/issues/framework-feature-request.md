@@ -8,8 +8,8 @@ labels: [ginee:ready, framework]
 <!--
   Filed against the ginee framework upstream repo (per
   local/framework.config.yaml § github.framework-repo) via:
-    @project-manager file framework-feature <title>
-  Sections parsed by project-manager when picking up framework work.
+    @team-lead file framework-feature <title>
+  Sections parsed by team-lead when picking up framework work.
   Keep headings intact.
 -->
 
@@ -35,7 +35,7 @@ labels: [ginee:ready, framework]
 
 ## Proposed behavior
 
-<observable framework behavior after the change — what would `project-manager` / cardinals / `ai-engineer` do differently?>
+<observable framework behavior after the change — what would `team-lead` / cardinals / `ai-engineer` do differently?>
 
 ## Locked-decision impact
 

@@ -2,8 +2,8 @@
 
 **Load-on-demand.** Fetched when:
 
-- `project-manager` enumerates index classes during initial discovery or `rediscover`.
-- `project-manager` detects SHA-256 drift pre-dispatch and needs to route to `ai-engineer` for re-extraction.
+- `team-lead` enumerates index classes during initial discovery or `rediscover`.
+- `team-lead` detects SHA-256 drift pre-dispatch and needs to route to `ai-engineer` for re-extraction.
 - `ai-engineer` is dispatched to extract or re-extract index entries.
 - A role's "Source of truth" lookup pointed to `local/index/<file>` and the role needs the index-protocol contract (rare — most reads are direct).
 
@@ -177,8 +177,8 @@ Every extracted class MUST have at least one consumer role. Extracting an index 
 **Novel classes.** Adopter must declare the consumer **before** extraction. Three declaration paths:
 
 1. **`local/framework.config.yaml § index.classes[].consumed-by: [<role>...]`** — pre-declared in config; preferred for adopter-known classes (e.g. `runbook → [sre, devops-engineer]`).
-2. **`local/bindings.md § Project-specific index citations`** — adopter-side citation table that wires a novel class to a cardinal role's baseline without editing upstream kernels. `project-manager` reads this at dispatch time and extends the role's baseline accordingly.
-3. **Interactive during discovery** — `project-manager` detects a novel class without declared consumer; surfaces to the user: *"Detected novel class `<X>` (~`<N>` source files). Which role consumes it?  [role-options] / [skip extraction]."* User answer recorded in `local/framework.config.yaml § index.classes` for future runs.
+2. **`local/bindings.md § Project-specific index citations`** — adopter-side citation table that wires a novel class to a cardinal role's baseline without editing upstream kernels. `team-lead` reads this at dispatch time and extends the role's baseline accordingly.
+3. **Interactive during discovery** — `team-lead` detects a novel class without declared consumer; surfaces to the user: *"Detected novel class `<X>` (~`<N>` source files). Which role consumes it?  [role-options] / [skip extraction]."* User answer recorded in `local/framework.config.yaml § index.classes` for future runs.
 
 **Skip-extraction default.** A novel class with NO consumer declared after all three paths exhaust → `ai-engineer` skips extraction; manifest does NOT gain an entry; discovery report logs the skipped class with the heuristic that detected it. Cost: zero. Adopter can wire later via path 1 or 2 + invoke `@ai-engineer extract <class>`.
 
@@ -204,7 +204,7 @@ Adopter decides per class. No silent removal — dormancy is a signal, not an au
 
 ### Initial extraction (discovery)
 
-`project-manager` extends Step 8 of the discovery flow:
+`team-lead` extends Step 8 of the discovery flow:
 
 1. **Enumerate classes** to index in this priority order:
    1. Adopter-declared classes from `local/framework.config.yaml § index.classes`.
@@ -224,7 +224,7 @@ Adopter decides per class. No silent removal — dormancy is a signal, not an au
 
 ### Pre-dispatch staleness check
 
-`project-manager` extends `§ Auto-flag staleness`:
+`team-lead` extends `§ Auto-flag staleness`:
 
 1. Identify which sources the dispatched task may consume (based on role + task context):
    - Doc sources for design / governance / scenario authoring.
@@ -237,7 +237,7 @@ Adopter decides per class. No silent removal — dormancy is a signal, not an au
    - Flag staleness in PM's first response.
    - Offer:
      - **`@ai-engineer reindex <source>`** — targeted re-extraction for the changed source.
-     - **`@project-manager rediscover`** — full re-discovery + re-extraction.
+     - **`@team-lead rediscover`** — full re-discovery + re-extraction.
    - **Never auto-reindex.** User decides.
 
 ### Re-extraction
@@ -338,7 +338,7 @@ index:
       template: novel
 ```
 
-`project-manager` reads this block first during class enumeration. Takes precedence over auto-detection heuristics.
+`team-lead` reads this block first during class enumeration. Takes precedence over auto-detection heuristics.
 
 ## Out of scope
 
@@ -346,7 +346,7 @@ index:
 - True vector-store RAG (markdown-only baseline per D1 / D4).
 - Cross-project index sharing.
 - Auto-promotion of novel classes to built-in templates. May happen in future framework releases based on observed adopter patterns.
-- Index pre-cooking on framework install. Adopters run `@project-manager rediscover` to build their first index.
+- Index pre-cooking on framework install. Adopters run `@team-lead rediscover` to build their first index.
 - Runtime-discovered facts requiring live execution (e.g. actual DB schema via introspection, runtime memory profile). Static-extraction only.
 - Auto-generated API docs from code (OpenAPI/spec generation). Separate concern; the index *consumes* an existing OpenAPI spec if one's present, but doesn't generate one.
 - Per-role facts files (Approach C of issue #1). Layered on top of the canonical index if a future need arises; not in D15 scope.

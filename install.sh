@@ -166,6 +166,8 @@ echo ""
 case "$ADAPTER" in
   claude)
     mkdir -p "$TARGET/.claude/agents"
+    # Drop legacy project-manager.md pointer from pre-rename installs (renamed to team-lead.md on 2026-05-18)
+    rm -f "$TARGET/.claude/agents/project-manager.md"
     cp "$FRAMEWORK_DIR"/adapters/_shared/agents/*.md "$TARGET/.claude/agents/"
     echo "Copied 7 cardinal subagents to .claude/agents/"
     mkdir -p "$TARGET/.claude/skills"
@@ -192,6 +194,8 @@ case "$ADAPTER" in
     ;;
   copilot-cli)
     mkdir -p "$TARGET/.github/agents"
+    # Drop legacy project-manager.agent.md pointer from pre-rename installs (renamed to team-lead on 2026-05-18)
+    rm -f "$TARGET/.github/agents/project-manager.agent.md"
     for f in "$FRAMEWORK_DIR"/adapters/_shared/agents/*.md; do
       name="$(basename "$f" .md)"
       cp "$f" "$TARGET/.github/agents/${name}.agent.md"
@@ -222,7 +226,7 @@ echo "Next steps:"
 echo "  1. Open your client in this project."
 echo "  2. Type:  Run initial discovery"
 echo "     (auto-activates the ginee-discovery skill in Claude Code / Copilot CLI."
-echo "      Tier-3 fallback: 'act as project-manager and run initial discovery'.)"
+echo "      Tier-3 fallback: 'act as team-lead and run initial discovery'.)"
 echo "  3. Review the recommended specialists; user-approve any extras to enable."
 echo ""
 echo "Documentation:"

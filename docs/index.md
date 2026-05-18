@@ -50,7 +50,7 @@ the same governance every single time.
   </article>
   <article class="why-card">
     <h3><span class="why-emoji">🔎</span> Self-learning</h3>
-    <p>Zero stack/domain opinions baked in. <code>project-manager</code> learns your project on first run — tech stack, architecture, SDLC artefacts, TODO conventions, doc layout.</p>
+    <p>Zero stack/domain opinions baked in. <code>team-lead</code> learns your project on first run — tech stack, architecture, SDLC artefacts, TODO conventions, doc layout.</p>
   </article>
   <article class="why-card">
     <h3><span class="why-emoji">☐</span> TODO-driven workflow</h3>
@@ -100,7 +100,7 @@ Open your client in the project, then prompt:
 Run initial discovery
 ```
 
-`project-manager` writes `local/project-profile.md`, `local/bindings.md`, `local/framework.config.yaml`, extracts a knowledge index under `local/index/`, scans external catalogs for specialist candidates, and reports recommended roles for your approval.
+`team-lead` writes `local/project-profile.md`, `local/bindings.md`, `local/framework.config.yaml`, extracts a knowledge index under `local/index/`, scans external catalogs for specialist candidates, and reports recommended roles for your approval.
 
 ### 3. Work
 
@@ -112,7 +112,7 @@ Dispatch tasks by mentioning the role that owns the surface:
 @qa-engineer cover the new toggle with scenarios + a visual smoke
 ```
 
-The orchestrator (`project-manager`) routes ambiguous scope. For long tasks, the iteration protocol kicks in automatically: 3–5 min batches with visible intermediate results and a stop-anywhere contract.
+The orchestrator (`team-lead`) routes ambiguous scope. For long tasks, the iteration protocol kicks in automatically: 3–5 min batches with visible intermediate results and a stop-anywhere contract.
 
 [**Full Getting Started guide →**]({{ '/GETTING_STARTED.html' | relative_url }})
 
@@ -121,7 +121,7 @@ The orchestrator (`project-manager`) routes ambiguous scope. For long tasks, the
 ## The 7 cardinals
 
 <p>
-<span class="role-badge role-badge--orchestrator">project-manager</span>
+<span class="role-badge role-badge--orchestrator">team-lead</span>
 <span class="role-badge">solution-architect</span>
 <span class="role-badge">ai-engineer</span>
 <span class="role-badge">frontend-engineer</span>
@@ -132,7 +132,7 @@ The orchestrator (`project-manager`) routes ambiguous scope. For long tasks, the
 
 | Role | Owns | Generic alias |
 |---|---|---|
-| `project-manager` | Dispatch routing, lifecycle gates, discovery, post-acceptance hook | orchestrator |
+| `team-lead` | Dispatch routing, lifecycle gates, discovery, post-acceptance hook | orchestrator, project-manager |
 | `solution-architect` | Architecture doc semantics, SAD freeze + CR/ADR governance | architect |
 | `ai-engineer` | AI-asset + doc context economy, file-splitting, load topology | context-engineer |
 | `frontend-engineer` | Client / UI engineering | client-engineer |
