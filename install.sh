@@ -66,6 +66,15 @@ echo "This installer must be run from the root of the project / git repo you wan
 echo "It writes the framework into ./.agents/ginee/ and adapter files into your project tree."
 echo ""
 
+# --- 0. Migrate legacy install path (pre-rebrand: .agents/engineering-team/) ---
+
+LEGACY_DIR="$TARGET/.agents/engineering-team"
+if [ -d "$LEGACY_DIR" ] && [ ! -d "$FRAMEWORK_DIR" ]; then
+  echo "Migrating .agents/engineering-team/ -> .agents/ginee/ (post-2026-05-18 rebrand)"
+  mv "$LEGACY_DIR" "$FRAMEWORK_DIR"
+  echo "  Legacy install preserved in place; local/ contents carried over intact."
+fi
+
 # --- 1. Fetch framework ----------------------------------------------------
 
 if [ -d "$FRAMEWORK_DIR" ]; then

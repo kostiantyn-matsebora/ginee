@@ -62,6 +62,15 @@ Write-Host "This installer must be run from the root of the project / git repo y
 Write-Host "It writes the framework into .\.agents\ginee\ and adapter files into your project tree."
 Write-Host ""
 
+# --- 0. Migrate legacy install path (pre-rebrand: .agents/engineering-team/) ---
+
+$legacyDir = Join-Path $Target '.agents\engineering-team'
+if ((Test-Path $legacyDir) -and -not (Test-Path $frameworkDir)) {
+  Write-Host "Migrating .agents\engineering-team\ -> .agents\ginee\ (post-2026-05-18 rebrand)" -ForegroundColor Cyan
+  Rename-Item $legacyDir $frameworkDir
+  Write-Host "  Legacy install preserved in place; local/ contents carried over intact." -ForegroundColor DarkGray
+}
+
 # --- 1. Fetch framework ----------------------------------------------------
 
 if (Test-Path $frameworkDir) {
