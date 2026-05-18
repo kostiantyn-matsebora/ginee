@@ -97,17 +97,18 @@ Adapters: `claude` (Claude Code) · `copilot-cli` (GitHub Copilot CLI) · `agent
 Open your client in the project, then prompt:
 
 ```
-Run initial discovery
+/ginee-discovery                                # tier-1 slash command
+Run initial discovery                           # natural-language equivalent
 ```
 
 `team-lead` writes `local/project-profile.md`, `local/bindings.md`, `local/framework.config.yaml`, extracts a knowledge index under `local/index/`, scans external catalogs for specialist candidates, and reports recommended roles for your approval.
 
 ### 3. Give it work
 
-Talk to *ginee* — the team self-dispatches per `local/bindings.md`. Two phrasings for every request:
+Talk to *ginee* — the team self-dispatches per `local/bindings.md`. Two invocation paths:
 
 - **Freeform** (any tier): `Use ginee to ...`.
-- **Skill phrasing** (tier-1 auto-activates `ginee-*`): natural language matching a skill description.
+- **Skill** (tier-1, Claude Code + Copilot CLI): `/ginee-<skill> [args]`. Natural-language phrasings also match.
 
 Three task sources:
 
@@ -115,15 +116,15 @@ Three task sources:
 # Freeform — any source, any tier
 Use ginee to add a dark-mode toggle to the header
 
-# TODO files — auto-activates ginee-pick-up on tier-1
+# TODO files — /ginee-pick-up on tier-1
 Use ginee to pick up the next TODO            # freeform
-Pick up the next TODO                         # ginee-pick-up
+/ginee-pick-up                                # skill, next unchecked TODO
 
-# GitHub issues — auto-activates ginee-* skills on tier-1
+# GitHub issues — /ginee-* slash commands on tier-1
 Use ginee to pick up issue #42                # freeform
-Pick up #42                                   # ginee-pick-up
-File a bug titled "Safari 17 dashboard blank" # ginee-file-bug
-Triage ready work                             # ginee-triage
+/ginee-pick-up #42
+/ginee-file-bug Safari 17 dashboard blank
+/ginee-triage
 ```
 
 Full 10-skill cheat sheet in [`adapters/claude/install.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/adapters/claude/install.md#how-to-invoke). For long tasks, the iteration protocol kicks in automatically: 3–5 min batches with visible intermediate results and a stop-anywhere contract.
