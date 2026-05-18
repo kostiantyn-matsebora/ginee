@@ -130,7 +130,7 @@ if ((Test-Path $legacyDir) -and -not (Test-Path $frameworkDir)) {
 #   1. Zip — for vX.Y.Z tags + "latest" against canonical upstream. No git dependency.
 #   2. Git clone — for branches, SHAs, and forks (-RepoUrl override).
 
-function Is-TagRef([string]$r) {
+function Test-TagRef([string]$r) {
   return $r -match '^v\d+\.\d+\.\d+([-+.][A-Za-z0-9.-]+)?$'
 }
 
@@ -144,13 +144,13 @@ function Resolve-LatestTag {
     $finalUri = $resp.BaseResponse.RequestMessage.RequestUri
   }
   $tag = ([string]$finalUri).TrimEnd('/').Split('/')[-1]
-  if (-not (Is-TagRef $tag)) {
+  if (-not (Test-TagRef $tag)) {
     throw "Could not parse 'latest' redirect (got '$tag' from '$finalUri')"
   }
   return $tag
 }
 
-function Fetch-Zip-To([string]$tag, [string]$dest) {
+function Save-FrameworkZip([string]$tag, [string]$dest) {
   $zip = "ginee-$tag.zip"
   $zipUrl = "$RepoUrl/releases/download/$tag/$zip"
   $checksumsUrl = "$RepoUrl/releases/download/$tag/SHA256SUMS.txt"
@@ -184,7 +184,7 @@ function Fetch-Zip-To([string]$tag, [string]$dest) {
   Remove-Item -Recurse -Force $tmp
 }
 
-function Fetch-GitClone-To([string]$ref, [string]$dest) {
+function Save-FrameworkClone([string]$ref, [string]$dest) {
   if ($ref -notmatch '^[A-Za-z0-9._/-]+$') {
     throw "Invalid -Ref '$ref' (alphanum, dot, slash, dash, underscore only)"
   }
@@ -197,16 +197,16 @@ function Fetch-GitClone-To([string]$ref, [string]$dest) {
   Remove-Item -Recurse -Force (Join-Path $dest '.git') -ErrorAction SilentlyContinue
 }
 
-function Fetch-ToDir([string]$ref, [string]$dest) {
+function Save-Framework([string]$ref, [string]$dest) {
   # Zip path only against canonical upstream — forks may not publish releases under same naming
   if ($RepoUrl -eq $DefaultRepoUrl) {
     if ($ref -eq 'latest') { $ref = Resolve-LatestTag }
-    if (Is-TagRef $ref) {
-      Fetch-Zip-To $ref $dest
+    if (Test-TagRef $ref) {
+      Save-FrameworkZip $ref $dest
       return
     }
   }
-  Fetch-GitClone-To $ref $dest
+  Save-FrameworkClone $ref $dest
 }
 
 # --- 1. Fetch framework ----------------------------------------------------
@@ -224,7 +224,7 @@ if (Test-Path $frameworkDir) {
                                 (Join-Path $frameworkDir 'extras') -ErrorAction SilentlyContinue
     # Fetch fresh upstream content into a staging dir, then copy the three upstream-owned dirs
     $staging = Join-Path ([System.IO.Path]::GetTempPath()) "ginee-staging-$([guid]::NewGuid().Guid)"
-    Fetch-ToDir $Ref $staging
+    Save-Framework $Ref $staging
     foreach ($d in 'core','adapters','extras') {
       $src = Join-Path $staging $d
       if (Test-Path $src) { Copy-Item -Recurse $src (Join-Path $frameworkDir $d) }
@@ -234,7 +234,7 @@ if (Test-Path $frameworkDir) {
     Write-Error "Framework already installed at $frameworkDir. Use -UpdateOnly to refresh core/+adapters/+extras/ (local/ is preserved)."
   }
 } else {
-  Fetch-ToDir $Ref $frameworkDir
+  Save-Framework $Ref $frameworkDir
 }
 
 # --- 2. Restore local/ on update -------------------------------------------
@@ -346,8 +346,9 @@ switch ($Adapter) {
     if (Test-Path $claudeMd) {
       $existing = Get-Content $claudeMd -Raw
       if ([regex]::IsMatch($existing, $blockPattern)) {
-        # MatchEvaluator delegate bypasses $-substitution in the replacement string
-        $updated = [regex]::Replace($existing, $blockPattern, { param($m) $tmplBlock }, 1)
+        # Escape literal $ in the replacement so regex doesn't try to substitute $1/$& etc.
+        $tmplBlockEscaped = $tmplBlock.Replace('$', '$$')
+        $updated = [regex]::Replace($existing, $blockPattern, $tmplBlockEscaped, 1)
         if ($updated -ne $existing) {
           Set-Content -Path $claudeMd -Value $updated -NoNewline
           Write-Host "Refreshed ginee pointer block in CLAUDE.md" -ForegroundColor Green
