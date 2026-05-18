@@ -145,8 +145,13 @@ INSTALL_NOTE="$ADAPTER_DIR/install.md"
 
 # --- Prune framework-dev cruft from the adopter's framework dir ------------
 # Adopters need: core/ (incl. MIGRATIONS), adapters/_shared + chosen adapter,
-# extras/, local/ skeleton. Everything else is framework-dev only.
-for p in .github .claude .gitignore .dockerignore install.ps1 install.sh PLAN.md CLAUDE.md README.md; do
+# extras/, local/ skeleton, LICENSE. Everything else is framework-dev only:
+#  - docs/        Jekyll site source (lives at kostiantyn-matsebora.github.io/ginee)
+#  - .github/     CI workflows + issue templates for the framework's own repo
+#  - .claude/    framework's dogfooded local config
+#  - PLAN.md / CLAUDE.md / README.md / SECURITY.md   framework-dev orientation
+#  - install.sh / install.ps1   already-executed installer scripts
+for p in .github .claude .gitignore .dockerignore install.ps1 install.sh PLAN.md CLAUDE.md README.md SECURITY.md docs; do
   rm -rf "$FRAMEWORK_DIR/$p"
 done
 # Drop unchosen adapter subdirs (keep _shared + the selected one)

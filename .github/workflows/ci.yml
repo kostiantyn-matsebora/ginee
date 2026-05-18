@@ -159,3 +159,281 @@ jobs:
             exit 1
           fi
           echo "Installer help comments: OK"
+
+  install-smoke-bash:
+    name: Install smoke (bash, ${{ matrix.adapter }})
+    needs: validate
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        adapter: [claude, copilot-cli, agents-md, generic]
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          # Full history so we can push HEAD to the local bare repo
+          # (shallow clones can't be pushed to a fresh repo).
+          fetch-depth: 0
+
+      - name: Set up local bare repo (installer git-clones the PR content)
+        run: |
+          set -e
+          git init --bare /tmp/ginee-bare.git
+          # protocol.file.allow=always required since git 2.38.1 hardening
+          git -c protocol.file.allow=always push --force /tmp/ginee-bare.git HEAD:refs/heads/pr-test
+
+      - name: Scaffold fake adopter project
+        run: |
+          set -e
+          mkdir -p /tmp/fake-project
+          cd /tmp/fake-project
+          git init -q
+          git config user.email ci@example.com
+          git config user.name "CI"
+          mkdir -p docs
+          printf '# Fake project for ginee install smoke test\n' > README.md
+          printf '# Architecture\n\nPlaceholder.\n' > docs/architecture.md
+          printf -- '- [ ] First example task\n- [ ] Second example task\n' > TODO.md
+          git add . && git commit -q -m "init"
+
+      - name: Install via piped one-liner (recommended)
+        run: |
+          set -e
+          # Mirrors the README `curl ... | bash -s -- ...` pattern; substitutes
+          # the network fetch with the workspace install.sh.
+          cat install.sh | bash -s -- \
+            --target /tmp/fake-project \
+            --adapter ${{ matrix.adapter }} \
+            --ref pr-test \
+            --repo /tmp/ginee-bare.git
+
+      - name: Verify framework layout
+        run: |
+          set -e
+          ROOT=/tmp/fake-project
+          for d in core core/roles core/templates core/MIGRATIONS core/skills adapters adapters/_shared/agents extras/roles local; do
+            [ -d "$ROOT/.agents/ginee/$d" ] || { echo "::error::Missing $ROOT/.agents/ginee/$d"; exit 1; }
+          done
+          [ -f "$ROOT/.agents/ginee/core/VERSION" ] || { echo "::error::Missing core/VERSION"; exit 1; }
+          # Only the chosen adapter survives in adapters/ (per installer pruning)
+          for d in "$ROOT/.agents/ginee/adapters"/*/; do
+            name="$(basename "$d")"
+            if [ "$name" != "_shared" ] && [ "$name" != "${{ matrix.adapter }}" ]; then
+              echo "::error::Unchosen adapter '$name' should have been pruned"
+              exit 1
+            fi
+          done
+          echo "Framework layout: OK"
+
+      - name: Verify adapter footprint + no stale legacy pointers
+        run: |
+          set -e
+          ROOT=/tmp/fake-project
+          case "${{ matrix.adapter }}" in
+            claude)
+              for role in team-lead solution-architect ai-engineer frontend-engineer backend-engineer devops-engineer qa-engineer; do
+                [ -f "$ROOT/.claude/agents/${role}.md" ] || { echo "::error::Missing .claude/agents/${role}.md"; exit 1; }
+              done
+              [ ! -f "$ROOT/.claude/agents/project-manager.md" ] || { echo "::error::Legacy project-manager.md pointer should not exist"; exit 1; }
+              for skill in ginee-discovery ginee-rediscover ginee-pick-up ginee-triage ginee-file-bug ginee-file-feature ginee-file-framework-bug ginee-file-framework-feature ginee-promote-discussion ginee-reindex; do
+                [ -f "$ROOT/.claude/skills/${skill}/SKILL.md" ] || { echo "::error::Missing .claude/skills/${skill}/SKILL.md"; exit 1; }
+              done
+              grep -qF "## Engineering team framework" "$ROOT/CLAUDE.md" || { echo "::error::CLAUDE.md missing pointer sentinel"; exit 1; }
+              echo "Claude adapter footprint: OK"
+              ;;
+            copilot-cli)
+              for role in team-lead solution-architect ai-engineer frontend-engineer backend-engineer devops-engineer qa-engineer; do
+                [ -f "$ROOT/.github/agents/${role}.agent.md" ] || { echo "::error::Missing .github/agents/${role}.agent.md"; exit 1; }
+              done
+              [ ! -f "$ROOT/.github/agents/project-manager.agent.md" ] || { echo "::error::Legacy project-manager.agent.md should not exist"; exit 1; }
+              for skill in ginee-discovery ginee-rediscover ginee-pick-up ginee-triage ginee-file-bug ginee-file-feature ginee-file-framework-bug ginee-file-framework-feature ginee-promote-discussion ginee-reindex; do
+                [ -f "$ROOT/.agents/skills/${skill}/SKILL.md" ] || { echo "::error::Missing .agents/skills/${skill}/SKILL.md"; exit 1; }
+              done
+              echo "Copilot CLI adapter footprint: OK"
+              ;;
+            agents-md)
+              [ -f "$ROOT/AGENTS.md" ] || { echo "::error::Missing AGENTS.md at project root"; exit 1; }
+              echo "AGENTS.md adapter footprint: OK"
+              ;;
+            generic)
+              [ -f "$ROOT/.agents/ginee/adapters/generic/INSTRUCTIONS.md" ] || { echo "::error::Missing generic INSTRUCTIONS.md"; exit 1; }
+              echo "Generic adapter footprint: OK"
+              ;;
+          esac
+
+      - name: Adopter content untouched
+        run: |
+          set -e
+          ROOT=/tmp/fake-project
+          # Pre-existing adopter files outside install dirs must be intact
+          grep -qF "Fake project for ginee install smoke test" "$ROOT/README.md" || { echo "::error::adopter README.md was modified"; exit 1; }
+          grep -qF "Placeholder." "$ROOT/docs/architecture.md" || { echo "::error::adopter docs/architecture.md was modified"; exit 1; }
+          grep -qF "First example task" "$ROOT/TODO.md" || { echo "::error::adopter TODO.md was modified"; exit 1; }
+          echo "Adopter content preserved: OK"
+
+      - name: Brand consistency in installed framework files
+        run: |
+          set -e
+          ROOT=/tmp/fake-project/.agents/ginee
+          # Allowlist same as the source repo's brand check (legacy migration contexts)
+          hits=$(grep -rn "engineering-team" "$ROOT" 2>/dev/null \
+            | grep -v "MIGRATIONS/\|CLAUDE\.md.*D8\|CLAUDE\.md.*D11\|PLAN\.md.*D8\|PLAN\.md.*D11" \
+            | grep -v -i "legacy\|pre-rebrand\|migrating\|migrate legacy\|auto-rename\|rename once\|legacy install path\|legacy-path migration\|engineering team framework" \
+            || true)
+          if [ -n "$hits" ]; then
+            echo "::error::Stray 'engineering-team' references in installed framework files:"
+            echo "$hits"
+            exit 1
+          fi
+          echo "Installed brand consistency: OK"
+
+      - name: Update-only preserves local/
+        run: |
+          set -e
+          ROOT=/tmp/fake-project
+          mkdir -p "$ROOT/.agents/ginee/local"
+          echo "ADOPTER_SENTINEL_KEEP_ME" > "$ROOT/.agents/ginee/local/sentinel.txt"
+          cat install.sh | bash -s -- \
+            --target "$ROOT" \
+            --adapter ${{ matrix.adapter }} \
+            --ref pr-test \
+            --repo /tmp/ginee-bare.git \
+            --update-only
+          grep -qF "ADOPTER_SENTINEL_KEEP_ME" "$ROOT/.agents/ginee/local/sentinel.txt" || { echo "::error::local/sentinel.txt lost or corrupted on --update-only"; exit 1; }
+          echo "Update-only preserved local/: OK"
+
+  install-smoke-pwsh:
+    name: Install smoke (pwsh, ${{ matrix.adapter }})
+    needs: validate
+    runs-on: windows-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        adapter: [claude, copilot-cli, agents-md, generic]
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up local bare repo
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          git init --bare C:\temp\ginee-bare.git
+          git -c protocol.file.allow=always push --force C:\temp\ginee-bare.git HEAD:refs/heads/pr-test
+
+      - name: Scaffold fake adopter project
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          New-Item -ItemType Directory -Force -Path C:\temp\fake-project | Out-Null
+          Set-Location C:\temp\fake-project
+          git init -q
+          git config user.email ci@example.com
+          git config user.name "CI"
+          New-Item -ItemType Directory -Force -Path docs | Out-Null
+          '# Fake project for ginee install smoke test' | Set-Content README.md
+          "# Architecture`n`nPlaceholder." | Set-Content docs/architecture.md
+          "- [ ] First example task`n- [ ] Second example task" | Set-Content TODO.md
+          git add . ; git commit -q -m "init"
+
+      - name: Install via piped one-liner (recommended PowerShell pattern)
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $env:GINEE_TARGET = 'C:\temp\fake-project'
+          $env:GINEE_ADAPTER = '${{ matrix.adapter }}'
+          $env:GINEE_REF = 'pr-test'
+          $env:GINEE_REPO = 'C:\temp\ginee-bare.git'
+          # Mirrors README `iwr ... | iex`; substitutes network fetch with workspace install.ps1.
+          Get-Content $env:GITHUB_WORKSPACE\install.ps1 -Raw | iex
+
+      - name: Verify framework layout
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $root = 'C:\temp\fake-project'
+          $required = 'core','core\roles','core\templates','core\MIGRATIONS','core\skills','adapters','adapters\_shared\agents','extras\roles','local'
+          foreach ($d in $required) {
+            if (-not (Test-Path "$root\.agents\ginee\$d")) {
+              Write-Error "Missing $root\.agents\ginee\$d"
+            }
+          }
+          if (-not (Test-Path "$root\.agents\ginee\core\VERSION")) { Write-Error "Missing core/VERSION" }
+          # Only chosen adapter survives
+          Get-ChildItem "$root\.agents\ginee\adapters" -Directory | ForEach-Object {
+            if ($_.Name -ne '_shared' -and $_.Name -ne '${{ matrix.adapter }}') {
+              Write-Error "Unchosen adapter '$($_.Name)' should have been pruned"
+            }
+          }
+          Write-Host "Framework layout: OK"
+
+      - name: Verify adapter footprint + no stale legacy pointers
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $root = 'C:\temp\fake-project'
+          $adapter = '${{ matrix.adapter }}'
+          $roles = 'team-lead','solution-architect','ai-engineer','frontend-engineer','backend-engineer','devops-engineer','qa-engineer'
+          $skills = 'ginee-discovery','ginee-rediscover','ginee-pick-up','ginee-triage','ginee-file-bug','ginee-file-feature','ginee-file-framework-bug','ginee-file-framework-feature','ginee-promote-discussion','ginee-reindex'
+          switch ($adapter) {
+            'claude' {
+              foreach ($r in $roles) {
+                if (-not (Test-Path "$root\.claude\agents\$r.md")) { Write-Error "Missing .claude/agents/$r.md" }
+              }
+              if (Test-Path "$root\.claude\agents\project-manager.md") { Write-Error "Legacy project-manager.md pointer should not exist" }
+              foreach ($s in $skills) {
+                if (-not (Test-Path "$root\.claude\skills\$s\SKILL.md")) { Write-Error "Missing .claude/skills/$s/SKILL.md" }
+              }
+              if (-not (Select-String -Path "$root\CLAUDE.md" -SimpleMatch -Quiet '## Engineering team framework')) {
+                Write-Error "CLAUDE.md missing pointer sentinel"
+              }
+              Write-Host "Claude adapter footprint: OK"
+            }
+            'copilot-cli' {
+              foreach ($r in $roles) {
+                if (-not (Test-Path "$root\.github\agents\$r.agent.md")) { Write-Error "Missing .github/agents/$r.agent.md" }
+              }
+              if (Test-Path "$root\.github\agents\project-manager.agent.md") { Write-Error "Legacy project-manager.agent.md should not exist" }
+              foreach ($s in $skills) {
+                if (-not (Test-Path "$root\.agents\skills\$s\SKILL.md")) { Write-Error "Missing .agents/skills/$s/SKILL.md" }
+              }
+              Write-Host "Copilot CLI adapter footprint: OK"
+            }
+            'agents-md' {
+              if (-not (Test-Path "$root\AGENTS.md")) { Write-Error "Missing AGENTS.md at project root" }
+              Write-Host "AGENTS.md adapter footprint: OK"
+            }
+            'generic' {
+              if (-not (Test-Path "$root\.agents\ginee\adapters\generic\INSTRUCTIONS.md")) { Write-Error "Missing generic INSTRUCTIONS.md" }
+              Write-Host "Generic adapter footprint: OK"
+            }
+          }
+
+      - name: Adopter content untouched
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $root = 'C:\temp\fake-project'
+          if (-not (Select-String -Path "$root\README.md" -SimpleMatch -Quiet 'Fake project for ginee install smoke test')) { Write-Error "adopter README.md was modified" }
+          if (-not (Select-String -Path "$root\docs\architecture.md" -SimpleMatch -Quiet 'Placeholder.')) { Write-Error "adopter docs/architecture.md was modified" }
+          if (-not (Select-String -Path "$root\TODO.md" -SimpleMatch -Quiet 'First example task')) { Write-Error "adopter TODO.md was modified" }
+          Write-Host "Adopter content preserved: OK"
+
+      - name: Update-only preserves local/
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $root = 'C:\temp\fake-project'
+          New-Item -ItemType Directory -Force -Path "$root\.agents\ginee\local" | Out-Null
+          'ADOPTER_SENTINEL_KEEP_ME' | Set-Content "$root\.agents\ginee\local\sentinel.txt"
+          $env:GINEE_TARGET = $root
+          $env:GINEE_ADAPTER = '${{ matrix.adapter }}'
+          $env:GINEE_REF = 'pr-test'
+          $env:GINEE_REPO = 'C:\temp\ginee-bare.git'
+          $env:GINEE_UPDATE_ONLY = '1'
+          Get-Content $env:GITHUB_WORKSPACE\install.ps1 -Raw | iex
+          if (-not (Select-String -Path "$root\.agents\ginee\local\sentinel.txt" -SimpleMatch -Quiet 'ADOPTER_SENTINEL_KEEP_ME')) {
+            Write-Error "local/sentinel.txt lost or corrupted on --update-only"
+          }
+          Write-Host "Update-only preserved local/: OK"
