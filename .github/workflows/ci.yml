@@ -301,6 +301,16 @@ jobs:
             --repo /tmp/ginee-bare.git \
             --update-only
           grep -qF "ADOPTER_SENTINEL_KEEP_ME" "$ROOT/.agents/ginee/local/sentinel.txt" || { echo "::error::local/sentinel.txt lost or corrupted on --update-only"; exit 1; }
+          # Regression — installer must not nest its temp-backup dir under local/ (see #25)
+          if [ -d "$ROOT/.agents/ginee/local/local" ]; then
+            echo "::error::Installer nested backup at .agents/ginee/local/local — restore should merge or skip, not copy-into-existing"
+            exit 1
+          fi
+          stale=$(find "$ROOT/.agents/ginee/local" -maxdepth 1 -type d -name 'et-local-*' 2>/dev/null || true)
+          if [ -n "$stale" ]; then
+            echo "::error::Installer left stale backup dir(s) under local/: $stale"
+            exit 1
+          fi
           echo "Update-only preserved local/: OK"
 
   install-smoke-pwsh:
@@ -436,6 +446,14 @@ jobs:
           Get-Content $env:GITHUB_WORKSPACE\install.ps1 -Raw | iex
           if (-not (Select-String -Path "$root\.agents\ginee\local\sentinel.txt" -SimpleMatch -Quiet 'ADOPTER_SENTINEL_KEEP_ME')) {
             Write-Error "local/sentinel.txt lost or corrupted on --update-only"
+          }
+          # Regression — installer must not nest its temp-backup dir under local/ (see #25)
+          $stale = Get-ChildItem "$root\.agents\ginee\local" -Directory -Filter 'et-local-*' -ErrorAction SilentlyContinue
+          if ($stale) {
+            Write-Error "Installer left stale backup dir(s) under local/: $(($stale | ForEach-Object FullName) -join ', ')"
+          }
+          if (Test-Path "$root\.agents\ginee\local\local") {
+            Write-Error "Installer nested backup at .agents/ginee/local/local — restore should merge or skip, not copy-into-existing"
           }
           Write-Host "Update-only preserved local/: OK"
 
