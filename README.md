@@ -1,6 +1,6 @@
 # ginee
 
-**AI software engineering team. Behaves like a real team, assigned to project, does self-onboarding and ready to work.**
+**An AI software engineering team that behaves like a real one. Drops into your project, self-onboards, and gets to work.**
 
 [![Latest Release](https://img.shields.io/github/v/release/kostiantyn-matsebora/ginee?label=release&color=0969da)](https://github.com/kostiantyn-matsebora/ginee/releases/latest)
 [![License](https://img.shields.io/badge/license-MIT-blue)](LICENSE)

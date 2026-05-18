@@ -2,7 +2,7 @@
 
 ## What this project is
 
-`ginee` is an **AI software engineering team** for any LLM coding tool — behaves like a real team, assigned to project, does self-onboarding and ready to work. A vendor-neutral OSS framework that packages a **7-cardinal multi-agent collaboration model** + a **generic engineering process** for Claude Code, GitHub Copilot, Cursor, Codex, or fallback generic.
+`ginee` is an **AI software engineering team that behaves like a real one** — drops into your project, self-onboards, and gets to work. A vendor-neutral OSS framework that packages a **7-cardinal multi-agent collaboration model** + a **generic engineering process** for any LLM coding tool (Claude Code, GitHub Copilot, Cursor, Codex, or fallback generic).
 
 The framework ships **process knowledge only** — no domain, stack, architecture, or SDLC opinions. Project-specific knowledge is discovered on first run by the `project-manager` role and lives in a `local/` layer that survives upstream updates. Project knowledge sources (markdown docs, diagrams, mockups) are **referenced**, never copied — doc changes propagate instantly.
 
@@ -85,7 +85,7 @@ Canonical in the plan file. Summary:
 | D8 | Install directory: `.agents/ginee/` (amended 2026-05-17 from a root-level dir; revised 2026-05-18 from `.agents/engineering-team/` per D11 rebrand — `.agents/` namespace for agent tooling; survives root clutter) |
 | D9 | Role names: hybrid — current names canonical + generic aliases (`client-engineer`, `service-engineer`, `platform-engineer`, `quality-engineer`) |
 | D10 | Custom-role extension: both pre-built library + free-form authoring under `local/roles/` |
-| D11 | Public framework name: **`ginee`** (revised 2026-05-18 from `engineering-team`). Tagline: *AI software engineering team. Behaves like a real team, assigned to project, does self-onboarding and ready to work.* Skill prefix `ginee-` consistent at every surface (formerly codename, now formal name). |
+| D11 | Public framework name: **`ginee`** (revised 2026-05-18 from `engineering-team`). Tagline: *An AI software engineering team that behaves like a real one. Drops into your project, self-onboards, and gets to work.* Skill prefix `ginee-` consistent at every surface (formerly codename, now formal name). |
 | D12 | **Automatic mode** (2026-05-17). <ul><li>Per-task opt-in via `auto:` prefix.</li><li>Elides intermediate gates.</li><li>Phase 8 → Accept/Feedback/Reject delivery handoff.</li><li>Never commits silently.</li><li>Spec: `core/automatic-mode.md`.</li></ul> |
 | D13 | **Project-doc index** in `local/index/` (2026-05-17). <ul><li>Heavy adopter docs → lightweight summaries.</li><li>SHA-256 staleness in `manifest.yaml`.</li><li>Roles read index first; originals on demand.</li><li>`ai-engineer` extracts (built-in + novel-class recipes).</li><li>`project-manager` flags drift pre-dispatch.</li><li>Spec: `core/index-protocol.md`.</li></ul> |
 | D14 | **GitHub issues + discussions** as 4th task source (2026-05-17). <ul><li>PM ops: file / pick up / triage / promote.</li><li>State: native `open`/`closed` + `ginee:*` labels (replace `☐`/`☒`).</li><li>PRs auto-close via `Closes #N`.</li><li>Two repos: primary (`github.repo`, origin-inferred) + framework upstream (`github.framework-repo`).</li><li>Framework variants (`file framework-bug` / `framework-feature` / `triage framework` / `promote discussion framework#<N>`) — metadata-only; no cross-repo pickup.</li><li>Spec: `core/github-integration.md`.</li></ul> |
