@@ -141,9 +141,9 @@ $installNote = Join-Path $adapterDir 'install.md'
 
 # --- Prune framework-dev cruft from the adopter's framework dir -------------
 # Adopters need: core/ (incl. MIGRATIONS), adapters/_shared + chosen adapter,
-# extras/, local/ skeleton. Everything else is framework-dev only.
+# extras/, local/ skeleton, LICENSE. Everything else is framework-dev only.
 $pruneRoots = @(
-  '.github',         # release CI for the framework's own repo
+  '.github',         # release CI + issue templates for the framework's own repo
   '.claude',         # framework's own working state
   '.gitignore',
   '.dockerignore',
@@ -151,7 +151,9 @@ $pruneRoots = @(
   'install.sh',
   'PLAN.md',         # framework design doc
   'CLAUDE.md',       # framework's own project instructions (would shadow adopter's notion)
-  'README.md'        # install/marketing; references framework's GitHub
+  'README.md',       # install/marketing; references framework's GitHub
+  'SECURITY.md',     # how to report security issues to the framework maintainers
+  'docs'             # Jekyll site source (lives at kostiantyn-matsebora.github.io/ginee)
 )
 foreach ($p in $pruneRoots) {
   $path = Join-Path $frameworkDir $p
