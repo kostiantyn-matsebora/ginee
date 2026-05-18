@@ -210,11 +210,21 @@ else
 fi
 
 # --- 2. Restore local/ on update -------------------------------------------
+# local/ was preserved in place (step 1 only removes core/+adapters/+extras/), so
+# in the happy path the backup is redundant — just discard it. The defensive
+# branch handles a corrupted state where local/ disappeared mid-update.
+# DON'T cp -r the backup into an existing local/ — coreutils nests it as
+# local/local/ instead of merging. See #25.
 
 if [ "$UPDATE_ONLY" -eq 1 ] && [ -d "${LOCAL_BACKUP:-}" ]; then
-  step "Restoring preserved local/"
-  cp -r "$LOCAL_BACKUP" "$FRAMEWORK_DIR/local"
-  rm -rf "$(dirname "$LOCAL_BACKUP")"
+  if [ -d "$FRAMEWORK_DIR/local" ]; then
+    step "local/ preserved in place; discarding backup"
+    rm -rf "$(dirname "$LOCAL_BACKUP")"
+  else
+    step "Restoring local/ from backup (local/ was nuked during update)"
+    mv "$LOCAL_BACKUP" "$FRAMEWORK_DIR/local"
+    rm -rf "$(dirname "$LOCAL_BACKUP")"
+  fi
 fi
 
 # --- 3. Adapter prompt + install -------------------------------------------

@@ -238,11 +238,21 @@ if (Test-Path $frameworkDir) {
 }
 
 # --- 2. Restore local/ on update -------------------------------------------
+# local/ was preserved in place (step 1 only removes core/+adapters/+extras/), so
+# in the happy path the backup is redundant — just discard it. The defensive
+# branch handles a corrupted state where local/ disappeared mid-update.
+# DON'T Copy-Item the backup into an existing local/ — PowerShell nests it as
+# local/et-local-<guid>/ instead of merging. See #25.
 
 if ($UpdateOnly -and (Test-Path $localBackup)) {
-  Step "Restoring preserved local/"
-  Copy-Item -Recurse $localBackup (Join-Path $frameworkDir 'local')
-  Remove-Item -Recurse -Force $localBackup
+  $localTarget = Join-Path $frameworkDir 'local'
+  if (Test-Path $localTarget) {
+    Step "local/ preserved in place; discarding backup"
+    Remove-Item -Recurse -Force $localBackup
+  } else {
+    Step "Restoring local/ from backup (local/ was nuked during update)"
+    Move-Item $localBackup $localTarget
+  }
 }
 
 # --- 3. Adapter prompt + install --------------------------------------------
