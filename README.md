@@ -120,24 +120,44 @@ Pin a release with `--ref v0.1.0` / `$env:GINEE_REF='v0.1.0'`. Update in place l
 Open your client in the project, then prompt:
 
 ```
-@team-lead run initial discovery
+Run initial discovery
 ```
 
-(or `act as team-lead and run initial discovery` for tier-2/3 clients without `@mention` routing)
+Auto-activates the `ginee-discovery` skill on tier-1 clients (Claude Code, Copilot CLI). Tier-2/3 fallback: `act as team-lead and run initial discovery`.
 
-`team-lead` writes `local/project-profile.md`, `local/bindings.md`, `local/framework.config.yaml`, scans external catalogs for additional candidates, and reports recommended specialists for your approval.
+Ginee scans the repo and writes `local/project-profile.md`, `local/bindings.md`, `local/framework.config.yaml`, then reports recommended specialists for your approval.
 
-### 3. Work
+### 3. Give it work
 
-Dispatch tasks by mentioning the role that owns the surface:
+Ginee is a team — once installed, you talk to *ginee*, not to a specific role. The team routes work internally per `local/bindings.md`. Three task sources, pick whichever fits:
+
+**Freeform** — describe what you want, the team self-dispatches:
 
 ```
-@frontend-engineer add a dark-mode toggle to the header
-@solution-architect this needs a new FR — write the CR
-@qa-engineer cover the new toggle with scenarios + a visual smoke
+Use ginee to add a dark-mode toggle to the header
+Use ginee to add a /api/health endpoint returning { status, version }
 ```
 
-The orchestrator (`team-lead`) routes ambiguous scope. For long tasks the iteration protocol kicks in: 3–5 min batches with visible intermediate results and a stop-anywhere contract.
+**TODO files** — point ginee at an unchecked item in your root or per-component TODO:
+
+```
+Pick up the next TODO
+Pick up the dark-mode TODO in components/header/TODO.md
+```
+
+Activates `ginee-pick-up`. Flips `☐` → `☒` on user approval at Phase 8; never auto-adds.
+
+**GitHub issues** — pick up an open issue, file a new one, or triage the backlog:
+
+```
+Pick up issue #42
+File a bug: dashboard renders blank on Safari 17
+Triage ready work
+```
+
+Activates `ginee-pick-up` / `ginee-file-bug` / `ginee-triage`. PRs auto-close issues via `Closes #N`. Full skill list in [adapters/claude/install.md § How to invoke](adapters/claude/install.md).
+
+For tasks above ~15 minutes, the iteration protocol kicks in: 3–5 min stoppable batches with visible intermediate results. Interrupt anytime; resume next day with zero rework.
 
 ---
 

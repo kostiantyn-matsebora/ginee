@@ -102,17 +102,24 @@ Run initial discovery
 
 `team-lead` writes `local/project-profile.md`, `local/bindings.md`, `local/framework.config.yaml`, extracts a knowledge index under `local/index/`, scans external catalogs for specialist candidates, and reports recommended roles for your approval.
 
-### 3. Work
+### 3. Give it work
 
-Dispatch tasks by mentioning the role that owns the surface:
+Talk to *ginee* — the team self-dispatches per `local/bindings.md`. Three task sources:
 
 ```
-@frontend-engineer add a dark-mode toggle to the header
-@solution-architect this needs a new FR — write the CR
-@qa-engineer cover the new toggle with scenarios + a visual smoke
+# Freeform
+Use ginee to add a dark-mode toggle to the header
+
+# TODO files
+Pick up the next TODO
+
+# GitHub issues
+Pick up issue #42
+File a bug: dashboard renders blank on Safari 17
+Triage ready work
 ```
 
-The orchestrator (`team-lead`) routes ambiguous scope. For long tasks, the iteration protocol kicks in automatically: 3–5 min batches with visible intermediate results and a stop-anywhere contract.
+Natural-language prompts auto-activate the matching skill (`ginee-pick-up` / `ginee-file-bug` / `ginee-triage`). For long tasks, the iteration protocol kicks in automatically: 3–5 min batches with visible intermediate results and a stop-anywhere contract.
 
 [**Full Getting Started guide →**]({{ '/GETTING_STARTED.html' | relative_url }})
 

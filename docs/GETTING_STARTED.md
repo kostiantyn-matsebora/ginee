@@ -87,17 +87,37 @@ What happens (a few minutes, fully visible):
 
 You'll see proposed changes before any file is written — approve or redirect each step.
 
-## 3. First dispatch
+## 3. Give it work
 
-Pick something concrete. Examples:
+Ginee is a team — talk to *ginee*, not to a specific role. The team routes work internally per `local/bindings.md`. Three task sources:
+
+**Freeform** — describe what you want; the team self-dispatches:
 
 ```
-@frontend-engineer rename the dashboard header to "Operations Console"
-@backend-engineer add a /api/health endpoint returning {status:"ok", version:VERSION}
-@qa-engineer write a smoke scenario for the new health endpoint
+Use ginee to rename the dashboard header to "Operations Console"
+Use ginee to add a /api/health endpoint returning { status:"ok", version:VERSION }
 ```
 
-The orchestrator (`team-lead`) routes the work. For tasks &gt; 15 minutes of estimated work, the [iteration protocol](https://github.com/kostiantyn-matsebora/ginee/blob/main/core/iteration-protocol.md) kicks in: each specialist returns a task decomposition + per-task estimate **before** editing, you approve, then 3–5 min stoppable batches.
+**TODO files** — point ginee at an unchecked item:
+
+```
+Pick up the next TODO
+Pick up the health-endpoint TODO in api/TODO.md
+```
+
+Activates `ginee-pick-up`. Flips `☐` → `☒` on user approval at Phase 8; never auto-adds.
+
+**GitHub issues** — pick up, file, or triage:
+
+```
+Pick up issue #42
+File a bug: dashboard renders blank on Safari 17
+Triage ready work
+```
+
+Activates `ginee-pick-up` / `ginee-file-bug` / `ginee-triage`. PRs auto-close issues via `Closes #N`.
+
+For tasks &gt; 15 minutes of estimated work, the [iteration protocol](https://github.com/kostiantyn-matsebora/ginee/blob/main/core/iteration-protocol.md) kicks in: each specialist returns a task decomposition + per-task estimate **before** editing, you approve, then 3–5 min stoppable batches.
 
 ## 4. Update later
 
