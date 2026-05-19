@@ -10,6 +10,25 @@ All notable changes to ginee. The format follows [Keep a Changelog](https://keep
 
 ## Unreleased
 
+## 0.5.0 — 2026-05-19
+
+### Added
+
+- **D22 — Doc-authoring protocol for adopter docs** ([#39](https://github.com/kostiantyn-matsebora/ginee/issues/39), [#42](https://github.com/kostiantyn-matsebora/ginee/pull/42)). Promotes `core/process.md § Documentation style — structure over prose` from aspirational → **binding** for adopter outputs (architecture doc, ADRs, CRs, READMEs, runbooks, scenarios, API docs).
+  - **Three-file load topology** (anticipates upcoming #37 amplifying per-role doc authorship):
+    - `core/process.md § Documentation style` (always-loaded, +1.17 KB once globally) — binding declaration + default-shape map + 5 mandatory checks.
+    - `core/doc-authoring-protocol.md` (2 KB, load-on-demand at Phase 5 / report-as-done) — enforcement-via-discovered-stack + attestation format + out-of-scope.
+    - `core/doc-authoring-examples.md` (5 KB, load on first-time / explicit request) — 6 paired bad / good examples (component inventory / design properties / ADR rationale / runbook / API table / scenario).
+  - **No custom ginee lint.** Enforcement piggybacks on adopter tooling — `team-lead` discovery records markdown / prose linters (markdownlint, vale, proselint, prettier-md) via the existing `builtin:commands` + `builtin:conventions` recipes; roles run `${commands.lint.docs}` at Phase 5 / report-as-done. No-tool fallback recommends a baseline; adopter decides — never auto-install.
+  - **Attestation** — one-line entry in phase-report Verification log + PR-description Verification log.
+  - Cross-issue: hard-reject coupling with #37 (classical SA Review) deferred until #37 lands; TODO marker in migration note.
+  - Spec + migration: `core/MIGRATIONS/D22-doc-authoring-protocol.md`.
+
+### Fixed
+
+- **D21 gate — `.details.md` mis-classification.** `Test-IsAlwaysLoaded` regex `^core/roles/[^/]+\.md$` was greedily matching `core/roles/*.details.md` as always-loaded; details files are now correctly classified as "other" tier. Regression test added.
+- **D21 gate — YAML frontmatter false positives.** `Invoke-StructuralLint` was flagging every role kernel's `description:` field as a multi-sentence prose paragraph. Now skips the leading `---...---` frontmatter block. Regression test added.
+
 ## 0.4.0 — 2026-05-19
 
 ### Added
