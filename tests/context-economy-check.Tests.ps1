@@ -128,6 +128,12 @@ Describe 'context-economy-check.ps1' {
       }
     }
 
+    It 'Test-IsAlwaysLoaded: role *.details.md is NOT always-loaded (regression: greedy regex match)' {
+      Test-IsAlwaysLoaded -Path 'core/roles/team-lead.md' | Should -BeTrue
+      Test-IsAlwaysLoaded -Path 'core/roles/team-lead.details.md' | Should -BeFalse
+      Test-IsAlwaysLoaded -Path 'core/roles/ai-engineer.details.md' | Should -BeFalse
+    }
+
     It 'tier-classifies role kernels as always-loaded, but role *.details.md as other' {
       $root = New-SandboxRepo
       try {
@@ -270,6 +276,29 @@ Optimized-By: ai-engineer" *> $null
           ''
         ) -join "`n"
         Set-Content -LiteralPath (Join-Path $root 'CLAUDE.md') -Value "baseline`n$structured"
+
+        $r = Invoke-CheckInProc -Root $root -Params @{ ClaudeHook = $true; Json = $true }
+        $r.Json.lintFindings.Count | Should -Be 0
+      } finally {
+        Remove-Item -Recurse -Force $root -ErrorAction SilentlyContinue
+      }
+    }
+
+    It 'ignores YAML frontmatter (between leading --- delimiters)' {
+      $root = New-SandboxRepo
+      try {
+        $withFrontmatter = @(
+          '---'
+          'name: team-lead'
+          'description: Orchestrator. Routes work to specialists. Enforces lifecycle. Reads docs.'
+          '---'
+          ''
+          '## Heading'
+          ''
+          '- bullet one'
+          ''
+        ) -join "`n"
+        Set-Content -LiteralPath (Join-Path $root 'core/roles/team-lead.md') -Value $withFrontmatter
 
         $r = Invoke-CheckInProc -Root $root -Params @{ ClaudeHook = $true; Json = $true }
         $r.Json.lintFindings.Count | Should -Be 0
