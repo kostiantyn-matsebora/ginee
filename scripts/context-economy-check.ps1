@@ -69,13 +69,16 @@ $Script:Thresholds = @{
 # core/roles/*.details.md = load-on-demand (NOT always-loaded).
 $Script:AlwaysLoadedPatterns = @(
   '^CLAUDE\.md$'
-  '^PLAN\.md$'
   '^core/process\.md$'
   '^core/roles/[^/]+\.md$'
 )
 
 # Other watched paths — looser tier.
+# Note: PLAN.md is the canonical design doc, read at session start but not
+# auto-loaded by the harness on every dispatch — so it sits in "other", not
+# "always-loaded" (#36's framing). Confirmed by the trim cleanup in 0.5.1.
 $Script:OtherWatchedPatterns = @(
+  '^PLAN\.md$'
   '^core/[^/]+\.md$'                # core/*.md specs (excluding process.md, caught above)
   '^core/roles/[^/]+\.details\.md$' # load-on-demand role details
   '^core/skills/'
