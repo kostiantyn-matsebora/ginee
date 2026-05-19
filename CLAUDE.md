@@ -123,6 +123,10 @@ Canonical in the plan file. Summary:
 - SAD-freeze + CR/ADR pattern applies once this project's own architecture doc is finalized (not yet — currently in design phase).
 - Follow `core/process.md § Documentation style — structure over prose` and `## Framework authoring — context economy` below for all new docs.
 - PowerShell scripts (`*.ps1` anywhere in this repo): every change passes [PSScriptAnalyzer](https://github.com/PowerShell/PSScriptAnalyzer) (rules per `PSScriptAnalyzerSettings.psd1` — default minus narrow, justified exclusions) AND is covered by passing [Pester](https://pester.dev) tests under `tests/<script>.Tests.ps1`. Both enforced as merge gates by `lint-powershell` + `test-powershell` CI jobs.
+- GitHub issue pickup — before Phase 2 on any picked-up issue, ALWAYS fetch **both**:
+  - Comments — `gh issue view <N> --comments` — owner often pins option-picks or scope clarifications there (e.g. issue #29 specifies "Option B + DTO exempt + configurable threshold" only in a comment, not the body).
+  - Sub-issues — `gh api repos/<owner>/<repo>/issues/<N>/sub_issues` — sub-issues carry scope expansions the parent body alone does not surface (e.g. issue #28 has #30 "add linting" as a sub-issue with no body — title-only requirements still bind).
+  - Skip either → Phase 2 plan is wrong; redo cost > the 2 extra API calls.
 
 ## Framework authoring — context economy
 
