@@ -1,0 +1,42 @@
+#!/usr/bin/env bash
+# ginee context-economy gate — git pre-push hook (Layer 2, last-mile).
+# Runs the shared pwsh check against the range being pushed.
+# Catches manual / non-pwsh edits that bypassed pre-commit.
+#
+# Bypass: SKIP_CONTEXT_ECONOMY=1 git push ...
+
+set -e
+
+if [ "${SKIP_CONTEXT_ECONOMY:-0}" = "1" ]; then
+  echo "context-economy: bypassed via SKIP_CONTEXT_ECONOMY=1" >&2
+  exit 0
+fi
+
+repo_root="$(git rev-parse --show-toplevel)"
+script="$repo_root/scripts/context-economy-check.ps1"
+
+if [ ! -f "$script" ]; then
+  echo "context-economy: script not found at $script — skipping gate." >&2
+  exit 0
+fi
+
+if ! command -v pwsh >/dev/null 2>&1; then
+  echo "context-economy: pwsh not on PATH — skipping (CI will enforce on PR)." >&2
+  exit 0
+fi
+
+# git feeds <local-ref> <local-sha> <remote-ref> <remote-sha> on stdin per ref.
+# We compare against the remote-tracking ref of main as the base; if not available
+# (e.g. fresh fork), fall back to working-tree check against HEAD.
+base=""
+if git rev-parse --verify --quiet origin/main >/dev/null; then
+  base="origin/main"
+elif git rev-parse --verify --quiet main >/dev/null; then
+  base="main"
+fi
+
+if [ -n "$base" ]; then
+  pwsh -NoProfile -File "$script" -BaseRef "$base"
+else
+  pwsh -NoProfile -File "$script" -ClaudeHook
+fi
