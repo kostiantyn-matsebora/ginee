@@ -7,9 +7,12 @@ name: Context economy
 
 on:
   pull_request:
-  push:
-    branches:
-      - main
+  # Intentionally NOT triggered on `push: main` — the gate is a pre-merge
+  # check, not a post-hoc audit. GitHub's squash-merge strips the
+  # `Optimized-By: ai-engineer` trailer (only the PR title + Co-authored-by
+  # survive), so re-running on `main` after merge produces false reds.
+  # Direct-to-main pushes are out of scope here; branch protection is the
+  # right tool for that policy.
 
 jobs:
   gate:
