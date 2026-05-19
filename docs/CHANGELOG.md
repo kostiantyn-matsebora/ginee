@@ -10,8 +10,20 @@ All notable changes to ginee. The format follows [Keep a Changelog](https://keep
 
 ## Unreleased
 
+## 0.4.0 — 2026-05-19
+
 ### Added
 
+- **D21 — Context-economy enforcement gate** ([#38](https://github.com/kostiantyn-matsebora/ginee/issues/38), [#40](https://github.com/kostiantyn-matsebora/ginee/pull/40)). Three layers mechanically enforce the `CLAUDE.md § Framework authoring — context economy` rule on this repo's PRs:
+  - Claude Code PostToolUse hook (`.claude/settings.json.example`, copy → `.claude/settings.json`).
+  - Git `pre-commit` + `pre-push` hooks (`hooks/`, installed via `scripts/install-hooks.{ps1,sh}`).
+  - GitHub Actions CI workflow (`.github/workflows/context-economy.yml`).
+  - Shared check script: `scripts/context-economy-check.ps1` (cross-platform, no external deps beyond `git`).
+  - Marker: git trailer `Optimized-By: ai-engineer` on any commit in PR range; waiver = PR label `context-economy:waived` + `**Context economy waiver:** <reason>` line in body.
+  - Thresholds: 25 lines / 1 KB for always-loaded files (`CLAUDE.md`, `PLAN.md`, `core/process.md`, `core/roles/*.md`); 50 lines / 2 KB elsewhere.
+  - Structural lint catches prose paragraphs with > 2 sentences in always-loaded files — the D18–D20 regression signature.
+  - 28 Pester tests, 92.7% line coverage (> D19's 90% floor), PSScriptAnalyzer clean.
+  - Spec + migration: `core/MIGRATIONS/D21-context-economy-gates.md`.
 - **Repo went public** at [github.com/kostiantyn-matsebora/ginee](https://github.com/kostiantyn-matsebora/ginee). Documentation site live at [kostiantyn-matsebora.github.io/ginee](https://kostiantyn-matsebora.github.io/ginee/). Default install path is now anonymous — no GitHub auth required to fetch the framework.
 - **Public OSS release prep** — `LICENSE` (MIT), `SECURITY.md`, `.github/CODEOWNERS`, `.github/PULL_REQUEST_TEMPLATE.md`, `.github/ISSUE_TEMPLATE/*.yml`.
 - **Documentation site** under `docs/` — Jekyll cayman theme with indigo + amber palette, custom layout, theme toggle, page TOC.
@@ -33,6 +45,7 @@ All notable changes to ginee. The format follows [Keep a Changelog](https://keep
 
 ### Fixed
 
+- **D21 gate skips `push: main` post-merge.** GitHub's squash-merge strips the `Optimized-By: ai-engineer` trailer (only the PR title + `Co-authored-by` survive), so post-merge runs on `main` were producing false reds. The gate is now strictly a pre-merge `pull_request` check; direct-to-main pushes are out of scope for the gate (branch protection is the right tool).
 - **Installer `-UpdateOnly` mode** now correctly re-fetches `core/`, `adapters/`, `extras/` after wiping them.
 - **Installer skill copy on update** — existing `ginee-*` skill directories are cleared before re-copying (previously failed with "directory already exists").
 

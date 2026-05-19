@@ -69,6 +69,12 @@ SKIP_CONTEXT_ECONOMY=1 git push ...
 
 CI: use the label + justification waiver above. Never `--no-verify` (per CLAUDE.md hard constraints).
 
+## Squash-merge interaction
+
+The gate triggers on `pull_request` **only** — not on `push: main`. GitHub's squash-merge collapses the feature-branch history into a new commit on `main` whose message contains the PR title + `Co-authored-by` trailers only; the `Optimized-By: ai-engineer` trailer from the source commits is dropped. A `push: main` run would then see the changes-without-trailer and fail — a false red, because the gate *did* its job at PR-merge time.
+
+Direct-to-main pushes (no PR) are out of scope. Use branch protection rules to forbid them.
+
 ## Out of scope
 
 - **Adopter-project doc enforcement.** Adopter docs are a separate problem (see issue #39 — doc-authoring protocol). This gate runs on **this repo's PRs only**.
