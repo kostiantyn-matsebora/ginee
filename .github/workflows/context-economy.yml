@@ -34,12 +34,14 @@ jobs:
       - name: Detect waiver
         id: waiver
         if: github.event_name == 'pull_request'
+        # PR body + labels passed through env to avoid bash-parsing PR content.
+        env:
+          PR_LABELS: ${{ toJson(github.event.pull_request.labels) }}
+          PR_BODY: ${{ github.event.pull_request.body }}
         shell: bash
         run: |
-          labels='${{ toJson(github.event.pull_request.labels) }}'
-          if echo "$labels" | grep -q '"name": *"context-economy:waived"'; then
-            body='${{ toJson(github.event.pull_request.body) }}'
-            if echo "$body" | grep -qF '**Context economy waiver:**'; then
+          if printf '%s' "$PR_LABELS" | grep -q '"name": *"context-economy:waived"'; then
+            if printf '%s' "$PR_BODY" | grep -qF '**Context economy waiver:**'; then
               echo "waived=true" >> "$GITHUB_OUTPUT"
               echo "::notice::context-economy gate waived via 'context-economy:waived' label + justification in PR body."
             else
