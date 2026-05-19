@@ -164,6 +164,24 @@ unit-backend:
 #       source-glob: ops/runbooks/*.md
 #       template: novel                   # ai-engineer authors a new template
 
+# --- Automatic mode — post-PR CI watch (D20) ---
+# Behaviour after `gh pr create` in Mode 1 + auto mode. Spec:
+# core/ci-watch.md. Migration: core/MIGRATIONS/D20-ci-watch.md.
+#
+# All keys optional — defaults shown. Apply only when auto mode is
+# active AND the resolved delivery mode is Mode 1; otherwise ignored.
+automatic-mode:
+  ci-watch: enabled                       # enabled | disabled — set disabled to preserve pre-D20 behaviour
+  ci-watch-policy: poll                   # poll | async | hybrid
+  ci-watch-poll-seconds: 20               # interval for poll / hybrid sync phase
+  ci-watch-timeout-minutes: 15            # max wall-clock per watch cycle before handback
+  ci-watch-sync-probe-minutes: 3          # hybrid only: synchronous probe before falling through to async
+  ci-watch-max-fix-cycles: 3              # cap on iterate-fix-recheck loops
+  ci-required-checks: strict              # strict | branch-protection-aware
+  ci-auto-retry-flakes: true              # rerun-failed once per cycle on flake-pattern match
+  # ci-flake-patterns:                    # adopter-extensible; merged with framework defaults
+  #   - "<additional regex>"
+
 # --- Delivery modes (D17) ---
 # Adopter-wide default for how PM lands task results. Per-task prefix
 # (branch: / wt: / commit:) or Phase-3 user answer overrides. Full
