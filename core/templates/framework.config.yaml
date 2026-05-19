@@ -131,6 +131,24 @@ devops-scripts:
   # backfill-tracking issue reference (e.g. "issue-42").
   # coverage-grace: 2026-09-01
 
+# --- Backend unit-test coverage (D19) ---
+# Coverage obligation for every backend source change. Spec:
+# core/roles/backend-engineer.md § Coverage obligation.
+# Migration: core/MIGRATIONS/D19-backend-coverage-floor.md.
+unit-backend:
+  # Backend unit-test runner invocation with coverage enabled.
+  #   - .NET: dotnet test --collect:"XPlat Code Coverage"
+  #   - Node: npm test -- --coverage
+  #   - Python: pytest --cov=<pkg>
+  #   - Go: go test -cover ./...
+  #   - leave null when project has no backend tier yet.
+  runner: dotnet test --collect:"XPlat Code Coverage"
+  # Line coverage threshold on the changed + added line set.
+  #   - Framework default: 90.
+  #   - Adopter may raise (stricter) or lower (catch-up); deviation
+  #     visible in local config + reviewable in PR.
+  coverage-threshold: 90
+
 # --- Project-doc index (D13) ---
 # Adopter-declared index classes — pre-declare doc classes that the index
 # layer should handle. Takes precedence over auto-detection. Full spec:
