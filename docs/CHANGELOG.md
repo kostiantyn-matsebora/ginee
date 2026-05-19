@@ -10,6 +10,13 @@ All notable changes to ginee. The format follows [Keep a Changelog](https://keep
 
 ## Unreleased
 
+## 0.5.1 — 2026-05-19
+
+### Changed
+
+- **Trimmed CLAUDE.md decision-register rows D17–D22** ([#36](https://github.com/kostiantyn-matsebora/ginee/issues/36), [#44](https://github.com/kostiantyn-matsebora/ginee/pull/44)). Six rows that had drifted into 650–1396-char prose paragraphs inlined into the always-loaded table are now ~250-char one-line pointers, sorted numerically. **Savings: CLAUDE.md −3.03 KB** (20.38 KB → 17.34 KB). Full prose retained in `PLAN.md § D17`–`§ D22` + per-decision `core/MIGRATIONS/D{17,18,19,20,21,22}-*.md` (load-on-demand). Adds D21 + D22 canonical-long-form rows to `PLAN.md` (previously missing — shipped straight into CLAUDE.md).
+- **D21 — PLAN.md reclassified from "always-loaded" to "other watched"** in the context-economy gate. PLAN.md is the canonical design doc, read at session start but not auto-loaded by the harness on every dispatch (per #36 framing). Threshold relaxes from 25 lines / 1 KB to 50 lines / 2 KB. +1 Pester regression test.
+
 ## 0.5.0 — 2026-05-19
 
 ### Added
