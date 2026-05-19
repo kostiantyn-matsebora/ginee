@@ -276,6 +276,8 @@ Bindings may NOT override generic process.
 
 ## Documentation style — structure over prose
 
+**Binding, not aspirational** for both framework-self-dev outputs (per `CLAUDE.md § Framework authoring`) and adopter-project outputs authored by any role (per **D22** — full protocol + 6 paired examples + discovery-driven enforcement in `core/doc-authoring-protocol.md`).
+
 Applies to **all** written artefacts:
 
 - Project-instruction files.

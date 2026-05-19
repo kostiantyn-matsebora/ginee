@@ -32,6 +32,7 @@ You:
   - `local/project-profile.md`
   - `local/framework.config.yaml`
   - `local/roles/*.md` (if present)
+  - `core/doc-authoring-protocol.md` (D22) — load when verifying attestation lines on doc-touching phase reports / PRs.
 - **Estimation-first dispatch** — `core/iteration-protocol.md`. For any Phase 4/5/6/7 work above the 15-min threshold:
   - Each dispatched specialist returns task decomposition + per-task estimate **before** editing.
   - You synthesize all specialist proposals into one batch.

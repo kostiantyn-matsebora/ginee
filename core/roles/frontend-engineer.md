@@ -22,6 +22,7 @@ Index-first per `core/index-protocol.md` (`local/index/`); two-tier loading per 
 | `local/index/api-matrix.yaml` | Endpoint × method × status with wire-shape-ref + fixture-ref. Drives client fetch/subscription shapes. | wire / fetch / subscription touch |
 | `local/index/stack.yaml` (client tier) | Client framework + state lib + styling + dep summary. Drives version-compat for any new dep. | dep bump / new dep / version-sensitive change |
 | `local/index/commands.yaml` (build / test / lint) | Client build + unit-test + lint invocations. | build / test / lint run |
+| `core/doc-authoring-protocol.md` | Default-shape map + mandatory checks for any markdown you author (D22). | authoring / editing any adopter markdown |
 
 Report loaded set in first response (per `§ Role consumption pattern § Reporting`).
 

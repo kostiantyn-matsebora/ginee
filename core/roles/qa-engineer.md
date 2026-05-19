@@ -21,6 +21,7 @@ Index-first per `core/index-protocol.md` (`local/index/`); two-tier loading per 
 | `local/index/conventions.yaml` | Lint/style for test-code authoring; commit-message convention for fixture commits. | **always** |
 | `local/index/ui-states.yaml` | Documented UI states — first-class test fixtures + assertion targets. | UI / e2e / mockup-harness work |
 | `local/index/api-matrix.yaml` | Endpoint × method × status — every documented status code is a test case. | API / functional-test work |
+| `core/doc-authoring-protocol.md` | Default-shape map + mandatory checks for any markdown you author (D22 — scenarios, test plans, QA reports). | authoring / editing any adopter markdown |
 
 Report loaded set in first response (per `§ Role consumption pattern § Reporting`).
 

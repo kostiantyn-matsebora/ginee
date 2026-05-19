@@ -114,6 +114,9 @@ function Resolve-RepoRoot {
 function Test-IsAlwaysLoaded {
   param([string]$Path)
   $norm = $Path -replace '\\', '/'
+  # `.details.md` files belong to the "other" tier even though the role-kernel
+  # regex `^core/roles/[^/]+\.md$` would otherwise greedily match them.
+  if ($norm -match '\.details\.md$') { return $false }
   foreach ($p in $Script:AlwaysLoadedPatterns) {
     if ($norm -match $p) { return $true }
   }
@@ -259,10 +262,24 @@ function Invoke-StructuralLint {
     if (-not (Test-Path -LiteralPath $fsPath)) { continue }
     $lines = Get-Content -LiteralPath $fsPath
     $inFence = $false
+    $inFrontmatter = $false
+    $frontmatterOpened = $false  # only one frontmatter block is recognised, at file start
     $paragraphStart = -1
     $paragraphLines = @()
     for ($i = 0; $i -lt $lines.Count; $i++) {
       $line = $lines[$i]
+      # YAML frontmatter — '---' on its own line at file start opens, next '---' closes.
+      if ($line -match '^---\s*$') {
+        if (-not $frontmatterOpened -and $i -eq 0) {
+          $inFrontmatter = $true
+          $frontmatterOpened = $true
+          continue
+        } elseif ($inFrontmatter) {
+          $inFrontmatter = $false
+          continue
+        }
+      }
+      if ($inFrontmatter) { continue }
       if ($line -match '^\s*```') {
         $inFence = -not $inFence
         $paragraphLines = @()
