@@ -1,0 +1,32 @@
+#!/usr/bin/env bash
+# ginee context-economy gate — git pre-commit hook (Layer 2).
+# Installed via scripts/install-hooks.{ps1,sh}. Runs the shared pwsh check
+# against the staged set. Exits non-zero to block the commit when the gate
+# fails AND no "Optimized-By: ai-engineer" trailer is present on HEAD.
+#
+# Bypass (use sparingly + only for genuine emergencies): SKIP_CONTEXT_ECONOMY=1 git commit ...
+
+set -e
+
+if [ "${SKIP_CONTEXT_ECONOMY:-0}" = "1" ]; then
+  echo "context-economy: bypassed via SKIP_CONTEXT_ECONOMY=1" >&2
+  exit 0
+fi
+
+repo_root="$(git rev-parse --show-toplevel)"
+script="$repo_root/scripts/context-economy-check.ps1"
+
+if [ ! -f "$script" ]; then
+  # Script missing — repo isn't ginee or hooks weren't reinstalled after pull.
+  # Don't block; print a warning so the user knows.
+  echo "context-economy: script not found at $script — skipping gate." >&2
+  exit 0
+fi
+
+if ! command -v pwsh >/dev/null 2>&1; then
+  echo "context-economy: pwsh not on PATH — install PowerShell 7+ to run the gate locally." >&2
+  echo "context-economy: skipping (CI will enforce on PR)." >&2
+  exit 0
+fi
+
+pwsh -NoProfile -File "$script" -StagedOnly

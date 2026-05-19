@@ -1,0 +1,73 @@
+name: Context economy
+
+# Layer 3 of the context-economy gate (per CLAUDE.md § Framework authoring).
+# Enforces threshold + structural-lint on framework-self-dev PRs.
+# Waiver: apply label "context-economy:waived" AND include a justification
+# matching `**Context economy waiver:** <reason>` in the PR body.
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+
+jobs:
+  gate:
+    name: Context-economy gate
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # need full history for base-ref diff
+
+      - name: Resolve base ref
+        id: base
+        shell: bash
+        run: |
+          if [ "${{ github.event_name }}" = "pull_request" ]; then
+            echo "ref=origin/${{ github.base_ref }}" >> "$GITHUB_OUTPUT"
+          else
+            # push to main — diff against the previous commit on main
+            echo "ref=HEAD~1" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Detect waiver
+        id: waiver
+        if: github.event_name == 'pull_request'
+        # PR body + labels passed through env to avoid bash-parsing PR content.
+        env:
+          PR_LABELS: ${{ toJson(github.event.pull_request.labels) }}
+          PR_BODY: ${{ github.event.pull_request.body }}
+        shell: bash
+        run: |
+          if printf '%s' "$PR_LABELS" | grep -q '"name": *"context-economy:waived"'; then
+            if printf '%s' "$PR_BODY" | grep -qF '**Context economy waiver:**'; then
+              echo "waived=true" >> "$GITHUB_OUTPUT"
+              echo "::notice::context-economy gate waived via 'context-economy:waived' label + justification in PR body."
+            else
+              echo "::error::Label 'context-economy:waived' applied but PR body lacks justification line '**Context economy waiver:** <reason>'."
+              exit 1
+            fi
+          else
+            echo "waived=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Run context-economy gate
+        if: steps.waiver.outputs.waived != 'true'
+        shell: pwsh
+        run: |
+          $r = & pwsh -NoProfile -File ./scripts/context-economy-check.ps1 -BaseRef '${{ steps.base.outputs.ref }}'
+          $code = $LASTEXITCODE
+          if ($code -eq 1) {
+            Write-Host "::error::Context-economy threshold exceeded without an 'Optimized-By: ai-engineer' trailer commit on the branch. Dispatch ai-engineer for an optimization pass under the lossless rule, then commit with the trailer. Or apply label 'context-economy:waived' AND include '**Context economy waiver:** <reason>' in PR body (use sparingly)."
+            exit 1
+          }
+          if ($code -eq 2) {
+            Write-Host "::error::Structural lint failed — prose paragraph with > 2 sentences in an always-loaded framework file. Restructure per CLAUDE.md § Framework authoring — context economy."
+            exit 2
+          }
+          if ($code -ne 0) {
+            Write-Host "::error::context-economy-check exited with code $code."
+            exit $code
+          }
+          Write-Host "context-economy gate: PASS"

@@ -23,3 +23,9 @@ local/**
 !local/roles/.gitkeep
 
 .claude/settings.local.json
+# Generated locally by install-hooks; users activate by copying settings.json.example.
+.claude/settings.json
+
+# Test artefacts (Pester coverage + nunit output)
+coverage.xml
+pester-results.xml
