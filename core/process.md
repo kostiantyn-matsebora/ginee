@@ -301,6 +301,28 @@ Applies to **all** written artefacts:
 - **Prose is for narrative exposition only** — explaining *why*. Keep tight.
 - **Framework-self-dev (D21).** Framework-source PRs in the ginee repo are gated by `scripts/context-economy-check.ps1` (Claude Code hook + git hooks + CI workflow). Threshold breach without an `Optimized-By: ai-engineer` trailer fails the gate. Spec: `core/MIGRATIONS/D21-context-economy-gates.md`.
 
+### Default-shape map (D22)
+
+| Doc artefact | Default shape |
+|---|---|
+| Component / service / image / endpoint / env-var inventory | Table |
+| Design properties, invariants, NFRs | Bullet list — one rule per bullet |
+| Sequence / workflow / runbook steps | Numbered list |
+| Term definitions | `**Term.** Gloss.` lines |
+| Trade-off / decision-rationale | Two-column table (option / consequence) |
+| Narrative *why* (rationale only) | Prose — tight, < 4 sentences |
+
+### Mandatory checks before report-as-done (D22)
+
+1. No paragraph contains > 2 rules (sentence terminators: `. ` `! ` `? `).
+2. No table cell holds a multi-sentence sub-paragraph.
+3. No bullet runs > 25 words *unless* it carries nested sub-bullets.
+4. Inventories (services, components, endpoints, env vars) are tables, not prose.
+5. Cross-references cite anchors (`§Name`, `#anchor`); never restate content.
+
+**Enforcement procedure** (lint command, attestation format, no-tool fallback): `core/doc-authoring-protocol.md` — load at Phase 5 / report-as-done.
+**Paired bad-vs-good examples** (6 doc classes): `core/doc-authoring-examples.md` — load on first-time authoring or explicit request.
+
 ## Coordination protocol
 
 | Trigger | Rule |

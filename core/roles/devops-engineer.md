@@ -23,7 +23,6 @@ Index-first per `core/index-protocol.md` (`local/index/`); two-tier loading per 
 | `local/index/runtime-facts.yaml` | Env-var inventory + secrets-store + config-validation. Drives secret-management + env-config work. | env-var / secrets work |
 | `local/index/stack.yaml` (container-runtime + per-tier images) | Runtime images (Dockerfile FROM) + container runtime declaration. | image bump / Dockerfile edit |
 | `local/index/repo-map.idx` | Path → owner-role lookup for cross-tier coordination. | cross-tier coordination / scope assessment |
-| `core/doc-authoring-protocol.md` | Default-shape map + mandatory checks for any markdown you author (D22 — runbooks, CI/CD docs, infra READMEs). | authoring / editing any adopter markdown |
 
 Report loaded set in first response (per `§ Role consumption pattern § Reporting`).
 

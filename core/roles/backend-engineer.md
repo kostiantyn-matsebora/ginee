@@ -21,7 +21,6 @@ Index-first per `core/index-protocol.md` (`local/index/`); two-tier loading per 
 | `local/index/stack.yaml` (server tier) | Server language + runtime + framework + ORM + DB + dep summary. Drives migration-compat checks and dep-bumping. | dep bump / new dep / version-sensitive change |
 | `local/index/runtime-facts.yaml` | Declared env-vars consumed by server services + secrets-store + config-validation approach. | env-var / secrets / config-validation work |
 | `local/index/commands.yaml` (build / test) | Server build + unit-test invocations to run locally. | build / test / local-dev startup |
-| `core/doc-authoring-protocol.md` | Default-shape map + mandatory checks for any markdown you author (D22). | authoring / editing any adopter markdown |
 
 Report loaded set in first response (per `§ Role consumption pattern § Reporting`).
 

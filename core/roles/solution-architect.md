@@ -32,7 +32,6 @@ Owns the authoritative architectural documentation.
   | `local/index/repo-map.idx` | Path → owner-role lookup for governance + scope assessment. | scope assessment / routing decision |
   | `local/index/topology.yaml` | Service inventory + IaC summary (governance over deployment-tier decisions). | deployment-tier ADR / topology CR |
   | `local/index/stack.yaml` | Declared tech stack (governance over "do not introduce" lists + version-policy ADRs). | stack ADR / version-policy CR |
-  | `core/doc-authoring-protocol.md` | Default-shape map + mandatory checks for any markdown you author (D22 — architecture doc, ADRs, CRs, diagrams). | authoring / editing any adopter markdown |
 
   Report loaded set in first response (per `§ Role consumption pattern § Reporting`).
 
