@@ -134,6 +134,14 @@ Describe 'context-economy-check.ps1' {
       Test-IsAlwaysLoaded -Path 'core/roles/ai-engineer.details.md' | Should -BeFalse
     }
 
+    It 'Test-IsAlwaysLoaded: PLAN.md is NOT always-loaded but IS watched (other tier)' {
+      Test-IsAlwaysLoaded -Path 'PLAN.md' | Should -BeFalse
+      Test-IsWatched -Path 'PLAN.md' | Should -BeTrue
+      $t = Get-Threshold -Path 'PLAN.md'
+      $t.Lines | Should -Be 50
+      $t.Bytes | Should -Be 2048
+    }
+
     It 'tier-classifies role kernels as always-loaded, but role *.details.md as other' {
       $root = New-SandboxRepo
       try {
