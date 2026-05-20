@@ -9,6 +9,8 @@
 - Two new label namespaces — `value:high|medium|low` + `complexity:high|medium|low` — carry the data; labels are source-of-truth. ATAM / utility-tree convention.
 - Score formula maps `H = 3`, `M = 2`, `L = 1`.
 - TODO files gain `[v:H c:L]` inline markers (case-insensitive) with identical semantics.
+- `team-lead` posts a sticky `<!-- ginee:score v=1 -->` comment on pickup (one per issue, updated in place) + immutable audit comments on key events (SA auto-estimate, value-prompt, score-recompute). Sticky table includes a `Reasoning` column populated only for ginee-set rows.
+- New trigger `@team-lead recompute score #<N>` re-reads current labels (catches manual `gh issue edit` between sessions) and refreshes the sticky.
 
 New artefacts:
 
@@ -18,10 +20,10 @@ New artefacts:
 Modified:
 
 - `core/process.md § Task model` — TODO marker syntax noted; new spec-section pointer.
-- `core/github-integration.md § Triage` — sort key now score-based; `§ Label scheme` lists scoring labels.
-- `core/roles/team-lead.md` — pickup adds value-prompt + complexity-auto-estimate; triage sorts by score.
+- `core/github-integration.md § Triage` — sort key now score-based; `§ Label scheme` lists scoring labels; pickup adds sticky-comment write.
+- `core/roles/team-lead.md` — pickup adds value-prompt + complexity-auto-estimate + sticky-comment write; new `recompute score #<N>` trigger; triage sorts by score.
 - `core/skills/ginee-triage/SKILL.md` — score column + sort.
-- `core/skills/ginee-pick-up/SKILL.md` — auto-estimate hook.
+- `core/skills/ginee-pick-up/SKILL.md` — auto-estimate + sticky-comment hook.
 - 4 × `core/templates/issues/*.md` — reporter note on the two label namespaces.
 
 ## Action required
@@ -48,6 +50,7 @@ After re-fetching framework files on upgrade:
 - On pickup, if `complexity:*` is missing, `team-lead` dispatches `solution-architect` for an H / M / L estimate (recorded as a comment + label).
 - On pickup, if `value:*` is missing, `team-lead` asks the user before Phase 2.
 - Unscored items group at the bottom of the listing — pre-D23 order preserved for those.
+- A sticky `<!-- ginee:score v=1 -->` comment lands on every issue ginee picks up. Auto-updated in place; never edit manually. Run `@team-lead recompute score #<N>` to refresh after a manual label change.
 
 ## Why labels (not body fields, not marker comments)
 

@@ -126,8 +126,9 @@ Trigger: `@team-lead pick up #<N>` — always targets the primary repo (= the wo
    - Labels include `ready-label` — if absent, PM offers to add it before pickup.
 3. Parse the structured body per the template sections. Map `affected area` → routing per `local/bindings.md`.
 4. **Scoring labels** per `core/triage-scoring.md`:
-   - Missing `value:*` → ask user (H / M / L); add `value:high|medium|low` label.
-   - Missing `complexity:*` → dispatch `solution-architect` for H / M / L estimate; post marker comment + add `complexity:high|medium|low` label.
+   - Missing `value:*` → ask user (H / M / L); add `value:high|medium|low` label; post `<!-- ginee:value-prompt -->` audit comment.
+   - Missing `complexity:*` → dispatch `solution-architect` for H / M / L estimate; post `<!-- ginee:complexity-estimate -->` audit comment + add `complexity:high|medium|low` label.
+   - Post / update the sticky `<!-- ginee:score v=1 -->` comment per `core/triage-scoring.md § Score comment + audit trail` (find via marker; update in place; never duplicate).
 5. Swap labels:
    ```
    gh issue edit <N> --remove-label <ready-label> --add-label <in-progress-label>

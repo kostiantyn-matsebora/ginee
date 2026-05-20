@@ -151,6 +151,69 @@ Expected sort (test contract for skill + spec compliance):
 6. #13    (0.00, unscored — value missing)
 ```
 
+## Score comment + audit trail
+
+Hybrid topology — **one sticky "current score" comment** maintained by `team-lead` + **immutable audit comments** preserved on key events.
+
+### Sticky comment — current score
+
+- **One per issue.** First posted on pickup (after value-prompt + complexity auto-estimate complete); updated in place on every ginee-driven label change or `@team-lead recompute score #N`.
+- **Find / update via the marker header line:** `<!-- ginee:score v=1 -->`. `team-lead` searches issue comments for this marker; updates if found, posts if not. Adopters MUST NOT edit the comment body manually.
+- **Strict format:**
+
+  ```
+  <!-- ginee:score v=1 -->
+  ## Triage score: <combo> = <number>
+
+  | Axis | Label | Numeric | Set by | Reasoning |
+  |---|---|---|---|---|
+  | value | `<high|medium|low|unscored>` | <3|2|1|—> | <@handle (source)> | <one-line | —> |
+  | complexity | `<high|medium|low|unscored>` | <3|2|1|—> | <@handle (source)> | <one-line | —> |
+
+  - Formula: `<formula>` (`<scoring-formula key>`)
+  - Last updated: <ISO 8601 UTC> by ginee team-lead
+  - Recomputed live by `ginee-triage` from labels — see audit trail below.
+  ```
+
+- **`Reasoning` column rules — populated only when ginee set the label:**
+
+  | Row state | `Reasoning` content |
+  |---|---|
+  | Most-recent change was a ginee auto-estimate | One-line digest (e.g. `1 file · 1 role · pattern reuse → L`) |
+  | Most-recent change was the reporter or a user `gh issue edit` | `—` |
+  | Axis not yet set | `unscored` |
+
+- **`Set by` column values:**
+  - User-set → `@<handle> (reporter)` or `@<handle> (manual edit)`.
+  - ginee-set → `@solution-architect (auto-estimate)` (complexity), `@team-lead (imputed c=L)` (missing-axis rule), `@<handle> (user reply to ginee prompt)` (value-prompt at pickup).
+
+- **`<combo>` notation:** `<value-letter><complexity-letter>` (e.g. `HL`, `MH`, `MM`). Unscored rows render as `—` in place of the letter.
+
+### Immutable audit comments — key-event trail
+
+Preserved alongside the sticky comment; never deleted, never edited.
+
+| Event | Marker | Body |
+|---|---|---|
+| SA auto-estimate of complexity | `<!-- ginee:complexity-estimate by=solution-architect value=<H|M|L> at=<ISO> -->` | One-line outcome + SA signals digest. |
+| User reply to ginee's value-prompt at pickup | `<!-- ginee:value-prompt by=<@handle> value=<H|M|L> at=<ISO> -->` | One-line outcome ("user set value=high during pickup of #N"). |
+| Score recomputed on demand | `<!-- ginee:score-recompute by=<@handle> at=<ISO> -->` | Reason + delta from previous sticky state. |
+
+User-driven label changes via `gh issue edit` do NOT produce an audit comment (GitHub's own activity log already records them).
+
+### Triggers — when `team-lead` writes / updates the sticky
+
+1. **Pickup** — after value-prompt + complexity auto-estimate complete, before the `ready` → `in-progress` label swap.
+2. **Any ginee-driven label change** during a task (e.g. SA revising complexity after Phase 2 design widens scope — requires Phase-3-style user surface per `§ Forbidden`).
+3. **`@team-lead recompute score #<N>`** — explicit user invocation; re-reads current labels (catches manual `gh issue edit` changes that ginee did not see), updates the sticky, posts a `ginee:score-recompute` audit comment.
+
+### Forbidden
+
+- Never post a second sticky-score comment — always update via the marker.
+- Never edit or delete an immutable audit comment.
+- Never auto-detect manual `gh issue edit` changes between sessions — the sticky reflects the last ginee-driven update; users must invoke `recompute score #N` to refresh it. `ginee-triage` always sorts from live labels regardless of sticky staleness.
+- Never include adopter-secret data in the comment (issue body / labels only — never local repo paths, never SHA-256 fingerprints, never user PII).
+
 ## Labels — first-use provisioning
 
 `team-lead` creates missing labels on first triage / pickup:

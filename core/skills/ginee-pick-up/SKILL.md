@@ -29,9 +29,10 @@ User asks "pick up X" / "work on X" / "start on X" / "begin X" where X is one of
 
 1. Fetch + parse the issue.
 2. Validate `OPEN` state + `ready-label`.
-3. **Scoring labels** per `.agents/ginee/core/triage-scoring.md`:
-   - Missing `value:*` → ask user (H / M / L); add `value:high|medium|low` label.
-   - Missing `complexity:*` → dispatch `solution-architect` for H / M / L estimate; post marker comment (`<!-- ginee:complexity-estimate by=solution-architect value=H -->`) + add `complexity:high|medium|low` label.
+3. **Scoring labels + sticky comment** per `.agents/ginee/core/triage-scoring.md § Score comment + audit trail`:
+   - Missing `value:*` → ask user (H / M / L); add `value:high|medium|low` label; post `<!-- ginee:value-prompt -->` audit comment.
+   - Missing `complexity:*` → dispatch `solution-architect` for H / M / L estimate; post `<!-- ginee:complexity-estimate by=solution-architect value=H at=<ISO> -->` audit comment + add `complexity:high|medium|low` label.
+   - Post / update the sticky `<!-- ginee:score v=1 -->` comment (one per issue; find via marker; never duplicate). `Reasoning` column populated only for ginee-set rows.
 4. Swap labels: `ready-label` → `in-progress-label`.
 5. Run Phase 1–8.
 6. Post structured comments at major transitions (Phase 3 design review / Phase 7 SA review / Phase 8 acceptance / stoppable intermediate).
