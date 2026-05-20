@@ -10,6 +10,21 @@ All notable changes to ginee. The format follows [Keep a Changelog](https://keep
 
 ## Unreleased
 
+## 0.6.0 — 2026-05-20
+
+### Added
+
+- **D23 — Triage scoring (value × complexity priority)** ([#46](https://github.com/kostiantyn-matsebora/ginee/issues/46), [#47](https://github.com/kostiantyn-matsebora/ginee/pull/47)). `ginee-triage` now ranks ready work by `score = value / complexity` (default WSJF cost-of-delay over job-size) instead of age alone. ATAM utility-tree convention on both axes — `value:high|medium|low` + `complexity:high|medium|low` label namespaces; numeric mapping `H=3, M=2, L=1` yields a 9-cell matrix (`HL=3.00` quick-win at the top, `LH=0.33` at the bottom). Source-of-truth = labels (queryable via `gh api`, mutable via `gh issue edit`, GH-native — reuses the `ginee:*` precedent from D14). 6 labels auto-provisioned by `team-lead` on first triage / pickup; advisory colors, adopter may recolor.
+  - **TODO equivalent** — inline marker `☐ [v:H c:L] Description` (case-insensitive). Partial markers (`[v:H]` only / `[c:L]` only) handled; missing marker = score 0 (sorts last).
+  - **`solution-architect` auto-estimates `complexity`** on pickup when missing — ATAM signals (touched-file count, role count, novel concepts vs existing pattern reuse). `value` is never auto-estimated — `team-lead` asks the user.
+  - **Sticky `<!-- ginee:score v=1 -->` comment** per issue (hybrid topology) — `team-lead` posts on pickup, updates in place on every ginee-driven label change. 5-column table (Axis / Label / Numeric / Set by / Reasoning); `Reasoning` populated only for ginee-set rows (e.g. SA signals digest `1 file · 1 role · pattern reuse → L`), `—` for user-set, `unscored` for not-yet-set.
+  - **Immutable audit comments** preserved alongside on key events — `<!-- ginee:complexity-estimate -->` (SA auto-estimate), `<!-- ginee:value-prompt -->` (user reply at pickup), `<!-- ginee:score-recompute -->` (explicit refresh).
+  - **New trigger** `@team-lead recompute score #<N>` — re-reads current labels (catches manual `gh issue edit` between sessions), refreshes the sticky, posts a score-recompute audit comment with reason + delta.
+  - **Adopter override** — `local/framework.config.yaml § triage.scoring-formula` accepts `value-over-complexity` (default) / `value-only` / `value-minus-complexity`.
+  - **Backward compatibility** — adopters with no scoring labels see "Unscored" listings matching pre-D23 age-order. Untagged TODOs continue to work unchanged.
+  - **Tests** — fulfilled by the worked-sort fixture in `core/triage-scoring.md § Examples`; no runtime `.ps1` / `.sh` helper ships (consistent with skill-as-markdown norm).
+  - Spec: `core/triage-scoring.md`. Migration: `core/MIGRATIONS/D23-triage-scoring.md`.
+
 ## 0.5.1 — 2026-05-19
 
 ### Changed
