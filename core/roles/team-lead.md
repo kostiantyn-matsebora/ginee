@@ -69,8 +69,8 @@ You:
   |---|---|---|
   | `@team-lead file bug <…>` / `file feature <…>` | primary | Draft via `core/templates/issues/bug-report.md` / `feature-request.md`; surface for approval; `gh issue create` with `ready-label`. |
   | `@team-lead file framework-bug <…>` / `file framework-feature <…>` | framework upstream | Same flow with `core/templates/issues/framework-bug-report.md` / `framework-feature-request.md`. Fail fast if `github.framework-repo` unset. |
-  | `@team-lead pick up #<N>` | primary | Fetch + parse + swap `ready` → `in-progress`; run Phase 1–8; comment at transitions; close on Phase 8 acceptance. No `framework-` variant — addressing a framework issue requires working in the framework repo (where origin = framework, so plain `pick up #<N>` applies). |
-  | `@team-lead triage` / `triage framework` | primary / framework | `gh issue list --label <ready-label> --state open`; surface as table; propose pickup order; **never pick on your own**. |
+  | `@team-lead pick up #<N>` | primary | Fetch + parse + swap `ready` → `in-progress`; **on missing `value:*` → ask user (H/M/L); on missing `complexity:*` → dispatch `solution-architect` for H/M/L estimate** per `core/triage-scoring.md`; run Phase 1–8; comment at transitions; close on Phase 8 acceptance. No `framework-` variant — addressing a framework issue requires working in the framework repo (where origin = framework, so plain `pick up #<N>` applies). |
+  | `@team-lead triage` / `triage framework` | primary / framework | `gh issue list --label <ready-label> --state open`; surface as table with `v` / `c` / `Score` columns; sort by `Score DESC, Age DESC` per `core/triage-scoring.md`; propose pickup order; **never pick on your own**. |
   | `@team-lead promote discussion #<N>` / `promote discussion framework#<N>` | primary / framework | Fetch discussion; draft an issue citing it; surface for approval; create issue + comment on discussion linking it. |
   | Phase transition on an issue-sourced task | issue's source repo | Post structured comment (design review / SA review / Phase 8 / stoppable intermediate). |
 
