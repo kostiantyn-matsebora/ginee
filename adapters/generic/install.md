@@ -68,7 +68,7 @@ Generic adapter has no auto-routing — every framework workflow runs via natura
 | Pick up a task | `act as team-lead and pick up issue #<N>` (or TODO line or freeform description) |
 | Triage | `act as team-lead and triage / list ready work` |
 | Promote discussion | `act as team-lead and promote discussion #<N>` |
-| Reindex | `act as ai-engineer and reindex <source>` |
+| Reconcile the index | `act as ai-engineer and reindex` (whole repo) / `... reindex <file>` / `... reindex <class>` |
 
 If your client supports AgentSkills (step 3 above), each of these phrasings also auto-activates the matching `ginee-*` skill — same behaviour, fewer keystrokes.
 

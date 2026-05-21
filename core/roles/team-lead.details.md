@@ -187,12 +187,13 @@ Before dispatching a specialist whose task may consume any indexed source doc, v
    - Globbed class → compare per-file entries under `sha256-by-file:`.
 4. **On any mismatch:**
    - Flag staleness in your first response (which source(s) drifted; which index files are affected).
-   - Offer the user two paths:
+   - Offer the user three paths:
 
      | Option | Effect |
      |---|---|
-     | `@ai-engineer reindex <source>` | Targeted re-extraction; cheapest. |
-     | `@team-lead rediscover` | Full re-discovery + re-extraction; use when class membership itself changed. |
+     | `@ai-engineer reindex <source>` | Scoped reconciliation — cheapest; covers the drifted source only. |
+     | `@ai-engineer reindex` | Whole-repo reconciliation — also picks up net-new files within existing class globs. |
+     | `@team-lead rediscover` | Full re-discovery — use when class membership itself changed (new doc directory, new tooling type). |
 
    - **Never auto-reindex.** User decides.
 5. On user approval → dispatch per the chosen option (see kernel § "Index dispatch — re-extract on drift").
