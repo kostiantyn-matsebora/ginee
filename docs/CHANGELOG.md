@@ -10,6 +10,29 @@ All notable changes to ginee. The format follows [Keep a Changelog](https://keep
 
 ## Unreleased
 
+## 0.7.0 — 2026-05-21
+
+### Changed
+
+- **`ginee-reindex` reconciles index with current repo state** ([#49](https://github.com/kostiantyn-matsebora/ginee/issues/49), [#52](https://github.com/kostiantyn-matsebora/ginee/pull/52)). `@team-lead reindex [scope]` (and the `ginee-reindex` skill) now reconciles `local/index/` against the current repo state at the chosen scope via **three sweeps** instead of refusing every source not already in the manifest:
+  - **Sweep 1 — SHA drift.** Re-extract on change for every in-scope manifest entry.
+  - **Sweep 2 — new files.** For every in-scope class, list files matching its `source-glob`; any not yet in the manifest gets added + extracted with the class recipe.
+  - **Sweep 3 — stale entries.** Manifest entry whose `source` no longer exists → prompt the user with `remove?`. **Never auto-deleted.**
+  - **Scopes.** `reindex` (no arg) = whole repo; `reindex <file>` = the file's matching class only; `reindex <class>` = one class's `source-glob` only.
+  - **Drops both skill forbiddens** that previously routed adopters to the heavier `ginee-rediscover` for net-new files — `reindex` now does what its name implies.
+  - **Novel-class detection remains a `rediscover` responsibility** (sources matching no class glob — touches `project-profile` + `bindings` + may need consumer-coupling input).
+  - **Backward compatibility** — manifest schema unchanged; `reindex <file-already-in-manifest>` continues to behave as before. No adopter migration action required.
+  - Spec: `core/index-protocol.md § Reconciliation` (renamed from `§ Re-extraction`). Migration: `core/MIGRATIONS/reindex-reconcile.md`.
+
+- **`team-lead` strict-domain hardening — close "feels fast → I'll just do it" bypass** ([#50](https://github.com/kostiantyn-matsebora/ginee/issues/50), [#51](https://github.com/kostiantyn-matsebora/ginee/pull/51)). Closes an observed regression where the orchestrator self-executed specialist-owned work on a "feels fast" heuristic — 5–7 min estimates ballooning into ~60 min main-thread sessions with no stop-and-report. Kernel + protocol wording now names the failure mode and blocks it.
+  - **`core/roles/team-lead.md § Forbidden actions`** — new bullet: *"Never self-execute work in a specialist-owned surface, regardless of estimated size."* Includes the correct dispatch shape for ≤ 15 min work (explicit estimate flag → iteration-protocol load skipped).
+  - **`core/process.md § Dispatch & parallelism rules`** — new row: *"Surface owns the dispatch decision"* — routing is owned by the touched surface, not by perceived effort.
+  - **`core/process.md § Strict-domain rule`** — *"Size is not an exemption"* sub-bullet + pointer to the failure-modes catalogue.
+  - **`core/iteration-protocol.md § Stoppable intermediate states`** — new `### Scope-overrun trigger` sub-section: > 2× initial estimate → mandatory stop-and-report. Applies symmetrically to specialists and orchestrator in-thread work.
+  - **`core/roles/team-lead.details.md § Common failure modes`** — new regression-grade catalogue of observed orchestrator violations + correct dispatch shape per pattern.
+  - **Adopter action** — none. Clarifications to existing rules; all changes additive. No config / API / surface change.
+  - Migration: `core/MIGRATIONS/team-lead-strict-domain-hardening.md`.
+
 ## 0.6.0 — 2026-05-20
 
 ### Added
