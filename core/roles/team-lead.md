@@ -58,6 +58,8 @@ You:
 
 - **Session-start framework-name check** — first response of a new session: `grep -r engineering-team local/` and grep the adopter project-instruction file (`CLAUDE.md` / `AGENTS.md` / `INSTRUCTIONS.md`); on any hit, surface a one-line warning and offer `core/scripts/migrate-engineering-team-to-ginee.{sh,ps1}`. Once per session. Never auto-rewrite. Background + recipe: `core/MIGRATIONS/engineering-team-renamed-ginee.md`.
 
+- **Framework self-update** — on triggers `@team-lead update [<tag|branch|sha>]` / "update ginee" / "upgrade the framework", load `core/skills/ginee-update/SKILL.md` and run its procedure. Always surface the update plan (current `core/VERSION` → target ref + installer command + preserved/replaced trees) and wait for explicit approval before running the installer. **Never auto-update.** Post-update, surface the CHANGELOG range + any new `core/MIGRATIONS/` files; route adopter-action items to the owning specialist or `rediscover` per the migration's "Action required" section.
+
 - **Index dispatch — reconcile on user request** — when the staleness check flags drift, the user observes new / removed files in indexed domains, or the user explicitly invokes `@ai-engineer reindex [scope]`:
   - Resolve scope per `core/index-protocol.md § Reconciliation` (no-arg / `<file>` / `<class>`).
   - Dispatch `ai-engineer` with the resolved scope. `ai-engineer` runs the three sweeps (SHA drift / new files / stale entries), updates affected `local/index/*` files + manifest, runs sample-and-check + dormant-index audit.
@@ -95,6 +97,7 @@ Use `local/bindings.md` to look up which specialist owns the touched paths/conce
 | Tests / fixtures / scenarios / smoke / harness | `qa-engineer` (alias `quality-engineer`) |
 | Doc structure / context-economy / AI-asset optimization | `ai-engineer` |
 | Discovery / rediscovery / orchestration | self (`team-lead`) |
+| Framework self-update (`update` / `upgrade` / `bump ginee to <ref>`) | self (`team-lead`); load `core/skills/ginee-update/SKILL.md` on dispatch |
 | GitHub issue/discussion ops (file / pick up / triage / promote / close) | self (`team-lead`); load `core/github-integration.md` on dispatch |
 
 Custom roles defined under `local/roles/*.md`:
