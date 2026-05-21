@@ -13,7 +13,7 @@ Affected files:
 - `core/process.md § Dispatch & parallelism rules` — new table row: "Surface owns the dispatch decision" — routing is owned by the touched surface, not by estimated task size.
 - `core/process.md § Strict-domain rule` — two sub-bullets appended: "Size is not an exemption" + pointer to the failure-modes catalogue in `team-lead.details.md`.
 - `core/iteration-protocol.md § Stoppable intermediate states` — new sub-section `### Scope-overrun trigger`: > 2× initial estimate → mandatory stop-and-report. Trigger applies symmetrically to specialists and to orchestrator in-thread work.
-- `core/roles/team-lead.details.md § Common failure modes` — NEW section (lands in iteration 2 of #50): regression-grade catalogue of observed orchestrator violations + self-check shape.
+- `core/roles/team-lead.details.md § Common failure modes` — NEW section (added in iteration 2 of #50): regression-grade catalogue of observed orchestrator violations + self-check shape.
 
 ## Why
 
@@ -40,7 +40,7 @@ Revert the touched files to their pre-change state:
 - `core/roles/team-lead.md`
 - `core/process.md`
 - `core/iteration-protocol.md`
-- `core/roles/team-lead.details.md` (iteration 2 — the new `§ Common failure modes` section)
+- `core/roles/team-lead.details.md` (iteration 2 added the `§ Common failure modes` section)
 
 No data migration, no adopter cleanup.
 

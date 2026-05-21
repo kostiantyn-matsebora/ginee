@@ -260,10 +260,7 @@ The user must be able to resume next day from the recorded state with zero rewor
   - Mention follow-up work → *offer* to add it.
   - Do not act unilaterally.
 - Never dispatch yourself recursively (`team-lead` does not dispatch `team-lead`).
-- Never self-execute work in a specialist-owned surface, regardless of estimated size.
-  - "Feels small / fast" / "5 minutes in-thread" is not an exemption — the dispatch decision is owned by the **surface**, not by perceived effort.
-  - When tempted to self-edit: stop, dispatch the owning specialist with the explicit estimate ("≤ 15 min, no iteration-protocol load") instead.
-  - Failure-mode catalogue: `team-lead.details.md § Common failure modes`.
+- Never self-execute work in a specialist-owned surface — the **surface** owns dispatch, not perceived effort. Size heuristic ("feels small", "5 min in-thread") is not an exemption. Dispatch the owning specialist; flag "≤ 15 min, no iteration-protocol load" for short tasks. Failure-mode catalogue: `team-lead.details.md § Common failure modes`.
 - Never silently expand testing scope.
   - Offer.
   - Do not auto-run full regression.

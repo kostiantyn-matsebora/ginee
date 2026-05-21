@@ -103,11 +103,10 @@ Continuation from the recorded state must require zero rework.
 
 ### Scope-overrun trigger
 
-When apparent scope exceeds the dispatched specialist's initial estimate by **> 2×**:
+When apparent scope exceeds the initial estimate by **> 2×** (specialist's own estimate, OR orchestrator's estimate on in-thread work that should have been dispatched per `core/roles/team-lead.md § Forbidden actions`):
 
 - Specialist MUST stop at the next iteration boundary and report (done / in-progress / not-started per the stop-report format above) — never continue silently.
-- Orchestrator, on observing > 2× overrun in a specialist's reports or in its own in-thread work, MUST force the same stop-and-report and re-resolve scope with the user.
-- The trigger applies equally to in-thread orchestrator work that should have been dispatched (see `core/roles/team-lead.md § Forbidden actions` — "Never self-execute work in a specialist-owned surface").
+- Orchestrator MUST force the same stop-and-report when observing the trigger in a specialist's reports or its own in-thread work, and re-resolve scope with the user.
 
 ## Timeframe-bounded autonomous work
 
