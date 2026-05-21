@@ -164,6 +164,14 @@ Examples that should flag:
 - Task references a `ml-pipeline/` script but profile lists no ML stack.
 - Task references a new top-level docs directory not in the profile.
 
+## Common failure modes
+
+Regression-grade catalogue. Each row names an observed orchestrator violation + the correct dispatch shape. Self-check against this list before any main-thread action on a specialist-owned surface.
+
+| Pattern | Correct shape |
+|---|---|
+| **"Feels fast → I'll just do it."** Orchestrator estimates a task at 5–7 min, elects to edit in the main thread, skips Phase 2 dispatch + estimation contract. Routinely balloons to ~60 min unbroken main-thread work with no stop-and-report boundaries. | Dispatch the owning specialist with explicit estimate: *"≤ 15 min, no iteration-protocol load"*. The dispatch overhead is ~30 seconds; the safety it buys (correct owner, stop-and-report on overrun per `core/iteration-protocol.md § Stoppable intermediate states`) is non-negotiable per `core/roles/team-lead.md § Forbidden actions`. |
+
 ## Pre-dispatch staleness check (index)
 
 Before dispatching a specialist whose task may consume any indexed source doc, verify the index isn't stale. Full spec: `core/index-protocol.md § Pre-dispatch staleness check`.
