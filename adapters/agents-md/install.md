@@ -86,7 +86,7 @@ Framework workflows (file / pick-up / triage / promote / discovery / reindex) ac
 | "Pick up #N" / "Work on the TODO about X" / "Start on Y" | `ginee-pick-up` (unified — issues, TODO lines, freeform) |
 | "Triage" / "List ready work" / "Show the backlog" | `ginee-triage` (unified — issues + framework + TODOs) |
 | "Promote discussion #N" | `ginee-promote-discussion` |
-| "Reindex `<source>`" | `ginee-reindex` |
+| "Reindex" / "Reindex `<file>`" / "Reindex `<class>`" / "Reconcile the index" | `ginee-reindex` |
 
 ## Updates
 

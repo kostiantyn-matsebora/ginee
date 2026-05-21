@@ -89,7 +89,7 @@ core/
 │   ├── ginee-triage/SKILL.md          list ready work across sources
 │   ├── ginee-file-{bug,feature,...}   structured issue filing
 │   ├── ginee-promote-discussion/      discussion → issue
-│   └── ginee-reindex/                 targeted index re-extraction
+│   └── ginee-reindex/                 reconcile index with current repo state
 │
 ├── MIGRATIONS/                 Version-to-version migration notes
 │
@@ -160,7 +160,7 @@ local/
     └── <your-role>.md          Same shape as core/roles/*.md (see role-authoring-template)
 ```
 
-**Discovery writes most of this on first run.** Adopters edit `bindings.md` and `framework.config.yaml` to refine PM's auto-discovered defaults; everything else is regenerated on `@team-lead rediscover` or `@ai-engineer reindex`.
+**Discovery writes most of this on first run.** Adopters edit `bindings.md` and `framework.config.yaml` to refine PM's auto-discovered defaults; index entries get reconciled in place on `@ai-engineer reindex` (whole repo / file / class) and fully regenerated on `@team-lead rediscover`.
 
 ## The installer
 
@@ -229,14 +229,16 @@ DISCOVERY (initial)
 PRE-DISPATCH (every task)
    team-lead identifies sources the task may consume
    → computes current SHA-256, compares with manifest
-   → on drift: flag + offer @ai-engineer reindex or @team-lead rediscover
+   → on drift: flag + offer @ai-engineer reindex (scoped or whole-repo) or @team-lead rediscover
    → never auto-reindexes
 
-RE-EXTRACTION
-   ai-engineer reads changed sources
-   → re-extracts per recorded recipe
+RECONCILIATION  (@ai-engineer reindex [scope])
+   three sweeps over the named scope (whole repo / file / class):
+   1. SHA drift   — re-extract on change
+   2. New files   — net-new files in existing class globs → add + extract
+   3. Stale       — manifest entry's source gone → prompt remove? (never auto-delete)
    → updates manifest + index files
-   → re-runs sample-and-check
+   → sample-and-check + dormant-index audit on every touched class
 ```
 
 Full spec: [`core/index-protocol.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/core/index-protocol.md).
@@ -254,7 +256,7 @@ Full spec: [`core/index-protocol.md`](https://github.com/kostiantyn-matsebora/gi
 | `ginee-file-bug` / `ginee-file-feature` | Structured filing in the primary repo |
 | `ginee-file-framework-bug` / `ginee-file-framework-feature` | Filing against the ginee upstream repo (metadata-only; needs `github.framework-repo`) |
 | `ginee-promote-discussion` | Promote a GitHub discussion to a draft issue |
-| `ginee-reindex` | Targeted re-extraction for a changed source |
+| `ginee-reindex` | Reconcile `local/index/` with current repo state at the named scope (three sweeps — drift / new / stale) |
 
 The adapter install step bridges `core/skills/ginee-*` into the host client's expected path. AgentSkills-compatible clients auto-activate skills on natural-language match.
 
