@@ -10,6 +10,19 @@ All notable changes to ginee. The format follows [Keep a Changelog](https://keep
 
 ## Unreleased
 
+## 0.8.0 — 2026-05-22
+
+### Added
+
+- **`ginee-update` skill — framework self-update via the orchestrator** ([#55](https://github.com/kostiantyn-matsebora/ginee/pull/55)). New uniform self-update surface for adopters. Triggers `@team-lead update [<tag|branch|sha>]` / *"update ginee"* / *"upgrade the framework"* / *"pull the latest ginee"* now load `core/skills/ginee-update/SKILL.md` and drive the existing `install.{ps1,sh} --update-only` flow — **no installer changes**. Preserves `local/`; refreshes `core/` + `adapters/` + `extras/`.
+  - **7-step procedure** — locate framework → read current `core/VERSION` → resolve target ref (latest release / explicit tag / branch / SHA via `gh release view` with `iwr`/`curl` fallback) → compare versions (refuses downgrades unless `--allow-downgrade`) → **surface plan + wait for explicit user approval** (never auto-runs) → run installer per platform → report VERSION delta + CHANGELOG range + new `core/MIGRATIONS/*.md` files with their `Action required` excerpts.
+  - **Post-update report** also diffs `local/index/manifest.yaml` SHA-256s against the freshly fetched `core/` — surfaces drift; offers `ginee-reindex` per the standard staleness flow (never auto-reindexes).
+  - **Forbiddens** — never auto-run; never edit `local/*`; never mask installer failure (surfaces exit code + last 20 lines of stderr; no retry); never bypass an adopter's pinned `--ref` in `local/framework.config.yaml § framework.pinned-ref` without confirming.
+  - **Cross-client coverage** — activation rows added to all four adapters (`claude` / `copilot-cli` / `agents-md` / `generic`) + `adapters/claude/CLAUDE-pointer.md` workflow list.
+  - **Backward compatibility** — manual `./install.{ps1,sh} --update-only` continues to work unchanged. Adopters opt in by refreshing the framework once via the existing path (so the skill lands); future updates flow through the skill.
+  - **Skill count** — 10 → 11 across CI workflow, `docs/ARCHITECTURE.md`, `docs/CHEATSHEET.md`, and the Claude pointer block.
+  - Migration: `core/MIGRATIONS/ginee-update-skill.md`.
+
 ## 0.7.0 — 2026-05-21
 
 ### Changed
