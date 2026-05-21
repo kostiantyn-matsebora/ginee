@@ -80,6 +80,7 @@ Cheat sheet for the 10 framework workflows (AgentSkills auto-activates from thes
 | "Triage" / "List ready work" / "Show the backlog" / "Triage framework" / "Triage todos" | `ginee-triage` (unified — issues + framework + TODOs) |
 | "Promote discussion #N" / "Promote framework discussion #N" | `ginee-promote-discussion` |
 | "Reindex" / "Reindex `<file>`" / "Reindex `<class>`" / "Reconcile the index" | `ginee-reindex` |
+| "Update ginee" / "Upgrade the framework" / "Bump ginee to `v<X>`" / "Pull the latest ginee" | `ginee-update` |
 
 The framework's own `core/process.md` and role kernels use `@<role>` notation as vendor-neutral shorthand — Claude Code adopters read that as "the orchestrator routes here," not as a literal command.
 

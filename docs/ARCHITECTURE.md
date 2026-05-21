@@ -22,7 +22,7 @@ your-project/
 │
 ├── .claude/                    ← (claude adapter) host-client bridge
 │   ├── agents/                     pointer files → core/roles/
-│   └── skills/ginee-*/             10 AgentSkills (cross-tool path)
+│   └── skills/ginee-*/             11 AgentSkills (cross-tool path)
 │
 ├── .github/                    ← (copilot-cli adapter) host-client bridge
 │   └── agents/                     pointer files → core/roles/
@@ -82,14 +82,15 @@ core/
 │   ├── issues/                        framework-internal PM workflow templates
 │   └── index/                         per-class index file templates
 │
-├── skills/ginee-*/             10 AgentSkills (cross-client per agentskills.io)
+├── skills/ginee-*/             11 AgentSkills (cross-client per agentskills.io)
 │   ├── ginee-discovery/SKILL.md       initial discovery flow
 │   ├── ginee-rediscover/SKILL.md      refresh on staleness
 │   ├── ginee-pick-up/SKILL.md         unified task pickup (issue / TODO / freeform)
 │   ├── ginee-triage/SKILL.md          list ready work across sources
 │   ├── ginee-file-{bug,feature,...}   structured issue filing
 │   ├── ginee-promote-discussion/      discussion → issue
-│   └── ginee-reindex/                 reconcile index with current repo state
+│   ├── ginee-reindex/                 reconcile index with current repo state
+│   └── ginee-update/                  update framework in place (preserves local/)
 │
 ├── MIGRATIONS/                 Version-to-version migration notes
 │
@@ -104,7 +105,7 @@ Adapters are **pointer layers** between ginee's generic specs and a specific LLM
 
 | Adapter | Tier | What it installs into the project |
 |---|---|---|
-| `claude` | tier-1 | `.claude/agents/*.md` (7 cardinal pointers) + `.claude/skills/ginee-*/` (10 skills) + CLAUDE.md pointer block |
+| `claude` | tier-1 | `.claude/agents/*.md` (7 cardinal pointers) + `.claude/skills/ginee-*/` (11 skills) + CLAUDE.md pointer block |
 | `copilot-cli` | tier-1 | `.github/agents/*.agent.md` (7 cardinal pointers) + `.agents/skills/ginee-*/` (cross-tool path) |
 | `agents-md` | tier-2 | `AGENTS.md` at project root (single instruction file) — read by Cursor, OpenAI Codex, Windsurf, Amp, Devin, Factory, Jules, Copilot IDE |
 | `generic` | tier-3 | `adapters/generic/INSTRUCTIONS.md` referenced manually — works with any LLM that reads a system-prompt file |
@@ -245,7 +246,7 @@ Full spec: [`core/index-protocol.md`](https://github.com/kostiantyn-matsebora/gi
 
 ## Skills — workflow entry points
 
-10 AgentSkills under `core/skills/ginee-*/SKILL.md` follow the [agentskills.io](https://agentskills.io) standard. Each is a directory with YAML frontmatter (`name`, `description`) + a markdown procedure body. The skill name's prefix `ginee-` avoids collisions with adopter-authored skills.
+11 AgentSkills under `core/skills/ginee-*/SKILL.md` follow the [agentskills.io](https://agentskills.io) standard. Each is a directory with YAML frontmatter (`name`, `description`) + a markdown procedure body. The skill name's prefix `ginee-` avoids collisions with adopter-authored skills.
 
 | Skill | Purpose |
 |---|---|
@@ -257,6 +258,7 @@ Full spec: [`core/index-protocol.md`](https://github.com/kostiantyn-matsebora/gi
 | `ginee-file-framework-bug` / `ginee-file-framework-feature` | Filing against the ginee upstream repo (metadata-only; needs `github.framework-repo`) |
 | `ginee-promote-discussion` | Promote a GitHub discussion to a draft issue |
 | `ginee-reindex` | Reconcile `local/index/` with current repo state at the named scope (three sweeps — drift / new / stale) |
+| `ginee-update` | Update framework in place to latest release (or named ref) — drives `install.{ps1,sh} --update-only`; preserves `local/` |
 
 The adapter install step bridges `core/skills/ginee-*` into the host client's expected path. AgentSkills-compatible clients auto-activate skills on natural-language match.
 

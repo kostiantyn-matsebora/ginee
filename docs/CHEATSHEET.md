@@ -62,6 +62,8 @@ Slash commands `/ginee-<skill> [args]`. Natural-language phrasings also match. T
 /ginee-promote-discussion #<N>            # discussion → draft issue
 /ginee-reindex                            # reconcile index with current repo state (whole repo)
 /ginee-reindex <file|class>               # scoped reconciliation
+/ginee-update                             # update framework to latest release (preserves local/)
+/ginee-update <tag|branch|sha>            # update to a named ref
 ```
 
 ## Freeform requests (any tier)
@@ -154,7 +156,8 @@ Framework defaults: `branch` for issue / TODO-sourced; `wt` for freeform. Auto-m
 | Discovery flagged staleness on a doc | SHA-256 drift | `/ginee-reindex <source>` (scoped) or `/ginee-reindex` (whole-repo — also catches net-new files) or `/ginee-rediscover` |
 | New doc / config landed but isn't in `local/index/` | Net-new file within existing class | `/ginee-reindex` reconciles; `/ginee-rediscover` only needed for novel classes (new directory / new tool) |
 | PR didn't auto-close issue on merge | Stacked PR merged into non-default branch first | Manual `gh issue close <N> --comment "..."` |
-| Trivial task loads full 64 KB baseline | Role kernel `Load when` not honoured | Specialist should report loaded set; if it doesn't, your kernel may be stale — `--update-only` to refresh |
+| Trivial task loads full 64 KB baseline | Role kernel `Load when` not honoured | Specialist should report loaded set; if it doesn't, your kernel may be stale — `/ginee-update` to refresh |
+| Framework feels out of date / missing a recent feature | Local install behind upstream | `/ginee-update` (latest release) or `/ginee-update <tag>` (named ref); never auto-updates — adopter approves the plan |
 
 ## Where things live
 

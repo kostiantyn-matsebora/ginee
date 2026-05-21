@@ -97,16 +97,16 @@ jobs:
           done
           echo "5 specialists: OK"
 
-      - name: 10 ginee-* skills present
+      - name: 11 ginee-* skills present
         run: |
           set -e
-          for skill in ginee-discovery ginee-rediscover ginee-pick-up ginee-triage ginee-file-bug ginee-file-feature ginee-file-framework-bug ginee-file-framework-feature ginee-promote-discussion ginee-reindex; do
+          for skill in ginee-discovery ginee-rediscover ginee-pick-up ginee-triage ginee-file-bug ginee-file-feature ginee-file-framework-bug ginee-file-framework-feature ginee-promote-discussion ginee-reindex ginee-update; do
             if [ ! -f "core/skills/${skill}/SKILL.md" ]; then
               echo "::error::Missing skill: core/skills/${skill}/SKILL.md"
               exit 1
             fi
           done
-          echo "10 ginee-* skills: OK"
+          echo "11 ginee-* skills: OK"
 
       - name: Shared subagent pointers cite core/roles/
         run: |
@@ -294,7 +294,7 @@ jobs:
                 [ -f "$ROOT/.claude/agents/${role}.md" ] || { echo "::error::Missing .claude/agents/${role}.md"; exit 1; }
               done
               [ ! -f "$ROOT/.claude/agents/project-manager.md" ] || { echo "::error::Legacy project-manager.md pointer should not exist"; exit 1; }
-              for skill in ginee-discovery ginee-rediscover ginee-pick-up ginee-triage ginee-file-bug ginee-file-feature ginee-file-framework-bug ginee-file-framework-feature ginee-promote-discussion ginee-reindex; do
+              for skill in ginee-discovery ginee-rediscover ginee-pick-up ginee-triage ginee-file-bug ginee-file-feature ginee-file-framework-bug ginee-file-framework-feature ginee-promote-discussion ginee-reindex ginee-update; do
                 [ -f "$ROOT/.claude/skills/${skill}/SKILL.md" ] || { echo "::error::Missing .claude/skills/${skill}/SKILL.md"; exit 1; }
               done
               grep -qF "## Engineering team framework" "$ROOT/CLAUDE.md" || { echo "::error::CLAUDE.md missing pointer sentinel"; exit 1; }
@@ -305,7 +305,7 @@ jobs:
                 [ -f "$ROOT/.github/agents/${role}.agent.md" ] || { echo "::error::Missing .github/agents/${role}.agent.md"; exit 1; }
               done
               [ ! -f "$ROOT/.github/agents/project-manager.agent.md" ] || { echo "::error::Legacy project-manager.agent.md should not exist"; exit 1; }
-              for skill in ginee-discovery ginee-rediscover ginee-pick-up ginee-triage ginee-file-bug ginee-file-feature ginee-file-framework-bug ginee-file-framework-feature ginee-promote-discussion ginee-reindex; do
+              for skill in ginee-discovery ginee-rediscover ginee-pick-up ginee-triage ginee-file-bug ginee-file-feature ginee-file-framework-bug ginee-file-framework-feature ginee-promote-discussion ginee-reindex ginee-update; do
                 [ -f "$ROOT/.agents/skills/${skill}/SKILL.md" ] || { echo "::error::Missing .agents/skills/${skill}/SKILL.md"; exit 1; }
               done
               echo "Copilot CLI adapter footprint: OK"
@@ -444,7 +444,7 @@ jobs:
           $root = 'C:\temp\fake-project'
           $adapter = '${{ matrix.adapter }}'
           $roles = 'team-lead','solution-architect','ai-engineer','frontend-engineer','backend-engineer','devops-engineer','qa-engineer'
-          $skills = 'ginee-discovery','ginee-rediscover','ginee-pick-up','ginee-triage','ginee-file-bug','ginee-file-feature','ginee-file-framework-bug','ginee-file-framework-feature','ginee-promote-discussion','ginee-reindex'
+          $skills = 'ginee-discovery','ginee-rediscover','ginee-pick-up','ginee-triage','ginee-file-bug','ginee-file-feature','ginee-file-framework-bug','ginee-file-framework-feature','ginee-promote-discussion','ginee-reindex','ginee-update'
           switch ($adapter) {
             'claude' {
               foreach ($r in $roles) {
