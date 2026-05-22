@@ -10,6 +10,25 @@ All notable changes to ginee. The format follows [Keep a Changelog](https://keep
 
 ## Unreleased
 
+## 0.10.0 — 2026-05-22
+
+### Added
+
+- **D25 — Classical-architect SA model + doc-ownership redistribution** ([#37](https://github.com/kostiantyn-matsebora/ginee/issues/37), [#61](https://github.com/kostiantyn-matsebora/ginee/pull/61), [#62](https://github.com/kostiantyn-matsebora/ginee/pull/62)). `solution-architect` redefined from central-scribe + Phase-7-only sign-off to a **classical architect** with three activities across the whole lifecycle. Matches how real engineering teams operate (ginee's north star).
+  - **Three activities.** **Design** — Phase 1 elicits FRs / NFRs / Constraints (`local/requirements.md`) + derives ASRs via ATAM utility tree (`local/asr-utility-tree.md`); Phase 2 authors target architecture; greenfield-vs-delta mode resolved at Phase 1. **Review** — any phase, on engineer-proposed architectural changes (contract / topology / stack / NFR-affecting); APPROVE / REJECT / REQUEST-CHANGES; no code edits. **Governance** — continuous, **scoped only to PRs touching SA-owned files** per `local/bindings.md § Source-of-truth ownership` (NOT every Phase 4 / 5 / 6 PR — keeps SA out of the bottleneck path).
+  - **Two-file register split** — ASRs are an *outcome* of requirements, not the same level. `local/requirements.md` (FR / NFR / Constraints inputs) + `local/asr-utility-tree.md` (ASRs derived via ATAM). New templates: `core/templates/requirements-register.md` + `core/templates/asr-utility-tree.md`.
+  - **Doc-ownership redistribution.** CRs · project-instruction file · work-breakdown → `team-lead` (coordination decisions, not architectural). CI/CD guide · infra runbooks · deployment guides → `devops-engineer`. Backend READMEs · API docs · service docs → `backend-engineer`. Frontend READMEs · component docs · style guides → `frontend-engineer`. Test plans · scenario docs · QA reports → `qa-engineer`. Architecture doc · ADRs · diagrams · requirements register · ASR utility tree stay with SA. Mockup unchanged. Every non-SA-owned doc edit is SA-reviewed for architectural coherence.
+  - **`ai-engineer` counterpart generalized** — was SA ↔ ai-engineer pre-D25; now all-roles ↔ ai-engineer. `core/doc-co-ownership.md` **renamed** to `core/doc-roles.md` + rewritten.
+  - **Process hooks** — `core/process.md § Phase 1 / 2 / 4 / 5 / 6 / 7` updated with SA hooks per the issue's phase-by-phase table. Phase 7 retained but **lighter** because governance ran continuously.
+  - **CR template** moved from `solution-architect.details.md` → `team-lead.details.md` per the ownership reassignment. ADR template stays with SA.
+  - **Adopter migration** — force re-attribution sweep on `@team-lead rediscover` (discovery Step 8c). Adopters MUST run rediscover on next upgrade; existing docs migrate to the new ownership map. Greenfield-flag detection added. New register files initialized from the discovered architecture doc when one exists. Full spec: `core/MIGRATIONS/D25-classical-architect.md`.
+  - **All 5 adapter renderings refreshed** — `_shared/agents/{solution-architect,team-lead,ai-engineer,backend-engineer,frontend-engineer,devops-engineer,qa-engineer}.md` pointer files.
+  - **User docs refreshed** ([#62](https://github.com/kostiantyn-matsebora/ginee/pull/62)) — `docs/CONCEPTS.md` (7-cardinal table + phased lifecycle + Source-of-truth ownership + new § Classical-architect SA model), `docs/GETTING_STARTED.md` (discovery + post-D25 rediscover callout), `docs/CHEATSHEET.md` (strict-domain + new § Classical-architect mini-block).
+
+### Changed
+
+- **CLAUDE.md § Hard constraints — binding `User-docs co-update` rule** ([#62](https://github.com/kostiantyn-matsebora/ginee/pull/62)). Every adopter-facing framework change (new skill · new D-decision · role-model change · new spec / template · new register / artefact) updates `docs/` (CONCEPTS · GETTING_STARTED · CHEATSHEET · index as applicable) **in the same PR**. Internal-only changes (D21 gate · CI internals · framework-dev hygiene · D18 script-quality · D19 backend-coverage) exempt. Phase-7 SA review verifies coverage. Codifies the recurring miss observed across pre-D25 feature PRs (#41 · #43 · #47 · #51 · #54 · #55 · #57) — backfilled in #59; binding from D25 onward.
+
 ## 0.9.0 — 2026-05-22
 
 ### Added
