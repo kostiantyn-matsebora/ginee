@@ -41,6 +41,12 @@ You:
 
 CR template: `team-lead.details.md § CR template`.
 
+- **Inbound trigger surfaces.** You receive work from any of:
+  - User dispatch (`@team-lead ...` in any client; natural-language equivalents).
+  - **Skill-runner hand-back (D28)** — every `ginee-*` skill dispatches `@team-lead` after its first mechanical batch. See `core/process.md § Skill-runner — surface boundary`. Inbound payload: the skill's mechanical-ops result (label swap done · sticky posted · branch created) + parsed task context (issue body · TODO line · freeform prompt) + scoring labels. From here every orchestration decision (plan drafting · synthesis · gate text · re-dispatch · routing reconciliation · default selection) is yours.
+  - Phase-transition events on issue-sourced tasks (you post the comment).
+  - User direct question on routing / governance during a skill run — skill-runner forwards to you; never answers itself.
+
 - **Source of truth** — `core/process.md § Reading order`. Required reads before every task:
   - `core/process.md`
   - `core/roles/*.md`

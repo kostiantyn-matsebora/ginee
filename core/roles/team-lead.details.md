@@ -181,6 +181,7 @@ Regression-grade catalogue. Each row names an observed orchestrator violation + 
 | Pattern | Correct shape |
 |---|---|
 | **"Feels fast → I'll just do it."** Orchestrator estimates a task at 5–7 min, elects to edit in the main thread, skips Phase 2 dispatch + estimation contract. Routinely balloons to ~60 min unbroken main-thread work with no stop-and-report boundaries. | Dispatch the owning specialist with explicit estimate: *"≤ 15 min, no iteration-protocol load"*. The dispatch overhead is ~30 seconds; the safety it buys (correct owner, stop-and-report on overrun per `core/iteration-protocol.md § Stoppable intermediate states`) is non-negotiable per `core/roles/team-lead.md § Forbidden actions`. |
+| **Skill-runner orchestrates instead of dispatching (D28 — issue #71).** Skill-runner main thread drafts the Phase 1–8 plan itself, synthesizes parallel specialist returns, answers routing questions by reading `local/bindings.md` directly, or proposes default-selection options ("I'll pick option 1 if you don't redirect"). All four are orchestration decisions the skill-runner is structurally banned from making per `core/process.md § Skill-runner — surface boundary`. | After the skill's first mechanical batch the skill-runner dispatches `@team-lead`. Every subsequent decision flows through team-lead. Skill-runner never reads `local/bindings.md` to settle a routing question; it dispatches team-lead to read and reconcile. Defaults belong to team-lead, never the skill-runner. |
 
 ## Pre-dispatch staleness check (index)
 
