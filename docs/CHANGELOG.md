@@ -10,6 +10,24 @@ All notable changes to ginee. The format follows [Keep a Changelog](https://keep
 
 ## Unreleased
 
+## 0.9.0 — 2026-05-22
+
+### Added
+
+- **D24 — `ginee-address-review` skill / `@team-lead address-review #<PR>` command** ([#53](https://github.com/kostiantyn-matsebora/ginee/issues/53), [#57](https://github.com/kostiantyn-matsebora/ginee/pull/57)). PR review-comment ingestion under skill / command parity. Sits between Phase 7 (internal SA review) and Phase 8 (user acceptance) for PRs exposed to **external** review (peer maintainers, OSS contributors, user-as-reviewer). Pre-D24 the framework had no protocol for this interval — adopters briefed the orchestrator manually; no detection, no routing, no accountability, no comment cadence.
+  - **7-step procedure** (`core/github-integration.md § Review-comment ingestion`) — resolve PR + verify checked-out branch == head; fetch `pulls/{N}/comments` + `/reviews`; deduplicate by `thread-id`; build routing records per `local/bindings.md § Source-of-truth ownership` (fallback `team-lead`; ambiguous → surface-closest role); surface consolidated plan table `# / thread / file:line / role / proposed action / action-type` for forced-interactive approval; dispatch specialists in parallel returning fix-track patches (Phase-6-shaped) or reply-track text + marker; squash fix patches into one cycle commit + push; post per-thread replies; post sticky cycle summary.
+  - **Lossless coverage** — every plan-table thread MUST end the cycle as `fix` (patch landed) OR `reply` (text + marker). No silent drops. Same principle as `core/index-protocol.md § Lossless rule for index § Coverage rule`.
+  - **Idempotency** — re-invocation rebuilds plan for net-new + revisited threads only; cycle ordinal increments; prior stickies preserved (immutable log).
+  - **HTML markers** — two new prefixes (`<!-- ginee:review-reply r=<thread-id> -->` per-thread, `<!-- ginee:review-cycle n=<N> -->` sticky); join the D23 set (`ginee:score / value-prompt / complexity-estimate / score-recompute`).
+  - **Skill / command parity principle** — codifies what was implicit pre-D24. Every user-invocable workflow ships both surfaces (skill in AgentSkills-capable clients; command in every adapter) with identical behaviour; skill is a thin wrapper loading the shared spec.
+  - **`auto:` mode (D12)** — plan-table approval is a **forced-interactive trigger** per `core/automatic-mode.md § Forced-interactive triggers`. No exception for "trivial" remarks (slope; explicit out-of-scope).
+  - **Explicit invocation only** — no extension of the D20 CI-watch loop; auto-detection of new review comments is out-of-scope.
+  - **Adapter delta** — +1 cheat-sheet row per adapter (`claude` / `copilot-cli` / `agents-md` / `generic`). No install-script changes (skill auto-bridges via the existing `core/skills/` copy step).
+  - **Skill count** — 11 → 12 (`docs/ARCHITECTURE.md` + CLAUDE.md D16 refreshed).
+  - **Backward compatibility** — purely additive. No `local/` schema changes; no `core/MIGRATIONS/D24-*.md` (cheat-sheet refresh on next framework update is the only adopter-facing change).
+  - **Out of scope** — drafting reviews on others' PRs; auto-resolving threads; cross-repo coordinated reviews; sentiment analysis; skill-only or command-only delivery.
+  - Spec: `core/github-integration.md § Review-comment ingestion`. Dispatch: `core/roles/team-lead.details.md § Review-comment dispatch`. Template: `core/templates/pr-comment-cadence.md`. Skill: `core/skills/ginee-address-review/SKILL.md`.
+
 ## 0.8.0 — 2026-05-22
 
 ### Added
