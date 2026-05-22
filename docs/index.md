@@ -126,10 +126,12 @@ Use ginee to pick up the next TODO            # freeform
 Use ginee to pick up issue #42                # freeform
 /ginee-pick-up #42
 /ginee-file-bug Safari 17 dashboard blank
-/ginee-triage
+/ginee-triage                                 # ranked by D23 score = value / complexity
+/ginee-address-review #42                     # ingest review comments on an open PR (D24)
+/ginee-update                                 # refresh framework — preserves local/
 ```
 
-Full 10-skill cheat sheet in [`adapters/claude/install.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/adapters/claude/install.md#how-to-invoke). For long tasks, the iteration protocol kicks in automatically: 3–5 min batches with visible intermediate results and a stop-anywhere contract.
+Full 12-skill cheat sheet in [`adapters/claude/install.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/adapters/claude/install.md#how-to-invoke). For long tasks, the iteration protocol kicks in automatically: 3–5 min batches with visible intermediate results and a stop-anywhere contract.
 
 [**Full Getting Started guide →**]({{ '/GETTING_STARTED.html' | relative_url }})
 

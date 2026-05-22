@@ -102,7 +102,7 @@ You'll see proposed changes before any file is written — approve or redirect e
 Ginee is a team — talk to *ginee*, not to a specific role. The team routes work internally per `local/bindings.md`. Two invocation paths:
 
 - **Freeform** (any tier): `Use ginee to ...` — catch-all; the team self-dispatches.
-- **Skill** (tier-1, Claude Code + Copilot CLI): `/ginee-<skill> [args]` — slash-command on the 10 framework skills. Natural-language phrasings like `Pick up #42` also match the skill description. Cheat sheet in [adapters/claude/install.md § How to invoke](https://github.com/kostiantyn-matsebora/ginee/blob/main/adapters/claude/install.md#how-to-invoke).
+- **Skill** (tier-1, Claude Code + Copilot CLI): `/ginee-<skill> [args]` — slash-command on the 12 framework skills. Natural-language phrasings like `Pick up #42` also match the skill description. Cheat sheet in [adapters/claude/install.md § How to invoke](https://github.com/kostiantyn-matsebora/ginee/blob/main/adapters/claude/install.md#how-to-invoke).
 
 Three task sources:
 
@@ -128,31 +128,43 @@ Use ginee to pick up issue #42                              # freeform
 /ginee-pick-up #42
 /ginee-file-bug dashboard renders blank on Safari 17
 /ginee-file-feature dark-mode toggle in header
-/ginee-triage
+/ginee-triage                                               # ranked by score = value / complexity (D23)
 /ginee-promote-discussion #17
+/ginee-address-review #42                                   # ingest review comments on an open PR (D24)
 ```
+
+`/ginee-triage` ranks ready work by **score = value / complexity** per [D23 triage scoring](https://github.com/kostiantyn-matsebora/ginee/blob/main/core/triage-scoring.md) — `value:high|medium|low` + `complexity:high|medium|low` labels (ATAM H/M/L, `H=3, M=2, L=1`). On pickup, missing `value` → team-lead asks you; missing `complexity` → `solution-architect` auto-estimates. Sticky `<!-- ginee:score v=1 -->` comment per issue.
+
+`/ginee-address-review` covers the interval **between Phase 7 (internal SA review) and Phase 8 (user accept)** when a PR is exposed to external reviewers — fetches `pulls/{N}/comments` + `/reviews`, routes each remark to the owning specialist, surfaces a consolidated plan table for your approval (no exception even in `auto:` mode), then reconciles fixes into one cycle commit + per-thread replies. Lossless coverage (every remark → fix OR reply) + idempotent re-invocation. Full spec: [`core/github-integration.md § Review-comment ingestion`](https://github.com/kostiantyn-matsebora/ginee/blob/main/core/github-integration.md#review-comment-ingestion).
 
 PRs auto-close issues via `Closes #N`. For tasks &gt; 15 minutes of estimated work, the [iteration protocol](https://github.com/kostiantyn-matsebora/ginee/blob/main/core/iteration-protocol.md) kicks in: each specialist returns a task decomposition + per-task estimate **before** editing, you approve, then 3–5 min stoppable batches.
 
+### Adopter docs (architecture, ADRs, runbooks) — doc-authoring protocol (D22)
+
+When ginee authors adopter markdown (architecture doc, ADRs, CRs, READMEs, runbooks, scenarios, API docs), the [doc-authoring protocol](https://github.com/kostiantyn-matsebora/ginee/blob/main/core/doc-authoring-protocol.md) is **binding**: structure over prose (tables / bullets / definitions), 5 mandatory checks, and the discovered markdown / prose linter (`markdownlint` / `vale` / `proselint` / `prettier-md`) runs at Phase 5. No linter configured → discovery report recommends a baseline; you decide — never auto-installed.
+
 ## 4. Update later
 
-From a local checkout of the installer:
+**Preferred — `/ginee-update` skill** (tier-1; works once you have ginee 0.8.0+ installed):
+
+```
+/ginee-update                                  # latest published release
+/ginee-update v0.9.0                           # pin to a tag
+/ginee-update main                             # track a branch (git required)
+"update ginee" / "upgrade the framework"       # natural-language equivalent
+```
+
+team-lead loads `core/skills/ginee-update/SKILL.md`, resolves the target ref, **surfaces the plan + waits for your explicit approval** (never auto-runs), drives the existing `install.{ps1,sh} --update-only` flow, then reports VERSION delta + CHANGELOG range + new `core/MIGRATIONS/*.md` files. Refuses downgrades unless `--allow-downgrade` is passed.
+
+**Manual fallback** — invoke the installer directly:
 
 ```bash
-./install.sh --update-only --adapter claude
+./install.sh --update-only --adapter claude                                                     # from a local checkout
+GINEE_UPDATE_ONLY=1 GINEE_ADAPTER=claude bash -c "$(curl -fsSL https://raw.githubusercontent.com/kostiantyn-matsebora/ginee/main/install.sh)"   # piped
 ```
 
 ```powershell
 .\install.ps1 -UpdateOnly -Adapter claude
-```
-
-Or piped (no local checkout needed):
-
-```bash
-GINEE_UPDATE_ONLY=1 GINEE_ADAPTER=claude bash -c "$(curl -fsSL https://raw.githubusercontent.com/kostiantyn-matsebora/ginee/main/install.sh)"
-```
-
-```powershell
 $env:GINEE_UPDATE_ONLY='1'; $env:GINEE_ADAPTER='claude'; iwr -useb https://raw.githubusercontent.com/kostiantyn-matsebora/ginee/main/install.ps1 | iex
 ```
 

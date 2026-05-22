@@ -119,14 +119,91 @@ ginee picks up GitHub issues with the same Phase 1–8 lifecycle as TODO lines a
 
 - **File** via `/ginee-file-bug <title>` / `/ginee-file-feature <title>`. team-lead uses structured templates under `core/templates/issues/`, opens a labelled issue with `ginee:ready`.
 - **Pick up** via `/ginee-pick-up #<N>`. team-lead swaps labels `:ready` → `:in-progress`, runs Phase 1–8, posts structured progress comments at transitions.
-- **Triage** via `/ginee-triage` — lists ready issues by age, scope, cross-references.
+- **Triage** via `/ginee-triage` — lists ready issues + TODOs ranked by **score = value / complexity** per [§ Triage scoring](#triage-scoring-d23).
 - **Promote** via `/ginee-promote-discussion #<N>` — surfaces a draft issue from a discussion thread.
+- **Address review** via `/ginee-address-review #<PR>` — see [§ Review-comment ingestion](#review-comment-ingestion-d24).
 
 Slash commands work on tier-1 clients (Claude Code, Copilot CLI). Natural-language phrasings (`File a bug titled X`, `Pick up #42`, `Triage`) also match the skill description. Tier-2/3 fallback uses `act as team-lead and ...`.
 
 PRs reference the issue with `Fixes #<N>` / `Closes #<N>` — GitHub auto-closes on merge.
 
 Full spec: [`core/github-integration.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/core/github-integration.md).
+
+## Triage scoring (D23)
+
+`/ginee-triage` ranks ready work by **score = value / complexity** (default WSJF cost-of-delay over job-size) instead of age. Two axes, same scale — ATAM utility-tree H/M/L (`H=3, M=2, L=1`).
+
+| Axis | Source-of-truth | Set by |
+|---|---|---|
+| `value` | label `value:high|medium|low` | **Reporter** (never auto-guessed) |
+| `complexity` | label `complexity:high|medium|low` | Reporter, OR `solution-architect` auto-estimate on pickup (ATAM signals: touched-file count, role count, novel concepts, pattern reuse) |
+
+9-cell matrix (rounded): `HL = 3.00` quick-win at the top; `HH = MM = LL = 1.00`; `LH = 0.33` at the bottom. Adopter override: `local/framework.config.yaml § triage.scoring-formula` accepts `value-over-complexity` (default) / `value-only` / `value-minus-complexity`.
+
+**TODO equivalent** — inline marker after the glyph (case-insensitive):
+
+```
+☐ [v:H c:L] Bump retry policy             # quick-win, scores 3.00
+☐ [v:H] Investigate flaky pipeline        # complexity unknown — imputed L
+☐ Refactor logger                          # unscored — sorts last
+```
+
+**Sticky comment** — `<!-- ginee:score v=1 -->`, one per issue, updated in place on ginee-driven label changes. Hybrid topology: live sticky state + immutable audit comments (`ginee:complexity-estimate` / `ginee:value-prompt` / `ginee:score-recompute`).
+
+**Manual override** — `@team-lead recompute score #<N>` re-reads current labels (catches manual `gh issue edit` between sessions) and refreshes the sticky.
+
+Pickup is **never** gated on score — score informs order, not eligibility. Full spec: [`core/triage-scoring.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/core/triage-scoring.md).
+
+## Review-comment ingestion (D24)
+
+`/ginee-address-review #<PR>` (or `@team-lead address-review #<PR>`) covers the interval **between Phase 7 (internal SA review) and Phase 8 (user accept)** when a PR is exposed to external review (peer maintainers, OSS contributors, user-as-reviewer). Skill + command parity — both run the same procedure under the same governance.
+
+| Step | Action |
+|---|---|
+| 1 | Resolve `<PR>`; verify checked-out branch == PR head; fetch `pulls/{N}/comments` + `/reviews` |
+| 2 | Deduplicate by `thread-id`; skip resolved + already-marked threads (unless newer reviewer comment landed) |
+| 3 | Build routing records per `local/bindings.md § Source-of-truth ownership`; fallback `team-lead`; ambiguous → surface-closest role |
+| 4 | Surface consolidated plan table — `# / thread / file:line / role / proposed action / action-type` |
+| 5 | Dispatch specialists in parallel; each returns **fix-track** patch OR **reply-track** text + marker |
+| 6 | Squash fix patches into one cycle commit + push; post per-thread replies |
+| 7 | Post one sticky cycle summary — `Review cycle N: M remarks addressed (K code, M-K reply). HEAD: <sha>.` |
+
+**Forced-interactive gate** — plan-table approval is non-bypassable; applies even in `auto:` mode per [`core/automatic-mode.md § Forced-interactive triggers`](https://github.com/kostiantyn-matsebora/ginee/blob/main/core/automatic-mode.md). No exception for "trivial" remarks.
+
+**Lossless coverage** — every plan-table thread MUST end the cycle as `fix` OR `reply`. No silent drops.
+
+**Idempotency** — markers `<!-- ginee:review-reply r=<thread-id> -->` (per-thread) + `<!-- ginee:review-cycle n=<N> -->` (sticky). Re-invocation covers net-new + revisited threads only; cycle ordinal increments; prior stickies preserved (immutable log).
+
+**Explicit invocation only** — no extension of the D20 CI-watch loop; auto-detection of new review comments is out-of-scope.
+
+Full spec: [`core/github-integration.md § Review-comment ingestion`](https://github.com/kostiantyn-matsebora/ginee/blob/main/core/github-integration.md#review-comment-ingestion).
+
+## Doc-authoring protocol (D22)
+
+When ginee authors **your** markdown (architecture doc, ADRs, CRs, READMEs, runbooks, scenarios, API docs), `core/process.md § Documentation style — structure over prose` is **binding**, not aspirational. Five mandatory checks; structure-default-by-class shape map.
+
+| Doc class | Default shape |
+|---|---|
+| Component / endpoint / service inventory | Table |
+| Step-by-step procedure / runbook | Numbered list |
+| ADR rationale (decision + context + consequences) | Definition lines + bullets |
+| Scenario / acceptance criteria | Given-When-Then bullets |
+| Glossary / API matrix | Table |
+| Rules with > 2 conditions | Parent bullet + sub-bullets — one rule per line |
+
+**No custom ginee lint.** Adopter projects already configure markdown / prose tooling; discovery records the linter (`markdownlint` / `vale` / `proselint` / `prettier-md`) under `local/index/commands.yaml § commands.lint.docs`. Roles run `${commands.lint.docs}` at Phase 5 / report-as-done; output goes to phase-report verification log.
+
+**No linter detected** → discovery recommends a baseline; adopter decides — never auto-installed.
+
+**Scope** — forward-only; legacy adopter docs are not retroactively rewritten. Style / tone / branding are out-of-scope (the protocol governs *structure* only).
+
+Full spec: [`core/doc-authoring-protocol.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/core/doc-authoring-protocol.md). Examples: [`core/doc-authoring-examples.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/core/doc-authoring-examples.md).
+
+## Framework self-update
+
+`/ginee-update [<tag|branch|sha>]` drives the existing `install.{ps1,sh} --update-only` flow under explicit user approval — never auto-runs. team-lead resolves the target ref (latest release / explicit tag / branch / SHA), surfaces the update plan (current `core/VERSION` → target ref + installer command + preserved/replaced trees), waits for `yes`, then runs the installer per platform. Post-update report: VERSION delta + CHANGELOG range + new `core/MIGRATIONS/*.md` files with `Action required` excerpts + `local/index/manifest.yaml` SHA drift offer.
+
+Full spec: [`core/skills/ginee-update/SKILL.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/core/skills/ginee-update/SKILL.md).
 
 ## What ginee doesn't do
 

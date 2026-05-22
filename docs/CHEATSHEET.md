@@ -64,6 +64,7 @@ Slash commands `/ginee-<skill> [args]`. Natural-language phrasings also match. T
 /ginee-reindex <file|class>               # scoped reconciliation
 /ginee-update                             # update framework to latest release (preserves local/)
 /ginee-update <tag|branch|sha>            # update to a named ref
+/ginee-address-review #<PR>               # ingest review comments on an open PR (D24)
 ```
 
 ## Freeform requests (any tier)
@@ -92,7 +93,32 @@ Use ginee to <task description>           # team self-dispatches; no skill neede
 | `ginee:ready` | Pickup candidate (`☐` equivalent) |
 | `ginee:in-progress` | PM has dispatched; phases 1–7 in flight |
 | `ginee:blocked` | Stoppable intermediate state; awaiting user / external |
+| `value:high|medium|low` | Triage scoring — reporter-defined business impact (D23) |
+| `complexity:high|medium|low` | Triage scoring — reporter or SA auto-estimate (D23) |
 | (closed issue) | Done — implicit, no label change needed |
+
+## Triage scoring (D23)
+
+```
+score = value / complexity                # H=3, M=2, L=1 (ATAM H/M/L)
+```
+
+| value \ complexity | H | M | L |
+|---|---|---|---|
+| **H** | 1.00 | 1.50 | **3.00** (quick-win) |
+| **M** | 0.67 | 1.00 | 2.00 |
+| **L** | 0.33 | 0.50 | 1.00 |
+
+`/ginee-triage` sort key: `Score DESC, Age DESC`. Unscored grouped at bottom. TODO marker `☐ [v:H c:L] Description` (case-insensitive). Sticky `<!-- ginee:score v=1 -->` comment per issue; refresh via `@team-lead recompute score #<N>`. Override formula: `local/framework.config.yaml § triage.scoring-formula`.
+
+## Address review on a PR (D24)
+
+```
+/ginee-address-review #<PR>               # ingest review comments + reviews
+@team-lead address-review #<PR>           # command equivalent (every adapter)
+```
+
+Procedure: fetch `pulls/{N}/comments` + `/reviews` → dedup by `thread-id` (skip resolved + already-marked) → route each remark per `local/bindings.md § Source-of-truth ownership` → **surface plan table for approval (forced-interactive, even in `auto:`)** → dispatch specialists in parallel → squash fixes into one cycle commit + push → post per-thread replies + one sticky cycle summary. Lossless coverage (every remark → fix OR reply). Markers `<!-- ginee:review-reply r=<id> -->` (per-thread) + `<!-- ginee:review-cycle n=<N> -->` (sticky).
 
 ## Source-of-truth pattern
 
@@ -158,6 +184,9 @@ Framework defaults: `branch` for issue / TODO-sourced; `wt` for freeform. Auto-m
 | PR didn't auto-close issue on merge | Stacked PR merged into non-default branch first | Manual `gh issue close <N> --comment "..."` |
 | Trivial task loads full 64 KB baseline | Role kernel `Load when` not honoured | Specialist should report loaded set; if it doesn't, your kernel may be stale — `/ginee-update` to refresh |
 | Framework feels out of date / missing a recent feature | Local install behind upstream | `/ginee-update` (latest release) or `/ginee-update <tag>` (named ref); never auto-updates — adopter approves the plan |
+| Triage shows everything "Unscored" | No `value:*` / `complexity:*` labels yet | Reporter sets `value` at file-time; SA auto-estimates `complexity` on pickup; or `@team-lead recompute score #<N>` after `gh issue edit` |
+| Review comments piling up on a PR | No invocation yet | `/ginee-address-review #<PR>` — plan-table approval is forced-interactive even in `auto:` |
+| Adopter doc PR fails markdown lint | D22 doc-authoring protocol — discovered linter ran | Apply default-shape map (tables / bullets / definitions) per `core/doc-authoring-protocol.md`; verify with `${commands.lint.docs}` |
 
 ## Where things live
 
