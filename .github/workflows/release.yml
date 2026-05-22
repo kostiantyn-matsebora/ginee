@@ -147,7 +147,17 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           TAG="${{ needs.package.outputs.tag }}"
-          gh release create "$TAG" \
-            --title "ginee $TAG" \
-            --notes "Release ${TAG}. See [PLAN.md](PLAN.md) for design + locked decisions, and [README.md](README.md) for install instructions." \
-            _dist/*.tar.gz _dist/*.zip _dist/SHA256SUMS.txt
+          NOTES_FILE=".github/release-notes/${TAG}.md"
+          if [ -f "$NOTES_FILE" ]; then
+            echo "Release notes: $NOTES_FILE"
+            gh release create "$TAG" \
+              --title "ginee $TAG" \
+              --notes-file "$NOTES_FILE" \
+              _dist/*.tar.gz _dist/*.zip _dist/SHA256SUMS.txt
+          else
+            echo "::warning::No release notes at $NOTES_FILE — falling back to boilerplate. Author concise highlights at this path on the next Release PR."
+            gh release create "$TAG" \
+              --title "ginee $TAG" \
+              --notes "Release ${TAG}. See [PLAN.md](PLAN.md) for design + locked decisions, and [README.md](README.md) for install instructions." \
+              _dist/*.tar.gz _dist/*.zip _dist/SHA256SUMS.txt
+          fi
