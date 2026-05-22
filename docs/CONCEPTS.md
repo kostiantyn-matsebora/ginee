@@ -215,9 +215,19 @@ Pickup is **never** gated on score — score informs order, not eligibility. Ful
 
 Full spec: [`core/github-integration.md § Review-comment ingestion`](https://github.com/kostiantyn-matsebora/ginee/blob/main/core/github-integration.md#review-comment-ingestion).
 
-## Doc-authoring protocol (D22)
+## Doc-authoring protocol (D22 + D26)
 
-When ginee authors **your** markdown (architecture doc, ADRs, CRs, READMEs, runbooks, scenarios, API docs), `core/process.md § Documentation style — structure over prose` is **binding**, not aspirational. Five mandatory checks; structure-default-by-class shape map.
+When ginee authors markdown — adopter docs (D22) OR ginee-authored GitHub artefacts (D26) — `core/process.md § Documentation style — structure over prose` is **binding**, not aspirational. Five mandatory checks; structure-default-by-class shape map.
+
+**Scope:**
+
+| Surface | Authored by | In scope since |
+|---|---|---|
+| Architecture doc · ADRs · CRs · READMEs · runbooks · scenarios · API docs | adopter roles | D22 |
+| **GitHub issue bodies** authored via `ginee-file-*` skills | `team-lead` (you approve) | D26 |
+| **Framework-authored GitHub comments** — Phase-transition · sticky `ginee:score` / `ginee:review-cycle` · audit comments · per-thread review-replies | `team-lead` + specialists | D26 |
+
+**Default-shape map:**
 
 | Doc class | Default shape |
 |---|---|
@@ -228,13 +238,23 @@ When ginee authors **your** markdown (architecture doc, ADRs, CRs, READMEs, runb
 | Glossary / API matrix | Table |
 | Rules with > 2 conditions | Parent bullet + sub-bullets — one rule per line |
 
-**No custom ginee lint.** Adopter projects already configure markdown / prose tooling; discovery records the linter (`markdownlint` / `vale` / `proselint` / `prettier-md`) under `local/index/commands.yaml § commands.lint.docs`. Roles run `${commands.lint.docs}` at Phase 5 / report-as-done; output goes to phase-report verification log.
+**Lint covers every section, including Summary** (D26) — no section-by-length exemption. A one-sentence Summary still trips the mandatory checks if it packs a comma-separated inventory into a parenthetical clause.
 
-**No linter detected** → discovery recommends a baseline; adopter decides — never auto-installed.
+**Enforcement — two paths:**
 
-**Scope** — forward-only; legacy adopter docs are not retroactively rewritten. Style / tone / branding are out-of-scope (the protocol governs *structure* only).
+- **Adopter docs (D22)** — piggybacks on your discovered markdown / prose tooling (`markdownlint` / `vale` / `proselint` / `prettier-md`); roles run `${commands.lint.docs}` at Phase 5 / report-as-done.
+- **ginee-authored issue bodies + comments (D26)** — LLM self-review embedded in the skills + comment-cadence procedures; no external linter; violations surface as restructure suggestions in the user-approval prompt.
 
-Full spec: [`core/doc-authoring-protocol.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/core/doc-authoring-protocol.md). Examples: [`core/doc-authoring-examples.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/core/doc-authoring-examples.md).
+**Reporter-authored content (your own issues, your own comments)** — never auto-edited; D14 forbidden upheld. `ginee-pick-up` MAY surface a polite restructure advisory but never rewrites your text.
+
+**Scope (out-of-scope):**
+
+- Legacy adopter docs (forward-only).
+- Reporter-authored issue bodies / comments (D14 forbidden).
+- Discussion bodies (read-only context per D14).
+- Style / tone / branding (protocol governs **structure** only).
+
+Full spec: [`core/doc-authoring-protocol.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/core/doc-authoring-protocol.md). Examples (9 bad/good pairs): [`core/doc-authoring-examples.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/core/doc-authoring-examples.md).
 
 ## Framework self-update
 

@@ -215,6 +215,7 @@ Framework defaults: `branch` for issue / TODO-sourced; `wt` for freeform. Auto-m
 | Triage shows everything "Unscored" | No `value:*` / `complexity:*` labels yet | Reporter sets `value` at file-time; SA auto-estimates `complexity` on pickup; or `@team-lead recompute score #<N>` after `gh issue edit` |
 | Review comments piling up on a PR | No invocation yet | `/ginee-address-review #<PR>` — plan-table approval is forced-interactive even in `auto:` |
 | Adopter doc PR fails markdown lint | D22 doc-authoring protocol — discovered linter ran | Apply default-shape map (tables / bullets / definitions) per `core/doc-authoring-protocol.md`; verify with `${commands.lint.docs}` |
+| ginee-filed issue / framework-authored comment has dense parenthetical-soup prose | D26 scope extension — self-lint missed it | Restructure per default-shape map (tables for inventories · bullets for multi-rule · no parenthetical comma-lists in sentences); covers every section, including Summary |
 
 ## Where things live
 
