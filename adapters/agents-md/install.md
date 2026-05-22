@@ -88,6 +88,7 @@ Framework workflows (file / pick-up / triage / promote / discovery / reindex) ac
 | "Promote discussion #N" | `ginee-promote-discussion` |
 | "Reindex" / "Reindex `<file>`" / "Reindex `<class>`" / "Reconcile the index" | `ginee-reindex` |
 | "Update ginee" / "Upgrade the framework" / "Bump ginee to `v<X>`" / "Pull the latest ginee" | `ginee-update` |
+| "Address review on PR #N" / "Respond to review on #N" / "Handle review feedback on #N" | `ginee-address-review` |
 
 ## Updates
 

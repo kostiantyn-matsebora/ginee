@@ -210,9 +210,46 @@ Quick triggers → workflows:
 | `@team-lead pick up #<N>` | `core/github-integration.md § Inbound — pick up an issue` |
 | `@team-lead triage` | `core/github-integration.md § Triage — list ready issues` |
 | `@team-lead promote discussion #<N>` | `core/github-integration.md § Promote — discussion → issue` |
+| `@team-lead address-review #<PR>` | `core/github-integration.md § Review-comment ingestion` + dispatch in § Review-comment dispatch (below) |
 | Phase transition on issue-sourced task | `core/github-integration.md § Inbound — pick up an issue` (Comment cadence table) |
 
 Repo discovery — origin inference first, `local/framework.config.yaml § github.repo` overrides. Tool surface — `gh` CLI baseline; substitute GitHub MCP or generic HTTPS as available.
+
+## Review-comment dispatch
+
+Full procedure: **`core/github-integration.md § Review-comment ingestion`** (ingestion + idempotency + comment shape). Kernel registration: `team-lead.md § GitHub issue operations`. This section covers dispatch-specific concerns only.
+
+### File → role routing
+
+Per `local/bindings.md § Source-of-truth ownership` (adopter-owned governance table). For each unresolved remark:
+
+1. Read `path:line` from `gh api ... /pulls/{N}/comments`.
+2. Look up `path` in the bindings table.
+3. Unique → dispatch owning role.
+4. No match → fallback `team-lead` (re-routable before approval).
+5. Ambiguous (multiple owners cover the path) → pick the surface-closest role (visual ↔ frontend; data ↔ backend; IaC ↔ devops); record rationale on the row.
+
+### Fix-vs-reply specialist contract
+
+| Track | Output | Notes |
+|---|---|---|
+| **fix-track** | Phase-6-shaped patch (diff + test impact + verification note per `core/process.md § Phase 6`) | One patch may bundle ≥ 1 remark when same file/area. |
+| **reply-track** | Reply text + `<!-- ginee:review-reply r=<thread-id> -->` marker | Specialist authors wording (rationale / declined-with-cite / deferred-to-#N); team-lead never paraphrases. |
+
+Mixed-track per specialist allowed — the marker is per-thread, not per-specialist.
+
+### Reconciliation
+
+Team-lead after specialists return:
+
+1. Squash all fix-track patches into one cycle commit on the PR branch; push.
+2. Post all reply-track texts via `gh api ... /comments/{thread-id}/replies` (or PR-review-comment-reply equivalent).
+3. Verify lossless coverage — every plan-table thread maps to a `ginee:review-reply` marker OR a fix-touched thread. Gap → re-dispatch; never silently close.
+4. Post one sticky cycle summary per `core/templates/pr-comment-cadence.md`.
+
+### Auto-mode pause point
+
+Plan-table approval is a **forced-interactive trigger** per `core/automatic-mode.md § Forced-interactive triggers` — push + reply on external PR enters the "destructive / external" set. Build plan → pause → surface → resume on explicit approval → reconcile + sticky. Never auto-approve, regardless of `auto:` or per-remark size.
 
 ## Delivery modes
 
