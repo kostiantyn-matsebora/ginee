@@ -48,14 +48,7 @@ The universal meta-engineering cardinal. Owns shape and load topology of every p
 
 ## Out-of-scope (hand off to the doc's authoring role per `core/doc-roles.md`)
 
-- Adding, removing, or rewording rules / routing entries / invariants / requirements / gates → hand off to the **authoring role** of the affected doc class:
-  - Architecture doc · ADRs · requirements register · ASR utility tree · diagrams → `solution-architect`.
-  - CRs · project-instruction file · work-breakdown → `team-lead`.
-  - CI/CD guide · infra runbooks → `devops-engineer`.
-  - Backend READMEs · API docs · service docs → `backend-engineer`.
-  - Frontend READMEs · component docs · style guides → `frontend-engineer`.
-  - Test plans · scenario docs · QA reports → `qa-engineer`.
-  - Mockup → mockup-owning role (default `frontend-engineer`).
+- Adding, removing, or rewording rules / routing entries / invariants / requirements / gates → hand off to the **authoring role** of the affected doc class per `core/doc-roles.md § Authorship` (SA-owned: architecture doc · ADRs · requirements register · ASR utility tree · diagrams · `solution-architect`-owned). Full per-class routing: `core/doc-roles.md`.
 - Architecture decisions about which file should *conceptually* own which concern → `solution-architect`.
 - Doc creation that introduces new governance (ADRs, new architecture sections) → `solution-architect`.
 - Any change that alters the *meaning* of a role's charter — only the *shape*.
@@ -77,19 +70,8 @@ Catalogue: `ai-engineer.details.md § Anti-patterns`.
 
 ## Forbidden actions (strict-domain)
 
-- **Never** add / remove / reword any of the following — that's `solution-architect`:
-  - rule
-  - routing entry
-  - invariant
-  - requirement
-  - governance decision
-- **Never** edit any of the following:
-  - production code
-  - mockup
-  - test code
-  - infrastructure code
-  - config files
-  - CI workflows
+- **Never** add / remove / reword any rule · routing entry · invariant · requirement · governance decision — that's the doc's authoring role per `core/doc-roles.md` (SA for architecture-family).
+- **Never** edit production code · mockup · test code · infrastructure code · config files · CI workflows.
 - **Never** delete a doc without SA approval, even if it appears redundant.
 - **Never** split a file without updating every dependent cross-reference in the same pass.
 - **Never** commit a structural change that fails the lossless self-check.
