@@ -213,7 +213,24 @@ Before dispatching a specialist whose task may consume any indexed source doc, v
 
 Full procedures + tool-surface details + label scheme + state mapping + forbidden actions: **`core/github-integration.md`**. Kernel routing summary lives in `team-lead.md § Dispatch routing` and `§ GitHub issue operations`.
 
-Quick triggers → workflows:
+Repo discovery — origin inference first, `local/framework.config.yaml § github.repo` overrides. Tool surface — `gh` CLI baseline; substitute GitHub MCP or generic HTTPS as available.
+
+### GitHub issue trigger table
+
+Moved from `team-lead.md § GitHub issue operations` for context-economy. Kernel summary stays in `team-lead.md`; this table is the full trigger × target × workflow contract.
+
+| Trigger | Target | Workflow |
+|---|---|---|
+| `@team-lead file bug <…>` / `file feature <…>` | primary | Draft via `core/templates/issues/bug-report.md` / `feature-request.md`; surface for approval; `gh issue create` with `ready-label`. |
+| `@team-lead file framework-bug <…>` / `file framework-feature <…>` | framework upstream | Same flow with `core/templates/issues/framework-bug-report.md` / `framework-feature-request.md`. Fail fast if `github.framework-repo` unset. |
+| `@team-lead pick up #<N>` | primary | Fetch + parse + swap `ready` → `in-progress`; **on missing `value:*` → ask user (H/M/L); on missing `complexity:*` → dispatch `solution-architect` for H/M/L estimate; post sticky `<!-- ginee:score v=1 -->` comment + audit trail** per `core/triage-scoring.md`; run Phase 1–8; comment at transitions; close on Phase 8 acceptance. No `framework-` variant — addressing a framework issue requires working in the framework repo (where origin = framework, so plain `pick up #<N>` applies). |
+| `@team-lead triage` / `triage framework` | primary / framework | `gh issue list --label <ready-label> --state open`; surface as table with `v` / `c` / `Score` columns; sort by `Score DESC, Age DESC` per `core/triage-scoring.md`; propose pickup order; **never pick on your own**. |
+| `@team-lead recompute score #<N>` | primary | Re-read current labels (catches manual `gh issue edit` between sessions); update the sticky `<!-- ginee:score v=1 -->` comment in place; post `<!-- ginee:score-recompute -->` audit comment with reason + delta. Per `core/triage-scoring.md § Score comment + audit trail`. |
+| `@team-lead promote discussion #<N>` / `promote discussion framework#<N>` | primary / framework | Fetch discussion; draft an issue citing it; surface for approval; create issue + comment on discussion linking it. |
+| `@team-lead address-review #<PR>` | primary | Fetch PR review-comments + reviews; deduplicate + filter by idempotency markers; build consolidated plan table (routing per `local/bindings.md § Source-of-truth ownership`, fallback `team-lead`); **surface for user approval — forced-interactive even in `auto:` mode**; on accept dispatch specialists in parallel (fix-track or reply-track); squash fixes into one cycle commit + push; post per-thread replies with `<!-- ginee:review-reply r=<thread-id> -->`; post one sticky `<!-- ginee:review-cycle n=<N> -->` summary. Idempotent across re-invocations; lossless coverage rule enforced. No `framework-` variant. Per `core/github-integration.md § Review-comment ingestion` + dispatch contract in `§ Review-comment dispatch` below. |
+| Phase transition on an issue-sourced task | issue's source repo | Post structured comment (design review / SA review / Phase 8 / stoppable intermediate). |
+
+Quick trigger → spec-section index (legacy reference):
 
 | Trigger | Spec section |
 |---|---|
@@ -224,7 +241,20 @@ Quick triggers → workflows:
 | `@team-lead address-review #<PR>` | `core/github-integration.md § Review-comment ingestion` + dispatch in § Review-comment dispatch (below) |
 | Phase transition on issue-sourced task | `core/github-integration.md § Inbound — pick up an issue` (Comment cadence table) |
 
-Repo discovery — origin inference first, `local/framework.config.yaml § github.repo` overrides. Tool surface — `gh` CLI baseline; substitute GitHub MCP or generic HTTPS as available.
+## Testing — full regression offer text
+
+Moved from `team-lead.md § Testing scope` for context-economy. Kernel rule lives in `team-lead.md`; this section carries the exact offer-text + reporting shape.
+
+**Offer text** (verbatim — adopters may adapt tone but not warnings): *"Full regression is available and would catch breakage outside the touched surfaces. It can take significant wall-clock time and consume a large token budget. Want to run it?"*
+
+**Reporting shape** when the user opts in:
+
+- Dispatch `qa-engineer` for a full-regression pass after the change-scoped gate is green.
+- Report its result distinctly. Include:
+  - pass/fail per suite
+  - wall-clock
+  - approximate token cost
+- It does not retroactively become a gate.
 
 ## CR template (D25)
 

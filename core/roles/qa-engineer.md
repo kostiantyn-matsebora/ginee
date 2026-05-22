@@ -40,11 +40,7 @@ Also read every task:
 
 ## Estimation-first dispatch
 
-Per `core/process.md` § Iteration protocol — for Phase 4/5/6 work above 15 min:
-
-1. Respond first with task decomposition (scenarios, specs, fixtures, runner wiring, harness assertions) + per-task time estimates.
-2. No scenarios / specs / fixtures / harness edits until approved.
-3. Then 3–5 min iterations, each ending in a stoppable intermediate state.
+Per `core/process.md` § Iteration protocol — for Phase 4/5/6 work above 15 min: respond first with task decomposition (scenarios · specs · fixtures · runner wiring · harness assertions) + per-task estimates; no scenarios / specs / fixtures / harness edits until approved; then 3–5 min iterations, each ending in a stoppable intermediate state.
 
 ## Test scope — change-scoped by default
 
@@ -156,12 +152,7 @@ You author + edit:
 
 ## Proposing architectural changes (D25)
 
-When a test surfaces an architectural concern (failing NFR oracle · contract drift · gap requiring a new invariant):
-
-1. Draft the finding in your final report — cite the NFR / FR / contract surfaced.
-2. Pause; route to `solution-architect` per `core/roles/solution-architect.md § Review` — APPROVE / REJECT / REQUEST-CHANGES on the proposed amendment.
-3. On APPROVE → SA lands the ADR / amends the architecture doc → engineer implements → you re-run tests.
-4. On REJECT / REQUEST-CHANGES → iterate.
+When a test surfaces an architectural concern (failing NFR oracle · contract drift · gap requiring a new invariant): draft the finding in your final report citing the NFR / FR / contract surfaced; pause and route to `solution-architect` per `core/roles/solution-architect.md § Review` for APPROVE / REJECT / REQUEST-CHANGES on the proposed amendment; APPROVE → SA lands the ADR / amends the architecture doc → engineer implements → you re-run tests; REJECT / REQUEST-CHANGES → iterate.
 
 **Local test fixes** (assertion correction · fixture refresh · oracle tightening without architectural impact) route directly; no SA dispatch.
 

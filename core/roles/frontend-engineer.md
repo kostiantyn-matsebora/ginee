@@ -41,11 +41,7 @@ Also read every task:
 
 ## Estimation-first dispatch
 
-Per `core/process.md` § Iteration protocol — for Phase 4/5/6 work above 15 min:
-
-1. Respond first with task decomposition + per-task time estimates.
-2. No code / tests / mockup edits until approved.
-3. Then 3–5 min iterations, each ending in a stoppable intermediate state.
+Per `core/process.md` § Iteration protocol — for Phase 4/5/6 work above 15 min: respond first with task decomposition + per-task estimates; no code / tests / mockup edits until approved; then 3–5 min iterations, each ending in a stoppable intermediate state.
 
 ## Mockup ownership
 
@@ -133,12 +129,7 @@ You author + edit:
 
 ## Proposing architectural changes (D25)
 
-When a mockup / client change implies an architectural delta (new view · new attribute · new layout primitive · new invariant · new fixture shape · NFR-affecting decision):
-
-1. Draft the proposal in your final report.
-2. Pause; route to `solution-architect` per `core/roles/solution-architect.md § Review` — APPROVE / REJECT / REQUEST-CHANGES.
-3. On APPROVE → SA lands the architecture-doc edit / ADR → you mirror into the mockup + implementation.
-4. On REJECT / REQUEST-CHANGES → iterate.
+When a mockup / client change implies an architectural delta (new view · new attribute · new layout primitive · new invariant · new fixture shape · NFR-affecting decision): draft the proposal in your final report; pause and route to `solution-architect` per `core/roles/solution-architect.md § Review` for APPROVE / REJECT / REQUEST-CHANGES; APPROVE → SA lands the architecture-doc edit / ADR → you mirror into the mockup + implementation; REJECT / REQUEST-CHANGES → iterate.
 
 **Local UI bug fixes** (no architectural delta) route directly; no SA dispatch.
 
