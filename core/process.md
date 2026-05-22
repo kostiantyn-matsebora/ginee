@@ -296,6 +296,8 @@ Applies to **all** written artefacts:
 - Future skills.
 - Architecture doc, mockup, ADRs.
 - Per-component READMEs.
+- **GitHub issue bodies authored via `ginee-file-*` skills** (D26).
+- **Framework-authored GitHub comments** — Phase-transition · sticky `ginee:score` / `ginee:review-cycle` · audit comments · per-thread review-replies (D26).
 
 - **Default to structure** — bullets, numbered lists, tables, headings. Not prose paragraphs.
 - **Steps / actions / instructions** → bullet list. Never a multi-sentence paragraph.
