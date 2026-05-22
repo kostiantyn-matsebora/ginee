@@ -111,6 +111,34 @@ score = value / complexity                # H=3, M=2, L=1 (ATAM H/M/L)
 
 `/ginee-triage` sort key: `Score DESC, Age DESC`. Unscored grouped at bottom. TODO marker `☐ [v:H c:L] Description` (case-insensitive). Sticky `<!-- ginee:score v=1 -->` comment per issue; refresh via `@team-lead recompute score #<N>`. Override formula: `local/framework.config.yaml § triage.scoring-formula`.
 
+## Classical-architect SA model (D25)
+
+SA has **three activities** across the lifecycle:
+
+| Activity | When | What |
+|---|---|---|
+| **Design** | Phase 1 elicit + Phase 2 architecture | Authors `local/requirements.md` (FR/NFR/Constraints) + `local/asr-utility-tree.md` (ASRs via ATAM) + architecture doc + ADRs |
+| **Review** | Any phase, on engineer-proposed arch changes | APPROVE / REJECT / REQUEST-CHANGES; never edits code |
+| **Governance** | Continuous, scoped to PRs touching SA-owned files | Drift-flag + dispatch back to owning engineer |
+
+**D25 doc-ownership map** (per `core/doc-roles.md`):
+
+| Doc class | Owner |
+|---|---|
+| Architecture doc · ADRs · requirements register · ASR utility tree · diagrams | `solution-architect` |
+| CRs · project-instruction file · work-breakdown | `team-lead` |
+| CI/CD guide · infra runbooks | `devops-engineer` |
+| Backend READMEs · API docs · service docs | `backend-engineer` |
+| Frontend READMEs · component docs · style guides | `frontend-engineer` |
+| Test plans · scenario docs · QA reports | `qa-engineer` |
+| Mockup | mockup-owning role (default `frontend-engineer`) |
+
+**Engineer-proposed architectural change** (delta to contract / topology / stack / NFR-affecting): draft in final report → SA `§ Review` → APPROVE/REJECT/REQUEST-CHANGES → engineer implements after APPROVE. Local bug fixes (no architectural delta) route engineer → engineer; no SA dispatch.
+
+**Greenfield vs delta** — discovery detects "no architecture doc" → `greenfield: true` in `local/project-profile.md` → SA enters greenfield design on first non-trivial task. Delta mode produces ADR + ASR amendments; never rewrites the architecture doc wholesale.
+
+Migration on upgrade: `@team-lead rediscover` runs Step 8c re-attribution sweep per [`core/MIGRATIONS/D25-classical-architect.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/core/MIGRATIONS/D25-classical-architect.md).
+
 ## Address review on a PR (D24)
 
 ```
@@ -136,15 +164,15 @@ Per `local/bindings.md § Project role boundaries`. Each row is a hard stop.
 
 | Role | Must NOT edit |
 |---|---|
-| `solution-architect` | mockup, server source, client source, IaC, Dockerfiles, CI workflows |
+| `solution-architect` | mockup, server source, client source, IaC, Dockerfiles, CI workflows. **(D25)** CRs · project-instruction · work-breakdown → `team-lead`; per-tier docs → tier engineers. SA reviews these for architectural coherence; does not edit. |
 | `frontend-engineer` | server source (incl. SQL in API endpoints), IaC, Dockerfiles, CI workflows |
 | `backend-engineer` | client source, mockup, IaC, Dockerfiles, CI workflows |
 | `devops-engineer` | application code, schema migrations, application config content |
 | `qa-engineer` | mockup, production server / client code (owns test code only) |
-| `ai-engineer` | rules / invariants / requirements (semantics → SA); production / test / IaC code |
-| `team-lead` | everything except `local/*` written during discovery |
+| `ai-engineer` | rules / invariants / requirements (semantics → **the doc's authoring role per D25**, not SA-only); production / test / IaC code |
+| `team-lead` | everything except `local/*` written during discovery + **(D25)** CRs · project-instruction · work-breakdown which team-lead authors |
 
-Cross-domain need surfaced mid-task → **propose hand-off in final report**. Never patch across.
+Cross-domain need surfaced mid-task → **propose hand-off in final report**. Never patch across. **Engineer-proposed architectural changes (D25)** route to `solution-architect § Review` (APPROVE / REJECT / REQUEST-CHANGES).
 
 ## Index file Load-when tiers
 
@@ -198,13 +226,17 @@ Framework defaults: `branch` for issue / TODO-sourced; `wt` for freeform. Auto-m
 │   ├── index-protocol.md       # local/index/ extraction + load triggers
 │   ├── github-integration.md   # issue / PR / label flow
 │   ├── delivery-modes.md       # branch / wt / commit
-│   └── templates/              # bindings, PR description, hand-off note
+│   ├── doc-roles.md            # D25 — all-roles authorship + ai-engineer shape
+│   └── templates/              # bindings, PR description, hand-off note,
+│                               # requirements-register (D25), asr-utility-tree (D25)
 ├── adapters/<client>/          # upstream — per-client renderings (pointer files)
 ├── extras/roles/               # upstream — opt-in specialists
 └── local/                      # YOU OWN THIS — survives every update
     ├── project-profile.md
     ├── bindings.md
     ├── framework.config.yaml
+    ├── requirements.md         # D25 — FRs / NFRs / Constraints (SA-authored)
+    ├── asr-utility-tree.md     # D25 — ASRs derived via ATAM (SA-authored)
     ├── index/                  # extracted summaries
     └── roles/                  # your custom roles
 ```

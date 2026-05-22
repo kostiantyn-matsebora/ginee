@@ -93,7 +93,11 @@ What happens (a few minutes, fully visible):
    - `bindings.md` — role → owned paths, source-of-truth ownership, tie-breakers.
    - `framework.config.yaml` — concept → file-path mappings (architecture doc, mockup, ADR dir, CR dir, TODO file).
 3. Extracts a knowledge index under `.agents/ginee/local/index/` — lightweight per-class summaries of architecture / ADRs / CRs / scenarios / mockup / stack / topology / commands / runtime-facts. Roles read the index first; originals only when an entry needs verbatim text.
-4. Surfaces recommended specialist roles for your approval (security · ml · mobile · sre · data, depending on what discovery found in the project).
+4. **(D25)** Initializes `local/requirements.md` (FRs/NFRs/Constraints from `core/templates/requirements-register.md`) + `local/asr-utility-tree.md` (ASRs via ATAM from `core/templates/asr-utility-tree.md`) — populated from discovered NFR / Constraint sections when an architecture doc exists; left as templates for `solution-architect` to fill on the first non-trivial task otherwise.
+5. **(D25)** Detects greenfield — if no architecture doc found, flags `greenfield: true` in `local/project-profile.md`; `solution-architect` enters greenfield design mode on first non-trivial task.
+6. Surfaces recommended specialist roles for your approval (security · ml · mobile · sre · data, depending on what discovery found in the project).
+
+**On rediscover post-D25** — `@team-lead rediscover` runs Step 8c re-attribution sweep: existing adopter docs migrate to the new D25 ownership map (CRs · project-instruction · work-breakdown → `team-lead`; CI/CD guide · runbooks → `devops-engineer`; per-tier READMEs → tier engineers). Full migration spec: [`core/MIGRATIONS/D25-classical-architect.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/core/MIGRATIONS/D25-classical-architect.md).
 
 You'll see proposed changes before any file is written — approve or redirect each step.
 

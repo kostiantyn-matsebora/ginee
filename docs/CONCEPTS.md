@@ -14,13 +14,13 @@ ginee ships exactly **7 cardinal roles** — every adopter project has the same 
 
 | Role | Concerns |
 |---|---|
-| `team-lead` | Orchestrator. Dispatch routing, lifecycle gates, discovery / rediscovery, post-acceptance hook, staleness checks. |
-| `solution-architect` | Architecture doc semantics, SAD freeze, CR / ADR governance, mockup review (no edits), tie-breaker resolution. |
-| `ai-engineer` | AI-asset + doc context economy, file-splitting, load topology, lossless restructures. Between-phase only. |
-| `frontend-engineer` | Client / UI implementation, mockup ownership, state, styling, fetch / realtime client wiring. |
-| `backend-engineer` | Server / API implementation, ORM entities, schema, realtime hub, auth middleware, wire contract. |
-| `devops-engineer` | IaC, Dockerfiles, orchestration, CI workflows, gateway config, secrets, cost tracking. |
-| `qa-engineer` | Scenario specs, e2e / functional / smoke tests, harness assertions, fixtures, seed scripts. |
+| `team-lead` | Orchestrator. Dispatch routing, lifecycle gates, discovery / rediscovery, post-acceptance hook, staleness checks. **Authors (D25)** CRs · project-instruction file · work-breakdown doc. |
+| `solution-architect` | **Classical architect (D25) — three activities.** **Design** (Phase 1 elicit FRs/NFRs/Constraints + derive ASRs via ATAM utility tree; Phase 2 target architecture). **Review** (any phase, on engineer-proposed architectural changes; APPROVE/REJECT/REQUEST-CHANGES; no code edits). **Governance** (continuous, scoped to PRs touching SA-owned files). Authors architecture doc · ADRs · diagrams · requirements register · ASR utility tree. |
+| `ai-engineer` | AI-asset + doc context economy, file-splitting, load topology, lossless restructures. **D25 counterpart generalized — was SA-only, now all-roles.** Between-phase only. |
+| `frontend-engineer` | Client / UI implementation, mockup ownership, state, styling, fetch / realtime client wiring. **Authors (D25)** frontend READMEs · component docs · style guides. |
+| `backend-engineer` | Server / API implementation, ORM entities, schema, realtime hub, auth middleware, wire contract. **Authors (D25)** backend READMEs · API docs · service docs. |
+| `devops-engineer` | IaC, Dockerfiles, orchestration, CI workflows, gateway config, secrets, cost tracking. **Authors (D25)** CI/CD guide · infra runbooks · deployment guides. |
+| `qa-engineer` | Scenario specs, e2e / functional / smoke tests, harness assertions, fixtures, seed scripts. **Authors (D25)** test plans · scenario docs · QA reports. |
 
 **Why exactly 7?** Two slots are universal — every project has an orchestrator and AI-asset / doc upkeep. The remaining 5 cover the engineering surfaces every software project has: client, server, infra, quality, plus the architect who governs the design across them.
 
@@ -34,13 +34,13 @@ Every non-trivial task runs through **Phases 1–8**. Specialists within a phase
 
 | Phase | Goal | Acceptance |
 |---|---|---|
-| **1. Analysis** | Bound scope; identify touched domains | Scope clear enough to plan Phase 2; ≤ 1 unresolved scope question |
-| **2. Design** | Lock contracts (architecture, mockup, wire, work breakdown) | Fixed contract surfaces; harness green; cross-refs resolved |
+| **1. Analysis** | Bound scope; identify touched domains. **(D25)** SA elicits FRs/NFRs/Constraints + derives ASRs via ATAM; resolves greenfield-vs-delta mode. | Scope clear enough to plan Phase 2; ≤ 1 unresolved scope question; ASR utility tree covers every quality-attribute-driver touched |
+| **2. Design** | Lock contracts (architecture, mockup, wire, work breakdown). **(D25)** SA authors target architecture per resolved mode. | Fixed contract surfaces; harness green; cross-refs resolved; ASRs traceable to ADRs |
 | **3. Design review** | Synchronous user-approval gate on Phase 2 | Explicit user approval |
-| **4. Implementation** | Code mirroring approved contracts | Compiles; per-project unit tests pass; no new lint errors |
-| **5. Testing** | Change-scoped suites + manual smoke | Touched-surface oracles green; manual-smoke report recorded |
-| **6. Bug fixing** | Resolve defects from Phase 5 | Change-scoped oracles green; no regressions in touched surfaces |
-| **7. SA review** | `solution-architect` checks invariants | APPROVE or RETURN-TO-engineer with findings |
+| **4. Implementation** | Code mirroring approved contracts. **(D25)** SA governance dip on PRs touching SA-owned files; SA review on in-flight architectural-change proposals. | Compiles; per-project unit tests pass; no new lint errors |
+| **5. Testing** | Change-scoped suites + manual smoke. **(D25)** SA governance dip if test surfaces architectural concern. | Touched-surface oracles green; manual-smoke report recorded |
+| **6. Bug fixing** | Resolve defects from Phase 5. **(D25)** SA review on architectural fixes (vs local bug fixes). | Change-scoped oracles green; no regressions in touched surfaces |
+| **7. SA review** | `solution-architect` checks invariants. **(D25)** Lighter — governance ran continuously across 4/5/6. | APPROVE or RETURN-TO-engineer with findings; ASR coverage verified |
 | **8. User approval** | User confirms delivered work | TODO ☐ → ☒; issue closed; delivery finalize per mode |
 
 **Auto mode (D12)** — prefix a task with `auto:` to elide intermediate gates (Phase 3 design review, iteration check-ins, engineer "stop and confirm"). Phase 8 becomes a single **delivery handoff** with Accept / Feedback / Reject. Forced back to interactive on UX changes, repeated defects, cross-domain cycles, or destructive actions.
@@ -74,6 +74,43 @@ Per-project, the table in `local/bindings.md § Source-of-truth ownership` maps:
 - **Verbatim consumption:** where the full text lives when an index entry says "see source."
 
 Roles **never** read raw `docs/**` "before any work." The index is the only default read surface; full source loads only when verbatim wording matters.
+
+**D25 doc-ownership map** — per [`core/doc-roles.md § Authorship`](https://github.com/kostiantyn-matsebora/ginee/blob/main/core/doc-roles.md):
+
+| Doc class | Owner |
+|---|---|
+| Architecture doc · ADRs · diagrams · requirements register (`local/requirements.md`) · ASR utility tree (`local/asr-utility-tree.md`) | `solution-architect` |
+| CRs · project-instruction file · work-breakdown | `team-lead` |
+| CI/CD guide · infra runbooks · deployment guides | `devops-engineer` |
+| Backend READMEs · API docs · service docs | `backend-engineer` |
+| Frontend READMEs · component docs · style guides | `frontend-engineer` |
+| Test plans · scenario docs · QA reports | `qa-engineer` |
+| Mockup | mockup-owning role (default `frontend-engineer`) |
+
+Every non-SA-owned doc edit is **SA-reviewed for architectural coherence** before merge. `ai-engineer` runs shape + load-topology passes across the whole doc set (was SA ↔ ai-engineer pre-D25; now all-roles ↔ ai-engineer).
+
+## Classical-architect SA model (D25)
+
+Three activities across the lifecycle:
+
+| Activity | When | Output |
+|---|---|---|
+| **Design** | Phase 1 elicit + Phase 2 target architecture | `local/requirements.md` (FRs/NFRs/Constraints) · `local/asr-utility-tree.md` (ASRs derived via ATAM) · architecture doc · ADRs · diagrams |
+| **Review** | Any phase, on engineer-proposed architectural changes | APPROVE / REJECT / REQUEST-CHANGES verdict + rationale citing ADR / FR / NFR / ASR. No code edits. |
+| **Governance** | Continuous, **scoped only to PRs touching SA-owned files** | Drift-flag in PR comment + dispatch back to owning engineer. Not every Phase 4/5/6 PR — keeps SA out of the bottleneck. |
+
+**Greenfield vs delta** — resolved at Phase 1. Greenfield (no architecture doc) → SA authors a complete architecture doc + initial ADRs. Delta (existing doc) → SA produces ADR/CR proposals + ASR amendments; never rewrites the doc wholesale.
+
+**Two-file register split** (ASRs are the outcome of requirements, not the same level):
+
+- `local/requirements.md` — FRs / NFRs / Constraints (inputs).
+- `local/asr-utility-tree.md` — Architecturally Significant Requirements derived from NFRs + Constraints via ATAM utility tree (outcomes).
+
+**Architect-to-architect** — single-architect framework default. Multi-architect projects populate optional `local/bindings.md § Architects` slot.
+
+**Engineer-proposed architectural changes** — when a fix / feature implies an architectural delta, the engineer drafts a proposal in their final report and routes to SA per § Review. Local bug fixes route engineer → engineer; no SA dispatch.
+
+Full spec: [`core/roles/solution-architect.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/core/roles/solution-architect.md). Migration: [`core/MIGRATIONS/D25-classical-architect.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/core/MIGRATIONS/D25-classical-architect.md).
 
 ## Index protocol
 

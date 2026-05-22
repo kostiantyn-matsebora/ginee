@@ -137,6 +137,7 @@ Canonical in the plan file. Summary:
   - Comments — `gh issue view <N> --comments` — owner often pins option-picks or scope clarifications there (e.g. issue #29 specifies "Option B + DTO exempt + configurable threshold" only in a comment, not the body).
   - Sub-issues — `gh api repos/<owner>/<repo>/issues/<N>/sub_issues` — sub-issues carry scope expansions the parent body alone does not surface (e.g. issue #28 has #30 "add linting" as a sub-issue with no body — title-only requirements still bind).
   - Skip either → Phase 2 plan is wrong; redo cost > the 2 extra API calls.
+- **User-docs co-update (D25 — binding).** Every adopter-facing framework change (new skill · new D-decision · role-model change · new spec / template · new register / artefact) updates `docs/` (`CONCEPTS.md` · `GETTING_STARTED.md` · `CHEATSHEET.md` · `index.md` as applicable) **in the same PR**. Internal-only changes exempt — D21 context-economy gate · CI internals · framework-dev hygiene · D18 script-quality · D19 backend-coverage. Phase-7 SA review verifies coverage when the change touches adopter-facing surface. Recurring miss across pre-D25 feature PRs (#41 · #43 · #47 · #51 · #54 · #55 · #57) — backfilled in #59; binding from D25 onward.
 
 ## Framework authoring — context economy
 
