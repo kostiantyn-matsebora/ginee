@@ -27,9 +27,9 @@ permalink: /reference/PROCESS.html
 
 | Spec | Load trigger |
 |---|---|
-| [`core/iteration-protocol.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/core/iteration-protocol.md) | Phase 4 / 5 / 6 / 7 work &gt; 15 min, OR doc co-ownership pass, OR user-given timeframe |
+| [`core/iteration-protocol.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/core/iteration-protocol.md) | Phase 4 / 5 / 6 / 7 work &gt; 15 min, OR doc-roles pass, OR user-given timeframe |
 | [`core/automatic-mode.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/core/automatic-mode.md) | Task prefixed `auto:` or PM proposes auto |
-| [`core/doc-co-ownership.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/core/doc-co-ownership.md) | New rule landing, doc grows past threshold, cross-ref repair after split, structure dispute SA vs ai-engineer |
+| [`core/doc-roles.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/core/doc-roles.md) | New role-owned doc landing, doc grows past threshold, cross-ref repair after split, structure dispute author vs ai-engineer (D25) |
 | [`core/cross-domain-bugs.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/core/cross-domain-bugs.md) | Bug spans 2+ domains |
 | [`core/cross-agent-handoff.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/core/cross-agent-handoff.md) | Specialist diagnoses a root cause outside their domain |
 | [`core/post-task-check-in.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/core/post-task-check-in.md) | After every completed user request |

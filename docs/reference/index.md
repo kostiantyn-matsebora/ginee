@@ -23,7 +23,7 @@ The canonical specs. These mirror the `core/*.md` files in the [source repo](htt
 | Automatic mode | [`core/automatic-mode.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/core/automatic-mode.md) | Concepts § Phased task lifecycle (auto mode) |
 | Index protocol + recipes | [`core/index-protocol.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/core/index-protocol.md) | Concepts § Index protocol |
 | `.idx` DSL grammar | [`core/index-syntax.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/core/index-syntax.md) | Index protocol |
-| Doc co-ownership (SA ↔ ai-engineer) | [`core/doc-co-ownership.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/core/doc-co-ownership.md) | Process spec |
+| Doc roles (all-roles authorship + ai-engineer shape — D25) | [`core/doc-roles.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/core/doc-roles.md) | Process spec |
 | Cross-domain bugs | [`core/cross-domain-bugs.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/core/cross-domain-bugs.md) | Process spec |
 | Cross-agent hand-off | [`core/cross-agent-handoff.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/core/cross-agent-handoff.md) | Process spec |
 | Post-task check-in | [`core/post-task-check-in.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/core/post-task-check-in.md) | Process spec |

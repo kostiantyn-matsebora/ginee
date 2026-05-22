@@ -59,7 +59,7 @@ core/
 ├── index-syntax.md             .idx DSL grammar
 ├── delivery-modes.md           D17 — branch+PR / working-tree / commit-no-push
 ├── github-integration.md       D14 — issues + discussions as 4th task source
-├── doc-co-ownership.md         SA ↔ ai-engineer ownership split
+├── doc-roles.md                All-roles authorship + ai-engineer shape (D25)
 ├── cross-domain-bugs.md        Propose → implement → verify cycle
 ├── cross-agent-handoff.md      Diagnose ≠ fix — structured hand-off procedure
 ├── post-task-check-in.md       After every completed user request

@@ -51,7 +51,7 @@ jobs:
             core/delivery-modes.md \
             core/iteration-protocol.md \
             core/automatic-mode.md \
-            core/doc-co-ownership.md \
+            core/doc-roles.md \
             core/cross-domain-bugs.md \
             core/cross-agent-handoff.md \
             core/post-task-check-in.md \
