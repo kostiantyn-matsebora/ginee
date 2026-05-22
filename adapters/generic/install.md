@@ -84,9 +84,19 @@ If your client matures to support `AGENTS.md`, a subagent directory, or AgentSki
 
 ## Updates
 
-**Recommended — re-run the installer**: `.\install.ps1 -UpdateOnly -Adapter generic` (or `./install.sh --update-only --adapter generic`). Refreshes the framework dirs.
+**Recommended — `/ginee-update`** (or "update ginee" / "upgrade the framework") when the host client supports AgentSkills. Falls back to "act as `team-lead` and update ginee" for tier-3 clients. The skill fetches the installer from upstream at the target ref and drives `--update-only` for you — no local installer needed (D27).
 
-Manual equivalent:
+**Manual fallback — bootstrap one-liner** (the installer is intentionally NOT inside `.agents/ginee/` per D27):
+
+```powershell
+$env:GINEE_UPDATE_ONLY='1'; $env:GINEE_ADAPTER='generic'; iwr -useb https://raw.githubusercontent.com/kostiantyn-matsebora/ginee/main/install.ps1 | iex
+```
+
+```bash
+GINEE_UPDATE_ONLY=1 GINEE_ADAPTER=generic bash -c "$(curl -fsSL https://raw.githubusercontent.com/kostiantyn-matsebora/ginee/main/install.sh)"
+```
+
+**Step-by-step equivalent:**
 
 1. Re-fetch `.agents/ginee/` (your `local/` survives).
 2. Client reads `INSTRUCTIONS.md` by path → no further action.

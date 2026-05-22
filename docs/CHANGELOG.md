@@ -10,6 +10,17 @@ All notable changes to ginee. The format follows [Keep a Changelog](https://keep
 
 ## Unreleased
 
+### Fixed
+
+- **D27 — `/ginee-update` now reaches a standard install** ([#67](https://github.com/kostiantyn-matsebora/ginee/issues/67)). Pre-D27 the `ginee-update` skill's Step 1 required `install.ps1` + `install.sh` + `core/VERSION` inside `.agents/ginee/`, but the bootstrap intentionally prunes the installers (they belong to the deploy layer, not runtime). Every standard install therefore exited at Step 1 with a misleading `framework not found at <path>` — making `/ginee-update` non-functional for everyone.
+  - **Step 1 (Locate)** — now requires **only** `<fw>/core/VERSION`. `core/VERSION` is the framework existence sentinel; the installer is fetched on demand.
+  - **Step 6 (Run)** — fetches `install.{ps1,sh}` from `https://raw.githubusercontent.com/<github.framework-repo>/<target-ref>/install.{ps1,sh}` to a temp dir, then executes via `pwsh -File` / `bash` with the detected adapter + project root passed explicitly. `<github.framework-repo>` resolves from `local/framework.config.yaml` (default `kostiantyn-matsebora/ginee`); `<adapter>` is the single non-`_shared` subdir under `<fw>/adapters/`; `<root>` is `<fw>/../..`.
+  - **Trade-offs.** Three options considered: (a) skill fetches installer from upstream (chosen — symmetric with bootstrap, `.agents/ginee/` stays runtime-only, no version skew); (b) installer self-copies into `<fw>` (rejected — version-skew risk + pollutes runtime tree); (c) fallback chain (rejected — ambiguous resolution).
+  - **Adapter delta.** All four `adapters/{claude,copilot-cli,agents-md,generic}/install.md § Updates` sections refreshed — drop the misleading `.\install.ps1 -UpdateOnly` "recommended" line (implied a co-located installer); replace with `/ginee-update` primary + bootstrap one-liner manual fallback.
+  - **Chicken-and-egg.** Pre-D27 installs land the fix by running the manual bootstrap one-liner once (the documented #67 workaround); subsequent updates flow through the fixed `/ginee-update`.
+  - **Installer itself unchanged.** D27 is purely a skill-internal change. No schema change to `local/framework.config.yaml`. `github.framework-repo` was already wired in D14.
+  - Migration: `core/MIGRATIONS/D27-installer-fetch-on-update.md`. Adopter action: one-time bootstrap one-liner per the migration; no other action required.
+
 ## 0.11.0 — 2026-05-22
 
 ### Added
