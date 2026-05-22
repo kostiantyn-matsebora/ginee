@@ -92,9 +92,19 @@ Framework workflows (file / pick-up / triage / promote / discovery / reindex) ac
 
 ## Updates
 
-**Recommended — re-run the installer**: `.\install.ps1 -UpdateOnly -Adapter agents-md` (or `./install.sh --update-only --adapter agents-md`). Automates steps 1–2. **Warning** — the installer copies `AGENTS.md` wholesale; back up first if you merged project-specific content into it.
+**Recommended — `/ginee-update`** (or "update ginee" / "upgrade the framework"). The skill fetches the installer from upstream at the target ref and drives `--update-only` for you — no local installer needed (D27). Automates steps 1–2. **Warning** — the installer copies `AGENTS.md` wholesale; back up first if you merged project-specific content into it.
 
-Manual equivalent:
+**Manual fallback — bootstrap one-liner** (the installer is intentionally NOT inside `.agents/ginee/` per D27):
+
+```powershell
+$env:GINEE_UPDATE_ONLY='1'; $env:GINEE_ADAPTER='agents-md'; iwr -useb https://raw.githubusercontent.com/kostiantyn-matsebora/ginee/main/install.ps1 | iex
+```
+
+```bash
+GINEE_UPDATE_ONLY=1 GINEE_ADAPTER=agents-md bash -c "$(curl -fsSL https://raw.githubusercontent.com/kostiantyn-matsebora/ginee/main/install.sh)"
+```
+
+**Step-by-step equivalent:**
 
 1. Re-fetch `.agents/ginee/core/` + `.agents/ginee/adapters/` + `.agents/ginee/extras/` (your `local/` survives).
 2. Re-copy `.agents/ginee/adapters/agents-md/AGENTS.md` to project root (merge if project-specific content was added).

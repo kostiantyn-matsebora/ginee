@@ -87,9 +87,19 @@ Subagent dispatch (`solution-architect`, `backend-engineer`, etc.) — natural-l
 
 ## Updates
 
-**Recommended — re-run the installer**: `.\install.ps1 -UpdateOnly -Adapter copilot-cli` (or `./install.sh --update-only --adapter copilot-cli`). Automates steps 1–3.
+**Recommended — `/ginee-update`** (or "update ginee" / "upgrade the framework"). The skill fetches the installer from upstream at the target ref and drives `--update-only` for you — no local installer needed (D27). Automates steps 1–3.
 
-Manual equivalent:
+**Manual fallback — bootstrap one-liner** (the installer is intentionally NOT inside `.agents/ginee/` per D27):
+
+```powershell
+$env:GINEE_UPDATE_ONLY='1'; $env:GINEE_ADAPTER='copilot-cli'; iwr -useb https://raw.githubusercontent.com/kostiantyn-matsebora/ginee/main/install.ps1 | iex
+```
+
+```bash
+GINEE_UPDATE_ONLY=1 GINEE_ADAPTER=copilot-cli bash -c "$(curl -fsSL https://raw.githubusercontent.com/kostiantyn-matsebora/ginee/main/install.sh)"
+```
+
+**Step-by-step equivalent:**
 
 1. Re-fetch `.agents/ginee/core/` + `.agents/ginee/adapters/` + `.agents/ginee/extras/` (your `local/` survives).
 2. Re-run step 1 above — pointers may have been refined.

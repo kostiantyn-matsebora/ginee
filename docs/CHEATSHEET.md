@@ -19,9 +19,9 @@ curl -fsSL https://raw.githubusercontent.com/kostiantyn-matsebora/ginee/main/ins
 ./install.sh --ref v0.1.0 --adapter claude
 $env:GINEE_REF='v0.1.0'; iwr ... | iex
 
-# Update (preserves local/)
-./install.sh --update-only --adapter claude
-.\install.ps1 -UpdateOnly -Adapter claude
+# Update (preserves local/) — installer is NOT co-located (D27); use /ginee-update or the bootstrap one-liner:
+GINEE_UPDATE_ONLY=1 GINEE_ADAPTER=claude bash -c "$(curl -fsSL https://raw.githubusercontent.com/kostiantyn-matsebora/ginee/main/install.sh)"
+$env:GINEE_UPDATE_ONLY='1'; $env:GINEE_ADAPTER='claude'; iwr -useb https://raw.githubusercontent.com/kostiantyn-matsebora/ginee/main/install.ps1 | iex
 ```
 
 Adapters: `claude` · `copilot-cli` · `agents-md` · `generic`.

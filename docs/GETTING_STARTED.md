@@ -158,17 +158,15 @@ When ginee authors adopter markdown (architecture doc, ADRs, CRs, READMEs, runbo
 "update ginee" / "upgrade the framework"       # natural-language equivalent
 ```
 
-team-lead loads `core/skills/ginee-update/SKILL.md`, resolves the target ref, **surfaces the plan + waits for your explicit approval** (never auto-runs), drives the existing `install.{ps1,sh} --update-only` flow, then reports VERSION delta + CHANGELOG range + new `core/MIGRATIONS/*.md` files. Refuses downgrades unless `--allow-downgrade` is passed.
+team-lead loads `core/skills/ginee-update/SKILL.md`, resolves the target ref, **surfaces the plan + waits for your explicit approval** (never auto-runs), fetches the installer from upstream at the target ref (per D27 — the installer lives at upstream, not inside `.agents/ginee/`), drives `install.{ps1,sh} --update-only`, then reports VERSION delta + CHANGELOG range + new `core/MIGRATIONS/*.md` files. Refuses downgrades unless `--allow-downgrade` is passed.
 
-**Manual fallback** — invoke the installer directly:
+**Manual fallback — bootstrap one-liner** (the installer is intentionally NOT inside `.agents/ginee/` per D27 — fetch from upstream every time):
 
 ```bash
-./install.sh --update-only --adapter claude                                                     # from a local checkout
-GINEE_UPDATE_ONLY=1 GINEE_ADAPTER=claude bash -c "$(curl -fsSL https://raw.githubusercontent.com/kostiantyn-matsebora/ginee/main/install.sh)"   # piped
+GINEE_UPDATE_ONLY=1 GINEE_ADAPTER=claude bash -c "$(curl -fsSL https://raw.githubusercontent.com/kostiantyn-matsebora/ginee/main/install.sh)"
 ```
 
 ```powershell
-.\install.ps1 -UpdateOnly -Adapter claude
 $env:GINEE_UPDATE_ONLY='1'; $env:GINEE_ADAPTER='claude'; iwr -useb https://raw.githubusercontent.com/kostiantyn-matsebora/ginee/main/install.ps1 | iex
 ```
 

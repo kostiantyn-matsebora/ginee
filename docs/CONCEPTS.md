@@ -258,7 +258,7 @@ Full spec: [`core/doc-authoring-protocol.md`](https://github.com/kostiantyn-mats
 
 ## Framework self-update
 
-`/ginee-update [<tag|branch|sha>]` drives the existing `install.{ps1,sh} --update-only` flow under explicit user approval — never auto-runs. team-lead resolves the target ref (latest release / explicit tag / branch / SHA), surfaces the update plan (current `core/VERSION` → target ref + installer command + preserved/replaced trees), waits for `yes`, then runs the installer per platform. Post-update report: VERSION delta + CHANGELOG range + new `core/MIGRATIONS/*.md` files with `Action required` excerpts + `local/index/manifest.yaml` SHA drift offer.
+`/ginee-update [<tag|branch|sha>]` drives the `install.{ps1,sh} --update-only` flow under explicit user approval — never auto-runs. **The installer lives at upstream, not inside `.agents/ginee/`** (per D27); the skill fetches `install.{ps1,sh}` from `raw.githubusercontent.com/<github.framework-repo>/<target-ref>/` to a temp dir, then runs it with the detected adapter + project root. team-lead resolves the target ref (latest release / explicit tag / branch / SHA), surfaces the update plan (current `core/VERSION` → target ref + installer command + preserved/replaced trees), waits for `yes`, then runs the installer per platform. Post-update report: VERSION delta + CHANGELOG range + new `core/MIGRATIONS/*.md` files with `Action required` excerpts + `local/index/manifest.yaml` SHA drift offer.
 
 Full spec: [`core/skills/ginee-update/SKILL.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/core/skills/ginee-update/SKILL.md).
 
