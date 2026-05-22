@@ -10,6 +10,20 @@ All notable changes to ginee. The format follows [Keep a Changelog](https://keep
 
 ## Unreleased
 
+## 0.11.0 — 2026-05-22
+
+### Added
+
+- **D26 — D22 scope extension to ginee-authored GitHub artefacts** ([#64](https://github.com/kostiantyn-matsebora/ginee/issues/64), [#65](https://github.com/kostiantyn-matsebora/ginee/pull/65)). D22 doc-authoring protocol previously scoped only adopter markdown. D26 extends to (a) GitHub issue bodies authored via `ginee-file-*` skills + (b) framework-authored comments — Phase-transition · sticky `ginee:score` / `ginee:review-cycle` · audit comments · per-thread review-replies.
+  - **Same machinery as D22** — same 5 mandatory checks per `core/process.md § Documentation style § Mandatory checks before report-as-done`; same default-shape map (inventories → tables · steps → numbered lists · multi-rule prose → parent + sub-bullets).
+  - **Lint covers every section, including Summary** — no section-by-length exemption. A one-sentence Summary still trips the mandatory checks if it packs a comma-separated inventory into a parenthetical clause.
+  - **Enforcement** — LLM self-review embedded in the `ginee-file-*` skills + comment-cadence procedures. No external linter; no runtime dependencies. Violations surface as restructure suggestions in the user-approval prompt.
+  - **Reporter-authored content unchanged** — D14 forbidden ("Never edit an issue body authored by another reporter") upheld. `ginee-pick-up` MAY surface a polite restructure advisory at pickup; never auto-edits.
+  - **3 new bad/good example pairs** in `core/doc-authoring-examples.md` — Issue Summary (parenthetical-soup → bulleted scope) · Issue body section (semicolon-chained inventory → table) · Phase-transition comment (dense paragraph → structured transition).
+  - **4 issue templates** under `core/templates/issues/` gain a D26 shape-rule banner at top.
+  - **Adapter delta** — none (templates ship via existing `core/templates/issues/` copy step).
+  - Migration: `core/MIGRATIONS/D26-doc-protocol-scope-extension.md`. Adopter action required: none — purely additive.
+
 ## 0.10.0 — 2026-05-22
 
 ### Added
