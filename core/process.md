@@ -28,6 +28,25 @@ Bindings may NOT override generic process.
 
 **Invocation notation.** This spec uses `@<role>` as vendor-neutral shorthand for "dispatch to that role." The literal `@<agent>` syntax works in some clients (Cursor) but not others (Claude Code). Per-client invocation surfaces (AgentSkills, natural-language routing, etc.) ship via the adapters — see `adapters/<x>/install.md § How to invoke`. Framework workflows (discovery / file / pick-up / triage / promote / reindex / update) auto-activate as Skills in any AgentSkills-compatible client; specialist dispatches route via subagent description match.
 
+## Skill-runner — surface boundary (D28)
+
+**Skill-runner.** Thin mechanical surface running a `ginee-*` skill body (Claude main thread · Cursor main loop · Copilot CLI main loop · AGENTS.md-driven shell). Not a role; not an orchestrator.
+
+| Op | Surface |
+|---|---|
+| Parse prompt + identify task source · label / sticky / audit-comment ops · branch ops per resolved mode · **one** named first-batch dispatch · report mechanical result | skill-runner (allowed) |
+| Plan drafting · synthesis of parallel returns · Phase 3/7/8 gate text · re-dispatch · routing reconciliation · default selection · `local/bindings.md` lookup to settle routing | **dispatch `@team-lead`** (forbidden in skill-runner) |
+
+**Hand-back rule.**
+
+- Every `ginee-*` skill dispatches `@team-lead` after its first mechanical batch.
+- From the second decision onwards every orchestration decision flows through team-lead.
+- Mid-flight routing / governance question from user → skill-runner dispatches `@team-lead`; never answers by reading project files.
+
+**Self-check before main-thread reasoning during a skill run.** Ask: *"Mechanical op in the allowed row, or orchestration decision?"* Latter → dispatch `@team-lead`. No "fast" / "trivial" exception.
+
+**Worked counter-example + full procedure shape:** `core/MIGRATIONS/D28-skill-runner-boundary.md` + `core/roles/team-lead.details.md § Common failure modes`.
+
 ## Dispatch & parallelism rules
 
 | Rule | Action |

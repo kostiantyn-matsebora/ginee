@@ -117,23 +117,25 @@ Trigger: `@team-lead file bug <title>` / `file feature <title>` (→ primary) or
 
 Trigger: `@team-lead pick up #<N>` — always targets the primary repo (= the working tree's origin). **Never auto-picks.** **No `framework-` variant** — see § Command targeting.
 
-1. Fetch:
+**Skill-runner vs team-lead split (D28).** Steps 1–5 below are **mechanical ops** the skill-runner (`ginee-pick-up`) runs directly. After Step 5 the skill-runner dispatches `@team-lead` and team-lead owns every subsequent decision — Phase 1 analysis, plan drafting, specialist routing, comment cadence, gate enforcement, close-out. Full boundary: `core/process.md § Skill-runner — surface boundary`.
+
+1. **Mechanical (skill-runner).** Fetch:
    ```
    gh issue view <N> --repo <primary-repo> --json title,body,labels,state,comments
    ```
-2. Validate:
+2. **Mechanical (skill-runner).** Validate:
    - State must be `OPEN`.
-   - Labels include `ready-label` — if absent, PM offers to add it before pickup.
-3. Parse the structured body per the template sections. Map `affected area` → routing per `local/bindings.md`.
-4. **Scoring labels** per `core/triage-scoring.md`:
-   - Missing `value:*` → ask user (H / M / L); add `value:high|medium|low` label; post `<!-- ginee:value-prompt -->` audit comment.
-   - Missing `complexity:*` → dispatch `solution-architect` for H / M / L estimate; post `<!-- ginee:complexity-estimate -->` audit comment + add `complexity:high|medium|low` label.
-   - Post / update the sticky `<!-- ginee:score v=1 -->` comment per `core/triage-scoring.md § Score comment + audit trail` (find via marker; update in place; never duplicate).
-5. Swap labels:
+   - Labels include `ready-label` — if absent, skill-runner offers to add it before pickup; on user approval, mechanical label-add.
+3. **Mechanical (skill-runner).** Parse the structured body per the template sections. Forward `affected area` to team-lead in the hand-off payload; skill-runner never resolves routing itself.
+4. **Mixed — mechanical ops + first dispatch.** Scoring labels per `core/triage-scoring.md`:
+   - Missing `value:*` → skill-runner asks user (H / M / L) per the skill text; mechanical label-add + audit comment post.
+   - Missing `complexity:*` → skill-runner's **one allowed first-batch dispatch** is `@solution-architect` for H / M / L estimate per the skill text; mechanical audit-comment post + label-add on SA return.
+   - Mechanical sticky post — find via marker; update in place; never duplicate.
+5. **Mechanical (skill-runner).** Swap labels:
    ```
    gh issue edit <N> --remove-label <ready-label> --add-label <in-progress-label>
    ```
-6. Run Phase 1 analysis treating the parsed issue body as the task description. Standard Phase 1–8 dispatch from here.
+6. **Hand to `team-lead`.** Skill-runner dispatches `@team-lead` with the parsed issue body + scoring labels + label-swap result + (Mode 1) branch handle. team-lead runs Phase 1 analysis treating the parsed issue body as the task description. Standard Phase 1–8 dispatch from here.
 7. **Comment cadence** — PM posts a structured comment at each major transition:
 
    | Trigger | Comment shape |

@@ -256,6 +256,26 @@ When ginee authors markdown — adopter docs (D22) OR ginee-authored GitHub arte
 
 Full spec: [`core/doc-authoring-protocol.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/core/doc-authoring-protocol.md). Examples (9 bad/good pairs): [`core/doc-authoring-examples.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/core/doc-authoring-examples.md).
 
+## Skill-runner vs team-lead (D28)
+
+ginee skills (`/ginee-pick-up`, `/ginee-address-review`, `/ginee-triage`, `/ginee-promote-discussion`, ...) run inside a thin **skill-runner** — the Claude main thread, Cursor main loop, Copilot CLI main loop, or AGENTS.md-driven shell that executes the skill body. The skill-runner is **not** a role and **not** an orchestrator.
+
+| Skill-runner does | Skill-runner does **not** |
+|---|---|
+| Parse prompt + identify task source | Draft a Phase 1–8 dispatch plan |
+| Label / sticky / audit-comment ops | Synthesize parallel specialist returns |
+| Branch ops per resolved delivery mode | Author lifecycle gate text (Phase 3 / 7 / 8) |
+| The skill's **one named first-batch dispatch** | Re-dispatch specialists after the first batch |
+| Report mechanical result to the user | Reconcile routing on engineer pushback |
+| | Pick defaults ("I'll pick option 1 if you don't redirect") |
+| | Read `local/bindings.md` to settle a routing question |
+
+**Hand-back rule.** Every `ginee-*` skill dispatches `@team-lead` after its first mechanical batch. From there every orchestration decision flows through team-lead. If a routing or governance question arises mid-flight, the skill-runner dispatches `@team-lead` to answer — it never answers by reading project files itself.
+
+**Why the rule.** Pre-D28 the skill-runner often drifted into orchestration on long sessions (issue #71): plan drafting in the main thread, synthesizing parallel returns, proposing default-selection options. The boundary is now structural — every skill carries an explicit hand-back step.
+
+Full spec: [`core/process.md § Skill-runner — surface boundary`](https://github.com/kostiantyn-matsebora/ginee/blob/main/core/process.md#skill-runner--surface-boundary-d28). Migration: [`core/MIGRATIONS/D28-skill-runner-boundary.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/core/MIGRATIONS/D28-skill-runner-boundary.md).
+
 ## Framework self-update
 
 `/ginee-update [<tag|branch|sha>]` drives the `install.{ps1,sh} --update-only` flow under explicit user approval — never auto-runs. **The installer lives at upstream, not inside `.agents/ginee/`** (per D27); the skill fetches `install.{ps1,sh}` from `raw.githubusercontent.com/<github.framework-repo>/<target-ref>/` to a temp dir, then runs it with the detected adapter + project root. team-lead resolves the target ref (latest release / explicit tag / branch / SHA), surfaces the update plan (current `core/VERSION` → target ref + installer command + preserved/replaced trees), waits for `yes`, then runs the installer per platform. Post-update report: VERSION delta + CHANGELOG range + new `core/MIGRATIONS/*.md` files with `Action required` excerpts + `local/index/manifest.yaml` SHA drift offer.

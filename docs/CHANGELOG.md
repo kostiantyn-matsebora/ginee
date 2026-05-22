@@ -10,6 +10,18 @@ All notable changes to ginee. The format follows [Keep a Changelog](https://keep
 
 ## Unreleased
 
+### Added
+
+- **D28 — Skill-runner / team-lead surface boundary** ([#71](https://github.com/kostiantyn-matsebora/ginee/issues/71)). Locks the structural rule that prevents the skill-runner main thread from orchestrating. Pre-D28 the framework's role definitions assigned orchestration to `team-lead` but no spec named the skill-runner (the thread running a `ginee-*` skill body — Claude main thread / Cursor main loop / Copilot CLI main loop / AGENTS.md-driven shell) as a distinct surface or banned it from making orchestration decisions. The slip recurred across long sessions: skill-runner authored Phase 1–8 plans itself, synthesized parallel specialist returns, answered routing-governance questions by reading `local/bindings.md` directly, proposed reconciliation options with default-selection ("I'll pick option 1 if you don't redirect").
+  - **Skill-runner defined** — thin mechanical surface running a `ginee-*` skill body. Not a role; not an orchestrator. Carries only the operations the skill text spells out.
+  - **Allowed (mechanical ops only)** — parse prompt + identify task source · label / sticky / audit-comment ops · branch ops per resolved delivery mode · the skill text's one named first-batch dispatch · report the mechanical result to the user.
+  - **Forbidden (must dispatch `@team-lead`)** — plan drafting · synthesis of parallel specialist returns · lifecycle gate text · re-dispatch after the first batch · routing reconciliation on engineer pushback · default selection · `local/bindings.md` lookup to settle routing questions.
+  - **Hand-back rule** — every `ginee-*` skill dispatches `@team-lead` after its first mechanical batch. From there every orchestration decision flows through team-lead. If a routing or governance question arises mid-flight, the skill-runner dispatches `@team-lead` to answer; it never answers by reading project files itself.
+  - **Worked counter-example** from issue #71 lives in `core/process.md § Skill-runner — surface boundary` and `core/MIGRATIONS/D28-skill-runner-boundary.md`.
+  - **Files updated** — `core/process.md` (new top-level § Skill-runner — surface boundary) · `core/roles/team-lead.md` (new Inbound trigger surfaces section with skill-runner hand-back row) · `core/roles/team-lead.details.md § Common failure modes` (new D28 row) · 4 skill files (`ginee-pick-up` · `ginee-address-review` · `ginee-triage` · `ginee-promote-discussion`) gain a hand-to-team-lead step + skill-runner-forbiddens entry · `core/github-integration.md § Inbound — pick up an issue` re-narrated to mark mechanical vs team-lead-owned steps.
+  - **Backwards compatibility** — purely additive. No `local/` schema change. No new commands. No adapter re-install. Existing skill invocations continue working; only the regression path (skill-runner drifting into orchestration) is now structurally forbidden.
+  - Migration: `core/MIGRATIONS/D28-skill-runner-boundary.md`. Adopter action: none.
+
 ### Fixed
 
 - **D27 — `/ginee-update` now reaches a standard install** ([#67](https://github.com/kostiantyn-matsebora/ginee/issues/67)). Pre-D27 the `ginee-update` skill's Step 1 required `install.ps1` + `install.sh` + `core/VERSION` inside `.agents/ginee/`, but the bootstrap intentionally prunes the installers (they belong to the deploy layer, not runtime). Every standard install therefore exited at Step 1 with a misleading `framework not found at <path>` — making `/ginee-update` non-functional for everyone.
