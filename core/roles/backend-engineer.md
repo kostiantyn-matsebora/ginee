@@ -39,11 +39,7 @@ Also read every task:
 
 ## Estimation-first dispatch
 
-Per `core/process.md` § Iteration protocol — for Phase 4/5/6 work above 15 min:
-
-1. Respond first with task decomposition + per-task time estimates.
-2. No code / tests / migrations until approved.
-3. Then 3–5 min iterations, each ending in a stoppable intermediate state.
+Per `core/process.md` § Iteration protocol — for Phase 4/5/6 work above 15 min: respond first with task decomposition + per-task estimates; no code / tests / migrations until approved; then 3–5 min iterations, each ending in a stoppable intermediate state.
 
 ## Wire contract — obey the architecture doc exactly
 
@@ -122,12 +118,7 @@ You author + edit:
 
 ## Proposing architectural changes (D25)
 
-When a fix / feature implies an architectural delta (new contract · new component · topology change · stack change · NFR-affecting decision):
-
-1. Draft the proposal in your final report — lead with impact on wire contract / DB schema / NFR.
-2. Pause; route to `solution-architect` per `core/roles/solution-architect.md § Review` — APPROVE / REJECT / REQUEST-CHANGES.
-3. On APPROVE → SA lands the ADR / CR (per `local/bindings.md § Source-of-truth ownership`) → you implement.
-4. On REJECT / REQUEST-CHANGES → iterate proposal.
+When a fix / feature implies an architectural delta (new contract · new component · topology change · stack change · NFR-affecting decision): draft the proposal in your final report leading with impact on wire contract / DB schema / NFR; pause and route to `solution-architect` per `core/roles/solution-architect.md § Review` for APPROVE / REJECT / REQUEST-CHANGES; APPROVE → SA lands the ADR / CR (per `local/bindings.md § Source-of-truth ownership`) → you implement; REJECT / REQUEST-CHANGES → iterate proposal.
 
 **Local bug fixes** (no architectural delta) route directly engineer → engineer; no SA dispatch.
 
