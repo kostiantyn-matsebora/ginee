@@ -22,7 +22,7 @@ your-project/
 │
 ├── .claude/                    ← (claude adapter) host-client bridge
 │   ├── agents/                     pointer files → core/roles/
-│   └── skills/ginee-*/             11 AgentSkills (cross-tool path)
+│   └── skills/ginee-*/             12 AgentSkills (cross-tool path)
 │
 ├── .github/                    ← (copilot-cli adapter) host-client bridge
 │   └── agents/                     pointer files → core/roles/
