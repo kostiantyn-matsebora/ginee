@@ -227,6 +227,69 @@ if [ "$UPDATE_ONLY" -eq 1 ] && [ -d "${LOCAL_BACKUP:-}" ]; then
   fi
 fi
 
+# --- Model-tier overrides (D31) -------------------------------------------
+# Reads local/framework.config.yaml § model-tier (if present) and rewrites the
+# `model:` line in each pointer file under the agents-dir. Absent config →
+# no-op; pointer files keep the framework-default model: shipped in _shared/.
+# Spec: core/MIGRATIONS/D31-model-tier.md.
+
+apply_model_tier_overrides() {
+  local agents_dir="$1"
+  local config_path="$2"
+  [ -f "$config_path" ] || return 0
+
+  local tmp_pr tmp_cm
+  tmp_pr="$(mktemp)"
+  tmp_cm="$(mktemp)"
+
+  # Parse model-tier.per-role.<role>: <tier> + model-tier.adapters.claude.<tier>: <id>
+  awk '
+    /^[[:space:]]*#/ { next }
+    /^[[:space:]]*$/ { next }
+    /^model-tier:[[:space:]]*$/      { section="mt"; next }
+    /^[^[:space:]]/                  { if (section) section="" }
+    section=="mt"       && /^  per-role:[[:space:]]*$/  { section="mt.pr"; next }
+    section=="mt"       && /^  adapters:[[:space:]]*$/  { section="mt.ad"; next }
+    section=="mt.pr"    && /^    [A-Za-z0-9_-]+:[[:space:]]*[^[:space:]]+/ { sub(/^[[:space:]]*/, ""); print "pr " $0 > prfile; next }
+    section=="mt.pr"    && /^  [^[:space:]]/            { section="mt" }
+    section=="mt.ad"    && /^    claude:[[:space:]]*$/  { section="mt.ad.cl"; next }
+    section=="mt.ad"    && /^  [^[:space:]]/            { section="mt" }
+    section=="mt.ad.cl" && /^      [A-Za-z0-9_-]+:[[:space:]]*[^[:space:]]+/ { sub(/^[[:space:]]*/, ""); print "cm " $0 > cmfile; next }
+    section=="mt.ad.cl" && /^    [^[:space:]]/          { section="mt.ad" }
+  ' prfile="$tmp_pr" cmfile="$tmp_cm" "$config_path"
+
+  # Bail when no overrides present
+  if [ ! -s "$tmp_pr" ] && [ ! -s "$tmp_cm" ]; then
+    rm -f "$tmp_pr" "$tmp_cm"
+    return 0
+  fi
+
+  local changed=0
+  local agent_file role tier model_id
+  for agent_file in "$agents_dir"/*.md; do
+    [ -f "$agent_file" ] || continue
+    role="$(awk '/^name:[[:space:]]+/ { print $2; exit }' "$agent_file")"
+    [ -n "$role" ] || continue
+    tier="$(awk -v r="$role" '$1=="pr" && $2==r":" { print $3; exit }' "$tmp_pr")"
+    [ -n "$tier" ] || continue
+    model_id="$(awk -v t="$tier" '$1=="cm" && $2==t":" { print $3; exit }' "$tmp_cm")"
+    [ -n "$model_id" ] || continue
+    local new_line="model: ${model_id}  # D31 — ${tier} tier (set by local/framework.config.yaml § model-tier)"
+    if grep -qE '^model:[[:space:]]+' "$agent_file"; then
+      sed -i.bak -E "s|^model:[[:space:]]+.*$|${new_line}|" "$agent_file" && rm -f "$agent_file.bak"
+    else
+      sed -i.bak -E "/^name:[[:space:]]+/a\\
+${new_line}" "$agent_file" && rm -f "$agent_file.bak"
+    fi
+    changed=$((changed + 1))
+  done
+
+  rm -f "$tmp_pr" "$tmp_cm"
+  if [ "$changed" -gt 0 ]; then
+    echo "Applied model-tier overrides to ${changed} pointer file(s) (D31)"
+  fi
+}
+
 # --- 3. Adapter prompt + install -------------------------------------------
 
 if [ -z "$ADAPTER" ]; then
@@ -294,6 +357,8 @@ case "$ADAPTER" in
     rm -f "$TARGET/.claude/agents/project-manager.md"
     cp "$FRAMEWORK_DIR"/adapters/_shared/agents/*.md "$TARGET/.claude/agents/"
     echo "Copied 7 cardinal subagents to .claude/agents/"
+    # D31 — apply per-role model-tier overrides from local/framework.config.yaml if present
+    apply_model_tier_overrides "$TARGET/.claude/agents" "$FRAMEWORK_DIR/local/framework.config.yaml"
     mkdir -p "$TARGET/.claude/skills"
     rm -rf "$TARGET"/.claude/skills/ginee-*
     cp -r "$FRAMEWORK_DIR"/core/skills/ginee-* "$TARGET/.claude/skills/"

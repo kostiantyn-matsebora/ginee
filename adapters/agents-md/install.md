@@ -90,6 +90,20 @@ Framework workflows (file / pick-up / triage / promote / discovery / reindex) ac
 | "Update ginee" / "Upgrade the framework" / "Bump ginee to `v<X>`" / "Pull the latest ginee" | `ginee-update` |
 | "Address review on PR #N" / "Respond to review on #N" / "Handle review feedback on #N" | `ginee-address-review` |
 
+## Model tier (D31)
+
+The AGENTS.md surface does **not** expose programmatic per-role model selection — Cursor / Codex / Gemini CLI / Goose / etc. each pick model via their own UI / config. ginee writes vendor-neutral tier names in `local/framework.config.yaml § model-tier` but the runtime ignores them on this adapter.
+
+**Per-task prefix (user-side hint).** Prefix any dispatch with `model:<tier>` (`reasoning` / `standard` / `fast`) — a documented signal you can pair with manual model selection in your client.
+
+```
+model:reasoning Add the new ASR utility-tree leaves for the latency NFR.
+```
+
+For clients layered on top of this adapter (Claude Code · Copilot CLI), the layered adapter's own programmatic wiring applies; this baseline adapter stays a no-op.
+
+When AGENTS.md gains a per-role / per-task model field, this adapter's install step will wire it. Spec: `core/MIGRATIONS/D31-model-tier.md`.
+
 ## Updates
 
 **Recommended — `/ginee-update`** (or "update ginee" / "upgrade the framework"). The skill fetches the installer from upstream at the target ref and drives `--update-only` for you — no local installer needed (D27). Automates steps 1–2. **Warning** — the installer copies `AGENTS.md` wholesale; back up first if you merged project-specific content into it.

@@ -255,6 +255,71 @@ if ($UpdateOnly -and (Test-Path $localBackup)) {
   }
 }
 
+# --- Model-tier overrides (D31) --------------------------------------------
+# Reads local/framework.config.yaml § model-tier (if present) and rewrites the
+# `model:` line in each pointer file under the agents-dir. Absent config →
+# no-op; pointer files keep the framework-default model: shipped in _shared/.
+# Spec: core/MIGRATIONS/D31-model-tier.md.
+
+function Read-ModelTierConfig([string]$configPath) {
+  if (-not (Test-Path $configPath)) { return $null }
+  $perRole = @{}
+  $claudeMap = @{}
+  $section = ''
+  foreach ($line in Get-Content -LiteralPath $configPath) {
+    if ($line -match '^\s*#' -or $line -match '^\s*$') { continue }
+
+    # Dedent transitions — set section back, but fall through so this line
+    # can still trigger a new section entry on the same iteration.
+    if ($section -eq 'mt.ad.cl' -and $line -notmatch '^      ') { $section = 'mt.ad' }
+    if ($section -eq 'mt.ad'    -and $line -notmatch '^    ')   { $section = 'mt' }
+    if ($section -eq 'mt.pr'    -and $line -notmatch '^    ')   { $section = 'mt' }
+    if ($section -eq 'mt'       -and $line -match   '^\S')      { $section = '' }
+
+    # Section entries.
+    if ($line                   -match '^model-tier:\s*$')              { $section = 'mt';       continue }
+    if ($section -eq 'mt'       -and $line -match '^  per-role:\s*$')   { $section = 'mt.pr';    continue }
+    if ($section -eq 'mt'       -and $line -match '^  adapters:\s*$')   { $section = 'mt.ad';    continue }
+    if ($section -eq 'mt.ad'    -and $line -match '^    claude:\s*$')   { $section = 'mt.ad.cl'; continue }
+
+    # Data captures.
+    if ($section -eq 'mt.pr'    -and $line -match '^    ([\w-]+):\s*(\S+)')   { $perRole[$Matches[1]]   = $Matches[2].Trim() }
+    if ($section -eq 'mt.ad.cl' -and $line -match '^      ([\w-]+):\s*(\S+)') { $claudeMap[$Matches[1]] = $Matches[2].Trim() }
+  }
+  if ($perRole.Count -eq 0 -and $claudeMap.Count -eq 0) { return $null }
+  return @{ PerRole = $perRole; ClaudeMap = $claudeMap }
+}
+
+function Set-ClaudeAgentModel {
+  [CmdletBinding(SupportsShouldProcess = $true)]
+  param([string]$agentsDir, $cfg)
+  if (-not $cfg) { return }
+  $changed = 0
+  Get-ChildItem -LiteralPath $agentsDir -Filter '*.md' -File | ForEach-Object {
+    $file = $_.FullName
+    $content = Get-Content -LiteralPath $file -Raw
+    if ($content -notmatch '(?m)^name:\s+(\S+)') { return }
+    $role = $Matches[1].Trim()
+    $tier = $cfg.PerRole[$role]
+    if (-not $tier) { return }
+    $modelId = $cfg.ClaudeMap[$tier]
+    if (-not $modelId) { return }
+    $newLine = "model: $modelId  # D31 — $tier tier (set by local/framework.config.yaml § model-tier)"
+    if ($content -match '(?m)^model:\s+\S+.*$') {
+      $newContent = [regex]::Replace($content, '(?m)^model:\s+\S+.*$', $newLine, 1)
+    } else {
+      $newContent = [regex]::Replace($content, '(?m)(^name:\s+\S+.*$)', "`$1`n$newLine", 1)
+    }
+    if ($newContent -ne $content -and $PSCmdlet.ShouldProcess($file, "Apply D31 model-tier override ($tier → $modelId)")) {
+      Set-Content -LiteralPath $file -Value $newContent -NoNewline
+      $changed++
+    }
+  }
+  if ($changed -gt 0) {
+    Write-Host "Applied model-tier overrides to $changed pointer file(s) (D31)" -ForegroundColor Green
+  }
+}
+
 # --- 3. Adapter prompt + install --------------------------------------------
 
 if (-not $Adapter) {
@@ -324,6 +389,8 @@ switch ($Adapter) {
     Remove-Item (Join-Path $agentsDir 'project-manager.md') -Force -ErrorAction SilentlyContinue
     Copy-Item (Join-Path $frameworkDir 'adapters\_shared\agents\*.md') $agentsDir
     Write-Host "Copied 7 cardinal subagents to .claude/agents/" -ForegroundColor Green
+    # D31 — apply per-role model-tier overrides from local/framework.config.yaml if present
+    Set-ClaudeAgentModel $agentsDir (Read-ModelTierConfig (Join-Path $frameworkDir 'local\framework.config.yaml'))
     $skillsDir = Join-Path $Target '.claude\skills'
     New-Item -ItemType Directory -Force $skillsDir | Out-Null
     Get-ChildItem $skillsDir -Filter 'ginee-*' -Directory -ErrorAction SilentlyContinue | Remove-Item -Recurse -Force

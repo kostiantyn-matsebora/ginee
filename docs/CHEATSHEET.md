@@ -187,6 +187,30 @@ Options:
 
 Full spec: `core/options-protocol.md`. Example: `core/doc-authoring-examples.md § 11`.
 
+## Model tier (D31)
+
+Three tiers (vendor-neutral); per-task prefix combinable with `auto:` / `branch:` / `wt:` / `commit:`:
+
+```
+reasoning  ← team-lead · solution-architect           (Claude default: claude-opus-4-7)
+standard   ← ai-engineer · 4 engineer cardinals       (Claude default: claude-sonnet-4-6)
+fast       ← opt-in for mechanical work                (Claude default: claude-haiku-4-5-20251001)
+```
+
+Per-task prefix examples:
+
+```
+model:reasoning Add the new ASR utility-tree leaves for the latency NFR.
+auto: model:fast Re-label stale issues with ginee:blocked.
+branch: model:reasoning Pick up #N
+```
+
+**Resolution order** (stop at first match) — (1) `model:<tier>` prefix · (2) Phase-3 user answer · (3) `local/framework.config.yaml § model-tier.per-role.<role>` · (4) `core/roles/<role>.md` `default-tier:`.
+
+**Adapter override.** Edit `local/framework.config.yaml § model-tier` (per-role tier + per-adapter tier→model map); re-run installer to apply.
+
+Full spec: `core/MIGRATIONS/D31-model-tier.md`.
+
 ## Source-of-truth pattern
 
 ```

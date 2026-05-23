@@ -82,6 +82,18 @@ If your client supports AgentSkills (step 3 above), each of these phrasings also
 
 If your client matures to support `AGENTS.md`, a subagent directory, or AgentSkills, upgrade to the matching adapter for better isolation + parallelism.
 
+## Model tier (D31)
+
+Generic adapter has no per-role model selection — the host client picks one model for the whole session. ginee writes vendor-neutral tier names in `local/framework.config.yaml § model-tier` but the runtime ignores them at this tier.
+
+**Per-task prefix (user-side hint).** Prefix any dispatch with `model:<tier>` (`reasoning` / `standard` / `fast`) — a documented signal you can pair with manual model selection in your client.
+
+```
+model:reasoning act as solution-architect and add the new ASR utility-tree leaves for the latency NFR
+```
+
+When the host client matures to support per-role model selection (Claude Code / Copilot CLI level), upgrade to the matching adapter. Spec: `core/MIGRATIONS/D31-model-tier.md`.
+
 ## Updates
 
 **Recommended — `/ginee-update`** (or "update ginee" / "upgrade the framework") when the host client supports AgentSkills. Falls back to "act as `team-lead` and update ginee" for tier-3 clients. The skill fetches the installer from upstream at the target ref and drives `--update-only` for you — no local installer needed (D27).

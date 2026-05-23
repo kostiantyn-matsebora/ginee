@@ -55,6 +55,15 @@ Bindings may NOT override generic process.
 | Infrastructure changes affecting application config (env var, secret, endpoint URL) | Coordinate `devops-engineer` + affected service-owning role; service-owner first to confirm the app reads the new value, devops second. |
 | Surface owns the dispatch decision | Routing is determined by the touched surface per `local/bindings.md` — never by estimated task size. "Looks fast" is not grounds to self-execute or assign to a non-owning role. |
 
+**Per-task model tier (D31).** Each dispatch resolves a `<tier>` (`reasoning` / `standard` / `fast`); adapters translate tiers → vendor-specific model IDs. Resolution order — stop at first match:
+
+1. Per-task prefix `model:<tier>` in the dispatch line (combinable with `auto:` / `branch:` / `wt:` / `commit:`).
+2. Phase-3 user answer.
+3. `local/framework.config.yaml § model-tier.per-role.<role>`.
+4. `core/roles/<role>.md` frontmatter `default-tier:`.
+
+Full spec: `core/MIGRATIONS/D31-model-tier.md` (load-on-demand).
+
 **Overlap patterns** — next phase starts when its contract surface is fixed, not when prior phase's code lands:
 
 - **Test authoring overlaps implementation.**

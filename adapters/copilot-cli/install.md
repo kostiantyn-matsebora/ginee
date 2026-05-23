@@ -85,6 +85,18 @@ Cheat sheet:
 
 Subagent dispatch (`solution-architect`, `backend-engineer`, etc.) — natural-language via Copilot's chat. `@mention` syntax works in Copilot CLI's chat.
 
+## Model tier (D31)
+
+Copilot CLI does **not** expose programmatic per-role model selection today — model choice lives in the client's own UI. The `model:` field in `.github/agents/<role>.agent.md` frontmatter is ignored by Copilot CLI; ginee writes it for parity with other adapters but the runtime ignores it.
+
+**Per-task prefix (user-side hint).** Prefix any dispatch with `model:<tier>` (`reasoning` / `standard` / `fast`) — Copilot does not act on it programmatically, but the prefix is a documented signal you can pair with manual model selection in the Copilot UI.
+
+```
+model:reasoning Add the new ASR utility-tree leaves for the latency NFR.
+```
+
+When Copilot CLI gains a per-role / per-task model API, this adapter's install step will wire it. Spec: `core/MIGRATIONS/D31-model-tier.md`.
+
 ## Updates
 
 **Recommended — `/ginee-update`** (or "update ginee" / "upgrade the framework"). The skill fetches the installer from upstream at the target ref and drives `--update-only` for you — no local installer needed (D27). Automates steps 1–3.
