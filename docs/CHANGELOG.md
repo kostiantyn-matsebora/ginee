@@ -10,6 +10,13 @@ All notable changes to ginee. The format follows [Keep a Changelog](https://keep
 
 ## Unreleased
 
+## 0.12.1 — 2026-05-23
+
+### Fixed
+
+- **Cardinal subagents dispatch on the standard tier without a per-call `model:` override** ([#82](https://github.com/kostiantyn-matsebora/ginee/issues/82), [#83](https://github.com/kostiantyn-matsebora/ginee/pull/83)). Claude Code's lazy YAML frontmatter parser was consuming the inline `# D31 — <tier> tier; override via …` comment on the `model:` line as part of the model ID; Sonnet-tier dispatches (`ai-engineer` · `backend-engineer` · `devops-engineer` · `frontend-engineer` · `qa-engineer`) failed with `There's an issue with the selected model (claude-sonnet-4-6  # D31 — …)`. Opus-tier dispatches (`team-lead` · `solution-architect`) prefix-matched and masked the bug. **Fix**: comment moved to its own line directly above a bare `model:` line in all 7 cardinal templates under `adapters/_shared/agents/`.
+- **`Set-ClaudeAgentModel` (install.ps1)** emits the same comment-above shape so re-running install / `/ginee-update` no longer reintroduces the inline-comment shape — and consumes any pre-existing `# D31 — …` comment line directly above the model line during rewrite (no comment accumulation across re-runs). +2 Pester regression tests.
+
 ## 0.12.0 — 2026-05-23
 
 ### Added
