@@ -333,3 +333,27 @@ Status: Done
 
 <!-- D29 self-lint: pass -->
 ```
+
+---
+
+## 13. Taxonomy identifier pairing (D34)
+
+Cardinal outputs pair bare taxonomy IDs (D / ADR / CR / FR / NFR / ASR / index class) with their slug. Issue / PR / SHA refs stay bare.
+
+**Bad** — bare IDs in a Phase-7 sign-off:
+
+> Phase 7 sign-off. Implementation conforms to ADR-0001, ADR-0017, and CR-0010. NFR-02 budget respected. Touches FR-04 and the new ASR-03 derivation. Affected D-decisions: D17, D25, D28.
+
+Reader can't tell what ADR-0001 / D17 / FR-04 *are* without opening each file. Tripped — D22 check #5 extension (D34).
+
+**Good** — slug-glued:
+
+> Phase 7 sign-off. Implementation conforms to `ADR-0001-topology-derivation-five-pass`, `ADR-0017-event-payload-canonical`, and `CR-0010-component-ci-pipeline`. `NFR-02-cost-cap` budget respected. Touches `FR-04-deploy-rollback` and the new `ASR-03-availability-budget` derivation. Affected D-decisions: `D17-delivery-modes`, `D25-classical-architect`, `D28-skill-runner-boundary`.
+
+Reader knows every citation at a glance; `grep -r D28-skill-runner-boundary core/MIGRATIONS/` returns the spec.
+
+**Issue refs stay bare.** `Closes #87`, `[PR #84](...)`, git SHAs are correct as-is — only internal taxonomy IDs are in scope.
+
+**Lookup failure** — surface inline (`D28-?? (slug lookup failed)`); carry forward; never invent.
+
+Full lookup table + self-lint regex: `core/doc-authoring-protocol.md § Taxonomy identifier pairing (D34)`.

@@ -351,7 +351,7 @@ Full spec: `core/MIGRATIONS/D31-model-tier.md` (load-on-demand).
 2. No table cell holds a multi-sentence sub-paragraph.
 3. No bullet runs > 25 words *unless* it carries nested sub-bullets.
 4. Inventories (services, components, endpoints, env vars) are tables, not prose.
-5. Cross-references cite anchors (`§Name`, `#anchor`); never restate content.
+5. Cross-references cite anchors (`§Name`, `#anchor`); never restate content. **Taxonomy identifiers carry their short name in slug-glued form (D34)** — `D28-skill-runner-boundary` / `ADR-0001-topology-derivation-five-pass` / `CR-0010-component-ci-pipeline` / `FR-04-deploy-rollback`, never bare `D28` / `ADR-0001` / `CR-0010` / `FR-04`. Issue / PR / commit references are NOT taxonomy IDs and stay bare (`#87`, PR-link, SHA). Full lookup procedure: `core/doc-authoring-protocol.md § Taxonomy identifier pairing (D34)`.
 
 **Enforcement procedure** (lint command, attestation format, no-tool fallback): `core/doc-authoring-protocol.md` — load at Phase 5 / report-as-done.
 **Paired bad-vs-good examples** (6 doc classes): `core/doc-authoring-examples.md` — load on first-time authoring or explicit request.
