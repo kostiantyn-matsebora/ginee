@@ -219,6 +219,54 @@ jobs:
           name: pester-results
           path: pester-results.xml
 
+  lint-bash:
+    name: shellcheck
+    needs: validate
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install shellcheck
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y shellcheck
+          shellcheck --version
+
+      - name: Run shellcheck on all *.sh
+        run: |
+          set -e
+          mapfile -t scripts < <(find . -type f -name '*.sh' \
+            -not -path './.git/*' \
+            -not -path './node_modules/*')
+          if [ ${#scripts[@]} -eq 0 ]; then
+            echo "No *.sh files found."
+            exit 0
+          fi
+          printf '%s\n' "${scripts[@]}"
+          shellcheck -x "${scripts[@]}"
+          echo "shellcheck: clean"
+
+  test-bash:
+    name: bats tests
+    needs: validate
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install bats-core
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y bats
+          bats --version
+
+      - name: Run bats
+        run: |
+          if ! ls tests/*.bats >/dev/null 2>&1; then
+            echo "No tests/*.bats files found."
+            exit 0
+          fi
+          bats tests/*.bats
+
   install-smoke-bash:
     name: Install smoke (bash, ${{ matrix.adapter }})
     needs: validate
