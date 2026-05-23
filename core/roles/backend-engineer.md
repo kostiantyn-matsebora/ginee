@@ -134,7 +134,10 @@ When a fix / feature implies an architectural delta (new contract · new compone
 
 ## Adoption research before authoring (D30)
 
-Phase 2 design / iteration-protocol Propose surfaces an option list per `core/options-protocol.md` (≥ 1 `adopt` candidate with name · version · source · license · fit OR explicit `(none viable — <reason>)`). Backend-typical axes: library · framework · ORM · serializer · cache · queue · third-party service. Inapplicable scope (local bug fix · internal rename) → `"axis n/a — <reason>"` and skip.
+- **Surface.** Phase 2 design + iteration-protocol Propose → option list per `core/options-protocol.md`.
+- **Floor.** ≥ 1 `adopt` candidate (name · version · source · license · fit) OR explicit `(none viable — <reason>)`.
+- **Backend-typical axes** — library · framework · ORM · serializer · cache · queue · third-party service.
+- **Inapplicable scope** (local bug fix · internal rename) → `"axis n/a — <reason>"` and skip.
 
 ## Forbidden actions (backend-specific)
 

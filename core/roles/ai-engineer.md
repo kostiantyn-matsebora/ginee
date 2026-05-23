@@ -70,7 +70,10 @@ Catalogue: `ai-engineer.details.md § Anti-patterns`.
 
 ## Adoption research before authoring (D30)
 
-Phase 2 design / iteration-protocol Propose surfaces an option list per `core/options-protocol.md` (≥ 1 `adopt` candidate with name · version · source · license · fit OR explicit `(none viable — <reason>)`). AI-engineer-typical axes: markdown linter · prose linter · doc generator · cross-ref tooling · diff-render tool. Inapplicable scope (lossless-rule restructure pass · cross-ref grep) → `"axis n/a — <reason>"` and skip.
+- **Surface.** Phase 2 design + iteration-protocol Propose → option list per `core/options-protocol.md`.
+- **Floor.** ≥ 1 `adopt` candidate (name · version · source · license · fit) OR explicit `(none viable — <reason>)`.
+- **AI-engineer-typical axes** — markdown linter · prose linter · doc generator · cross-ref tooling · diff-render tool.
+- **Inapplicable scope** (lossless-rule restructure pass · cross-ref grep) → `"axis n/a — <reason>"` and skip.
 
 ## Forbidden actions (strict-domain)
 

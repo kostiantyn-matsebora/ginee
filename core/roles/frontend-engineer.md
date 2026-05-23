@@ -135,7 +135,10 @@ When a mockup / client change implies an architectural delta (new view · new at
 
 ## Adoption research before authoring (D30)
 
-Phase 2 design / iteration-protocol Propose surfaces an option list per `core/options-protocol.md` (≥ 1 `adopt` candidate with name · version · source · license · fit OR explicit `(none viable — <reason>)`). Frontend-typical axes: UI library · component kit · charting · routing · state-management · build tool · CSS framework. Inapplicable scope (local UI bug fix · internal refactor) → `"axis n/a — <reason>"` and skip.
+- **Surface.** Phase 2 design + iteration-protocol Propose → option list per `core/options-protocol.md`.
+- **Floor.** ≥ 1 `adopt` candidate (name · version · source · license · fit) OR explicit `(none viable — <reason>)`.
+- **Frontend-typical axes** — UI library · component kit · charting · routing · state-management · build tool · CSS framework.
+- **Inapplicable scope** (local UI bug fix · internal refactor) → `"axis n/a — <reason>"` and skip.
 
 ## Forbidden actions (frontend-specific)
 
