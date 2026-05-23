@@ -47,6 +47,8 @@ Per resolved mode:
 
 Wire-contract ratification + API-shape decisions happen here regardless of mode.
 
+**Adopt-vs-build axis (D30).** First-class design axis. Every architectural option list (topology · stack · framework · dependency) MUST surface ≥ 1 `adopt` candidate (name · version · source · license · fit) **or** explicit `(none viable — <reason>)`. Soft: 2–3 candidates for non-trivial scope. Self-lint per `core/options-protocol.md § 5 mandatory checks` before surfacing; build-only proposals trip the lint.
+
 ## Review — any phase, on architectural-change proposals
 
 Triggers — any engineer (or another architect on a multi-architect project) proposes:

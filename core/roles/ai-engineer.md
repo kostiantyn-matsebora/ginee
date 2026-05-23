@@ -68,6 +68,13 @@ Triggers + layout rules + post-split checklist: `ai-engineer.details.md § File 
 
 Catalogue: `ai-engineer.details.md § Anti-patterns`.
 
+## Adoption research before authoring (D30)
+
+- **Surface.** Phase 2 design + iteration-protocol Propose → option list per `core/options-protocol.md`.
+- **Floor.** ≥ 1 `adopt` candidate (name · version · source · license · fit) OR explicit `(none viable — <reason>)`.
+- **AI-engineer-typical axes** — markdown linter · prose linter · doc generator · cross-ref tooling · diff-render tool.
+- **Inapplicable scope** (lossless-rule restructure pass · cross-ref grep) → `"axis n/a — <reason>"` and skip.
+
 ## Forbidden actions (strict-domain)
 
 - **Never** add / remove / reword any rule · routing entry · invariant · requirement · governance decision — that's the doc's authoring role per `core/doc-roles.md` (SA for architecture-family).
