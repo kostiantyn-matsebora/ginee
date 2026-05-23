@@ -304,11 +304,16 @@ function Set-ClaudeAgentModel {
     if (-not $tier) { return }
     $modelId = $cfg.ClaudeMap[$tier]
     if (-not $modelId) { return }
-    $newLine = "model: $modelId  # D31 — $tier tier (set by local/framework.config.yaml § model-tier)"
-    if ($content -match '(?m)^model:\s+\S+.*$') {
-      $newContent = [regex]::Replace($content, '(?m)^model:\s+\S+.*$', $newLine, 1)
+    # Two-line shape — comment ABOVE bare `model:` line (#82): Claude Code's lazy
+    # frontmatter parser does not strip YAML inline `#` comments on the model field,
+    # so the comment must live on its own line. When rewriting, also consume any
+    # pre-existing `# D31 — ...` comment line directly above the model line.
+    $newPair = "# D31 — $tier tier (set by local/framework.config.yaml § model-tier)`nmodel: $modelId"
+    $rxModelWithComment = '(?m)^(?:# D31 — .*\r?\n)?model:\s+\S+.*$'
+    if ($content -match $rxModelWithComment) {
+      $newContent = [regex]::Replace($content, $rxModelWithComment, $newPair, 1)
     } else {
-      $newContent = [regex]::Replace($content, '(?m)(^name:\s+\S+.*$)', "`$1`n$newLine", 1)
+      $newContent = [regex]::Replace($content, '(?m)(^name:\s+\S+.*$)', "`$1`n$newPair", 1)
     }
     if ($newContent -ne $content -and $PSCmdlet.ShouldProcess($file, "Apply D31 model-tier override ($tier → $modelId)")) {
       Set-Content -LiteralPath $file -Value $newContent -NoNewline
