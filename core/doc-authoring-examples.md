@@ -338,28 +338,22 @@ Status: Done
 
 ## 13. Taxonomy identifier pairing (D34)
 
-**Context.** Every cardinal output that cites a taxonomy item — D-decision · ADR · CR · FR · NFR · ASR · index class — pairs the bare ID with its short name in slug-glued form. Bare IDs force the reader to context-switch (open the file, read the title, return); slug-glued form lets the reader copy-paste the citation directly into a filesystem search. Issue / PR / commit-SHA references are NOT taxonomy IDs and stay bare.
+Cardinal outputs pair bare taxonomy IDs (D / ADR / CR / FR / NFR / ASR / index class) with their slug. Issue / PR / SHA refs stay bare.
 
-**Bad** — bare identifiers throughout a Phase-7 SA review note:
+**Bad** — bare IDs in a Phase-7 sign-off:
 
-> Phase 7 sign-off. Implementation conforms to ADR-0001, ADR-0017, and CR-0010. NFR-02 budget respected (latency under 200 ms). The change touches FR-04 (deploy rollback) and the new ASR-03 derivation. Affected D-decisions: D17, D25, D28. Architecture-doc invariant per ADR-0003 honoured.
+> Phase 7 sign-off. Implementation conforms to ADR-0001, ADR-0017, and CR-0010. NFR-02 budget respected. Touches FR-04 and the new ASR-03 derivation. Affected D-decisions: D17, D25, D28.
 
-Tripped checks: every taxonomy citation is bare. The reader cannot tell what ADR-0001 / D17 / FR-04 / ASR-03 *are* without opening each file. Per the D22 check #5 extension (D34) — taxonomy identifiers must carry their slug.
+Reader can't tell what ADR-0001 / D17 / FR-04 *are* without opening each file. Tripped — D22 check #5 extension (D34).
 
 **Good** — slug-glued:
 
-> Phase 7 sign-off. Implementation conforms to `ADR-0001-topology-derivation-five-pass`, `ADR-0017-event-payload-canonical`, and `CR-0010-component-ci-pipeline`. `NFR-02-cost-cap` budget respected (latency under 200 ms). The change touches `FR-04-deploy-rollback` and the new `ASR-03-availability-budget` derivation. Affected D-decisions: `D17-delivery-modes`, `D25-classical-architect`, `D28-skill-runner-boundary`. Architecture-doc invariant per `ADR-0003-event-stream-contract` honoured.
+> Phase 7 sign-off. Implementation conforms to `ADR-0001-topology-derivation-five-pass`, `ADR-0017-event-payload-canonical`, and `CR-0010-component-ci-pipeline`. `NFR-02-cost-cap` budget respected. Touches `FR-04-deploy-rollback` and the new `ASR-03-availability-budget` derivation. Affected D-decisions: `D17-delivery-modes`, `D25-classical-architect`, `D28-skill-runner-boundary`.
 
-Reader knows what every citation is at a glance; `grep -r D28-skill-runner-boundary core/MIGRATIONS/` returns the spec immediately.
+Reader knows every citation at a glance; `grep -r D28-skill-runner-boundary core/MIGRATIONS/` returns the spec.
 
-**Issue refs stay bare.** Citations to GitHub issues / PRs / commits are NOT in scope — issue titles are reporter-mutable and PR titles drift. `Closes #87`, `[PR #84](https://github.com/.../pull/84)`, and git SHAs are all correct as-is. The pairing rule applies only to internal taxonomy classes the framework / adopter projects own.
+**Issue refs stay bare.** `Closes #87`, `[PR #84](...)`, git SHAs are correct as-is — only internal taxonomy IDs are in scope.
 
-**Resolution failure (rare).** If the slug lookup fails (file missing · register row missing · manifest entry missing), surface the failure inline rather than degrading silently:
+**Lookup failure** — surface inline (`D28-?? (slug lookup failed)`); carry forward; never invent.
 
-```
-D28-?? (slug lookup failed: core/MIGRATIONS/D28-*.md not found — investigate before publishing)
-```
-
-Orchestrator carries the failure forward to the next dispatch. Never invent a slug; never emit a bare identifier as fallback.
-
-Full resolution lookup table (file-backed · inline-table · index-class) + self-lint regex: `core/doc-authoring-protocol.md § Taxonomy identifier pairing (D34)`.
+Full lookup table + self-lint regex: `core/doc-authoring-protocol.md § Taxonomy identifier pairing (D34)`.
