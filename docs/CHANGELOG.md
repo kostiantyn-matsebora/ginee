@@ -10,6 +10,8 @@ All notable changes to ginee. The format follows [Keep a Changelog](https://keep
 
 ## Unreleased
 
+## 0.12.0 — 2026-05-23
+
 ### Added
 
 - **D31 — Per-role + per-task model tier** ([#76](https://github.com/kostiantyn-matsebora/ginee/issues/76)). Routes reasoning-heavy roles to capable models and execution-heavy roles to cheaper ones. Tier names vendor-neutral in `core/`; concrete model IDs live only in the adapter layer. Purely additive — absent `model-tier:` config → framework defaults apply silently.
