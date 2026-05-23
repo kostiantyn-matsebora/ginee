@@ -275,3 +275,61 @@ Options:
 ```
 
 Passes all 5 checks: floor present · citations complete · tagging explicit · empty research documented · fit rationale concrete.
+
+---
+
+## 12. Phase-1 dispatch return — D29 marker enforcement (D33)
+
+`team-lead` returns a Phase-1 grounding plan after `/ginee-pick-up`. Pre-D33 the 6 checks were aspirational; non-compliant returns slipped through silently. D33 adds the literal `<!-- D29 self-lint: pass -->` marker as the attestation line.
+
+**Bad** — narrative preamble, no schema sections, no marker (failure mode from #86):
+
+> I have full grounding now. Pre-dispatch staleness check before drafting the Phase 2 plan:
+>
+> - Read `core/process.md` end-to-end.
+> - Read `core/roles/team-lead.md` + `core/roles/team-lead.details.md`.
+> - SHA-256 cross-checked manifest entries — no drift.
+>
+> Files I'll touch: `core/templates/phase-report.md`, all 7 cardinal kernels, `core/process.md § Skill-runner`, new `core/MIGRATIONS/D33-*.md`, plus `CLAUDE.md`/`PLAN.md` cross-refs.
+>
+> Marker is `<!-- D29 self-lint: pass -->` literal; orchestrator surfaces advisory; skill-runner forbidden from cleaning up.
+
+Tripped: **#1** (paragraph > 2 terminators) · **#4** (file inventory as prose) · **#6** (narrative preamble) · **D33 marker absent**.
+
+**Good** — schema-bound + marker:
+
+```
+Status: Done
+
+## Files touched
+
+| Path | Δ lines | Purpose |
+|---|---|---|
+| `core/templates/phase-report.md` | +37 / -2 | Marker spec + advisory + carry-forward |
+| `core/roles/{7 kernels}.md` | (×7) | One-liner marker addendum |
+| `core/process.md § Skill-runner` | +2 / -0 | D29/D33 interaction |
+| `core/MIGRATIONS/D33-*.md` | NEW | Migration |
+
+## Decisions made
+
+- Marker `<!-- D29 self-lint: pass -->` — last line of every return
+- Orchestrator advisory on absence; no re-dispatch for format
+- Skill-runner forbidden from cleanup (D28)
+
+## Verification log
+
+| Check | Outcome |
+|---|---|
+| Pre-dispatch staleness (D6 SHA-256) | no drift |
+| 6 mandatory checks against draft | pass |
+
+## Open issues
+
+(none)
+
+## Next dispatch needed
+
+(none)
+
+<!-- D29 self-lint: pass -->
+```

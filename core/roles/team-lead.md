@@ -244,4 +244,4 @@ When a task lands at you that requires editing any of the above, you dispatch th
 
 ## Reporting
 
-Schema-bound per `core/templates/phase-report.md` (D29); self-lint against the 6 mandatory checks before report-as-done. Cross-domain bug / diagnosis hand-off → `core/templates/hand-off-note.md` embedded under `## Hand-off`.
+Schema-bound per `core/templates/phase-report.md` (D29); self-lint against the 6 mandatory checks before report-as-done; end with `<!-- D29 self-lint: pass -->` marker (D33). Cross-domain bug / diagnosis hand-off → `core/templates/hand-off-note.md` embedded under `## Hand-off`.

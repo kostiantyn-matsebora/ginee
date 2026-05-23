@@ -41,6 +41,8 @@ Bindings may NOT override generic process.
 
 **Self-check before main-thread reasoning during a skill run.** Ask: *"Mechanical op in the allowed row, or orchestration decision?"* Latter → dispatch `@team-lead`. No "fast" / "trivial" exception.
 
+**D29 / D33 interaction — never "clean up" a non-compliant return.** When a cardinal return arrives missing the `<!-- D29 self-lint: pass -->` marker or otherwise breaching the schema, the skill-runner forwards it as-is. Restructuring the return into a tidier summary table before passing it to team-lead crosses the D28 boundary (synthesis is team-lead's surface). Surface the one-line advisory per `core/templates/phase-report.md § Orchestrator behaviour on non-compliant returns`; never auto-rewrite.
+
 **Worked counter-example + full procedure shape:** `core/MIGRATIONS/D28-skill-runner-boundary.md` + `core/roles/team-lead.details.md § Common failure modes`.
 
 **Adapter-specific carve-out (D32).** On the **Claude Code adapter** subagents do not inherit the `Agent` / `Task` tool, so team-lead-as-subagent cannot fan out further. The skill-runner there additionally executes team-lead's user-approved dispatch contract **verbatim** (mechanical-only — no synthesis, no routing, no defaults), then re-invokes team-lead with the collected returns. Decision authority is unchanged — team-lead still owns every plan / synthesis / next-decision. Other adapters honour the original D28 rule. Full spec: `core/MIGRATIONS/D32-claude-adapter-subagent-dispatch.md` + `adapters/claude/install.md § Subagent dispatch limitation (D32)`.
@@ -362,7 +364,8 @@ Full spec: `core/MIGRATIONS/D31-model-tier.md` (load-on-demand).
 - **Optional escape hatch** — `## Notes` for narrative rationale (≤ 200 words). Code-snippet carve-out: ≤ 5 lines, only when the orchestrator needs verbatim text.
 - **Forbidden patterns** — narrative preamble · restated dispatch context · code snippets outside the carve-out · verbose rationale outside `## Notes` · parenthetical comma-soup.
 - **Self-lint at report-as-done** — 6 mandatory checks (5 from D22 / D26 + "no narrative preamble"); LLM self-review against the schema before returning. No external linter.
-- **Orchestrator on non-compliance** — surfaces one-line advisory · consumes the return · never re-dispatches purely for format.
+- **Mandatory marker (D33)** — every return ends with the literal line `<!-- D29 self-lint: pass -->` as attestation that the 6 checks ran. Absence = structural skip signal; orchestrator surfaces the advisory at receive-time + carries the rule forward to the next dispatch. Marker is not a pass/fail gate; the return is still consumed.
+- **Orchestrator on non-compliance** — surfaces one-line advisory · consumes the return · never re-dispatches purely for format · never auto-rewrites · skill-runner forbidden from "cleaning up" the return before passing to team-lead (D28 boundary).
 
 Full schema (cardinality table · default-shape map · caps · forbidden patterns · 6 checks · worked size targets): **`core/templates/phase-report.md`**.
 
