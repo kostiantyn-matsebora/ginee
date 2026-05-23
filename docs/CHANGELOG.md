@@ -10,6 +10,8 @@ All notable changes to ginee. The format follows [Keep a Changelog](https://keep
 
 ## Unreleased
 
+## 0.13.0 — 2026-05-23
+
 ### Added
 
 - **D34 — Taxonomy identifier short-name pairing** ([#88](https://github.com/kostiantyn-matsebora/ginee/issues/88)). Every cardinal output, ginee-authored GitHub artefact, and adopter doc cites taxonomy items in slug-glued form — `D28-skill-runner-boundary`, `ADR-0001-topology-derivation-five-pass`, `CR-0010-component-ci-pipeline`, `FR-04-deploy-rollback`, `NFR-02-cost-cap`, `ASR-03-availability-budget`. Slug is zero-cost for the agent (already in filename) and high-value for the reader — copy-paste into a filesystem search returns the spec immediately.
