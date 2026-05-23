@@ -87,30 +87,17 @@ The framework's own `core/process.md` and role kernels use `@<role>` notation as
 
 ## Subagent dispatch limitation (D32)
 
-**The constraint.** Claude Code's `Agent` / `Task` tool is **top-level only** — spawned subagents do not inherit it. A subagent cannot spawn another subagent.
-
-**The implication for D28.** The D28 hand-back rule has the skill-runner dispatch `@team-lead` after its first mechanical batch, then team-lead dispatches specialists. On Claude that second-hop dispatch silently fails — team-lead-as-subagent has no `Agent` tool and degrades to "answer from its own context."
-
-**The fix — accept-orchestrated cycle.** Split **decision authority** (stays with team-lead) from **mechanical dispatch execution** (moves to the skill-runner):
+Claude Code's `Agent` / `Task` tool is **top-level only** — subagents do not inherit it, so the D28 hand-back (skill-runner → `@team-lead` → specialists) silently degrades on Claude (team-lead-as-subagent has no `Agent` tool). D32 narrows D28 on this adapter: split **decision authority** (team-lead, re-invoked each cycle) from **mechanical dispatch execution** (skill-runner, verbatim).
 
 | Step | Surface |
 |---|---|
-| Plan drafting (specialist · scope · contract surface) | `team-lead` (re-invoked each cycle) |
+| Plan drafting · synthesis · gate text · routing · defaults · `local/bindings.md` lookup | `team-lead` (re-invoked) |
 | User approval of the plan | user |
-| Mechanical dispatch of named specialists per the approved contract | **skill-runner** (verbatim — no discretion) |
-| Pass-through of specialist returns to team-lead | **skill-runner** (no synthesis) |
-| Synthesis · next-decision · gate text · routing reconciliation · default selection | `team-lead` (re-invoked) |
+| Mechanical dispatch of approved specialists (parallel where independent) · pass-through of returns | **skill-runner** (verbatim, no discretion, no synthesis) |
 
-The skill-runner remains structurally banned from every D28-forbidden reasoning surface; D32 only permits **execution** of team-lead's already-decided dispatches, never origination.
+**Loop.** `skill-runner batch → @team-lead (plan) → user approve → skill-runner (verbatim dispatch) → collect returns → @team-lead (synthesis + next decision) → loop` until phase complete.
 
-**Loop shape.** `skill-runner mechanical batch → @team-lead (plan) → user approve → skill-runner (mechanical dispatch verbatim, parallel where independent) → skill-runner collect returns → @team-lead (synthesis + next decision) → loop`. Terminates when team-lead's return marks the phase complete.
-
-**Self-check before any main-thread reasoning during a skill run** — ask both:
-
-1. **Allowed by D28?** Mechanical op, **or** verbatim execution of a team-lead-approved contract? → proceed.
-2. **Decision surface?** Plan drafting · synthesis · gate text · routing reconciliation · default selection · `local/bindings.md` lookup? → re-invoke `@team-lead`. No "fast" / "trivial" exception.
-
-Synthesizing returns, picking which specialist to dispatch next, drafting reply text, or answering a user routing question remain `@team-lead` work — not skill-runner work, even when team-lead is a subagent.
+**Self-check before any main-thread reasoning during a skill run** — mechanical op OR verbatim execution of an approved contract? → proceed. Anything else (synthesize · pick next specialist · draft reply · answer routing question) → re-invoke `@team-lead`. No "fast" / "trivial" exception; D28 origination ban holds even when team-lead is a subagent.
 
 Full spec + worked example + decision-authority table: `core/MIGRATIONS/D32-claude-adapter-subagent-dispatch.md`.
 
