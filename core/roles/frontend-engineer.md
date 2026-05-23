@@ -149,3 +149,7 @@ Full list: `local/bindings.md` → "Project role boundaries". Role-specific:
 - **Inventing or omitting UI states** beyond the documented set.
 - **Editing the harness** even to make an assertion pass.
   - The assertion is the executable invariant.
+
+## Reporting
+
+Schema-bound per `core/templates/phase-report.md` (D29); self-lint against the 6 mandatory checks before report-as-done.

@@ -148,6 +148,25 @@ Migration on upgrade: `@team-lead rediscover` runs Step 8c re-attribution sweep 
 
 Procedure: fetch `pulls/{N}/comments` + `/reviews` → dedup by `thread-id` (skip resolved + already-marked) → route each remark per `local/bindings.md § Source-of-truth ownership` → **surface plan table for approval (forced-interactive, even in `auto:`)** → dispatch specialists in parallel → squash fixes into one cycle commit + push → post per-thread replies + one sticky cycle summary. Lossless coverage (every remark → fix OR reply). Markers `<!-- ginee:review-reply r=<id> -->` (per-thread) + `<!-- ginee:review-cycle n=<N> -->` (sticky).
 
+## Subagent-return schema (D29)
+
+Every cardinal-dispatch return is schema-bound per `core/templates/phase-report.md`.
+
+```
+Status: Done | In-progress | Blocked | Hand-off
+
+## Files touched           # table — path · Δ lines · purpose       (required; (none) if empty)
+## Decisions made          # bullets — imperative + cite (≤ 80 ch)  (required; (none) if empty)
+## Verification log        # table — command · outcome              (required)
+## Open issues             # bullets — issue + owner (≤ 80 ch)      (required; (none) if empty)
+## Next dispatch needed    # one-liner — role · surface · reason    (required; (none) if empty)
+## Hand-off                # core/templates/hand-off-note.md         (forced-handoff only)
+## Stop-state              # Done / In-progress / Not-started        (Status: In-progress only)
+## Notes                   # free prose · ≤ 200 words                (optional escape hatch)
+```
+
+**6 mandatory checks before report-as-done** — 5 from D22 / D26 + *no narrative preamble*. **Forbidden** — narrative preamble · restated dispatch context · code snippets outside the Notes carve-out · verbose rationale outside `## Notes` · parenthetical comma-soup. Target reduction vs free-form returns: ~70%.
+
 ## Source-of-truth pattern
 
 ```

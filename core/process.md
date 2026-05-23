@@ -341,6 +341,18 @@ Bindings may NOT override generic process.
 **Enforcement procedure** (lint command, attestation format, no-tool fallback): `core/doc-authoring-protocol.md` — load at Phase 5 / report-as-done.
 **Paired bad-vs-good examples** (6 doc classes): `core/doc-authoring-examples.md` — load on first-time authoring or explicit request.
 
+## Reporting — schema-bound (D29)
+
+**Every cardinal-dispatch return is schema-bound** per `core/templates/phase-report.md`. Same machinery as D22 / D26 doc-authoring protocol, scoped to the subagent-return surface.
+
+- **Mandatory sections** — `## Files touched` · `## Decisions made` · `## Verification log` · `## Open issues` · `## Next dispatch needed`. Empty case: `(none)`. `## Hand-off` required on forced-handoff per `core/cross-agent-handoff.md`. `## Stop-state` required when `Status: In-progress`.
+- **Optional escape hatch** — `## Notes` for narrative rationale (≤ 200 words). Code-snippet carve-out: ≤ 5 lines, only when the orchestrator needs verbatim text.
+- **Forbidden patterns** — narrative preamble · restated dispatch context · code snippets outside the carve-out · verbose rationale outside `## Notes` · parenthetical comma-soup.
+- **Self-lint at report-as-done** — 6 mandatory checks (5 from D22 / D26 + "no narrative preamble"); LLM self-review against the schema before returning. No external linter.
+- **Orchestrator on non-compliance** — surfaces one-line advisory · consumes the return · never re-dispatches purely for format.
+
+Full schema (cardinality table · default-shape map · caps · forbidden patterns · 6 checks · worked size targets): **`core/templates/phase-report.md`**.
+
 ## Coordination protocol
 
 | Trigger | Rule |

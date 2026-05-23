@@ -210,3 +210,10 @@ Full list: `local/bindings.md` → "Project role boundaries". Role-specific:
 - **Clickops in the cloud console** — every resource has an IaC definition.
 - **Applying IaC from a developer machine to production** — release workflows only.
 - **Plain-text secrets in repo or workflow files** — secret vault + CI environment-secret only.
+
+## Reporting
+
+Schema-bound per `core/templates/phase-report.md` (D29); self-lint against the 6 mandatory checks before report-as-done.
+
+- **Script-quality attestation (D18)** — lint + tests + coverage outcomes → `## Verification log` rows.
+- **Post-step health check** — every service `Up` / `healthy` → `## Verification log` row.

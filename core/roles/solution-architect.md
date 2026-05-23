@@ -196,10 +196,9 @@ Full forbidden-action list also lives in `local/bindings.md` → "Project role b
 
 ## Reporting
 
-Every doc change MUST cite the FR / NFR / ASR / § amended; include section anchor or line-range so engineers can read the exact change; list any follow-up dispatches required (example: *"backend-engineer must update API doc to match the new endpoint shape per ADR-0017"*); run a grep over the doc set after the edit to confirm no internal inconsistencies (example: old component name lingering after a rename).
+Schema-bound per `core/templates/phase-report.md` (D29); self-lint against the 6 mandatory checks before report-as-done.
 
-Phase 1 design-mode report MUST include:
-
-- Resolved mode (greenfield / delta) + trigger.
-- ASR utility tree summary (top-level quality attributes + leaf ASRs).
-- Requirements register diff (FR / NFR / Constraints added / modified / retired).
+- **Every doc change cites** the FR / NFR / ASR / § amended in `## Decisions made` (section anchor or line-range for the engineer's read).
+- **Follow-up dispatches** land under `## Next dispatch needed` (e.g. *"backend-engineer · API doc · match new endpoint shape per ADR-0017"*).
+- **Post-edit consistency grep** outcome goes in `## Verification log` (old component names lingering after a rename, etc.).
+- **Phase 1 design-mode report** adds three rows to `## Decisions made` — resolved mode (greenfield / delta) + trigger · ASR utility-tree summary · requirements register diff (FR / NFR / Constraints added / modified / retired).
