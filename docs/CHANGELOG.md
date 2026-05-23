@@ -10,6 +10,17 @@ All notable changes to ginee. The format follows [Keep a Changelog](https://keep
 
 ## Unreleased
 
+### Added
+
+- **D34 — Taxonomy identifier short-name pairing** ([#88](https://github.com/kostiantyn-matsebora/ginee/issues/88)). Every cardinal output, ginee-authored GitHub artefact, and adopter doc cites taxonomy items in slug-glued form — `D28-skill-runner-boundary`, `ADR-0001-topology-derivation-five-pass`, `CR-0010-component-ci-pipeline`, `FR-04-deploy-rollback`, `NFR-02-cost-cap`, `ASR-03-availability-budget`. Slug is zero-cost for the agent (already in filename) and high-value for the reader — copy-paste into a filesystem search returns the spec immediately.
+  - **Out of scope** — issue / PR / commit-SHA / NPM-package-name references stay bare. `#87`, `[PR #84](...)`, git SHAs, package names in code blocks are correct as-is.
+  - **Resolution lookup** — file-backed via filesystem listing (`ls core/MIGRATIONS/D<NN>-*.md`); inline-table (FR / NFR / ASR) via register-row noun-phrase slugify; index-class via `manifest.yaml § name:`.
+  - **On resolution failure** — surface inline (`D28-?? (slug lookup failed)`); orchestrator carries forward to next dispatch; never invent a slug.
+  - **Self-lint** — extends D22 / D26 / D29 mandatory check #5 (cross-references). Regex `\b(D|ADR-?|CR-?|FR-?|NFR-?|ASR-?)\d+\b` not followed by `-<slug>` trips. Excluded contexts: issue / PR / SHA / package-name references.
+  - **Files updated** — `core/process.md § Mandatory checks` (check #5 extended) · `core/doc-authoring-protocol.md` (NEW § Taxonomy identifier pairing) · `core/templates/phase-report.md § ## Decisions made` (slug-glued cite-form) · `core/templates/pr-description.md § Cites` (CR / ADR / FR / NFR examples) · 2 framework issue templates · 7 cardinal role kernels (one-line addendum per `## Reporting`) · `core/doc-authoring-examples.md § 13` (NEW bad/good pair) · `CLAUDE.md` + `PLAN.md` (D34 row) · this file · `core/MIGRATIONS/D34-identifier-short-name-pairing.md` (NEW).
+  - **Backwards compatibility** — purely additive. No `local/` schema change. No installer change. Reporter content unchanged. 6 checks count unchanged (rule extends check #5). Forward-only — historical outputs not rewritten; existing taxonomy files not renamed.
+  - Migration: `core/MIGRATIONS/D34-identifier-short-name-pairing.md`. Adopter action: none.
+
 ### Fixed
 
 - **D32 — Claude adapter accept-orchestrated subagent dispatch** ([#87](https://github.com/kostiantyn-matsebora/ginee/issues/87)). Claude Code's `Agent` / `Task` tool is top-level only — subagents do not inherit it, so team-lead-as-subagent under the D28 hand-back rule cannot fan out to specialists. Pre-D32 the dispatch silently degraded ("answer from your own context") on every multi-specialist phase. D32 narrows the D28 surface boundary on the Claude adapter only.

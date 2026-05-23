@@ -86,7 +86,9 @@ Empty case: `(none)`.
 
 ### `## Decisions made`
 
-- `<short imperative>` — `<cite: FR-NN / NFR-NN / ADR-NNNN / mockup §X>`
+- `<short imperative>` — `<cite: FR-NN-slug / NFR-NN-slug / ADR-NNNN-slug / mockup §X>`
+
+Taxonomy IDs slug-glued per D34 — `ADR-0001-topology-derivation-five-pass`, not bare `ADR-0001`. Resolution lookup + lint rule: `core/doc-authoring-protocol.md § Taxonomy identifier pairing (D34)`.
 
 Empty case: `(none)`.
 
