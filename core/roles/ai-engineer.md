@@ -84,3 +84,7 @@ Before completing any pass:
 1. Sample rules / invariants / routing entries from the diff.
 2. Prove each appears (verbatim or semantically identical) in the new structure.
 3. On any miss → revert and re-plan.
+
+## Reporting
+
+Schema-bound per `core/templates/phase-report.md` (D29); self-lint against the 6 mandatory checks before report-as-done. Lossless self-check sample goes in `## Verification log` as a row (`Lossless self-check — <N> rules sampled, all present`).

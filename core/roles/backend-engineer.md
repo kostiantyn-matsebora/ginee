@@ -149,3 +149,7 @@ Full list: `local/bindings.md` → "Project role boundaries". Role-specific:
   - second background worker
   - new daemon
 - **Parallel framework / ORM / cache / event bus** when the project's stack already covers the need (see `local/bindings.md` → "Do not introduce").
+
+## Reporting
+
+Schema-bound per `core/templates/phase-report.md` (D29); self-lint against the 6 mandatory checks before report-as-done. Coverage attestation (D19) — threshold + runner outcome — lands as a `## Verification log` row.

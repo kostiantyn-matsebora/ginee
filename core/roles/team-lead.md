@@ -243,12 +243,4 @@ When a task lands at you that requires editing any of the above, you dispatch th
 
 ## Reporting
 
-Every task ends with a structured final report. Use `core/templates/phase-report.md` as the shape. Sections:
-
-- **Files touched** (paths + per-file line/char delta).
-- **Decisions made** (and rationale).
-- **Open issues** flagged for the user.
-- **Verification log** (build/test/lint commands run + outcomes).
-- **Next dispatch needed** (when work continues into another phase).
-
-When dispatching a specialist for a cross-domain bug or diagnosis, hand off using `core/templates/hand-off-note.md`.
+Schema-bound per `core/templates/phase-report.md` (D29); self-lint against the 6 mandatory checks before report-as-done. Cross-domain bug / diagnosis hand-off → `core/templates/hand-off-note.md` embedded under `## Hand-off`.

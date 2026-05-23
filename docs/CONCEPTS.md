@@ -256,6 +256,31 @@ When ginee authors markdown — adopter docs (D22) OR ginee-authored GitHub arte
 
 Full spec: [`core/doc-authoring-protocol.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/core/doc-authoring-protocol.md). Examples (9 bad/good pairs): [`core/doc-authoring-examples.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/core/doc-authoring-examples.md).
 
+## Subagent-return schema (D29)
+
+Every cardinal-dispatch return is **schema-bound** per `core/templates/phase-report.md` — same machinery as the D22 / D26 doc-authoring protocol, scoped to the subagent-return surface. Goal: cut ~70% off subagent-return bloat (today's largest orchestration-thread contributor).
+
+**Mandatory sections** (empty case: `(none)`):
+
+| Section | Cardinality | Default shape |
+|---|---|---|
+| `## Files touched` | required | Table — `path` · `Δ lines` · `purpose` |
+| `## Decisions made` | required | Bullets — `<imperative> — cite` (≤ 80 chars / bullet) |
+| `## Verification log` | required | Table — `command` · `outcome` |
+| `## Open issues` | required | Bullets — `<issue> — <owner>` |
+| `## Next dispatch needed` | required | One-liner — `<role> · <surface> · <reason>` |
+| `## Hand-off` | conditional — forced handoff per `core/cross-agent-handoff.md` | `core/templates/hand-off-note.md` shape |
+| `## Stop-state` | conditional — `Status: In-progress` | Done / In-progress / Not-started bullets |
+| `## Notes` | **optional** — narrative escape hatch | Free prose · ≤ 200 words · ≤ 5-line code-snippet carve-out |
+
+**6 mandatory checks before report-as-done** — 5 from D22 / D26 + *no narrative preamble* (first non-Status line must be a `##` section header).
+
+**Forbidden patterns** — narrative preamble · restated dispatch context · code snippets outside the Notes carve-out · verbose rationale outside `## Notes` · parenthetical comma-soup.
+
+**Enforcement.** LLM self-review against the schema before returning. No external linter. Orchestrator surfaces a one-line advisory on violations but never re-dispatches purely for format and never auto-rewrites (analogous to D14 reporter-content forbidden).
+
+Full schema: [`core/templates/phase-report.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/core/templates/phase-report.md). Bad/good example: [`core/doc-authoring-examples.md § 10`](https://github.com/kostiantyn-matsebora/ginee/blob/main/core/doc-authoring-examples.md). Migration: [`core/MIGRATIONS/D29-strict-subagent-return-schema.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/core/MIGRATIONS/D29-strict-subagent-return-schema.md).
+
 ## Skill-runner vs team-lead (D28)
 
 ginee skills (`/ginee-pick-up`, `/ginee-address-review`, `/ginee-triage`, `/ginee-promote-discussion`, ...) run inside a thin **skill-runner** — the Claude main thread, Cursor main loop, Copilot CLI main loop, or AGENTS.md-driven shell that executes the skill body. The skill-runner is **not** a role and **not** an orchestrator.

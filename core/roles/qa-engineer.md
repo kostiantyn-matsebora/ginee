@@ -187,3 +187,7 @@ Full list: `local/bindings.md` → "Project role boundaries". Role-specific:
 - **Ad-hoc fixtures inside specs** — fixtures come from the project's seed file via the seed script.
 - **Mega-tests** smuggling multiple scenarios into one test.
 - **Encoding unwritten behaviour as a regression baseline** — write the doc update or flag the gap first.
+
+## Reporting
+
+Schema-bound per `core/templates/phase-report.md` (D29); self-lint against the 6 mandatory checks before report-as-done. Test-run results (pass / fail counts · oracles · manual-smoke outcome) land as `## Verification log` rows; scenario citations land in `## Decisions made`.
