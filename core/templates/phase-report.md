@@ -33,6 +33,57 @@ Same 5 as `core/process.md § Documentation style § Mandatory checks` (D22 / D2
 
 Run all 6 against the drafted report **before** returning. Violations → restructure; if a violation genuinely can't be restructured, lift the offending content into `## Notes` (still capped at 200 words).
 
+## Before-return checklist + mandatory marker (D33)
+
+Run the 6 checks above against the drafted report. Then append, as the **last line of the return**, the literal attestation marker:
+
+```
+<!-- D29 self-lint: pass -->
+```
+
+| Property | Rule |
+|---|---|
+| Placement | Last line of the return — after every section, after any `(none)` placeholder, after `## Notes` if present. |
+| Form | Literal `<!-- D29 self-lint: pass -->`. No variants. Case-sensitive. |
+| When to write | **After** running the 6 checks against the drafted report — never blindly. The marker attests the checks ran, not that they passed-with-zero-restructure. |
+| Honest-fail variant | If a check failed and could not be restructured (lifted to `## Notes` per § Mandatory checks), still write the marker — `## Notes` capture is the legal escape hatch. |
+| What it is NOT | Not a re-dispatch trigger. Not a pass/fail gate (orchestrator still consumes on missing marker). |
+
+**Orchestrator detection.** Missing marker = structural signal the 6-check pass was skipped. Orchestrator surfaces the advisory at receive-time (see § Orchestrator behaviour on non-compliant returns) and carries the rule forward to the subagent's next dispatch.
+
+**Why a marker (vs. invisible self-check).** Pre-D33 the 6 checks were aspirational — agents skipped them whenever the substance felt useful and the orchestrator had no structural detection surface. Marker absence is detectable; presence is the agent's explicit attestation. Same mechanism as D22 / D26 attestation lines in `## Verification log`, scoped to the return envelope.
+
+## Orchestrator behaviour on non-compliant returns
+
+- Surface a one-line advisory before consuming (`"Return missed self-lint: <violation>; consuming anyway."`).
+- **Never re-dispatch purely for format.** The orchestrator absorbs the verbose return once; the subagent's next dispatch carries the rule forward.
+- Never auto-rewrite the subagent's content (analogous to D14 reporter-content forbidden).
+- **Skill-runner explicitly forbidden** from "cleaning up" a non-compliant return before passing it to team-lead (D28 surface boundary holds even when the return missed self-lint — see `core/process.md § Skill-runner — surface boundary`).
+
+### Worked advisory examples
+
+| Detected violation | Advisory text (exact) |
+|---|---|
+| Missing `<!-- D29 self-lint: pass -->` marker | `"Return missed self-lint: marker absent; consuming anyway."` |
+| Narrative preamble (first non-Status line is a sentence) | `"Return missed self-lint: narrative preamble; consuming anyway."` |
+| Inventory rendered as prose / parenthetical comma-soup | `"Return missed self-lint: inventory not in table form; consuming anyway."` |
+| Code snippet outside `## Notes` carve-out | `"Return missed self-lint: code outside Notes carve-out; consuming anyway."` |
+| Bullet > 25 words with no sub-bullets | `"Return missed self-lint: bullet over-length; consuming anyway."` |
+| Multiple violations | Cite the first detected; one line; do not enumerate. |
+
+### Carry-forward rephrasing for the next dispatch
+
+The orchestrator's *next* dispatch to the same subagent appends a one-line rule reminder citing the violation it absorbed last cycle — never reopens the prior return, never re-dispatches purely for format:
+
+```
+<original dispatch text>
+
+Return format: schema-bound per core/templates/phase-report.md;
+last cycle's return missed self-lint (<violation>) — apply the 6 checks + marker this cycle.
+```
+
+The reminder is **single-line** (one rule, no enumeration), cites the *specific* violation absorbed (not a generic checklist dump), and goes inline at the end of the dispatch prompt — not as a separate dispatch.
+
 ## Section templates
 
 ### Status

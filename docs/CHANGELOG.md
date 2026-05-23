@@ -21,6 +21,16 @@ All notable changes to ginee. The format follows [Keep a Changelog](https://keep
   - **Backwards compatibility** — purely additive. No `local/` schema change. No `framework.config.yaml` keys. No installer change. Pre-D32 Claude-adapter invocations were silently degrading; D32 just documents the loop that makes them work.
   - Migration: `core/MIGRATIONS/D32-claude-adapter-subagent-dispatch.md`. Adopter action: none.
 
+- **D33 — D29 phase-report schema enforcement hardening** ([#86](https://github.com/kostiantyn-matsebora/ginee/issues/86)). Pre-D33 the 6 mandatory checks at report-as-done were aspirational — agents skipped them silently when substance felt useful, and the orchestrator had no structural detection surface to surface the skip. The compound failure also breached the D28 skill-runner boundary: a non-compliant verbose return tempted the skill-runner to "clean up" the content into a tidy summary table, which is synthesis (team-lead's surface). D33 closes both gaps with a single-line marker.
+  - **Marker** — literal `<!-- D29 self-lint: pass -->` on the last line of every cardinal-dispatch return. Agent's attestation that the 6 checks ran.
+  - **Orchestrator behaviour on absence** — one-line advisory at receive-time + carry-forward rephrasing on the subagent's next dispatch; never re-dispatches for format; never auto-rewrites.
+  - **Worked advisory table** — 5 violation classes paired with exact advisory text.
+  - **D28 cross-reference** — skill-runner **forbidden** from cleaning up a non-compliant return before passing to team-lead. Cleanup is the regression-grade workaround issue #86 catalogued.
+  - **Honest-fail rule** — if a check failed and could not be restructured (lifted to `## Notes`), still write the marker. Marker attests the *checks ran*, not that they *passed-with-zero-restructure*.
+  - **Files updated** — `core/templates/phase-report.md` (new `§ Before-return checklist + mandatory marker (D33)` + extended orchestrator-behaviour section with advisory examples + carry-forward block) · 7 cardinal role kernels (`; end with <!-- D29 self-lint: pass --> marker (D33).` clause appended to each `## Reporting`) · `core/roles/team-lead.details.md § Common failure modes` (new D33 row) · `core/process.md § Skill-runner — surface boundary (D28)` (D29 / D33 interaction bullet) · `core/process.md § Reporting — schema-bound (D29)` (mandatory-marker bullet) · `core/doc-authoring-examples.md § 12` (NEW bad/good full-return example) · `CLAUDE.md` + `PLAN.md` + this file (D33 surface) · `core/MIGRATIONS/D33-d29-enforcement-hardening.md` (NEW).
+  - **Backwards compatibility** — purely additive. Schema unchanged. 6 checks unchanged. No `local/` schema change. No installer change. Forward-only — existing closed dispatches not retroactively required.
+  - Migration: `core/MIGRATIONS/D33-d29-enforcement-hardening.md`. Adopter action: none.
+
 ## 0.12.1 — 2026-05-23
 
 ### Fixed
