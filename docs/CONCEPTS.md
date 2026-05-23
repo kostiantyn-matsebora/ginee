@@ -304,6 +304,24 @@ Every Phase 2 design proposal **and** every iteration-protocol Propose step (Pha
 
 Full spec: [`core/options-protocol.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/core/options-protocol.md). Bad/good example: [`core/doc-authoring-examples.md § 11`](https://github.com/kostiantyn-matsebora/ginee/blob/main/core/doc-authoring-examples.md). Migration: [`core/MIGRATIONS/D30-adopt-existing-solution.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/core/MIGRATIONS/D30-adopt-existing-solution.md).
 
+## Per-role + per-task model tier (D31)
+
+Routes reasoning-heavy roles to capable models and execution-heavy roles to cheaper ones. Tier names are vendor-neutral in `core/`; concrete model IDs live only in the adapter layer.
+
+| Tier | Use | Default model (Claude adapter) | Default for |
+|---|---|---|---|
+| `reasoning` | Orchestration · synthesis · architectural calls | `claude-opus-4-7` | `team-lead` · `solution-architect` |
+| `standard` | Implementation · tests · doc-shape · lint fixes | `claude-sonnet-4-6` | `ai-engineer` · `backend-engineer` · `frontend-engineer` · `devops-engineer` · `qa-engineer` |
+| `fast` | Mechanical · label ops · sticky updates | `claude-haiku-4-5-20251001` | (opt-in for adopter-defined mechanical work) |
+
+**Resolution order** — stop at first match: (1) per-task prefix `model:<tier>` in the dispatch line (combinable with `auto:` / `branch:` / `wt:` / `commit:`); (2) Phase-3 user answer; (3) `local/framework.config.yaml § model-tier.per-role.<role>`; (4) `core/roles/<role>.md` frontmatter `default-tier:`.
+
+**Adapter behaviour.** The Claude adapter writes `model: <id>` into each `.claude/agents/<role>.md` frontmatter from the resolved tier (pre-resolved default at install; rewritten when `local/framework.config.yaml § model-tier` carries overrides). Cursor / Copilot CLI / Codex / generic emit a one-line install warning — those surfaces don't expose programmatic per-role model selection today; the per-task prefix is a documented user-side hint.
+
+**Backward compatibility.** Purely additive. Absent `model-tier:` → framework defaults apply silently. Existing dispatches unaffected until adopter sets a tier or uses the prefix.
+
+Full spec: [`core/MIGRATIONS/D31-model-tier.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/core/MIGRATIONS/D31-model-tier.md).
+
 ## Skill-runner vs team-lead (D28)
 
 ginee skills (`/ginee-pick-up`, `/ginee-address-review`, `/ginee-triage`, `/ginee-promote-discussion`, ...) run inside a thin **skill-runner** — the Claude main thread, Cursor main loop, Copilot CLI main loop, or AGENTS.md-driven shell that executes the skill body. The skill-runner is **not** a role and **not** an orchestrator.

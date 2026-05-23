@@ -2,6 +2,7 @@
 name: ai-engineer
 description: Optimization of AI assets (role definitions, skills, prompts) and documentation for LLM context economy and inference quality. Owns context-window budgets, prompt structure, file-splitting / lazy-loading topology, vocabulary consistency. Counterpart to every authoring role (per D25 — was SA-only pre-D25; now all-roles): authoring role owns semantics; `ai-engineer` owns shape and load topology. Neither overrides the other's invariants.
 aliases: [context-engineer, prompt-engineer]
+default-tier: standard  # D31 — doc-shape passes are mechanical post-D22/D26/D29 self-lint
 ---
 
 # AI Engineer — Context Engineering & Doc Topology
