@@ -280,22 +280,21 @@ Passes all 5 checks: floor present · citations complete · tagging explicit · 
 
 ## 12. Phase-1 dispatch return — D29 marker enforcement (D33)
 
-**Context.** `team-lead` returns a Phase-1 grounding plan after a `/ginee-pick-up` invocation. Pre-D33 the 6 mandatory checks were aspirational and the orchestrator had no structural detection surface — non-compliant returns slipped through silently. D33 adds the literal `<!-- D29 self-lint: pass -->` marker as an attestation line.
+`team-lead` returns a Phase-1 grounding plan after `/ginee-pick-up`. Pre-D33 the 6 checks were aspirational; non-compliant returns slipped through silently. D33 adds the literal `<!-- D29 self-lint: pass -->` marker as the attestation line.
 
-**Bad** — narrative preamble, no schema sections, no marker (the exact failure mode reported in issue #86):
+**Bad** — narrative preamble, no schema sections, no marker (failure mode from #86):
 
 > I have full grounding now. Pre-dispatch staleness check before drafting the Phase 2 plan:
 >
 > - Read `core/process.md` end-to-end.
 > - Read `core/roles/team-lead.md` + `core/roles/team-lead.details.md`.
-> - Read `local/bindings.md` and confirmed routing for the touched paths.
 > - SHA-256 cross-checked manifest entries — no drift.
 >
-> Files I'll touch in Phase 2: `core/templates/phase-report.md`, all 7 cardinal kernels under `core/roles/`, `core/process.md § Skill-runner`, `core/doc-authoring-examples.md`, new `core/MIGRATIONS/D33-d29-enforcement-hardening.md`, plus `CLAUDE.md`/`PLAN.md`/`docs/CHANGELOG.md` cross-refs.
+> Files I'll touch: `core/templates/phase-report.md`, all 7 cardinal kernels, `core/process.md § Skill-runner`, new `core/MIGRATIONS/D33-*.md`, plus `CLAUDE.md`/`PLAN.md` cross-refs.
 >
-> Decisions: marker is `<!-- D29 self-lint: pass -->` literal; orchestrator surfaces the advisory at receive-time; skill-runner forbidden from cleaning up. Nothing blocks dispatch.
+> Marker is `<!-- D29 self-lint: pass -->` literal; orchestrator surfaces advisory; skill-runner forbidden from cleaning up.
 
-Tripped checks: **#1** (paragraph > 2 sentence terminators in opening prose) · **#4** (inventory of files rendered as prose / comma-soup) · **#6** (narrative preamble — first non-Status line is a sentence) · **D33 marker absent**.
+Tripped: **#1** (paragraph > 2 terminators) · **#4** (file inventory as prose) · **#6** (narrative preamble) · **D33 marker absent**.
 
 **Good** — schema-bound + marker:
 
@@ -306,25 +305,23 @@ Status: Done
 
 | Path | Δ lines | Purpose |
 |---|---|---|
-| `core/templates/phase-report.md` | +37 / -2 | Marker spec + advisory examples + carry-forward |
-| `core/roles/{7 kernels}.md` | +0 / +0 (×7) | One-liner addendum citing the marker |
-| `core/process.md § Skill-runner` | +2 / -0 | D29 / D33 interaction caveat |
-| `core/doc-authoring-examples.md` | +new §12 | Bad/good full-return pair |
-| `core/MIGRATIONS/D33-...md` | NEW | Migration note |
-| `CLAUDE.md` · `PLAN.md` · `docs/CHANGELOG.md` | +row each | D33 surface |
+| `core/templates/phase-report.md` | +37 / -2 | Marker spec + advisory + carry-forward |
+| `core/roles/{7 kernels}.md` | (×7) | One-liner marker addendum |
+| `core/process.md § Skill-runner` | +2 / -0 | D29/D33 interaction |
+| `core/MIGRATIONS/D33-*.md` | NEW | Migration |
 
 ## Decisions made
 
-- Marker is the literal `<!-- D29 self-lint: pass -->` — last line of every return
-- Orchestrator surfaces one-line advisory on absence; never re-dispatches for format
-- Skill-runner forbidden from "cleaning up" non-compliant returns (D28 boundary)
+- Marker `<!-- D29 self-lint: pass -->` — last line of every return
+- Orchestrator advisory on absence; no re-dispatch for format
+- Skill-runner forbidden from cleanup (D28)
 
 ## Verification log
 
-| Command / check | Outcome |
+| Check | Outcome |
 |---|---|
-| Pre-dispatch staleness check (D6 SHA-256) | no drift across affected sources |
-| 6 mandatory checks against drafted plan | pass |
+| Pre-dispatch staleness (D6 SHA-256) | no drift |
+| 6 mandatory checks against draft | pass |
 
 ## Open issues
 
@@ -336,7 +333,3 @@ Status: Done
 
 <!-- D29 self-lint: pass -->
 ```
-
-**Why the marker matters.** Pre-D33 the orchestrator had no structural signal that the 6 checks ran. The agent skipped them when the substance felt useful; the orchestrator consumed the return without advisory; the failure surfaced only when a human noticed. Marker absence is a single-line detection surface — the orchestrator surfaces the advisory at receive-time and carries the rule forward in the next dispatch.
-
-**What the marker is NOT.** Not a pass/fail gate (the orchestrator still consumes the return). Not a re-dispatch trigger. Not a substitute for the 6 checks (those still run *before* writing the marker). The marker is an attestation line — same pattern as D22 / D26 `## Verification log` doc-shape attestation rows, scoped to the return envelope.
