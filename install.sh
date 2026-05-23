@@ -355,7 +355,8 @@ INSTALL_NOTE="$ADAPTER_DIR/install.md"
 #  - install.sh / install.ps1   already-executed installer scripts
 step "Pruning framework-dev cruft"
 for p in .github .claude .gitignore .dockerignore install.ps1 install.sh PLAN.md CLAUDE.md README.md SECURITY.md docs; do
-  rm -rf "$FRAMEWORK_DIR/$p"
+  # ${FRAMEWORK_DIR:?} guards against an empty/unset var expanding to a / path (SC2115).
+  rm -rf "${FRAMEWORK_DIR:?}/$p"
 done
 # Drop unchosen adapter subdirs (keep _shared + the selected one)
 for d in "$FRAMEWORK_DIR"/adapters/*/; do
