@@ -79,6 +79,16 @@ done
 # Defensive: empty REF (e.g., --ref "") falls back to latest
 [ -n "$REF" ] || REF="latest"
 
+# Validate --adapter (when provided) before any network fetch. Mirrors
+# install.ps1's [ValidateSet(...)] on -Adapter. Empty ADAPTER is fine here —
+# the interactive prompt handles it later.
+if [ -n "$ADAPTER" ]; then
+  case "$ADAPTER" in
+    claude|copilot-cli|agents-md|generic) ;;
+    *) echo "Invalid --adapter: '$ADAPTER' (expected claude | copilot-cli | agents-md | generic)" >&2; exit 1 ;;
+  esac
+fi
+
 FRAMEWORK_DIR="$TARGET/.agents/ginee"
 
 echo "ginee installer"
@@ -243,7 +253,18 @@ apply_model_tier_overrides() {
   tmp_cm="$(mktemp)"
 
   # Parse model-tier.per-role.<role>: <tier> + model-tier.adapters.claude.<tier>: <id>
+  # check_mt_sub / check_mt_ad_sub re-check whether a subsection-exit line is
+  # itself the start of a sibling subsection — awk rule order would otherwise
+  # miss the transition (rules above the exit rule never re-fire on the same
+  # input line).
   awk '
+    function check_mt_sub() {
+      if ($0 ~ /^  per-role:[[:space:]]*$/)  section = "mt.pr"
+      else if ($0 ~ /^  adapters:[[:space:]]*$/) section = "mt.ad"
+    }
+    function check_mt_ad_sub() {
+      if ($0 ~ /^    claude:[[:space:]]*$/) section = "mt.ad.cl"
+    }
     /^[[:space:]]*#/ { next }
     /^[[:space:]]*$/ { next }
     /^model-tier:[[:space:]]*$/      { section="mt"; next }
@@ -251,11 +272,11 @@ apply_model_tier_overrides() {
     section=="mt"       && /^  per-role:[[:space:]]*$/  { section="mt.pr"; next }
     section=="mt"       && /^  adapters:[[:space:]]*$/  { section="mt.ad"; next }
     section=="mt.pr"    && /^    [A-Za-z0-9_-]+:[[:space:]]*[^[:space:]]+/ { sub(/^[[:space:]]*/, ""); print "pr " $0 > prfile; next }
-    section=="mt.pr"    && /^  [^[:space:]]/            { section="mt" }
+    section=="mt.pr"    && /^  [^[:space:]]/            { section="mt"; check_mt_sub(); next }
     section=="mt.ad"    && /^    claude:[[:space:]]*$/  { section="mt.ad.cl"; next }
-    section=="mt.ad"    && /^  [^[:space:]]/            { section="mt" }
+    section=="mt.ad"    && /^  [^[:space:]]/            { section="mt"; check_mt_sub(); next }
     section=="mt.ad.cl" && /^      [A-Za-z0-9_-]+:[[:space:]]*[^[:space:]]+/ { sub(/^[[:space:]]*/, ""); print "cm " $0 > cmfile; next }
-    section=="mt.ad.cl" && /^    [^[:space:]]/          { section="mt.ad" }
+    section=="mt.ad.cl" && /^    [^[:space:]]/          { section="mt.ad"; check_mt_ad_sub(); next }
   ' prfile="$tmp_pr" cmfile="$tmp_cm" "$config_path"
 
   # Bail when no overrides present
@@ -334,7 +355,8 @@ INSTALL_NOTE="$ADAPTER_DIR/install.md"
 #  - install.sh / install.ps1   already-executed installer scripts
 step "Pruning framework-dev cruft"
 for p in .github .claude .gitignore .dockerignore install.ps1 install.sh PLAN.md CLAUDE.md README.md SECURITY.md docs; do
-  rm -rf "$FRAMEWORK_DIR/$p"
+  # ${FRAMEWORK_DIR:?} guards against an empty/unset var expanding to a / path (SC2115).
+  rm -rf "${FRAMEWORK_DIR:?}/$p"
 done
 # Drop unchosen adapter subdirs (keep _shared + the selected one)
 for d in "$FRAMEWORK_DIR"/adapters/*/; do
