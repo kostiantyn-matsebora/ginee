@@ -10,6 +10,17 @@ All notable changes to ginee. The format follows [Keep a Changelog](https://keep
 
 ## Unreleased
 
+### Fixed
+
+- **D32 — Claude adapter accept-orchestrated subagent dispatch** ([#87](https://github.com/kostiantyn-matsebora/ginee/issues/87)). Claude Code's `Agent` / `Task` tool is top-level only — subagents do not inherit it, so team-lead-as-subagent under the D28 hand-back rule cannot fan out to specialists. Pre-D32 the dispatch silently degraded ("answer from your own context") on every multi-specialist phase. D32 narrows the D28 surface boundary on the Claude adapter only.
+  - **Split.** Decision authority stays with team-lead; *mechanical execution of approved dispatch contracts* moves to the skill-runner.
+  - **Cycle.** `skill-runner mechanical batch → @team-lead (plan) → user approve → skill-runner (mechanical dispatch verbatim, parallel where independent) → skill-runner collect returns → @team-lead (synthesis + next decision) → loop` until team-lead returns phase-complete.
+  - **Skill-runner still banned** from plan drafting · synthesis · gate text · routing reconciliation · default selection · `local/bindings.md` lookup — D32 permits *execution* of team-lead's already-decided dispatches, never origination.
+  - **Other adapters unaffected** — D28 hand-back rule unchanged on Cursor · Copilot CLI · Codex · generic.
+  - **Files updated** — `adapters/claude/install.md` (new `§ Subagent dispatch limitation (D32)`) · `core/process.md § Skill-runner — surface boundary` (adapter-aware caveat) · `CLAUDE.md` (D32 row) · `core/MIGRATIONS/D32-claude-adapter-subagent-dispatch.md` (NEW).
+  - **Backwards compatibility** — purely additive. No `local/` schema change. No `framework.config.yaml` keys. No installer change. Pre-D32 Claude-adapter invocations were silently degrading; D32 just documents the loop that makes them work.
+  - Migration: `core/MIGRATIONS/D32-claude-adapter-subagent-dispatch.md`. Adopter action: none.
+
 ## 0.12.1 — 2026-05-23
 
 ### Fixed
