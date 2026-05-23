@@ -43,6 +43,8 @@ Bindings may NOT override generic process.
 
 **Worked counter-example + full procedure shape:** `core/MIGRATIONS/D28-skill-runner-boundary.md` + `core/roles/team-lead.details.md § Common failure modes`.
 
+**Adapter-specific carve-out (D32).** On the **Claude Code adapter** subagents do not inherit the `Agent` / `Task` tool, so team-lead-as-subagent cannot fan out further. The skill-runner there additionally executes team-lead's user-approved dispatch contract **verbatim** (mechanical-only — no synthesis, no routing, no defaults), then re-invokes team-lead with the collected returns. Decision authority is unchanged — team-lead still owns every plan / synthesis / next-decision. Other adapters honour the original D28 rule. Full spec: `core/MIGRATIONS/D32-claude-adapter-subagent-dispatch.md` + `adapters/claude/install.md § Subagent dispatch limitation (D32)`.
+
 ## Dispatch & parallelism rules
 
 | Rule | Action |
