@@ -210,4 +210,52 @@ body
     Set-ClaudeAgentModel $agentsDir $cfg
     Get-Content -LiteralPath $file -Raw | Should -Be $before
   }
+
+  # --- #82 regression — comment must live on its own line, not inline ---------
+
+  It 'emits comment-above shape — bare model line + comment on its own line (no inline `#`)' {
+    $agentsDir = Join-Path $script:tmpDir 'agents-shape'
+    New-Item -ItemType Directory -Force -Path $agentsDir | Out-Null
+    $file = New-PointerFile $agentsDir 'ai-engineer' 'claude-sonnet-4-6'
+    $cfg = @{
+      PerRole   = @{ 'ai-engineer' = 'reasoning' }
+      ClaudeMap = @{ 'reasoning' = 'claude-opus-4-7' }
+    }
+    Set-ClaudeAgentModel $agentsDir $cfg
+    $after = Get-Content -LiteralPath $file -Raw
+    # Bare model line — value followed immediately by EOL, no inline comment.
+    $after | Should -Match '(?m)^model:\s+claude-opus-4-7\s*$'
+    # Comment lives on its own line directly above the model line.
+    $after | Should -Match '(?ms)^# D31 — reasoning tier.*\r?\nmodel:\s+claude-opus-4-7\s*$'
+  }
+
+  It 'does not accumulate comment lines when rewriting a pointer that already has the comment-above shape' {
+    $agentsDir = Join-Path $script:tmpDir 'agents-noaccum'
+    New-Item -ItemType Directory -Force -Path $agentsDir | Out-Null
+    $file = Join-Path $agentsDir 'devops-engineer.md'
+    # Pointer shipped by adapters/_shared/agents/* — comment above, bare model line.
+    Set-Content -LiteralPath $file -NoNewline -Value @"
+---
+name: devops-engineer
+description: test pointer
+# D31 — standard tier; override via local/framework.config.yaml § model-tier.per-role.devops-engineer
+model: claude-sonnet-4-6
+---
+
+body
+"@
+    $cfg = @{
+      PerRole   = @{ 'devops-engineer' = 'fast' }
+      ClaudeMap = @{ 'fast' = 'claude-haiku-4-5-20251001' }
+    }
+    Set-ClaudeAgentModel $agentsDir $cfg
+    $after = Get-Content -LiteralPath $file -Raw
+    # Exactly ONE `# D31 — ` comment in the file (no accumulation).
+    ([regex]::Matches($after, '(?m)^# D31 — ')).Count | Should -Be 1
+    # Comment reflects the new tier; old `standard tier` text is gone.
+    $after | Should -Match '# D31 — fast tier'
+    $after | Should -Not -Match 'standard tier'
+    # Model line stayed bare.
+    $after | Should -Match '(?m)^model:\s+claude-haiku-4-5-20251001\s*$'
+  }
 }
