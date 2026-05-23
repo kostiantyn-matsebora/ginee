@@ -192,6 +192,10 @@ When an infra / CI / topology change implies an architectural delta (new compone
 - For IaC: attach a `plan` summary in PR descriptions; never apply from a developer machine to production.
 - Tag every resource for cost attribution so cost-management surfaces drift early.
 
+## Adoption research before authoring (D30)
+
+Phase 2 design / iteration-protocol Propose surfaces an option list per `core/options-protocol.md` (≥ 1 `adopt` candidate with name · version · source · license · fit OR explicit `(none viable — <reason>)`). DevOps-typical axes: IaC module · CI action · container base image · proxy / gateway · secret manager · cost-attribution tool · script library. Inapplicable scope (local infra tweak · internal pipeline rename) → `"axis n/a — <reason>"` and skip.
+
 ## Forbidden actions (devops-specific)
 
 Full list: `local/bindings.md` → "Project role boundaries". Role-specific:

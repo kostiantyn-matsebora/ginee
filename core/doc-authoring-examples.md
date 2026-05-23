@@ -230,3 +230,48 @@ Status: Done
 **Measurement (honest).** Bad return = 3,603 chars (narrative preamble + restated dispatch context + verbose per-file rationale + embedded code snippet). Good return = 1,136 chars (Status + 4 tables + 2 bullet sections + 2 empty-case markers). **Reduction: (3603 − 1136) / 3603 = 68.5%** — within rounding of the issue's ~70% target.
 
 **Why the ratio holds.** Bloat scales with task scope (narrative restatement + per-decision rationale paragraphs + code-snippet quotes); schema-bound size scales with file count + decision count. Simple cardinal dispatches reduce by similar ratios (1,500–3,000 char prose → 400–800 char schema). Sub-1,000-char dispatches don't reduce as far because the schema's table headers carry a fixed overhead — and that's fine: at those sizes the absolute saving is small either way and the parseability gain dominates.
+
+---
+
+## 11. Option list — adopt-vs-build (D30)
+
+**Context.** Sub-task: add a content-compression layer for context payloads. Proposing role surfaces the option list as part of the iteration-protocol Propose step (or Phase 2 design output).
+
+**Bad** — build-only, no adoption research surfaced:
+
+> Options:
+> - Build a custom dictionary-based compressor tuned to markdown.
+> - Build a simple LZ-style compressor inline.
+
+Tripped checks: **#1** (no adopt candidate, no `(none viable)` cite) · **#3** (candidates untagged).
+
+**Bad** — adoption hand-waved:
+
+> Options:
+> - Use a charting library (it's mature).
+> - Build our own.
+
+Tripped checks: **#2** (no name · version · source link · license) · **#5** (`"mature"` isn't a concrete fit rationale) · **#3** (untagged).
+
+**Good** — adopt candidates fully cited, build alternative explicit:
+
+```
+Options:
+- adopt — zstd via `python-zstandard` v0.22 — BSD-3 — https://pypi.org/project/zstandard/
+  — fit: streaming API; 4 ms/kB on <1 kB payloads (cite `runtime-facts.yaml`).
+- adopt — brotli v1.1 — MIT — https://pypi.org/project/Brotli/
+  — fit: better text ratios; +30 ms latency cost on small payloads.
+- build — minimal in-house — rationale: surveyed adopt candidates above; both exceed
+  the latency NFR on the <1 kB hot path. ADR draft below.
+```
+
+**Good** — empty research, explicit `(none viable)`:
+
+```
+Options:
+- (none viable — surveyed 3 token-aware compressors; all require tokenizer-specific
+  dictionaries the framework does not ship).
+- build — minimal in-house — see ADR draft.
+```
+
+Passes all 5 checks: floor present · citations complete · tagging explicit · empty research documented · fit rationale concrete.

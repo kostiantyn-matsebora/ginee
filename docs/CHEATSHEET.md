@@ -167,6 +167,26 @@ Status: Done | In-progress | Blocked | Hand-off
 
 **6 mandatory checks before report-as-done** — 5 from D22 / D26 + *no narrative preamble*. **Forbidden** — narrative preamble · restated dispatch context · code snippets outside the Notes carve-out · verbose rationale outside `## Notes` · parenthetical comma-soup. Target reduction vs free-form returns: ~70%.
 
+## Option-list shape (D30)
+
+Every Phase 2 design proposal + every iteration-protocol Propose step (Phase 4–7 > 15-min sub-tasks with a live adopt-vs-build axis) MUST surface ≥ 1 adopt candidate OR an explicit `(none viable — <reason>)` cite.
+
+```
+Options:
+- adopt — <name> v<version> — <license> — <source link>
+  — fit: <one-line concrete rationale, citing constraint / NFR / stack>
+- adopt — <name> v<version> — <license> — <source link>
+  — fit: <one-line>
+- build — <scope> — rationale: <why surveyed adopts rejected>
+# OR if research empty:
+- (none viable — <one-line reason>)
+- build — <scope> — see ADR draft.
+```
+
+**5 mandatory checks before surfacing** — adopt floor present · citations complete (name · version · source · license · fit) · tagging explicit (`adopt` / `build` / `hybrid` — no silent mixing) · empty research documented · fit rationale concrete (not hand-waved). Self-lint runs in-thread; no external linter. **License gating** — framework expresses no opinion; adopters wire policy in `local/`. Inapplicable sub-tasks cite *"axis n/a — <reason>"* and skip.
+
+Full spec: `core/options-protocol.md`. Example: `core/doc-authoring-examples.md § 11`.
+
 ## Source-of-truth pattern
 
 ```

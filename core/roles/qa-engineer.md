@@ -165,6 +165,10 @@ When a test surfaces an architectural concern (failing NFR oracle · contract dr
   - Write the doc update first (or flag the gap).
   - Don't encode unwritten behaviour as a regression baseline.
 
+## Adoption research before authoring (D30)
+
+Phase 2 design / iteration-protocol Propose surfaces an option list per `core/options-protocol.md` (≥ 1 `adopt` candidate with name · version · source · license · fit OR explicit `(none viable — <reason>)`). QA-typical axes: test runner · assertion library · e2e harness · fixture / factory library · visual-diff tool · API-mock server. Inapplicable scope (single-scenario addition · fixture tweak) → `"axis n/a — <reason>"` and skip.
+
 ## Forbidden actions (qa-specific)
 
 Full list: `local/bindings.md` → "Project role boundaries". Role-specific:

@@ -281,6 +281,29 @@ Every cardinal-dispatch return is **schema-bound** per `core/templates/phase-rep
 
 Full schema: [`core/templates/phase-report.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/core/templates/phase-report.md). Bad/good example: [`core/doc-authoring-examples.md § 10`](https://github.com/kostiantyn-matsebora/ginee/blob/main/core/doc-authoring-examples.md). Migration: [`core/MIGRATIONS/D29-strict-subagent-return-schema.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/core/MIGRATIONS/D29-strict-subagent-return-schema.md).
 
+## Adopt-vs-build option lists (D30)
+
+Every Phase 2 design proposal **and** every iteration-protocol Propose step (Phase 4–7 sub-tasks > 15 min where adopt-vs-build is a live axis) MUST surface ≥ 1 adopt-existing-solution candidate **or** an explicit `(none viable — <reason>)` cite. Stops the LLM-default failure mode: authoring novel implementations when no rule binds the proposer to look outward first.
+
+**Option-list schema** (4 candidate types):
+
+| Candidate type | Required fields |
+|---|---|
+| `adopt` | name · version · source link · license · one-line fit rationale |
+| `build` | scope · one-line rationale why adoption was rejected |
+| `hybrid` | adopt portion (full citation) + build portion + boundary rationale |
+| `(none viable — <reason>)` | one-line reason — empty-research escape hatch |
+
+**Floor.** Hard: ≥ 1 `adopt` candidate OR `(none viable)`. Soft: encourage 2–3 adopt candidates for non-trivial scope.
+
+**5 mandatory checks before surfacing** — adopt floor present · citations complete · tagging explicit (`adopt` / `build` / `hybrid` — no silent mixing) · empty research documented · fit rationale concrete (not hand-waved).
+
+**License + supply-chain stance.** Framework requires the citation but expresses no opinion on which licenses pass. Adopters author a `local/` policy file if gating is wanted.
+
+**Enforcement.** LLM self-review before surfacing the proposal. No external linter. Orchestrator surfaces a one-line advisory on violations but never auto-rewrites (analogous to D29).
+
+Full spec: [`core/options-protocol.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/core/options-protocol.md). Bad/good example: [`core/doc-authoring-examples.md § 11`](https://github.com/kostiantyn-matsebora/ginee/blob/main/core/doc-authoring-examples.md). Migration: [`core/MIGRATIONS/D30-adopt-existing-solution.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/core/MIGRATIONS/D30-adopt-existing-solution.md).
+
 ## Skill-runner vs team-lead (D28)
 
 ginee skills (`/ginee-pick-up`, `/ginee-address-review`, `/ginee-triage`, `/ginee-promote-discussion`, ...) run inside a thin **skill-runner** — the Claude main thread, Cursor main loop, Copilot CLI main loop, or AGENTS.md-driven shell that executes the skill body. The skill-runner is **not** a role and **not** an orchestrator.
