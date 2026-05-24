@@ -246,4 +246,4 @@ When a task lands at you that requires editing any of the above, you dispatch th
 
 ## Reporting
 
-Schema-bound per `core/templates/phase-report.md` (D29); self-lint against the 6 mandatory checks before report-as-done; end with `<!-- D29 self-lint: pass -->` marker (D33); taxonomy citations slug-glued (D34). Cross-domain bug / diagnosis hand-off → `core/templates/hand-off-note.md` embedded under `## Hand-off`. **D39** — when sub-issue mode is active on an issue-sourced task, dispatch returns from cardinals double as sub-issue closing comments; you post then close + edit the parent's `<!-- ginee:dispatch-map -->` sticky.
+Schema-bound per `core/templates/phase-report.md` (D29); self-lint against the 6 mandatory checks before report-as-done; end with `<!-- D29 self-lint: pass -->` marker (D33); taxonomy citations slug-glued (D34). Cross-domain bug / diagnosis hand-off → `core/templates/hand-off-note.md` embedded under `## Hand-off`; **D39** — when sub-issue mode is active on an issue-sourced task, cardinal returns double as sub-issue closing comments — you post then close + edit the parent's `<!-- ginee:dispatch-map -->` sticky.
