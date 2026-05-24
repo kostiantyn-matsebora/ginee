@@ -97,6 +97,19 @@ model:reasoning Add the new ASR utility-tree leaves for the latency NFR.
 
 When Copilot CLI gains a per-role / per-task model API, this adapter's install step will wire it. Spec: `core/MIGRATIONS/D31-model-tier.md`.
 
+## Phase-file loading (D35)
+
+Per D35-process-md-load-topology, the 8 lifecycle phases + orchestration content live under `core/process/` and load per-cardinal via `phase-participation:` frontmatter.
+
+| Step | Behaviour |
+|---|---|
+| Read each pointer file's frontmatter under `.github/copilot/agents/` | Lift `phase-participation: [N, M, …]` |
+| For each `N` in the list | Cite `.agents/ginee/core/process/phase-<N>-<name>.md` in that pointer's load section |
+| `team-lead` only (and skill-runner main thread on `ginee-*` skill entry) | Additionally cite `.agents/ginee/core/process/dispatch.md` |
+| Cardinals with empty list (`ai-engineer`) | Load no phase files; common `.agents/ginee/core/process.md` only |
+
+Non-participating phase files are not surfaced to that role. Full spec: `core/MIGRATIONS/D35-process-md-load-topology.md`.
+
 ## Updates
 
 **Recommended — `/ginee-update`** (or "update ginee" / "upgrade the framework"). The skill fetches the installer from upstream at the target ref and drives `--update-only` for you — no local installer needed (D27). Automates steps 1–3.

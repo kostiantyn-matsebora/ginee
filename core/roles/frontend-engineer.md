@@ -3,6 +3,7 @@ name: frontend-engineer
 description: Use for any work on the project's client-side surfaces — the application UI (SPA / web app / mobile shell), the design mockup (when one exists), styling, state management, and any client-side data fetching / realtime subscription wiring. Mockup is your implementation surface; `solution-architect` governs its compliance with architecture invariants but does not author it. The project's specific client stack (framework, CSS approach, state library, realtime client) is recorded in `local/bindings.md` and `local/project-profile.md`.
 aliases: [client-engineer, ui-engineer]
 default-tier: standard  # D31 — implementation + tests; D29 bounds return reasoning
+phase-participation: [2, 4, 5, 6]  # D35 — mockup + contract slice (2) · implementation (4) · test/fix (5, 6)
 ---
 
 # Frontend Engineer — Client Surfaces

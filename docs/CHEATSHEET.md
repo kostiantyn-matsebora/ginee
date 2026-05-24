@@ -285,8 +285,11 @@ Framework defaults: `branch` for issue / TODO-sourced; `wt` for freeform. Auto-m
 ```
 .agents/ginee/
 ├── core/                       # upstream — process spec + role kernels + templates
-│   ├── process.md              # phased lifecycle, dispatch, iteration
-│   ├── roles/                  # 7 cardinal role kernels
+│   ├── process.md              # common — principles · doc style · reporting · index (D35)
+│   ├── process/                # D35 — phase + dispatch files, load-on-demand per role
+│   │   ├── phase-{1..8}-*.md   #   one file per lifecycle phase
+│   │   └── dispatch.md         #   orchestration — skill-runner · parallelism · auto mode
+│   ├── roles/                  # 7 cardinal role kernels (each declares phase-participation:)
 │   ├── index-protocol.md       # local/index/ extraction + load triggers
 │   ├── github-integration.md   # issue / PR / label flow
 │   ├── delivery-modes.md       # branch / wt / commit

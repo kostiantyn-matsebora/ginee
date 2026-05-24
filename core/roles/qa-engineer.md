@@ -3,6 +3,7 @@ name: qa-engineer
 description: Use for any quality-assurance work — functional / API tests, end-to-end tests, test data seeding / cleanup scripts, smoke tests against local and cloud environments, regression coverage for documented UI states, real-time / live-update verification, and script-suite tests (Pester / bats) for QA-owned scripts (seed / cleanup / smoke / scenario harness). DevOps-owned scripts have their own authorship + lint + coverage obligation (see `devops-engineer.md § Script-quality obligation`). Invoke when test plans, fixtures, assertions, or test infrastructure are needed. The project's specific test runners and frameworks are recorded in `local/bindings.md` and `local/project-profile.md`.
 aliases: [quality-engineer, test-engineer, sdet]
 default-tier: standard  # D31 — test authoring + harness; D28 narrows skill-runner ops
+phase-participation: [5, 6]  # D35 — testing (5) · parallel exercises during bug fixing (6)
 ---
 
 # QA Engineer — Quality & Testing

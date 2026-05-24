@@ -77,9 +77,12 @@ $Script:AlwaysLoadedPatterns = @(
 # Note: PLAN.md is the canonical design doc, read at session start but not
 # auto-loaded by the harness on every dispatch — so it sits in "other", not
 # "always-loaded" (#36's framing). Confirmed by the trim cleanup in 0.5.1.
+# Note: core/process/*.md (per D35 phase + dispatch split) are load-on-demand
+# by role per `phase-participation:`; tracked in "other" tier, not always-loaded.
 $Script:OtherWatchedPatterns = @(
   '^PLAN\.md$'
   '^core/[^/]+\.md$'                # core/*.md specs (excluding process.md, caught above)
+  '^core/process/[^/]+\.md$'        # D35 — phase + dispatch files (load-on-demand by role)
   '^core/roles/[^/]+\.details\.md$' # load-on-demand role details
   '^core/skills/'
   '^core/templates/'

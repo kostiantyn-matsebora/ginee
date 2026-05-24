@@ -50,8 +50,19 @@ The heart of ginee. Vendor-neutral. Same content for every adopter.
 
 ```
 core/
-├── process.md                  Phase 1–8 lifecycle, dispatch + parallelism rules,
-│                               coordination protocol, task model, engineering principles
+├── process.md                  Common process — principles · doc style · reporting ·
+│                               coordination protocol · load-on-demand index (D35)
+├── process/                    D35 — phase + orchestration content, load-on-demand per role
+│   ├── phase-1-analysis.md           SA design dip · scope bound · ASR utility tree
+│   ├── phase-2-design.md             Contracts locked · option-shape (D30) · cross-phase rule
+│   ├── phase-3-design-review.md      Synchronous gate · implementation gate
+│   ├── phase-4-implementation.md     Code · SA governance / review dips
+│   ├── phase-5-testing.md            Change-scoped suite · NFR oracle dip
+│   ├── phase-6-bug-fixing.md         Defect resolution · architectural-fix review
+│   ├── phase-7-sa-review.md          Final coherence check (lighter under D25)
+│   ├── phase-8-user-approval.md      Delivery finalize · doc-optimization hook
+│   └── dispatch.md                   Skill-runner boundary · dispatch & parallelism ·
+│                                     automatic mode · task model · cross-domain bugs map
 ├── iteration-protocol.md       Estimation-first dispatch + 3–5 min stoppable batches
 ├── automatic-mode.md           D12 — per-task `auto:` opt-in; elides intermediate gates
 ├── index-protocol.md           local/index/ extraction, lossless rule, compression

@@ -94,6 +94,19 @@ model:reasoning act as solution-architect and add the new ASR utility-tree leave
 
 When the host client matures to support per-role model selection (Claude Code / Copilot CLI level), upgrade to the matching adapter. Spec: `core/MIGRATIONS/D31-model-tier.md`.
 
+## Phase-file loading (D35)
+
+Per D35-process-md-load-topology, the 8 lifecycle phases + orchestration content live under `core/process/` and load per-cardinal via `phase-participation:` frontmatter.
+
+| Step | Behaviour |
+|---|---|
+| Read each role file's frontmatter (rendered into the generic single-file instructions) | Lift `phase-participation: [N, M, …]` |
+| For each `N` in the list | Cite `.agents/ginee/core/process/phase-<N>-<name>.md` in that role's load section |
+| `team-lead` only (and skill-runner main thread on `ginee-*` skill entry) | Additionally cite `.agents/ginee/core/process/dispatch.md` |
+| Cardinals with empty list (`ai-engineer`) | Load no phase files; common `.agents/ginee/core/process.md` only |
+
+Generic adapter is the fallback — the rendered instructions file cites the phase files inline per role; the LLM honours the contract by reading only what is cited. Full spec: `core/MIGRATIONS/D35-process-md-load-topology.md`.
+
 ## Updates
 
 **Recommended — `/ginee-update`** (or "update ginee" / "upgrade the framework") when the host client supports AgentSkills. Falls back to "act as `team-lead` and update ginee" for tier-3 clients. The skill fetches the installer from upstream at the target ref and drives `--update-only` for you — no local installer needed (D27).
