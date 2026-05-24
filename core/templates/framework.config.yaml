@@ -260,6 +260,29 @@ capability-tools:
   #     role: solution-architect
   #     task: ".*security.*"   # regex against task description; force-surfaces when matched
 
+# --- Sub-issue dispatch tracking (D39) ---
+# Each team-lead → cardinal dispatch lands as a GitHub sub-issue under the
+# parent task issue — labelled by role + phase, threading progress comments
+# + cumulative time, closed by the cardinal's D29 phase-report return. Lets
+# cross-session resume reconstruct state from parent + open sub-issues
+# without transcript replay. Full spec: core/MIGRATIONS/D39-sub-issue-dispatch.md.
+#
+# Active only on issue-sourced tasks. TODO / freeform fall back to in-context.
+# Resolution (stop at first match):
+#   1. Per-task prefix  notrack:  on the parent dispatch.
+#   2.  ginee:track:off  label on the parent issue.
+#   3.  dispatch.tracking  key below.
+#   4. Framework default — sub-issues when  github.repo  is configured.
+#
+# Assignee precedence — non-empty human assignee on a sub-issue overrules the
+#  ginee:role:<cardinal>  label; cardinal dispatch suspended until cleared.
+#
+# All keys optional — defaults shown.
+dispatch:
+  tracking: sub-issues          # sub-issues | in-context
+  time-tracking: true           # set false to disable the time-tracking surface
+  # closing-label: ginee:done   # optional sub-issue close marker (auto-removed on close); omit to skip
+
 # --- GitHub integration (D14) ---
 # Lets team-lead pick up GitHub issues as a task source alongside
 # TODO files + direct instructions, file new issues from user requests,

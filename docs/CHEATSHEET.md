@@ -95,7 +95,39 @@ Use ginee to <task description>           # team self-dispatches; no skill neede
 | `ginee:blocked` | Stoppable intermediate state; awaiting user / external |
 | `value:high|medium|low` | Triage scoring — reporter-defined business impact (D23) |
 | `complexity:high|medium|low` | Triage scoring — reporter or SA auto-estimate (D23) |
+| `ginee:role:<cardinal>` | **D39** — sub-issue dispatch — identifies cardinal owning the dispatch |
+| `ginee:phase:<N>` | **D39** — sub-issue dispatch — current lifecycle phase (1–8) |
+| `ginee:track:off` | **D39** — set on parent to opt out of sub-issue tracking for that issue |
 | (closed issue) | Done — implicit, no label change needed |
+
+## Sub-issue dispatch (D39)
+
+On issue-sourced tasks, team-lead creates one GitHub sub-issue per cardinal dispatch under the parent — labelled by role + phase, threading progress comments + cumulative time, closed on phase-report return. Cross-session resume reads parent + open sub-issues; no transcript replay.
+
+```
+notrack: <task>                    # opt out of sub-issue tracking for this task
+```
+
+Per-issue opt-out — apply `ginee:track:off` label on the parent issue.
+
+Repo-wide opt-out — `local/framework.config.yaml`:
+
+```yaml
+dispatch:
+  tracking: in-context             # sub-issues (default on github.repo) | in-context
+  time-tracking: false             # turn off the time-tracking surface
+```
+
+**Assignee precedence** — non-empty human assignee on a sub-issue overrules the `ginee:role:<cardinal>` label; cardinal dispatch suspended until cleared. Reassign to empty to resume.
+
+Progress-comment shape (cardinal-authored on the sub-issue):
+
+```
+Started: <sub-task>. time: 0m. cumulative: 12m.
+Done: <sub-task>. <commit-link>. time: 18m. cumulative: 30m.
+```
+
+Phase-report return doubles as the closing comment; mandatory `## Time spent: <H>h <M>m perceived effort; <N> progress comments on sub-issue #<M>.`
 
 ## Triage scoring (D23)
 
