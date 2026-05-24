@@ -176,6 +176,14 @@ Three specs are orchestration-only and live in `core/process/dispatch.md § Team
 - **Full procedure** (manual-smoke checklist + anti-pattern rules): `core/cross-domain-bugs.md`. Load when a cross-domain bug or task is detected.
 - **Lifecycle mapping:** cycle Phases 1 / 2 / 3 / 4 → lifecycle Phases 2 / 4 / 5–6 / 7. Detailed mapping table in `core/process/dispatch.md § Relation to the cross-domain bugs cycle`.
 
+#### Blueprint-diff gate — pre-Phase-4 visual SoT precondition
+
+- Phase 4 dispatches touching `local/framework.config.yaml § visual-source-of-truth.path` MUST run a structural diff vs `blueprint-ref` as first step; classify Expected / Unexpected / Pre-existing; surface to team-lead before any edit.
+- Unexpected delta → forced-interactive gate; auto-mode does NOT elide.
+- Per-type tool selection (html-mockup · figma · image · video · other); 4 mandatory checks; LLM self-review machinery same as D22 / D26 / D29 / D30 / D40.
+- Full spec: **`core/protocols/blueprint-diff-protocol.md`**. Migration: **`core/MIGRATIONS/D41-blueprint-diff-gate.md`**.
+- **Load triggers** — any cardinal whose `phase-participation:` includes `4` and whose dispatch touches the configured visual SoT path. Inapplicable case (no edit on configured path) — cite `"visual-SoT untouched — protocol n/a"` and skip.
+
 #### Cross-agent handoff — diagnose ≠ fix
 
 - When a specialist discovers a root cause **outside** their domain: diagnose fully, do NOT fix, hand off to the owning specialist with a structured note.

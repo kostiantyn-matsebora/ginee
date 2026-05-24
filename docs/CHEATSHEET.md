@@ -213,6 +213,30 @@ Three surfaces, three voices, three caps — applies only to maintainers draftin
 
 **Pattern** — lead with adopter verb (`/ginee-update works again` not `Step 1 no longer requires installer scripts inside .agents/ginee/`). Full spec: [`core/changelog-protocol.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/core/changelog-protocol.md).
 
+## Blueprint-diff gate (D41)
+
+Phase 4 entry precondition — every dispatch touching `local/framework.config.yaml § visual-source-of-truth.path` diffs vs `blueprint-ref` first, classifies deltas, surfaces to team-lead before edits.
+
+```yaml
+# local/framework.config.yaml — defaults derive from `mockup:` when block absent
+visual-source-of-truth:
+  type: html-mockup           # html-mockup | figma | image | video | other
+  path: docs/mockup.html
+  blueprint-ref: origin/main  # or v1.2.0, snapshot path, Figma version URL
+  scope-discriminator: block-glob
+  enabled: true
+```
+
+| Delta class | Outcome |
+|---|---|
+| Expected (inside issue scope) | Edits proceed |
+| Pre-existing | Edits proceed |
+| Unexpected (outside issue scope) | Forced-interactive gate — auto-mode does NOT elide |
+
+**4 mandatory checks** before edits begin — config resolved · diff computed · classification complete · `## Verification log` row written. Inapplicable case (no edit on configured path) — cite `"visual-SoT untouched — protocol n/a"` and skip.
+
+Full spec: [`core/protocols/blueprint-diff-protocol.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/core/protocols/blueprint-diff-protocol.md).
+
 ## Option-list shape (D30)
 
 Every Phase 2 design proposal + every iteration-protocol Propose step (Phase 4–7 > 15-min sub-tasks with a live adopt-vs-build axis) MUST surface ≥ 1 adopt candidate OR an explicit `(none viable — <reason>)` cite.

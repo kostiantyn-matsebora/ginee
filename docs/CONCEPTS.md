@@ -318,6 +318,34 @@ Adopter impact — **none** (framework-internal authoring rule; affects ginee ma
 
 Full spec: [`core/changelog-protocol.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/core/changelog-protocol.md) + [`core/MIGRATIONS/D40-changelog-protocol.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/core/MIGRATIONS/D40-changelog-protocol.md).
 
+## Blueprint-diff gate for visual source-of-truth (D41)
+
+Phase 4 entry precondition for any dispatch touching the configured visual source-of-truth artefact (mockup · Figma · image baseline · video · adopter-supplied). Closes the adopter-incident class where Phase 4 silently rewrote chrome elements while Phase 5/6 geometry oracles ran green.
+
+**Procedure** — dispatching role runs the protocol as first step of any Phase 4 dispatch that touches the configured `visual-source-of-truth.path`:
+
+1. Resolve config from `local/framework.config.yaml § visual-source-of-truth` (defaults derive from existing `mockup:` key when absent).
+2. Compute the diff working-copy vs `blueprint-ref` (default `origin/main`) — per-type tool selection.
+3. Classify each delta as Expected (inside issue scope) · Unexpected (outside issue scope) · Pre-existing (present before dispatch).
+4. Surface to team-lead.
+5. Gate Phase 4 edits — all-Expected/Pre-existing → edits proceed; any Unexpected → forced-interactive gate (auto-mode does NOT elide).
+
+**Per-type diff tools:**
+
+| `type` | Tool |
+|---|---|
+| `html-mockup` | `git diff <blueprint-ref> -- <path>` (built-in; universal) |
+| `figma` | File-comparison URL or REST `GET /v1/files/<key>/versions` |
+| `image` | Adopter-supplied perceptual diff — pixelmatch · odiff · Resemble.js · Playwright snapshot-compare |
+| `video` | Manual review checkpoint |
+| `other` | Adopter-supplied tool from `local/index/commands.yaml § commands.visual-diff` |
+
+**4 mandatory checks** before edits begin — config resolved · diff computed · classification complete · surface logged in `## Verification log`. LLM self-review at draft time; one-line orchestrator advisory on violation; never auto-rewrites.
+
+**Adopter impact** — adopters with `mockup:` configured get the gate on next dispatch with zero `local/framework.config.yaml` edits (defaults derived). Adopters with no mockup configured — protocol auto-skips. Override the defaults to point at a Figma URL · release-tag blueprint · frozen snapshot · adopter-supplied diff tool.
+
+Full spec: [`core/protocols/blueprint-diff-protocol.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/core/protocols/blueprint-diff-protocol.md) + [`core/MIGRATIONS/D41-blueprint-diff-gate.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/core/MIGRATIONS/D41-blueprint-diff-gate.md).
+
 ## Subagent-return schema (D29)
 
 Every cardinal-dispatch return is **schema-bound** per `core/templates/phase-report.md` — same machinery as the D22 / D26 doc-authoring protocol, scoped to the subagent-return surface. Goal: cut ~70% off subagent-return bloat (today's largest orchestration-thread contributor).

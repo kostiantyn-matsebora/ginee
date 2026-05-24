@@ -101,6 +101,14 @@ Empty case: `(none)`.
 
 Doc-authoring attestation lines (D22 / D26 / D29) live here as table rows, not free-form bullets.
 
+**Blueprint-diff row (D41-blueprint-diff-gate).** Phase 4 dispatches touching the configured `visual-source-of-truth.path` add one row per protocol invocation:
+
+```
+Blueprint-diff (<type>) vs <blueprint-ref> on <path>: <N> expected / <M> unexpected / <K> pre-existing — surfaced + approved.
+```
+
+Inapplicable case — `Blueprint-diff: visual-SoT untouched — protocol n/a.` Full spec: `core/protocols/blueprint-diff-protocol.md`.
+
 ### `## Open issues`
 
 - `<issue>` — `<owner / blocker / TODO surfaced>`
