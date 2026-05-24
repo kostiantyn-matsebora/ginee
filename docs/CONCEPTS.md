@@ -166,6 +166,42 @@ PRs reference the issue with `Fixes #<N>` / `Closes #<N>` — GitHub auto-closes
 
 Full spec: [`core/github-integration.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/core/github-integration.md).
 
+## Sub-issue dispatch — cross-session traceability + time-tracking (D39)
+
+Pre-D39, every team-lead → cardinal dispatch lived only in the chat transcript — end the session, lose the state. D39 lands each cardinal dispatch as a GitHub **sub-issue** under the parent task issue. Cross-session resume now reads parent + open sub-issues; no transcript replay.
+
+| Concern | Pre-D39 | After D39 |
+|---|---|---|
+| Cross-session resume | Replay transcript + grep commits | Read parent + open sub-issues |
+| Mid-dispatch hand-off | One-shot hand-off note | Live sub-issue thread |
+| Parallel-cardinal traceability | Buried in synthesis turn | One sub-issue per role, queryable |
+| Effort attribution | Not surfaced anywhere | Per-comment `time:` + per-cardinal rollup |
+
+**Scope.** Issue-sourced tasks only. TODO / freeform fall back to in-context dispatch (no parent issue to anchor sub-issues under).
+
+**Lifecycle per dispatch.**
+
+1. team-lead drafts the dispatch contract (scope · acceptance · spec links · phase · estimate).
+2. Creates a sub-issue under the parent — title `[<phase>:<cardinal>] <task>`; body = contract per `core/templates/sub-issue-dispatch.md`; labels `ginee:role:<cardinal>` + `ginee:phase:<N>` + inherited `value:*` / `complexity:*`.
+3. Cardinal executes; progress comments thread on the sub-issue — each carrying `time: <N>m` (since last comment) + `cumulative: <N>m` (since dispatch start).
+4. D29 phase-report return doubles as the closing comment with mandatory `## Time spent` section. team-lead closes the sub-issue.
+5. Parent's `<!-- ginee:dispatch-map -->` sticky aggregates per-cardinal time across all sub-issues.
+
+**Stop-state.** `Status: In-progress` posts as a progress comment; sub-issue stays open. Next pickup reads the comment trail and resumes from where the cardinal stopped.
+
+**Assignee precedence.** Non-empty human assignee on a sub-issue overrules the `ginee:role:<cardinal>` tag — cardinal dispatch suspended until the assignee clears. Rationale — GitHub's assignee column means a human is responsible; cardinals are not GitHub users; when both exist, the human wins.
+
+**Opt-out (stop at first match).**
+
+1. Per-task `notrack:` prefix (combinable with `auto:` / `branch:` / etc.).
+2. `ginee:track:off` label on the parent issue (per-issue lifetime).
+3. `local/framework.config.yaml § dispatch.tracking: in-context` (repo-wide).
+4. Framework default — `sub-issues` when `github.repo` is configured.
+
+**Time-tracking.** Cardinal-reported perceived effort (not session wall-clock). Granularity — minutes. Format `time: <N>m` (under 60m) or `time: <H>h <M>m` (60m+).
+
+Full spec: [`core/MIGRATIONS/D39-sub-issue-dispatch.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/core/MIGRATIONS/D39-sub-issue-dispatch.md).
+
 ## Triage scoring (D23)
 
 `/ginee-triage` ranks ready work by **score = value / complexity** (default WSJF cost-of-delay over job-size) instead of age. Two axes, same scale — ATAM utility-tree H/M/L (`H=3, M=2, L=1`).

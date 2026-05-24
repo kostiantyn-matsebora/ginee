@@ -13,6 +13,7 @@
 | `## Next dispatch needed` | **required** (else `(none)`) | One-liner — `<role> · <surface> · <reason>` | 1 line |
 | `## Hand-off` | required **if failed dispatch / cross-domain root cause outside domain** (per `core/cross-agent-handoff.md`) | Embed `core/templates/hand-off-note.md` shape | per template |
 | `## Stop-state` | required **if `Status: In-progress`** (iteration-protocol stop boundary) | Three-bucket bullets — Done / In-progress / Not-started | per `core/protocols/iteration-protocol.md § Stoppable intermediate states` |
+| `## Time spent` | required **if sub-issue mode is active** (D39-sub-issue-dispatch) — return doubles as sub-issue closing comment | One-liner — `<H>h <M>m perceived effort; <N> progress comments on sub-issue #<M>.` | 1 line |
 | `## Notes` | **optional** — narrative-rationale escape hatch only | Free-form prose | ≤ 200 words |
 
 **Status header** (single line at top): `Status: Done | In-progress | Blocked | Hand-off`. For iteration-protocol intermediate returns: same schema, sections marked `(in-progress)` where partial, plus the required `## Stop-state`.
@@ -121,6 +122,16 @@ Per `core/templates/hand-off-note.md`. Required when the dispatch hit a forced-h
 - **Done.** `<sub-tasks completed · files touched>`
 - **In-progress.** `<sub-task interrupted · partial state · concrete resume instructions>`
 - **Not-started.** `<sub-tasks remaining in approved batch · original estimates intact>`
+
+### `## Time spent` *(when sub-issue mode is active, D39)*
+
+One line — cardinal-reported perceived effort (NOT wall-clock); progress-comment count for traceability:
+
+```
+1h 38m perceived effort; 4 progress comments on sub-issue #142.
+```
+
+Cardinal owns the number; team-lead never re-derives. Doubles as the rollup feeding the parent's `<!-- ginee:dispatch-map -->` sticky.
 
 ### `## Notes` *(optional, capped)*
 

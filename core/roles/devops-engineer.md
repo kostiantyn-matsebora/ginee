@@ -222,7 +222,7 @@ Full list: `local/bindings.md` → "Project role boundaries". Role-specific:
 
 ## Reporting
 
-Schema-bound per `core/templates/phase-report.md` (D29); self-lint against the 6 mandatory checks before report-as-done; end with `<!-- D29 self-lint: pass -->` marker (D33); taxonomy citations slug-glued (D34).
+Schema-bound per `core/templates/phase-report.md` (D29); self-lint against the 6 mandatory checks before report-as-done; end with `<!-- D29 self-lint: pass -->` marker (D33); taxonomy citations slug-glued (D34). **D39** — when sub-issue mode is active, progress comments on the sub-issue (each carrying `time:` + `cumulative:`) are the in-flight surface; the phase-report return doubles as the closing comment with mandatory `## Time spent`.
 
 - **Script-quality attestation (D18)** — lint + tests + coverage outcomes → `## Verification log` rows.
 - **Post-step health check** — every service `Up` / `healthy` → `## Verification log` row.
