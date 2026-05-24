@@ -10,6 +10,16 @@ All notable changes to ginee. The format follows [Keep a Changelog](https://keep
 
 ## Unreleased
 
+### Fixed
+
+- **Skill-runner tracking-mode posture leak — D28 boundary + D39 resolution chain gap** ([#114](https://github.com/kostiantyn-matsebora/ginee/issues/114)). Pre-fix the load-bearing runtime specs (`core/process/dispatch.md § Skill-runner — surface boundary` · `core/github-integration.md § Sub-issue dispatch`) enumerated orchestration ops as plan / synthesis / gate text / re-dispatch / reconciliation / default selection / `local/bindings.md` lookup — but did **not** name tracking-mode posture. Skill-runner read the silence as permission, pre-resolved tracking to `in-context` from runtime conditions (deferred commits · worktree mode · no-PR linkage), and wrote the posture into the hand-off brief. Team-lead absorbed the line verbatim into Phase 1 "Forbidden this cycle"; three Phase 4 dispatches ran in-context with no sub-issues, no `<!-- ginee:dispatch-map -->` sticky, no per-cardinal time accounting, and a permanently unusable D39 resume protocol on that parent. Rules land in files the LLM actually loads at runtime — not in version-bound migration files that ship as switch-version instructions.
+  - **Skill-runner surface boundary** (`core/process/dispatch.md`). New D39 interaction paragraph parallel to the existing D29 one — explicit *"never set, carry, or pre-resolve tracking-mode posture"* rule with the runtime-condition orthogonality clause. Forbidden-ops table row adds *tracking-mode posture (D39-sub-issue-dispatch four-tier resolution)*.
+  - **Resolution chain closure** (`core/github-integration.md § Sub-issue dispatch`). New `**Chain is closed — team-lead re-derives on every parent dispatch.**` paragraph below the existing Resolution line. States no fifth tier exists; skill-runner never sets / recommends / carries posture; team-lead re-derives on every parent dispatch (initial pickup + cross-session resume); upstream postures discarded without inheritance; runtime conditions orthogonal; only adapter degradation demotes tier 4.
+  - **Authoring failure mode** (`core/roles/team-lead.details.md § Sub-issue dispatch § Common failure modes`). New table row — *"Skill-runner-injected tracking-mode posture absorbed verbatim"* with the correct shape (discard + re-derive via chain). Pairs with the existing in-context-despite-sub-issue-mode-active row.
+  - **Skill-runner forbiddens** (`core/skills/ginee-pick-up/SKILL.md`). § Forbidden D28 line extended — tracking-mode posture in the hand-off payload now explicitly listed alongside plan-drafting / synthesis / routing / default-selection.
+  - **Files updated** — `core/process/dispatch.md` · `core/github-integration.md` · `core/roles/team-lead.details.md` · `core/skills/ginee-pick-up/SKILL.md` · this file. **Migration files unchanged** — D28-skill-runner-boundary.md and D39-sub-issue-dispatch.md are version-switch instructions, not load-bearing runtime context.
+  - **Backwards compatibility** — purely additive. No `local/` schema change. No `framework.config.yaml` additions. No new D-number (clarification to existing D28 + D39 runtime specs). Adopter action: **none**. Existing in-flight tasks with skill-runner-injected postures finish as today; the rule binds on the **next** parent dispatch under any issue.
+
 ## 0.17.0 — 2026-05-24
 
 ### Added

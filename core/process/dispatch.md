@@ -9,13 +9,15 @@
 | Op | Surface |
 |---|---|
 | Parse prompt + identify task source · label / sticky / audit-comment ops · branch ops per resolved mode · **one** named first-batch dispatch · report mechanical result | skill-runner (allowed) |
-| Plan drafting · synthesis of parallel returns · Phase 3/7/8 gate text · re-dispatch · routing reconciliation · default selection · `local/bindings.md` lookup to settle routing | **dispatch `@team-lead`** (forbidden in skill-runner) |
+| Plan drafting · synthesis of parallel returns · Phase 3/7/8 gate text · re-dispatch · routing reconciliation · default selection · `local/bindings.md` lookup to settle routing · **tracking-mode posture (D39-sub-issue-dispatch four-tier resolution)** | **dispatch `@team-lead`** (forbidden in skill-runner) |
 
 **Hand-back rule.** Every `ginee-*` skill dispatches `@team-lead` after its first mechanical batch; from the second decision onwards every orchestration decision flows through team-lead; mid-flight routing / governance question from user → skill-runner dispatches `@team-lead`, never answers by reading project files.
 
 **Self-check before main-thread reasoning during a skill run.** Ask: *"Mechanical op in the allowed row, or orchestration decision?"* Latter → dispatch `@team-lead`. No "fast" / "trivial" exception.
 
 **D29-strict-subagent-return-schema / D33-d29-enforcement-hardening interaction — never "clean up" a non-compliant return.** When a cardinal return arrives missing the `<!-- D29 self-lint: pass -->` marker or otherwise breaching the schema, the skill-runner forwards it as-is. Restructuring the return into a tidier summary table before passing it to team-lead crosses the D28 boundary (synthesis is team-lead's surface). Surface the one-line advisory per `core/templates/phase-report.md § Orchestrator behaviour on non-compliant returns`; never auto-rewrite.
+
+**D39-sub-issue-dispatch interaction — never set, carry, or pre-resolve tracking-mode posture.** The D39 four-tier resolution chain (`notrack:` prefix → `ginee:track:off` label → config → framework default) is **closed**; resolution is team-lead's surface, not the skill-runner's. The skill-runner never writes `tracking: in-context | sub-issues`, never recommends a posture in the hand-off brief, never reasons from runtime conditions (deferred commits · worktree mode · no-PR linkage · `gh`-degradation) to a posture. Pass the parsed task to team-lead with no tracking line; team-lead re-derives via the chain on every parent dispatch (initial pickup + cross-session resume) and discards any upstream posture. Runtime conditions are **orthogonal** to the chain — only adapter degradation (no `gh` / no GH MCP) demotes tier 4 to `in-context`, and that demotion happens in team-lead's resolution, not in the hand-off payload.
 
 **Worked counter-example + full procedure shape:** `core/MIGRATIONS/D28-skill-runner-boundary.md` + `core/roles/team-lead.details.md § Common failure modes`.
 
