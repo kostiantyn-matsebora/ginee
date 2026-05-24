@@ -82,7 +82,7 @@ If your client supports AgentSkills (step 3 above), each of these phrasings also
 
 If your client matures to support `AGENTS.md`, a subagent directory, or AgentSkills, upgrade to the matching adapter for better isolation + parallelism.
 
-## Model tier (D31)
+## Model tier
 
 Generic adapter has no per-role model selection — the host client picks one model for the whole session. ginee writes vendor-neutral tier names in `local/framework.config.yaml § model-tier` but the runtime ignores them at this tier.
 
@@ -92,11 +92,11 @@ Generic adapter has no per-role model selection — the host client picks one mo
 model:reasoning act as solution-architect and add the new ASR utility-tree leaves for the latency NFR
 ```
 
-When the host client matures to support per-role model selection (Claude Code / Copilot CLI level), upgrade to the matching adapter. Spec: `core/MIGRATIONS/D31-model-tier.md`.
+When the host client matures to support per-role model selection (Claude Code / Copilot CLI level), upgrade to the matching adapter.
 
-## Phase-file loading (D35)
+## Phase-file loading
 
-Per D35-process-md-load-topology, the 8 lifecycle phases + orchestration content live under `core/process/` and load per-cardinal via `phase-participation:` frontmatter.
+The 8 lifecycle phases + orchestration content live under `core/process/` and load per-cardinal via `phase-participation:` frontmatter declared in each role kernel.
 
 | Step | Behaviour |
 |---|---|
@@ -105,13 +105,13 @@ Per D35-process-md-load-topology, the 8 lifecycle phases + orchestration content
 | `team-lead` only (and skill-runner main thread on `ginee-*` skill entry) | Additionally cite `.agents/ginee/core/process/dispatch.md` |
 | Cardinals with empty list (`ai-engineer`) | Load no phase files; common `.agents/ginee/core/process.md` only |
 
-Generic adapter is the fallback — the rendered instructions file cites the phase files inline per role; the LLM honours the contract by reading only what is cited. Full spec: `core/MIGRATIONS/D35-process-md-load-topology.md`.
+Generic adapter is the fallback — the rendered instructions file cites the phase files inline per role; the LLM honours the contract by reading only what is cited.
 
 ## Updates
 
-**Recommended — `/ginee-update`** (or "update ginee" / "upgrade the framework") when the host client supports AgentSkills. Falls back to "act as `team-lead` and update ginee" for tier-3 clients. The skill fetches the installer from upstream at the target ref and drives `--update-only` for you — no local installer needed (D27).
+**Recommended — `/ginee-update`** (or "update ginee" / "upgrade the framework") when the host client supports AgentSkills. Falls back to "act as `team-lead` and update ginee" for tier-3 clients. The skill fetches the installer from upstream at the target ref and drives `--update-only` for you — no local installer needed.
 
-**Manual fallback — bootstrap one-liner** (the installer is intentionally NOT inside `.agents/ginee/` per D27):
+**Manual fallback — bootstrap one-liner** (the installer is intentionally NOT inside `.agents/ginee/`):
 
 ```powershell
 $env:GINEE_UPDATE_ONLY='1'; $env:GINEE_ADAPTER='generic'; iwr -useb https://raw.githubusercontent.com/kostiantyn-matsebora/ginee/main/install.ps1 | iex
@@ -126,11 +126,9 @@ GINEE_UPDATE_ONLY=1 GINEE_ADAPTER=generic bash -c "$(curl -fsSL https://raw.gith
 1. Re-fetch `.agents/ginee/` (your `local/` survives).
 2. Client reads `INSTRUCTIONS.md` by path → no further action.
 3. Pasted content → re-paste with the updated file.
-4. Read `.agents/ginee/core/MIGRATIONS/` for breaking-change notes.
-5. **For pre-D11 (pre-2026-05-18) upgrades** — run the rename migration script once:
+4. **For previously (pre-2026-05-18) upgrades** — run the rename migration script once:
    - `.\.agents\ginee\core\scripts\migrate-engineering-team-to-ginee.ps1` (or `.sh`).
    - Rewrites legacy `engineering-team` references under `local/*`. Idempotent.
-   - Full notes: `.agents/ginee/core/MIGRATIONS/engineering-team-renamed-ginee.md`.
 
 ## Uninstall
 

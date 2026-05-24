@@ -187,7 +187,7 @@ GINEE_UPDATE_ONLY=1 GINEE_ADAPTER=claude bash -c "$(curl -fsSL https://raw.githu
 $env:GINEE_UPDATE_ONLY='1'; $env:GINEE_ADAPTER='claude'; iwr -useb https://raw.githubusercontent.com/kostiantyn-matsebora/ginee/main/install.ps1 | iex
 ```
 
-Check `core/MIGRATIONS/` after each update for breaking-change notes.
+Check `migrations/` after each update for breaking-change notes.
 
 ---
 

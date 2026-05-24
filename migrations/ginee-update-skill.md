@@ -12,7 +12,7 @@ The orchestrator (`team-lead`) gains a uniform self-update surface — no more "
 3. Resolves the target ref (latest release / explicit tag / branch / SHA).
 4. Surfaces an explicit plan + waits for user approval.
 5. Drives the existing `install.{ps1,sh} --update-only` flow.
-6. Reports VERSION delta + CHANGELOG range + any new `core/MIGRATIONS/` files (with their `Action required` excerpts).
+6. Reports VERSION delta + CHANGELOG range + any new `migrations/` files (with their `Action required` excerpts).
 
 The underlying installer behaviour is unchanged — `--update-only` already preserves `local/` and refreshes only the three upstream-owned trees (`core/` / `adapters/` / `extras/`). This migration only adds the orchestrator-driven invocation surface.
 
@@ -30,7 +30,7 @@ Affected files:
 Pre-fix, the only way to update was to recall the installer one-liner (`iwr ... | iex` with `GINEE_UPDATE_ONLY=1`, or `./install.{ps1,sh} --update-only`) and run it manually. Adopters routinely:
 
 - Ran with the wrong `--ref` (defaulted to `main` instead of `latest`).
-- Missed `core/MIGRATIONS/*.md` entries shipped since their last update.
+- Missed `migrations/*.md` entries shipped since their last update.
 - Re-ran the adapter install step out of sync with the framework refresh.
 
 A skill-mediated flow makes the path discoverable (any AgentSkills-compatible client picks it up by description match), enforces the explicit-approval gate, and produces a structured post-update report so adopter action items aren't missed.

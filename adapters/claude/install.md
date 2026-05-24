@@ -55,7 +55,7 @@
 5. **Verify.** Ask Claude for the status of each cardinal. Each should:
    - Report its charter (read from `.agents/ginee/core/roles/<role>.md`).
    - Confirm the project's bindings.
-   - If a `.agents/ginee/local/roles/<role>.md` extension is present (D37-local-role-extensions), surface its project-specific craft notes as part of the status report.
+   - If a `.agents/ginee/local/roles/<role>.md` extension is present, surface its project-specific craft notes as part of the status report.
 
 ## How to invoke
 
@@ -86,9 +86,9 @@ Cheat sheet for the 12 framework workflows (AgentSkills auto-activates from thes
 
 The framework's own `core/process.md` and role kernels use `@<role>` notation as vendor-neutral shorthand — Claude Code adopters read that as "the orchestrator routes here," not as a literal command.
 
-## Specialist-tool affinity (D38)
+## Specialist-tool affinity
 
-Host capability tools the Claude Code adapter exposes, with the role / task surfaces they help. Team-lead consults this table during dispatch composition per D38-host-capability-tools and surfaces matching tools as a one-line hint in the dispatch prompt (prefer if available; never required).
+Host capability tools the Claude Code adapter exposes, with the role / task surfaces they help. Team-lead consults this table during dispatch composition (see `core/process/dispatch.md § Host capability-tool affinity injection`) and surfaces matching tools as a one-line hint in the dispatch prompt (prefer if available; never required).
 
 | Tool | Class | Role / task affinity | Invocation hint |
 |---|---|---|---|
@@ -101,11 +101,10 @@ Host capability tools the Claude Code adapter exposes, with the role / task surf
 
 **Adding more tools** — append rows to this table as the Claude Code ecosystem grows. The affinity column drives matching (`grep`-style regex against the role + task description in the dispatch contract); update the migration spec only if the matching semantics change.
 
-Full spec: `core/MIGRATIONS/D38-host-capability-tools.md`.
 
-## Subagent dispatch limitation (D32)
+## Subagent dispatch limitation
 
-Claude Code's `Agent` / `Task` tool is **top-level only** — subagents do not inherit it, so the D28 hand-back (skill-runner → `@team-lead` → specialists) silently degrades on Claude (team-lead-as-subagent has no `Agent` tool). D32 narrows D28 on this adapter: split **decision authority** (team-lead, re-invoked each cycle) from **mechanical dispatch execution** (skill-runner, verbatim).
+Claude Code's `Agent` / `Task` tool is **top-level only** — subagents do not inherit it, so the standard skill-runner → `@team-lead` → specialists hand-back silently degrades on Claude (team-lead-as-subagent has no `Agent` tool). On this adapter the skill-runner boundary is narrowed: split **decision authority** (team-lead, re-invoked each cycle) from **mechanical dispatch execution** (skill-runner, verbatim).
 
 | Step | Surface |
 |---|---|
@@ -115,11 +114,9 @@ Claude Code's `Agent` / `Task` tool is **top-level only** — subagents do not i
 
 **Loop.** `skill-runner batch → @team-lead (plan) → user approve → skill-runner (verbatim dispatch) → collect returns → @team-lead (synthesis + next decision) → loop` until phase complete.
 
-**Self-check before any main-thread reasoning during a skill run** — mechanical op OR verbatim execution of an approved contract? → proceed. Anything else (synthesize · pick next specialist · draft reply · answer routing question) → re-invoke `@team-lead`. No "fast" / "trivial" exception; D28 origination ban holds even when team-lead is a subagent.
+**Self-check before any main-thread reasoning during a skill run** — mechanical op OR verbatim execution of an approved contract? → proceed. Anything else (synthesize · pick next specialist · draft reply · answer routing question) → re-invoke `@team-lead`. No "fast" / "trivial" exception; the origination ban (skill-runner never originates orchestration) holds even when team-lead is a subagent.
 
-Full spec + worked example + decision-authority table: `core/MIGRATIONS/D32-claude-adapter-subagent-dispatch.md`.
-
-## Model tier (D31)
+## Model tier
 
 Per-role model selection routes reasoning-heavy roles to capable models and execution-heavy roles to cheaper ones.
 
@@ -147,7 +144,7 @@ model-tier:
 
 Re-run the installer (`@team-lead update` or the bootstrap one-liner with `GINEE_UPDATE_ONLY=1`) to apply overrides. The Claude branch reads the config and rewrites each pointer's `model:` line accordingly.
 
-**Per-task prefix.** Prefix any dispatch with `model:<tier>` to override for one call (combinable with `auto:` / `branch:` / `wt:` / `commit:` per D17). Claude routes via the `Task` tool's `model` field for that dispatch.
+**Per-task prefix.** Prefix any dispatch with `model:<tier>` to override for one call (combinable with `auto:` / `branch:` / `wt:` / `commit:`). Claude routes via the `Task` tool's `model` field for that dispatch.
 
 ```
 model:reasoning Add the new ASR utility-tree leaves for the latency NFR.
@@ -156,11 +153,10 @@ auto: model:fast Re-label stale issues with ginee:blocked.
 
 Resolution order — stop at first match: (1) per-task prefix, (2) Phase-3 user answer, (3) `local/framework.config.yaml § model-tier.per-role.<role>`, (4) `core/roles/<role>.md` frontmatter `default-tier:`.
 
-Spec: `core/MIGRATIONS/D31-model-tier.md`.
 
-## Phase-file loading (D35)
+## Phase-file loading
 
-Per D35-process-md-load-topology, the 8 lifecycle phases + orchestration content live under `core/process/` and load per-cardinal via `phase-participation:` frontmatter.
+The 8 lifecycle phases + orchestration content live under `core/process/` and load per-cardinal via `phase-participation:` frontmatter declared in each role kernel.
 
 | Step | Behaviour |
 |---|---|
@@ -169,11 +165,11 @@ Per D35-process-md-load-topology, the 8 lifecycle phases + orchestration content
 | `team-lead` only (and skill-runner main thread on `ginee-*` skill entry) | Additionally surface `.agents/ginee/core/process/dispatch.md` |
 | Cardinals with empty list (`ai-engineer`) | Load no phase files; common `.agents/ginee/core/process.md` only |
 
-Non-participating phase files are not surfaced to that role. The shared pointer subagents under `.agents/ginee/adapters/_shared/agents/*.md` render this contract; no per-adapter loader change is required on Claude (the kernel body itself cites the load paths). Full spec: `core/MIGRATIONS/D35-process-md-load-topology.md`.
+Non-participating phase files are not surfaced to that role. The shared pointer subagents under `.agents/ginee/adapters/_shared/agents/*.md` render this contract; no per-adapter loader change is required on Claude (the kernel body itself cites the load paths).
 
-## Warm specialist reuse (D36)
+## Warm specialist reuse
 
-Per D36-warm-specialist-reuse, the same specialist is resumed (not fresh-spawned) on 2nd+ dispatch within one Phase 1–8 task AND within that role's `phase-participation:` window. Saves 15–50 k tokens of duplicated reload per task on a typical 3–5-dispatch workload.
+The same specialist is resumed (not fresh-spawned) on 2nd+ dispatch within one Phase 1–8 task AND within that role's `phase-participation:` window. Saves 15–50 k tokens of duplicated reload per task on a typical 3–5-dispatch workload.
 
 | Step | Action on Claude |
 |---|---|
@@ -184,13 +180,11 @@ Per D36-warm-specialist-reuse, the same specialist is resumed (not fresh-spawned
 
 Adopter opt-out: `local/framework.config.yaml § warm-reuse.enabled: false`. Default on Claude is `true` (resume capability present).
 
-Forced-fresh triggers + drift-advisory shape + full lifecycle: `core/MIGRATIONS/D36-warm-specialist-reuse.md`.
-
 ## Updates
 
-**Recommended — `/ginee-update`** (or "update ginee" / "upgrade the framework"). The skill fetches the installer from upstream at the target ref and drives `--update-only` for you — no local installer needed (D27). Performs all steps below automatically, including the pointer-block sync in step 5.
+**Recommended — `/ginee-update`** (or "update ginee" / "upgrade the framework"). The skill fetches the installer from upstream at the target ref and drives `--update-only` for you — no local installer needed. Performs all steps below automatically, including the pointer-block sync in step 5.
 
-**Manual fallback — bootstrap one-liner** (the installer is intentionally NOT inside `.agents/ginee/` per D27):
+**Manual fallback — bootstrap one-liner** (the installer is intentionally NOT inside `.agents/ginee/`):
 
 ```powershell
 $env:GINEE_UPDATE_ONLY='1'; $env:GINEE_ADAPTER='claude'; iwr -useb https://raw.githubusercontent.com/kostiantyn-matsebora/ginee/main/install.ps1 | iex
@@ -205,13 +199,11 @@ GINEE_UPDATE_ONLY=1 GINEE_ADAPTER=claude bash -c "$(curl -fsSL https://raw.githu
 1. Re-fetch `.agents/ginee/core/` + `.agents/ginee/adapters/` + `.agents/ginee/extras/` (your `local/` survives).
 2. Re-copy `.agents/ginee/adapters/_shared/agents/*.md` to `.claude/agents/` (pointers may have been refined).
 3. Re-copy `.agents/ginee/core/skills/ginee-*` to `.claude/skills/` (skill bodies / descriptions may have been refined). Skip if you used symlinks in step 2 above.
-4. Read `.agents/ginee/core/MIGRATIONS/` for breaking-change notes.
-5. **Re-sync the pointer block in `CLAUDE.md`** — pointer blocks evolve across releases. Find the existing block (between `## Engineering team framework` and the next `---`) and replace its body with the current `.agents/ginee/adapters/claude/CLAUDE-pointer.md` content. The installer's `-UpdateOnly` path does this automatically; manual one-liner equivalents in `core/MIGRATIONS/engineering-team-renamed-ginee.md § Action required #2`.
-6. **For pre-D11 (pre-2026-05-18) upgrades** — run the rename migration script once:
+4. **Re-sync the pointer block in `CLAUDE.md`** — pointer blocks evolve across releases. Find the existing block (between `## Engineering team framework` and the next `---`) and replace its body with the current `.agents/ginee/adapters/claude/CLAUDE-pointer.md` content. The installer's `-UpdateOnly` path does this automatically.
+5. **For previously (pre-2026-05-18) upgrades** — run the rename migration script once:
    - `.\.agents\ginee\core\scripts\migrate-engineering-team-to-ginee.ps1` (or `.sh`).
    - Rewrites legacy `engineering-team` references under `local/*`.
    - Idempotent; safe to run on already-migrated installs.
-   - Full notes: `.agents/ginee/core/MIGRATIONS/engineering-team-renamed-ginee.md`.
 
 ## Uninstall
 

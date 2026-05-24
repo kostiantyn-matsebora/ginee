@@ -40,7 +40,7 @@ The slug is **zero-cost for the agent** (already in the filename) and **high-val
 
 Examples:
 
-- `D17-delivery-modes` — `core/MIGRATIONS/D17-delivery-modes.md`
+- `D17-delivery-modes` — `migrations/delivery-modes.md`
 - `ADR-0006-component-co-location` — `<adr-directory>/ADR-0006-component-co-location.md`
 - `CR-0010-component-ci-pipeline` — `<cr-directory>/CR-0010-component-ci-pipeline.md`
 
@@ -50,11 +50,11 @@ Cardinal MUST resolve the short name **before** emitting the output — never em
 
 | Artefact class | Short-name source | Lookup mechanism |
 |---|---|---|
-| File-backed (D / ADR / CR / migration) | Filename slug after the numeric prefix | `ls core/MIGRATIONS/D<NN>-*.md` / `ls <adr-directory>/ADR-<NNNN>-*.md` / `ls <cr-directory>/CR-<NNNN>-*.md` |
+| File-backed (D / ADR / CR / migration) | Filename slug after the numeric prefix | `ls migrations/D<NN>-*.md` / `ls <adr-directory>/ADR-<NNNN>-*.md` / `ls <cr-directory>/CR-<NNNN>-*.md` |
 | Inline-table (FR / NFR / ASR in `local/requirements.md` + `local/asr-utility-tree.md`) | First noun phrase of the row's description, ≤ 5 words, kebab-cased | Read register row; lift descriptor; slugify |
 | Index-class entry | `name:` field per class in `local/index/manifest.yaml § indexed[]` | Read manifest entry; use `name:` verbatim |
 
-**On resolution failure** — surface inline (`D28-?? (slug lookup failed: core/MIGRATIONS/D28-*.md not found)`); orchestrator carries forward to next dispatch; never invent a slug; never silently degrade to bare ID.
+**On resolution failure** — surface inline (`D28-?? (slug lookup failed: migrations/D28-*.md not found)`); orchestrator carries forward to next dispatch; never invent a slug; never silently degrade to bare ID.
 
 ## Self-lint
 
@@ -80,7 +80,7 @@ Same machinery as D22 / D26 / D29 — LLM self-review at draft time. No external
 | `core/doc-authoring-examples.md § 12` | NEW bad/good pair — Phase-7 sign-off with bare IDs → slug-glued. |
 | `CLAUDE.md` · `PLAN.md` | D34 row in locked-decisions table. |
 | `docs/CHANGELOG.md` | D34 entry under Unreleased. |
-| `core/MIGRATIONS/D34-identifier-short-name-pairing.md` | This file (NEW). |
+| `migrations/identifier-short-name-pairing.md` | This file (NEW). |
 
 ## Action required — none (adopter-side)
 

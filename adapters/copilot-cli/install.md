@@ -85,7 +85,7 @@ Cheat sheet:
 
 Subagent dispatch (`solution-architect`, `backend-engineer`, etc.) — natural-language via Copilot's chat. `@mention` syntax works in Copilot CLI's chat.
 
-## Model tier (D31)
+## Model tier
 
 Copilot CLI does **not** expose programmatic per-role model selection today — model choice lives in the client's own UI. The `model:` field in `.github/agents/<role>.agent.md` frontmatter is ignored by Copilot CLI; ginee writes it for parity with other adapters but the runtime ignores it.
 
@@ -95,11 +95,11 @@ Copilot CLI does **not** expose programmatic per-role model selection today — 
 model:reasoning Add the new ASR utility-tree leaves for the latency NFR.
 ```
 
-When Copilot CLI gains a per-role / per-task model API, this adapter's install step will wire it. Spec: `core/MIGRATIONS/D31-model-tier.md`.
+When Copilot CLI gains a per-role / per-task model API, this adapter's install step will wire it.
 
-## Phase-file loading (D35)
+## Phase-file loading
 
-Per D35-process-md-load-topology, the 8 lifecycle phases + orchestration content live under `core/process/` and load per-cardinal via `phase-participation:` frontmatter.
+The 8 lifecycle phases + orchestration content live under `core/process/` and load per-cardinal via `phase-participation:` frontmatter.
 
 | Step | Behaviour |
 |---|---|
@@ -108,13 +108,13 @@ Per D35-process-md-load-topology, the 8 lifecycle phases + orchestration content
 | `team-lead` only (and skill-runner main thread on `ginee-*` skill entry) | Additionally cite `.agents/ginee/core/process/dispatch.md` |
 | Cardinals with empty list (`ai-engineer`) | Load no phase files; common `.agents/ginee/core/process.md` only |
 
-Non-participating phase files are not surfaced to that role. Full spec: `core/MIGRATIONS/D35-process-md-load-topology.md`.
+Non-participating phase files are not surfaced to that role.
 
 ## Updates
 
-**Recommended — `/ginee-update`** (or "update ginee" / "upgrade the framework"). The skill fetches the installer from upstream at the target ref and drives `--update-only` for you — no local installer needed (D27). Automates steps 1–3.
+**Recommended — `/ginee-update`** (or "update ginee" / "upgrade the framework"). The skill fetches the installer from upstream at the target ref and drives `--update-only` for you — no local installer needed. Automates steps 1–3.
 
-**Manual fallback — bootstrap one-liner** (the installer is intentionally NOT inside `.agents/ginee/` per D27):
+**Manual fallback — bootstrap one-liner** (the installer is intentionally NOT inside `.agents/ginee/`):
 
 ```powershell
 $env:GINEE_UPDATE_ONLY='1'; $env:GINEE_ADAPTER='copilot-cli'; iwr -useb https://raw.githubusercontent.com/kostiantyn-matsebora/ginee/main/install.ps1 | iex
@@ -129,11 +129,9 @@ GINEE_UPDATE_ONLY=1 GINEE_ADAPTER=copilot-cli bash -c "$(curl -fsSL https://raw.
 1. Re-fetch `.agents/ginee/core/` + `.agents/ginee/adapters/` + `.agents/ginee/extras/` (your `local/` survives).
 2. Re-run step 1 above — pointers may have been refined.
 3. Re-copy `.agents/ginee/core/skills/ginee-*` to `.github/skills/`. Skip if you used symlinks.
-4. Read `.agents/ginee/core/MIGRATIONS/` for breaking-change notes.
-5. **For pre-D11 (pre-2026-05-18) upgrades** — run the rename migration script once:
+4. **For previously (pre-2026-05-18) upgrades** — run the rename migration script once:
    - `.\.agents\ginee\core\scripts\migrate-engineering-team-to-ginee.ps1` (or `.sh`).
    - Rewrites legacy `engineering-team` references under `local/*`. Idempotent.
-   - Full notes: `.agents/ginee/core/MIGRATIONS/engineering-team-renamed-ginee.md`.
 
 ## Uninstall
 

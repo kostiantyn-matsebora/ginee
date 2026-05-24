@@ -29,7 +29,7 @@ Use the [PR template](https://github.com/kostiantyn-matsebora/ginee/blob/main/.g
 - **`Fixes #N` / `Closes #N`** for issue-sourced PRs — GitHub auto-closes on merge into the default branch.
 - **Acceptance criteria mirrored** from the issue, ticked or explicitly deferred with rationale.
 - **Out-of-scope alternatives** documented for any design call where you took one path and rejected another. Reviewers can redirect.
-- **Migration note** under `core/MIGRATIONS/` for any change adopters must apply manually (rename, re-extract, edit `local/bindings.md`, etc.).
+- **Migration note** under `migrations/` for any change adopters must apply manually (rename, re-extract, edit `local/bindings.md`, etc.).
 - **Lossless rule.** Doc edits preserve every existing rule / invariant / record. Verify by grep after the change.
 - **Context-economy mandate.** Framework files are always-loaded LLM context. Structure beats prose; every byte earns its keep. See [`CLAUDE.md § Framework authoring`](https://github.com/kostiantyn-matsebora/ginee/blob/main/CLAUDE.md#framework-authoring--context-economy).
 
@@ -59,7 +59,7 @@ Process:
 
 1. File a **feature-request** issue with the proposal. Include the design space, alternatives considered, and recommended call.
 2. PM picks it up, runs Phase 1–8 if scope warrants, opens a PR adding the D-record.
-3. Migration note under `core/MIGRATIONS/D<N>-<topic>.md` if existing adopters need to migrate.
+3. Migration note under `migrations/D<N>-<topic>.md` if existing adopters need to migrate.
 
 ## Improving an adapter
 

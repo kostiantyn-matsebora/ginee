@@ -58,7 +58,7 @@ The slip recurred across long sessions and burned user attention twice before co
 | `core/github-integration.md § Inbound — pick up an issue` | Re-narrated with mechanical/team-lead prefixes per step |
 | `PLAN.md` · `CLAUDE.md` | D28 row |
 | `docs/CONCEPTS.md` · `docs/CHANGELOG.md` | D28 entries |
-| `core/MIGRATIONS/D28-skill-runner-boundary.md` | This file (NEW) |
+| `migrations/skill-runner-boundary.md` | This file (NEW) |
 
 ## Action required — none (adopter-side)
 

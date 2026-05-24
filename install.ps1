@@ -259,7 +259,7 @@ if ($UpdateOnly -and (Test-Path $localBackup)) {
 # Reads local/framework.config.yaml § model-tier (if present) and rewrites the
 # `model:` line in each pointer file under the agents-dir. Absent config →
 # no-op; pointer files keep the framework-default model: shipped in _shared/.
-# Spec: core/MIGRATIONS/D31-model-tier.md.
+# Spec: migrations/model-tier.md.
 
 function Read-ModelTierConfig([string]$configPath) {
   if (-not (Test-Path $configPath)) { return $null }
@@ -350,21 +350,27 @@ $installNote = Join-Path $adapterDir 'install.md'
 # --- Prune framework-dev cruft from the adopter's framework dir -------------
 # Needed for backward compat with releases packaged before release.yml was updated
 # to pre-prune. On future releases the zip ships clean and these rms become no-ops.
-# Adopters need: core/ (incl. MIGRATIONS), adapters/_shared + chosen adapter,
-# extras/, local/ skeleton, LICENSE. Everything else is framework-dev only.
+# Adopters need: core/, adapters/_shared + chosen adapter, extras/, local/
+# skeleton, LICENSE. Everything else is framework-dev only.
+# Migrations are upstream-only per D42 — fetched on demand by /ginee-update,
+# never shipped. Pruning migrations/ (new home) and core/MIGRATIONS (pre-D42
+# legacy home) both run on every install; one is a no-op on each side of the
+# cutover.
 Step "Pruning framework-dev cruft"
 $pruneRoots = @(
-  '.github',         # release CI + issue templates for the framework's own repo
-  '.claude',         # framework's own working state
+  '.github',           # release CI + issue templates for the framework's own repo
+  '.claude',           # framework's own working state
   '.gitignore',
   '.dockerignore',
-  'install.ps1',     # installer; not invoked from inside .agents/
+  'install.ps1',       # installer; not invoked from inside .agents/
   'install.sh',
-  'PLAN.md',         # framework design doc
-  'CLAUDE.md',       # framework's own project instructions (would shadow adopter's notion)
-  'README.md',       # install/marketing; references framework's GitHub
-  'SECURITY.md',     # how to report security issues to the framework maintainers
-  'docs'             # Jekyll site source (lives at kostiantyn-matsebora.github.io/ginee)
+  'PLAN.md',           # framework design doc
+  'CLAUDE.md',         # framework's own project instructions (would shadow adopter's notion)
+  'README.md',         # install/marketing; references framework's GitHub
+  'SECURITY.md',       # how to report security issues to the framework maintainers
+  'docs',              # Jekyll site source (lives at kostiantyn-matsebora.github.io/ginee)
+  'migrations',        # D42 — migrations are upstream-only; fetched on demand by /ginee-update
+  'core/MIGRATIONS'    # D42 — legacy path on pre-D42 adopter installs; no-op once cleared
 )
 foreach ($p in $pruneRoots) {
   $path = Join-Path $frameworkDir $p
@@ -491,7 +497,7 @@ if ($staleLocalHits) {
   Write-Host "    $migrateScript -DryRun   # preview"
   Write-Host "    $migrateScript           # apply"
   Write-Host ""
-  Write-Host "  Details: $(Join-Path $frameworkDir 'core\MIGRATIONS\engineering-team-renamed-ginee.md')" -ForegroundColor Yellow
+  Write-Host "  Details: https://github.com/kostiantyn-matsebora/ginee/blob/main/migrations/engineering-team-renamed-ginee.md" -ForegroundColor Yellow
   Write-Host ""
 }
 

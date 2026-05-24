@@ -87,7 +87,7 @@ None — this is config, not a doc-shape rule. No external linter, no self-lint 
 | `adapters/{copilot-cli,agents-md,generic}/install.md` | One-line no-op warning + per-task prefix hint |
 | `docs/CONCEPTS.md` · `docs/CHEATSHEET.md` · `docs/CHANGELOG.md` | D31 entries |
 | `CLAUDE.md` · `PLAN.md` | D31 row |
-| `core/MIGRATIONS/D31-model-tier.md` | This file (**NEW**) |
+| `migrations/model-tier.md` | This file (**NEW**) |
 
 ## Backward compatibility
 

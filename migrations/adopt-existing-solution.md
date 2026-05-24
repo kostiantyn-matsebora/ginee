@@ -58,7 +58,7 @@ LLM self-review against the schema **before surfacing**. No external linter.
 | `core/doc-authoring-examples.md § 11` | New bad / good example pair — option-list shape |
 | `docs/CONCEPTS.md` · `docs/CHEATSHEET.md` · `docs/CHANGELOG.md` | D30 entries |
 | `CLAUDE.md` · `PLAN.md` | D30 row |
-| `core/MIGRATIONS/D30-adopt-existing-solution.md` | This file (**NEW**) |
+| `migrations/adopt-existing-solution.md` | This file (**NEW**) |
 
 ## Backward compatibility
 
