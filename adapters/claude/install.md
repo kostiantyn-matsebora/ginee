@@ -86,6 +86,23 @@ Cheat sheet for the 12 framework workflows (AgentSkills auto-activates from thes
 
 The framework's own `core/process.md` and role kernels use `@<role>` notation as vendor-neutral shorthand — Claude Code adopters read that as "the orchestrator routes here," not as a literal command.
 
+## Specialist-tool affinity (D38)
+
+Host capability tools the Claude Code adapter exposes, with the role / task surfaces they help. Team-lead consults this table during dispatch composition per D38-host-capability-tools and surfaces matching tools as a one-line hint in the dispatch prompt (prefer if available; never required).
+
+| Tool | Class | Role / task affinity | Invocation hint |
+|---|---|---|---|
+| `frontend-design` | Skill | `frontend-engineer` authoring or modifying an HTML mockup | "use the `frontend-design` skill to author the mockup variant" |
+| `code-review` | Skill | `solution-architect` Phase 7 governance · engineer self-check pre-PR | "run `code-review` on the diff before sign-off" |
+| `verify` | Skill | `qa-engineer` Phase 5 manual smoke · engineer Phase 6 fix verification | "use `verify` to confirm the change works end-to-end" |
+| `security-review` | Skill | NFR-security ASR coverage · `solution-architect` review on security-touching PRs | "run `security-review` against the changed surface" |
+
+**Adopter opt-out** — `local/framework.config.yaml § capability-tools.disabled: [<tool-id>, …]` scopes out a specific tool while keeping the rest. `capability-tools.enabled: false` disables affinity injection repo-wide. Defaults: `enabled: true`, `disabled: []`.
+
+**Adding more tools** — append rows to this table as the Claude Code ecosystem grows. The affinity column drives matching (`grep`-style regex against the role + task description in the dispatch contract); update the migration spec only if the matching semantics change.
+
+Full spec: `core/MIGRATIONS/D38-host-capability-tools.md`.
+
 ## Subagent dispatch limitation (D32)
 
 Claude Code's `Agent` / `Task` tool is **top-level only** — subagents do not inherit it, so the D28 hand-back (skill-runner → `@team-lead` → specialists) silently degrades on Claude (team-lead-as-subagent has no `Agent` tool). D32 narrows D28 on this adapter: split **decision authority** (team-lead, re-invoked each cycle) from **mechanical dispatch execution** (skill-runner, verbatim).
