@@ -10,6 +10,8 @@ All notable changes to ginee. The format follows [Keep a Changelog](https://keep
 
 ## Unreleased
 
+## 0.15.0 — 2026-05-24
+
 ### Added
 
 - **D36 — Warm specialist reuse across dispatches within a task lifecycle** ([#90](https://github.com/kostiantyn-matsebora/ginee/issues/90)). Pre-D36 every `@<role>` dispatch fresh-spawned a subagent that reloaded its kernel, role-details, `core/process.md`, its `phase-participation:` files, and `local/index/*` — even when the same role had been dispatched earlier in the same task. D36 amortises the reload cost: on 2nd+ dispatch within one Phase 1–8 task AND within the role's D35-process-md-load-topology participation window, team-lead resumes the existing specialist via the adapter's native mechanism (Claude `SendMessage` to a `run_in_background: true` agent) instead of fresh-spawning. **Token savings:** 15–50 k tokens of duplicated reload eliminated per task on typical 3–5-dispatch workloads. Forced-fresh on stale state · worktree mismatch · `local/*` drift · explicit `fresh:` prefix · resume-failure. Adapters without resume capability fall back to fresh-spawn (no behavioural change). Adopter opt-out via `local/framework.config.yaml § warm-reuse.enabled: false`. Migration: `core/MIGRATIONS/D36-warm-specialist-reuse.md`.
