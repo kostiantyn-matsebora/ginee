@@ -191,7 +191,7 @@ function Format-PhaseExpr {
   return '`[' + ($phaseArr -join ', ') + ']`'
 }
 
-function Get-RoleCeilings {
+function Get-RoleCeiling {
   param([string]$TemplatesDir)
   $path = Join-Path $TemplatesDir 'role-context-ceilings.json'
   if (-not (Test-Path -LiteralPath $path)) { throw "Ceilings file not found: $path" }
@@ -208,7 +208,7 @@ function Format-DocFragment {
   $snapshotTmpl = Read-TemplateFile -Path (Join-Path $TemplatesDir 'context-costs-snapshot.md.tmpl')
   $rowTmpl = Read-TemplateFile -Path (Join-Path $TemplatesDir 'context-costs-row.md.tmpl')
   $ceilRowTmpl = Read-TemplateFile -Path (Join-Path $TemplatesDir 'context-costs-ceilings-row.md.tmpl')
-  $ceilings = Get-RoleCeilings -TemplatesDir $TemplatesDir
+  $ceilings = Get-RoleCeiling -TemplatesDir $TemplatesDir
 
   $sorted = $Results | Sort-Object -Property TotalBytes
 
@@ -248,7 +248,7 @@ function Format-DocFragment {
   return ($Script:DocBeginMarker + "`n`n" + $body.TrimEnd("`n") + "`n`n" + $Script:DocEndMarker)
 }
 
-function Update-Doc {
+function Get-DocWithFragment {
   param([string]$DocPath, [string]$Fragment)
   if (-not (Test-Path -LiteralPath $DocPath)) { throw "Doc not found: $DocPath" }
   $orig = Get-Content -LiteralPath $DocPath -Raw -Encoding UTF8
@@ -258,8 +258,10 @@ function Update-Doc {
     throw "Sentinel markers not found in $DocPath. Expected '$($Script:DocBeginMarker)' ... '$($Script:DocEndMarker)'."
   }
   # Use callback-form Replace to avoid regex-substitution-token interpretation of
-  # '$' / backreferences in $Fragment (markdown can contain '$').
-  $new = $regex.Replace($orig, { param($m) $Fragment })
+  # '$' / backreferences in $Fragment (markdown can contain '$'). The $m callback
+  # parameter is required by the Regex.Replace API but intentionally unused.
+  $captured = $Fragment
+  $new = $regex.Replace($orig, { param($m) $null = $m; $captured })
   return @{ Original = $orig; Updated = $new; Changed = ($orig -ne $new) }
 }
 
@@ -300,7 +302,7 @@ $results = @($roles | ForEach-Object { Measure-Role -RepoRoot $root -RoleName $_
 
 if ($UpdateDoc) {
   $fragment = Format-DocFragment -Results $results -Version $version -TemplatesDir $templatesDir
-  $result = Update-Doc -DocPath $docPath -Fragment $fragment
+  $result = Get-DocWithFragment -DocPath $docPath -Fragment $fragment
   if ($result.Changed) {
     Set-Content -LiteralPath $docPath -Value $result.Updated -Encoding UTF8 -NoNewline
     Write-Output "Updated: $docPath"
