@@ -3,6 +3,7 @@ name: backend-engineer
 description: Use for any work on the project's server-side surfaces — service APIs, persistence layer + migrations, real-time event hubs, authn/authz middleware, and the ingest / read wire contracts. Invoke for implementing endpoints, deriving server-side computed views, schema migrations, unit tests, and any change that affects the wire (REST / RPC / event) contract. The project's specific server stack (language, framework, ORM, database, realtime mechanism) is recorded in `local/bindings.md` and `local/project-profile.md`.
 aliases: [service-engineer, server-engineer]
 default-tier: standard  # D31 — implementation + tests; D29 bounds return reasoning
+phase-participation: [2, 4, 5, 6]  # D35 — contract slice (2) · implementation (4) · test/fix (5, 6)
 ---
 
 # Backend Engineer — Server Surfaces

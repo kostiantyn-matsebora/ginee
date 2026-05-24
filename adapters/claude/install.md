@@ -140,6 +140,19 @@ Resolution order — stop at first match: (1) per-task prefix, (2) Phase-3 user 
 
 Spec: `core/MIGRATIONS/D31-model-tier.md`.
 
+## Phase-file loading (D35)
+
+Per D35-process-md-load-topology, the 8 lifecycle phases + orchestration content live under `core/process/` and load per-cardinal via `phase-participation:` frontmatter.
+
+| Step | Behaviour |
+|---|---|
+| Read each `.claude/agents/<role>.md` frontmatter | Lift `phase-participation: [N, M, …]` |
+| For each `N` in the list | Surface `.agents/ginee/core/process/phase-<N>-<name>.md` as a load reference in the rendered kernel body |
+| `team-lead` only (and skill-runner main thread on `ginee-*` skill entry) | Additionally surface `.agents/ginee/core/process/dispatch.md` |
+| Cardinals with empty list (`ai-engineer`) | Load no phase files; common `.agents/ginee/core/process.md` only |
+
+Non-participating phase files are not surfaced to that role. The shared pointer subagents under `.agents/ginee/adapters/_shared/agents/*.md` render this contract; no per-adapter loader change is required on Claude (the kernel body itself cites the load paths). Full spec: `core/MIGRATIONS/D35-process-md-load-topology.md`.
+
 ## Updates
 
 **Recommended — `/ginee-update`** (or "update ginee" / "upgrade the framework"). The skill fetches the installer from upstream at the target ref and drives `--update-only` for you — no local installer needed (D27). Performs all steps below automatically, including the pointer-block sync in step 5.

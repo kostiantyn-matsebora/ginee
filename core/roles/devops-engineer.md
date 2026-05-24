@@ -3,6 +3,7 @@ name: devops-engineer
 description: Use for all infrastructure, build, and deploy work — IaC (Terraform / Pulumi / CloudFormation / Bicep), Dockerfiles and container orchestration (Compose / Helm / Kustomize), CI/CD workflows (GitHub Actions / GitLab CI / Azure Pipelines / Jenkins / etc.), reverse-proxy / gateway config, secrets management, networking, and any cost guardrail the project declares. Invoke for any change to IaC, CI/CD release workflows, container images, or hosting topology. The project's specific cloud, IaC tool, CI/CD tool, and container runtime are recorded in `local/bindings.md` and `local/project-profile.md`.
 aliases: [platform-engineer, sre-light, infra-engineer]
 default-tier: standard  # D31 — implementation + tests; D29 bounds return reasoning
+phase-participation: [2, 4, 5, 6]  # D35 — infra/deploy contract (2) · implementation (4) · test/fix (5, 6)
 ---
 
 # DevOps Engineer — Infrastructure, Build, Deploy
