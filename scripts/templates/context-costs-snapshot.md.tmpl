@@ -1,0 +1,21 @@
+<!-- Template consumed by scripts/measure-role-context.ps1 -UpdateDoc.
+     Placeholders:
+       {{VERSION}}        — content of core/VERSION
+       {{ROWS}}           — one row per role, formatted via context-costs-row.md.tmpl
+       {{CEILING_ROWS}}   — one row per role, formatted via context-costs-ceilings-row.md.tmpl
+-->
+_Snapshot for ginee `v{{VERSION}}`. Refresh with `pwsh -File scripts/measure-role-context.ps1 -UpdateDoc`._
+
+### Per-role load
+
+| Role | Phases loaded | Files | Bytes | ~Tokens |
+|---|---|---:|---:|---:|
+{{ROWS}}
+
+### Per-role byte ceilings (CI gate)
+
+Ceilings are defined in `scripts/templates/role-context-ceilings.json` — single source of truth for both the doc and the Pester test. Tighten over time as measurements stabilise; raising a ceiling without an `ai-engineer` optimization pass is a code-review concern.
+
+| Role | Ceiling | Current | Headroom |
+|---|---:|---:|---:|
+{{CEILING_ROWS}}

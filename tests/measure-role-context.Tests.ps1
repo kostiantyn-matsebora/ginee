@@ -89,18 +89,24 @@ Describe 'measure-role-context.ps1 — D35 phase-participation contract' {
   }
 }
 
+Describe 'measure-role-context.ps1 — adopter doc currency' {
+  It 'docs/reference/CONTEXT_COSTS.md is up to date with current measurements' {
+    $checkOutput = & pwsh -NoProfile -File $script:scriptPath -CheckDoc -RepoRoot $script:repoRoot 2>&1
+    $exit = $LASTEXITCODE
+    $message = "Doc is stale; regenerate with: pwsh -File scripts/measure-role-context.ps1 -UpdateDoc`n`n$($checkOutput -join "`n")"
+    $exit | Should -Be 0 -Because $message
+  }
+}
+
 Describe 'measure-role-context.ps1 — load-cost invariants' {
   BeforeAll {
-    # Per-role byte ceilings — catch egregious regressions. Tuned at ~1.5x
-    # current measurement, leaving headroom for small additions. Tighten over time.
-    $script:ceilings = @{
-      'ai-engineer'        = 40000  # ~25.6 KB observed
-      'qa-engineer'        = 55000  # ~35.3 KB observed
-      'frontend-engineer'  = 55000  # ~35.5 KB observed
-      'backend-engineer'   = 55000  # ~35.6 KB observed
-      'devops-engineer'    = 65000  # ~41.2 KB observed
-      'solution-architect' = 65000  # ~41.7 KB observed
-      'team-lead'          = 90000  # ~57.5 KB observed
+    # Single source of truth for ceilings — consumed by both the doc generator
+    # (scripts/measure-role-context.ps1 -UpdateDoc) and this test.
+    $ceilingsPath = (Resolve-Path "$PSScriptRoot/../scripts/templates/role-context-ceilings.json").Path
+    $ceilingsJson = Get-Content -LiteralPath $ceilingsPath -Raw -Encoding UTF8 | ConvertFrom-Json
+    $script:ceilings = @{}
+    foreach ($prop in $ceilingsJson.ceilings.PSObject.Properties) {
+      $script:ceilings[$prop.Name] = [int]$prop.Value
     }
   }
 
