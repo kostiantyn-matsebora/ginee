@@ -169,7 +169,7 @@ SA has **three activities** across the lifecycle:
 
 **Greenfield vs delta** — discovery detects "no architecture doc" → `greenfield: true` in `local/project-profile.md` → SA enters greenfield design on first non-trivial task. Delta mode produces ADR + ASR amendments; never rewrites the architecture doc wholesale.
 
-Migration on upgrade: `@team-lead rediscover` runs Step 8c re-attribution sweep per [`core/MIGRATIONS/D25-classical-architect.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/core/MIGRATIONS/D25-classical-architect.md).
+Migration on upgrade: `@team-lead rediscover` runs Step 8c re-attribution sweep per [`migrations/classical-architect.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/migrations/classical-architect.md).
 
 ## Address review on a PR (D24)
 
@@ -205,7 +205,7 @@ Three surfaces, three voices, three caps — applies only to maintainers draftin
 
 | Surface | Voice | Bullet cap |
 |---|---|---|
-| `core/MIGRATIONS/D<N>-*.md` | Framework-dev (precise jargon OK) | None — structured tables / lists |
+| `migrations/D<N>-*.md` | Framework-dev (precise jargon OK) | None — structured tables / lists |
 | `docs/CHANGELOG.md` | Framework-dev in sub-bullets; lead-in ≤ 25 words | Lead-in ≤ 25 words + sub-bullets |
 | `.github/release-notes/v*.md` | **User-value** — adopter benefit at line start | **≤ 20 words per bullet** + `(D<N>)` tag |
 
@@ -279,7 +279,7 @@ branch: model:reasoning Pick up #N
 
 **Adapter override.** Edit `local/framework.config.yaml § model-tier` (per-role tier + per-adapter tier→model map); re-run installer to apply.
 
-Full spec: `core/MIGRATIONS/D31-model-tier.md`.
+Full spec: `migrations/model-tier.md`.
 
 ## Source-of-truth pattern
 

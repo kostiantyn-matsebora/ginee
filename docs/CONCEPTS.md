@@ -110,7 +110,7 @@ Three activities across the lifecycle:
 
 **Engineer-proposed architectural changes** — when a fix / feature implies an architectural delta, the engineer drafts a proposal in their final report and routes to SA per § Review. Local bug fixes route engineer → engineer; no SA dispatch.
 
-Full spec: [`core/roles/solution-architect.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/core/roles/solution-architect.md). Migration: [`core/MIGRATIONS/D25-classical-architect.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/core/MIGRATIONS/D25-classical-architect.md).
+Full spec: [`core/roles/solution-architect.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/core/roles/solution-architect.md). Migration: [`migrations/classical-architect.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/migrations/classical-architect.md).
 
 ## Index protocol
 
@@ -200,7 +200,7 @@ Pre-D39, every team-lead → cardinal dispatch lived only in the chat transcript
 
 **Time-tracking.** Cardinal-reported perceived effort (not session wall-clock). Granularity — minutes. Format `time: <N>m` (under 60m) or `time: <H>h <M>m` (60m+).
 
-Full spec: [`core/MIGRATIONS/D39-sub-issue-dispatch.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/core/MIGRATIONS/D39-sub-issue-dispatch.md).
+Full spec: [`migrations/sub-issue-dispatch.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/migrations/sub-issue-dispatch.md).
 
 ## Triage scoring (D23)
 
@@ -300,7 +300,7 @@ Extends the doc-authoring scope to the three release-surface files. Closes a rec
 
 | Surface | Purpose | Voice | Bullet cap |
 |---|---|---|---|
-| `core/MIGRATIONS/D<N>-*.md` | Full spec — schema · checks · rollback · file list | Framework-dev (precise jargon OK) | None — structured tables / lists |
+| `migrations/D<N>-*.md` | Full spec — schema · checks · rollback · file list | Framework-dev (precise jargon OK) | None — structured tables / lists |
 | `docs/CHANGELOG.md` | Verbose record per Keep-a-Changelog | Framework-dev OK in sub-bullets; lead-in ≤ 25 words | Lead-in ≤ 25 words + sub-bullets |
 | `.github/release-notes/v*.md` | Marketing on the GH Release page | **User-value voice** — adopter-visible benefit at line start | **≤ 20 words per bullet** + `(D<N>)` tag |
 
@@ -316,7 +316,7 @@ Extends the doc-authoring scope to the three release-surface files. Closes a rec
 
 Adopter impact — **none** (framework-internal authoring rule; affects ginee maintainers writing release artefacts, not adopters).
 
-Full spec: [`core/changelog-protocol.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/core/changelog-protocol.md) + [`core/MIGRATIONS/D40-changelog-protocol.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/core/MIGRATIONS/D40-changelog-protocol.md).
+Full spec: [`core/changelog-protocol.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/core/changelog-protocol.md) + [`migrations/changelog-protocol.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/migrations/changelog-protocol.md).
 
 ## Blueprint-diff gate for visual source-of-truth (D41)
 
@@ -344,7 +344,7 @@ Phase 4 entry precondition for any dispatch touching the configured visual sourc
 
 **Adopter impact** — adopters with `mockup:` configured get the gate on next dispatch with zero `local/framework.config.yaml` edits (defaults derived). Adopters with no mockup configured — protocol auto-skips. Override the defaults to point at a Figma URL · release-tag blueprint · frozen snapshot · adopter-supplied diff tool.
 
-Full spec: [`core/protocols/blueprint-diff-protocol.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/core/protocols/blueprint-diff-protocol.md) + [`core/MIGRATIONS/D41-blueprint-diff-gate.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/core/MIGRATIONS/D41-blueprint-diff-gate.md).
+Full spec: [`core/protocols/blueprint-diff-protocol.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/core/protocols/blueprint-diff-protocol.md) + [`migrations/blueprint-diff-gate.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/migrations/blueprint-diff-gate.md).
 
 ## Subagent-return schema (D29)
 
@@ -369,7 +369,7 @@ Every cardinal-dispatch return is **schema-bound** per `core/templates/phase-rep
 
 **Enforcement.** LLM self-review against the schema before returning. No external linter. Orchestrator surfaces a one-line advisory on violations but never re-dispatches purely for format and never auto-rewrites (analogous to D14 reporter-content forbidden).
 
-Full schema: [`core/templates/phase-report.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/core/templates/phase-report.md). Bad/good example: [`core/doc-authoring-examples.md § 10`](https://github.com/kostiantyn-matsebora/ginee/blob/main/core/doc-authoring-examples.md). Migration: [`core/MIGRATIONS/D29-strict-subagent-return-schema.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/core/MIGRATIONS/D29-strict-subagent-return-schema.md).
+Full schema: [`core/templates/phase-report.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/core/templates/phase-report.md). Bad/good example: [`core/doc-authoring-examples.md § 10`](https://github.com/kostiantyn-matsebora/ginee/blob/main/core/doc-authoring-examples.md). Migration: [`migrations/strict-subagent-return-schema.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/migrations/strict-subagent-return-schema.md).
 
 ## Adopt-vs-build option lists (D30)
 
@@ -392,7 +392,7 @@ Every Phase 2 design proposal **and** every iteration-protocol Propose step (Pha
 
 **Enforcement.** LLM self-review before surfacing the proposal. No external linter. Orchestrator surfaces a one-line advisory on violations but never auto-rewrites (analogous to D29).
 
-Full spec: [`core/protocols/options-protocol.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/core/protocols/options-protocol.md). Bad/good example: [`core/doc-authoring-examples.md § 11`](https://github.com/kostiantyn-matsebora/ginee/blob/main/core/doc-authoring-examples.md). Migration: [`core/MIGRATIONS/D30-adopt-existing-solution.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/core/MIGRATIONS/D30-adopt-existing-solution.md).
+Full spec: [`core/protocols/options-protocol.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/core/protocols/options-protocol.md). Bad/good example: [`core/doc-authoring-examples.md § 11`](https://github.com/kostiantyn-matsebora/ginee/blob/main/core/doc-authoring-examples.md). Migration: [`migrations/adopt-existing-solution.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/migrations/adopt-existing-solution.md).
 
 ## Per-role + per-task model tier (D31)
 
@@ -410,7 +410,7 @@ Routes reasoning-heavy roles to capable models and execution-heavy roles to chea
 
 **Backward compatibility.** Purely additive. Absent `model-tier:` → framework defaults apply silently. Existing dispatches unaffected until adopter sets a tier or uses the prefix.
 
-Full spec: [`core/MIGRATIONS/D31-model-tier.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/core/MIGRATIONS/D31-model-tier.md).
+Full spec: [`migrations/model-tier.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/migrations/model-tier.md).
 
 ## Skill-runner vs team-lead (D28)
 
@@ -430,11 +430,11 @@ ginee skills (`/ginee-pick-up`, `/ginee-address-review`, `/ginee-triage`, `/gine
 
 **Why the rule.** Pre-D28 the skill-runner often drifted into orchestration on long sessions (issue #71): plan drafting in the main thread, synthesizing parallel returns, proposing default-selection options. The boundary is now structural — every skill carries an explicit hand-back step.
 
-Full spec: [`core/process.md § Skill-runner — surface boundary`](https://github.com/kostiantyn-matsebora/ginee/blob/main/core/process.md#skill-runner--surface-boundary-d28). Migration: [`core/MIGRATIONS/D28-skill-runner-boundary.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/core/MIGRATIONS/D28-skill-runner-boundary.md).
+Full spec: [`core/process.md § Skill-runner — surface boundary`](https://github.com/kostiantyn-matsebora/ginee/blob/main/core/process.md#skill-runner--surface-boundary-d28). Migration: [`migrations/skill-runner-boundary.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/migrations/skill-runner-boundary.md).
 
 ## Framework self-update
 
-`/ginee-update [<tag|branch|sha>]` drives the `install.{ps1,sh} --update-only` flow under explicit user approval — never auto-runs. **The installer lives at upstream, not inside `.agents/ginee/`** (per D27); the skill fetches `install.{ps1,sh}` from `raw.githubusercontent.com/<github.framework-repo>/<target-ref>/` to a temp dir, then runs it with the detected adapter + project root. team-lead resolves the target ref (latest release / explicit tag / branch / SHA), surfaces the update plan (current `core/VERSION` → target ref + installer command + preserved/replaced trees), waits for `yes`, then runs the installer per platform. Post-update report: VERSION delta + CHANGELOG range + new `core/MIGRATIONS/*.md` files with `Action required` excerpts + `local/index/manifest.yaml` SHA drift offer.
+`/ginee-update [<tag|branch|sha>]` drives the `install.{ps1,sh} --update-only` flow under explicit user approval — never auto-runs. **The installer lives at upstream, not inside `.agents/ginee/`** (per D27); the skill fetches `install.{ps1,sh}` from `raw.githubusercontent.com/<github.framework-repo>/<target-ref>/` to a temp dir, then runs it with the detected adapter + project root. team-lead resolves the target ref (latest release / explicit tag / branch / SHA), surfaces the update plan (current `core/VERSION` → target ref + installer command + preserved/replaced trees), waits for `yes`, then runs the installer per platform. Post-update report: VERSION delta + CHANGELOG range + new `migrations/*.md` files with `Action required` excerpts + `local/index/manifest.yaml` SHA drift offer.
 
 Full spec: [`core/skills/ginee-update/SKILL.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/core/skills/ginee-update/SKILL.md).
 

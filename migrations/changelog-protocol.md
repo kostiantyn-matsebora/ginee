@@ -6,7 +6,7 @@
 
 ## What changed
 
-Pre-D40 ginee had three release-surface files — `docs/CHANGELOG.md` · `.github/release-notes/v*.md` · `core/MIGRATIONS/D<N>-*.md` — with no spec binding them to surface-specific voice + word-count rules. PR #60 (2026-04) established the "concise sidecar" convention but didn't lock voice or per-bullet cap. Result: the v0.12.0 sidecar took **four authoring passes** to converge on the right shape, and v0.15.0 drifted back toward dense framework-dev prose.
+Pre-D40 ginee had three release-surface files — `docs/CHANGELOG.md` · `.github/release-notes/v*.md` · `migrations/D<N>-*.md` — with no spec binding them to surface-specific voice + word-count rules. PR #60 (2026-04) established the "concise sidecar" convention but didn't lock voice or per-bullet cap. Result: the v0.12.0 sidecar took **four authoring passes** to converge on the right shape, and v0.15.0 drifted back toward dense framework-dev prose.
 
 D40 codifies the topology — which surface gets which voice, which word cap — and binds it to the same self-lint machinery as D22 / D26 / D29 / D30.
 
@@ -25,7 +25,7 @@ Root cause: no rule named the three surfaces' distinct audiences + voices. Autho
 
 | Surface | Purpose | Audience | Voice | Bullet cap |
 |---|---|---|---|---|
-| `core/MIGRATIONS/D<N>-*.md` | Full spec — schema · checks · rollback · file list | Framework dev + adopter on deep-dive | Framework-dev (precise jargon OK) | None — structured tables / lists |
+| `migrations/D<N>-*.md` | Full spec — schema · checks · rollback · file list | Framework dev + adopter on deep-dive | Framework-dev (precise jargon OK) | None — structured tables / lists |
 | `docs/CHANGELOG.md` | Verbose record per [Keep a Changelog](https://keepachangelog.com/) | Adopter tracking framework evolution | Framework-dev OK in sub-bullets; lead-in bullet ≤ 25 words | Lead-in sentence ≤ 25 words; sub-bullets allowed |
 | `.github/release-notes/v*.md` | Marketing on the GH Release page | Adopter scanning to decide whether to bump | **User-value voice** — lead with adopter-visible benefit | **≤ 20 words per bullet**, one thing per line |
 
@@ -49,7 +49,7 @@ Pattern — concrete adopter-visible verb / outcome at line start; mechanism (if
 | 2 | **User-value voice on sidecar** — every bullet leads with adopter-visible change or benefit; no framework-dev jargon in the bullet itself. |
 | 3 | **D-number tag suffix** — `(D<N>)` ties the line back to the locked decision for readers who want the spec. |
 | 4 | **No implementation boilerplate** in sidecar — "5 mandatory checks" enumerations · file-update lists · "purely additive · no schema change" stat blocks live in the migration, not the sidecar. |
-| 5 | **Migration link present** — sidecar footer carries the `core/MIGRATIONS/D<N>-*.md` link for every highlighted decision. |
+| 5 | **Migration link present** — sidecar footer carries the `migrations/D<N>-*.md` link for every highlighted decision. |
 
 LLM self-review against these five checks before publishing — same machinery as D22 / D26 / D29 / D30. No external linter; orchestrator surfaces a one-line advisory on violation; never auto-rewrites; never re-dispatches purely for format.
 
@@ -83,7 +83,7 @@ Pass 4 (user-value, ≤ 20 words, D-tag):
 - **Per-task model override** — prefix any dispatch with `model:reasoning` / `model:standard` / `model:fast`. (D31)
 ```
 
-The Pass-1 content survives — in `docs/CHANGELOG.md` (verbose entry) and `core/MIGRATIONS/D31-model-tier.md` (full spec). The sidecar carries only the adopter-visible benefit + D-tag pointer to the spec.
+The Pass-1 content survives — in `docs/CHANGELOG.md` (verbose entry) and `migrations/model-tier.md` (full spec). The sidecar carries only the adopter-visible benefit + D-tag pointer to the spec.
 
 ## Decisions affected
 

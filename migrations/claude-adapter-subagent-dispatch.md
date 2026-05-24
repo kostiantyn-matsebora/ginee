@@ -74,7 +74,7 @@ Every `ginee-*` skill still dispatches `@team-lead` after its first mechanical b
 | `core/process.md § Skill-runner — surface boundary (D28)` | One-line adapter-aware caveat citing D32. |
 | `CLAUDE.md` | D32 row in the locked-decisions table. |
 | `docs/CHANGELOG.md` | D32 entry under Unreleased. |
-| `core/MIGRATIONS/D32-claude-adapter-subagent-dispatch.md` | This file (NEW). |
+| `migrations/claude-adapter-subagent-dispatch.md` | This file (NEW). |
 
 ## Action required — none (adopter-side)
 

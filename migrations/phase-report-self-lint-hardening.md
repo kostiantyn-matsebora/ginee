@@ -53,7 +53,7 @@ Same enforcement pattern as D22 / D26 attestation lines in `## Verification log`
 | `core/doc-authoring-examples.md § 12` (NEW) | Paired bad/good full-return example — narrative-preamble vs schema-compliant + marker. |
 | `CLAUDE.md` · `PLAN.md` | D33 row in locked-decisions table. |
 | `docs/CHANGELOG.md` | D33 entry under Unreleased. |
-| `core/MIGRATIONS/D33-d29-enforcement-hardening.md` | This file (NEW). |
+| `migrations/phase-report-self-lint-hardening.md` | This file (NEW). |
 
 ## Action required — none (adopter-side)
 

@@ -91,7 +91,7 @@ LLM self-review against the schema **before returning**. No external linter.
 | `core/doc-authoring-examples.md` | New § 10 — paired bad / good Phase-4 return with measured 68.5% reduction |
 | `docs/CONCEPTS.md` · `docs/CHEATSHEET.md` · `docs/CHANGELOG.md` | D29 entries |
 | `CLAUDE.md` · `PLAN.md` | D29 row |
-| `core/MIGRATIONS/D29-strict-subagent-return-schema.md` | This file (NEW) |
+| `migrations/strict-subagent-return-schema.md` | This file (NEW) |
 
 ## Backward compatibility
 

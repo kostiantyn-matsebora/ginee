@@ -241,7 +241,7 @@ fi
 # Reads local/framework.config.yaml § model-tier (if present) and rewrites the
 # `model:` line in each pointer file under the agents-dir. Absent config →
 # no-op; pointer files keep the framework-default model: shipped in _shared/.
-# Spec: core/MIGRATIONS/D31-model-tier.md.
+# Spec: migrations/model-tier.md.
 
 apply_model_tier_overrides() {
   local agents_dir="$1"
@@ -346,15 +346,17 @@ INSTALL_NOTE="$ADAPTER_DIR/install.md"
 # --- Prune framework-dev cruft from the adopter's framework dir ------------
 # Needed for backward compat with releases packaged before release.yml was updated
 # to pre-prune. On future releases the tarball ships clean and these rms become no-ops.
-# Adopters need: core/ (incl. MIGRATIONS), adapters/_shared + chosen adapter,
-# extras/, local/ skeleton, LICENSE. Everything else is framework-dev only:
+# Adopters need: core/, adapters/_shared + chosen adapter, extras/, local/ skeleton,
+# LICENSE. Everything else is framework-dev only:
 #  - docs/        Jekyll site source (lives at kostiantyn-matsebora.github.io/ginee)
 #  - .github/     CI workflows + issue templates for the framework's own repo
 #  - .claude/    framework's dogfooded local config
 #  - PLAN.md / CLAUDE.md / README.md / SECURITY.md   framework-dev orientation
 #  - install.sh / install.ps1   already-executed installer scripts
+#  - migrations/      upstream-only; fetched on demand by /ginee-update.
+#  - core/MIGRATIONS/ legacy path on pre-cutover adopter installs; no-op once cleared.
 step "Pruning framework-dev cruft"
-for p in .github .claude .gitignore .dockerignore install.ps1 install.sh PLAN.md CLAUDE.md README.md SECURITY.md docs; do
+for p in .github .claude .gitignore .dockerignore install.ps1 install.sh PLAN.md CLAUDE.md README.md SECURITY.md docs migrations core/MIGRATIONS; do
   # ${FRAMEWORK_DIR:?} guards against an empty/unset var expanding to a / path (SC2115).
   rm -rf "${FRAMEWORK_DIR:?}/$p"
 done
@@ -482,7 +484,7 @@ if [ "$STALE_LOCAL_HITS" -eq 1 ]; then
   echo "    $MIGRATE_SCRIPT --dry-run   # preview"
   echo "    $MIGRATE_SCRIPT             # apply"
   echo ""
-  echo "  Details: $FRAMEWORK_DIR/core/MIGRATIONS/engineering-team-renamed-ginee.md"
+  echo "  Details: https://github.com/kostiantyn-matsebora/ginee/blob/main/migrations/engineering-team-renamed-ginee.md"
   echo ""
 fi
 

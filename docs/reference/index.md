@@ -33,7 +33,7 @@ The canonical specs. These mirror the `core/*.md` files in the [source repo](htt
 | Cardinal role kernels | [`core/roles/*.md`](https://github.com/kostiantyn-matsebora/ginee/tree/main/core/roles) | Concepts § The 7-cardinal team |
 | Specialist roles (opt-in) | [`extras/roles/*.md`](https://github.com/kostiantyn-matsebora/ginee/tree/main/extras/roles) | Concepts § Specialists |
 | Templates (bindings, PR, hand-off, ...) | [`core/templates/*.md`](https://github.com/kostiantyn-matsebora/ginee/tree/main/core/templates) | Contributing |
-| Migration notes | [`core/MIGRATIONS/*.md`](https://github.com/kostiantyn-matsebora/ginee/tree/main/core/MIGRATIONS) | Per-decision (D13 / D14 / D15 / D16 / D17 / etc.) |
+| Migration notes | [`migrations/*.md`](https://github.com/kostiantyn-matsebora/ginee/tree/main/migrations) | Per-decision (D13 / D14 / D15 / D16 / D17 / etc.) |
 
 ## Locked decisions
 

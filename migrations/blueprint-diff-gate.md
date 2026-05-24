@@ -49,7 +49,7 @@ Option B matches the established protocol pattern — D22 / D26 / D29 / D30 / D4
 | Path | Change |
 |---|---|
 | `core/protocols/blueprint-diff-protocol.md` | **NEW** — full spec. |
-| `core/MIGRATIONS/D41-blueprint-diff-gate.md` | **NEW** — this file. |
+| `migrations/blueprint-diff-gate.md` | **NEW** — this file. |
 | `core/templates/framework.config.yaml` | Add `visual-source-of-truth:` block. |
 | `core/process/phase-4-implementation.md` | Add D41 entry-precondition rule + load-trigger reference. |
 | `core/roles/frontend-engineer.md` | Add D41 obligation to `§ Mockup ownership`. |

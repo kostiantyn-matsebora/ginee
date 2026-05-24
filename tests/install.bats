@@ -57,6 +57,28 @@ teardown() {
   [[ "$output" == *"Invalid --adapter"* ]]
 }
 
+# --- Migrations prune ---------------------------------------------------
+# Migrations are upstream-only; installer prunes both the new home
+# (<fw>/migrations/) and the legacy home (<fw>/core/MIGRATIONS/) on every
+# install. Static check on the prune loop since end-to-end runs require network.
+
+@test "prune loop lists migrations (new home)" {
+  run grep -E '^for p in .* migrations( |$)' "$INSTALL_SH"
+  [ "$status" -eq 0 ]
+}
+
+@test "prune loop lists core/MIGRATIONS (legacy home backcompat)" {
+  run grep -E '^for p in .* core/MIGRATIONS' "$INSTALL_SH"
+  [ "$status" -eq 0 ]
+}
+
+@test "banner comment documents upstream-only + /ginee-update" {
+  run grep -E 'upstream-only' "$INSTALL_SH"
+  [ "$status" -eq 0 ]
+  run grep -E '/ginee-update' "$INSTALL_SH"
+  [ "$status" -eq 0 ]
+}
+
 # --- apply_model_tier_overrides — sourced helper -------------------------
 
 # Helper: write a pointer file with the cardinal-shaped frontmatter

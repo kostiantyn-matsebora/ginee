@@ -1,7 +1,7 @@
 # migrate-engineering-team-to-ginee.ps1
 #
-# One-shot rename migration for adopters upgrading past the D11 rebrand
-# (engineering-team -> ginee). Rewrites textual 'engineering-team' references
+# One-shot rename migration for adopters upgrading past the engineering-team
+# -> ginee rebrand. Rewrites textual 'engineering-team' references
 # in adopter-owned local/* files. Install-dir rename + CLAUDE.md pointer-block
 # refresh are handled by install.ps1 / install.sh -UpdateOnly — this script
 # only handles the local/* surface the installer cannot touch by design.

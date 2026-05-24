@@ -90,7 +90,7 @@ Framework workflows (file / pick-up / triage / promote / discovery / reindex) ac
 | "Update ginee" / "Upgrade the framework" / "Bump ginee to `v<X>`" / "Pull the latest ginee" | `ginee-update` |
 | "Address review on PR #N" / "Respond to review on #N" / "Handle review feedback on #N" | `ginee-address-review` |
 
-## Model tier (D31)
+## Model tier
 
 The AGENTS.md surface does **not** expose programmatic per-role model selection — Cursor / Codex / Gemini CLI / Goose / etc. each pick model via their own UI / config. ginee writes vendor-neutral tier names in `local/framework.config.yaml § model-tier` but the runtime ignores them on this adapter.
 
@@ -102,11 +102,11 @@ model:reasoning Add the new ASR utility-tree leaves for the latency NFR.
 
 For clients layered on top of this adapter (Claude Code · Copilot CLI), the layered adapter's own programmatic wiring applies; this baseline adapter stays a no-op.
 
-When AGENTS.md gains a per-role / per-task model field, this adapter's install step will wire it. Spec: `core/MIGRATIONS/D31-model-tier.md`.
+When AGENTS.md gains a per-role / per-task model field, this adapter's install step will wire it.
 
-## Phase-file loading (D35)
+## Phase-file loading
 
-Per D35-process-md-load-topology, the 8 lifecycle phases + orchestration content live under `core/process/` and load per-cardinal via `phase-participation:` frontmatter.
+The 8 lifecycle phases + orchestration content live under `core/process/` and load per-cardinal via `phase-participation:` frontmatter.
 
 | Step | Behaviour |
 |---|---|
@@ -115,13 +115,13 @@ Per D35-process-md-load-topology, the 8 lifecycle phases + orchestration content
 | `team-lead` only (and skill-runner main thread on `ginee-*` skill entry) | Additionally cite `.agents/ginee/core/process/dispatch.md` |
 | Cardinals with empty list (`ai-engineer`) | Load no phase files; common `.agents/ginee/core/process.md` only |
 
-The AGENTS.md render is responsible for surfacing the correct phase-file references per role; non-participating phase files are not surfaced to that role. Full spec: `core/MIGRATIONS/D35-process-md-load-topology.md`.
+The AGENTS.md render is responsible for surfacing the correct phase-file references per role; non-participating phase files are not surfaced to that role.
 
 ## Updates
 
-**Recommended — `/ginee-update`** (or "update ginee" / "upgrade the framework"). The skill fetches the installer from upstream at the target ref and drives `--update-only` for you — no local installer needed (D27). Automates steps 1–2. **Warning** — the installer copies `AGENTS.md` wholesale; back up first if you merged project-specific content into it.
+**Recommended — `/ginee-update`** (or "update ginee" / "upgrade the framework"). The skill fetches the installer from upstream at the target ref and drives `--update-only` for you — no local installer needed. Automates steps 1–2. **Warning** — the installer copies `AGENTS.md` wholesale; back up first if you merged project-specific content into it.
 
-**Manual fallback — bootstrap one-liner** (the installer is intentionally NOT inside `.agents/ginee/` per D27):
+**Manual fallback — bootstrap one-liner** (the installer is intentionally NOT inside `.agents/ginee/`):
 
 ```powershell
 $env:GINEE_UPDATE_ONLY='1'; $env:GINEE_ADAPTER='agents-md'; iwr -useb https://raw.githubusercontent.com/kostiantyn-matsebora/ginee/main/install.ps1 | iex
@@ -136,11 +136,9 @@ GINEE_UPDATE_ONLY=1 GINEE_ADAPTER=agents-md bash -c "$(curl -fsSL https://raw.gi
 1. Re-fetch `.agents/ginee/core/` + `.agents/ginee/adapters/` + `.agents/ginee/extras/` (your `local/` survives).
 2. Re-copy `.agents/ginee/adapters/agents-md/AGENTS.md` to project root (merge if project-specific content was added).
 3. Re-copy `.agents/ginee/core/skills/ginee-*` to your client's skill directory (skill bodies / descriptions may have been refined). Skip if you used symlinks.
-4. Read `.agents/ginee/core/MIGRATIONS/` for breaking-change notes.
-5. **For pre-D11 (pre-2026-05-18) upgrades** — run the rename migration script once:
+4. **For previously (pre-2026-05-18) upgrades** — run the rename migration script once:
    - `.\.agents\ginee\core\scripts\migrate-engineering-team-to-ginee.ps1` (or `.sh`).
    - Rewrites legacy `engineering-team` references under `local/*`. Idempotent.
-   - Full notes: `.agents/ginee/core/MIGRATIONS/engineering-team-renamed-ginee.md`.
 
 ## Uninstall
 

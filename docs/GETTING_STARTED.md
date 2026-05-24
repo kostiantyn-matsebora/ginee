@@ -97,7 +97,7 @@ What happens (a few minutes, fully visible):
 5. **(D25)** Detects greenfield — if no architecture doc found, flags `greenfield: true` in `local/project-profile.md`; `solution-architect` enters greenfield design mode on first non-trivial task.
 6. Surfaces recommended specialist roles for your approval (security · ml · mobile · sre · data, depending on what discovery found in the project).
 
-**On rediscover post-D25** — `@team-lead rediscover` runs Step 8c re-attribution sweep: existing adopter docs migrate to the new D25 ownership map (CRs · project-instruction · work-breakdown → `team-lead`; CI/CD guide · runbooks → `devops-engineer`; per-tier READMEs → tier engineers). Full migration spec: [`core/MIGRATIONS/D25-classical-architect.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/core/MIGRATIONS/D25-classical-architect.md).
+**On rediscover post-D25** — `@team-lead rediscover` runs Step 8c re-attribution sweep: existing adopter docs migrate to the new D25 ownership map (CRs · project-instruction · work-breakdown → `team-lead`; CI/CD guide · runbooks → `devops-engineer`; per-tier READMEs → tier engineers). Full migration spec: [`migrations/classical-architect.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/migrations/classical-architect.md).
 
 You'll see proposed changes before any file is written — approve or redirect each step.
 
@@ -158,7 +158,7 @@ When ginee authors adopter markdown (architecture doc, ADRs, CRs, READMEs, runbo
 "update ginee" / "upgrade the framework"       # natural-language equivalent
 ```
 
-team-lead loads `core/skills/ginee-update/SKILL.md`, resolves the target ref, **surfaces the plan + waits for your explicit approval** (never auto-runs), fetches the installer from upstream at the target ref (per D27 — the installer lives at upstream, not inside `.agents/ginee/`), drives `install.{ps1,sh} --update-only`, then reports VERSION delta + CHANGELOG range + new `core/MIGRATIONS/*.md` files. Refuses downgrades unless `--allow-downgrade` is passed.
+team-lead loads `core/skills/ginee-update/SKILL.md`, resolves the target ref, **surfaces the plan + waits for your explicit approval** (never auto-runs), fetches the installer from upstream at the target ref (per D27 — the installer lives at upstream, not inside `.agents/ginee/`), drives `install.{ps1,sh} --update-only`, then reports VERSION delta + CHANGELOG range + new `migrations/*.md` files. Refuses downgrades unless `--allow-downgrade` is passed.
 
 **Manual fallback — bootstrap one-liner** (the installer is intentionally NOT inside `.agents/ginee/` per D27 — fetch from upstream every time):
 
@@ -170,7 +170,7 @@ GINEE_UPDATE_ONLY=1 GINEE_ADAPTER=claude bash -c "$(curl -fsSL https://raw.githu
 $env:GINEE_UPDATE_ONLY='1'; $env:GINEE_ADAPTER='claude'; iwr -useb https://raw.githubusercontent.com/kostiantyn-matsebora/ginee/main/install.ps1 | iex
 ```
 
-`core/`, `adapters/`, `extras/` re-fetch from the framework upstream. `local/` (your bindings + custom roles + discovered index) is preserved untouched. Read `.agents/ginee/core/MIGRATIONS/` after each update for breaking-change notes.
+`core/`, `adapters/`, `extras/` re-fetch from the framework upstream. `local/` (your bindings + custom roles + discovered index) is preserved untouched. Read `.agents/ginee/migrations/` after each update for breaking-change notes.
 
 ## What now
 

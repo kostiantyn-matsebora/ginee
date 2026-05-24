@@ -51,7 +51,7 @@ jobs:
         run: |
           set -e
           # Required directories
-          for d in core core/roles core/templates core/MIGRATIONS adapters adapters/_shared/agents adapters/claude adapters/copilot-cli adapters/agents-md adapters/generic extras/roles local; do
+          for d in core core/roles core/templates migrations adapters adapters/_shared/agents adapters/claude adapters/copilot-cli adapters/agents-md adapters/generic extras/roles local; do
             if [ ! -d "$d" ]; then
               echo "::error::Missing required directory: $d"
               exit 1

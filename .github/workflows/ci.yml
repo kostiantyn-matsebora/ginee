@@ -22,7 +22,7 @@ jobs:
             core/templates \
             core/templates/index \
             core/templates/issues \
-            core/MIGRATIONS \
+            migrations \
             core/skills \
             adapters \
             adapters/_shared/agents \
@@ -318,7 +318,7 @@ jobs:
         run: |
           set -e
           ROOT=/tmp/fake-project
-          for d in core core/roles core/templates core/MIGRATIONS core/skills adapters adapters/_shared/agents extras/roles local; do
+          for d in core core/roles core/templates core/skills adapters adapters/_shared/agents extras/roles local; do
             [ -d "$ROOT/.agents/ginee/$d" ] || { echo "::error::Missing $ROOT/.agents/ginee/$d"; exit 1; }
           done
           [ -f "$ROOT/.agents/ginee/core/VERSION" ] || { echo "::error::Missing core/VERSION"; exit 1; }
@@ -470,7 +470,7 @@ jobs:
         run: |
           $ErrorActionPreference = 'Stop'
           $root = 'C:\temp\fake-project'
-          $required = 'core','core\roles','core\templates','core\MIGRATIONS','core\skills','adapters','adapters\_shared\agents','extras\roles','local'
+          $required = 'core','core\roles','core\templates','core\skills','adapters','adapters\_shared\agents','extras\roles','local'
           foreach ($d in $required) {
             if (-not (Test-Path "$root\.agents\ginee\$d")) {
               Write-Error "Missing $root\.agents\ginee\$d"
@@ -593,7 +593,7 @@ jobs:
         run: |
           set -e
           ROOT=/tmp/fake-tarball
-          for d in core core/roles core/templates core/MIGRATIONS core/skills adapters adapters/_shared/agents extras/roles local; do
+          for d in core core/roles core/templates core/skills adapters adapters/_shared/agents extras/roles local; do
             [ -d "$ROOT/.agents/ginee/$d" ] || { echo "::error::Missing $ROOT/.agents/ginee/$d"; exit 1; }
           done
           [ -f "$ROOT/.agents/ginee/core/VERSION" ] || { echo "::error::Missing core/VERSION"; exit 1; }
@@ -640,7 +640,7 @@ jobs:
         run: |
           $ErrorActionPreference = 'Stop'
           $root = 'C:\temp\fake-tarball'
-          $required = 'core','core\roles','core\templates','core\MIGRATIONS','core\skills','adapters','adapters\_shared\agents','extras\roles','local'
+          $required = 'core','core\roles','core\templates','core\skills','adapters','adapters\_shared\agents','extras\roles','local'
           foreach ($d in $required) {
             if (-not (Test-Path "$root\.agents\ginee\$d")) { Write-Error "Missing $root\.agents\ginee\$d" }
           }

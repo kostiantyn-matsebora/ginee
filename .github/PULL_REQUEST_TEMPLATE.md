@@ -27,7 +27,7 @@ Describe what changed and why.
 
 - [ ] Scope is focused and intentionally limited
 - [ ] Documentation was updated if behaviour changed
-- [ ] Migration note added under `core/MIGRATIONS/` for any change adopters must apply manually
+- [ ] Migration note added under `migrations/` for any change adopters must apply manually
 - [ ] Role kernels + adapters stayed in sync if a generic-process rule changed
 - [ ] Issue linkage uses `Fixes #N` / `Closes #N` so GitHub auto-closes on merge
 

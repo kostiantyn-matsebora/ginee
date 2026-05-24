@@ -46,6 +46,40 @@ Describe 'install.ps1' {
       Remove-Item -Recurse -Force $tmpTarget -ErrorAction SilentlyContinue
     }
   }
+
+  # Migrations are upstream-only; installer must prune both the new home
+  # (<fw>/migrations/) and the legacy home (<fw>/core/MIGRATIONS/) on every
+  # install. Each lookup grabs the prune-array block delimited by the section
+  # banners so an unrelated `)` inside a comment (e.g. `(would shadow ...)`)
+  # doesn't truncate the non-greedy regex.
+  Context 'Migrations prune' {
+    BeforeAll {
+      $script:installerText = Get-Content -Raw $script:installScript
+      # Match from "$pruneRoots = @(" through the matching close-paren on its
+      # own line (PowerShell convention for multi-line arrays).
+      $script:pruneRootsBlock = [regex]::Match(
+        $script:installerText,
+        '(?ms)\$pruneRoots\s*=\s*@\(.*?^\)'
+      ).Value
+    }
+
+    It 'extracts the $pruneRoots array' {
+      $script:pruneRootsBlock | Should -Not -BeNullOrEmpty
+    }
+
+    It 'lists migrations in the $pruneRoots array (new home)' {
+      $script:pruneRootsBlock | Should -Match "'migrations'"
+    }
+
+    It 'lists core/MIGRATIONS in the $pruneRoots array (legacy home backcompat)' {
+      $script:pruneRootsBlock | Should -Match "'core/MIGRATIONS'"
+    }
+
+    It 'documents the prune in the banner comment' {
+      $script:installerText | Should -Match 'upstream-only'
+      $script:installerText | Should -Match '/ginee-update'
+    }
+  }
 }
 
 Describe 'Read-ModelTierConfig (D31)' {

@@ -407,7 +407,7 @@ extras/     ← COPIED from temp
 local/      ← RESTORED from temp backup
 ```
 
-`local/` byte-for-byte unchanged. Migration notes under `core/MIGRATIONS/<name>.md` flag any post-update action adopters need to take manually (rename a section, re-extract a class, update `bindings.md`, etc.).
+`local/` byte-for-byte unchanged. Migration notes under `migrations/<name>.md` flag any post-update action adopters need to take manually (rename a section, re-extract a class, update `bindings.md`, etc.).
 
 The installer also re-runs the adapter-install steps — pointer files in `.claude/agents/`, `.github/agents/`, `AGENTS.md` etc. are refreshed. `CLAUDE.md` pointer block is preserved (idempotent via sentinel).
 

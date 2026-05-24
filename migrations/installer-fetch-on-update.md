@@ -24,7 +24,7 @@ Affected files:
 
 - `core/skills/ginee-update/SKILL.md` — Steps 1 + 6 + `Forbidden` block.
 - `adapters/{claude,copilot-cli,agents-md,generic}/install.md` § Updates — replace `.\install.ps1 -UpdateOnly` "recommended" line (implied a co-located installer) with the `/ginee-update` skill as primary path + bootstrap one-liner as manual fallback.
-- `core/MIGRATIONS/D27-installer-fetch-on-update.md` — this file (NEW).
+- `migrations/installer-fetch-on-update.md` — this file (NEW).
 - `PLAN.md` — D27 locked-decision entry.
 - `CLAUDE.md` — D27 row in the locked-decisions table.
 - `docs/` co-update per D25 binding — `CONCEPTS.md`, `GETTING_STARTED.md`, `CHEATSHEET.md`, `CHANGELOG.md`.

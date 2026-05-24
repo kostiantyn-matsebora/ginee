@@ -53,8 +53,8 @@ The compact flat-record format used by `.idx` index files. Canonical: [`core/ind
 
 | Migration | When applied |
 |---|---|
-| [`D15-code-derived-index.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/core/MIGRATIONS/D15-code-derived-index.md) | D13 extended to code/config sources |
-| [`index-compression-floor.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/core/MIGRATIONS/index-compression-floor.md) | Issue #9 — compression floor + inventory-only D15 recipes |
-| [`novel-class-consumer-coupling.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/core/MIGRATIONS/novel-class-consumer-coupling.md) | Issue #10 — consumed-by field + dormant audit |
-| [`index-load-triggers.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/core/MIGRATIONS/index-load-triggers.md) | Issue #11 — per-file load triggers in role kernels |
-| [`bindings-source-of-truth-rename.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/core/MIGRATIONS/bindings-source-of-truth-rename.md) | Issue #7 — bindings.md heading rename + reframe |
+| [`D15-code-derived-index.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/migrations/code-derived-index.md) | D13 extended to code/config sources |
+| [`index-compression-floor.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/migrations/index-compression-floor.md) | Issue #9 — compression floor + inventory-only D15 recipes |
+| [`novel-class-consumer-coupling.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/migrations/novel-class-consumer-coupling.md) | Issue #10 — consumed-by field + dormant audit |
+| [`index-load-triggers.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/migrations/index-load-triggers.md) | Issue #11 — per-file load triggers in role kernels |
+| [`bindings-source-of-truth-rename.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/migrations/bindings-source-of-truth-rename.md) | Issue #7 — bindings.md heading rename + reframe |
