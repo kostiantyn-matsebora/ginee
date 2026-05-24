@@ -10,7 +10,19 @@ All notable changes to ginee. The format follows [Keep a Changelog](https://keep
 
 ## Unreleased
 
+## 0.16.0 — 2026-05-24
+
 ### Added
+
+- **D39 — Sub-issue dispatch — cross-session traceability + time-tracking** ([#106](https://github.com/kostiantyn-matsebora/ginee/issues/106)). Pre-D39 every `team-lead` → cardinal dispatch lived only in the chat transcript — session end = state evaporated; next-day pickup reconstructed from PR diffs + scattered commit messages. On issue-sourced tasks team-lead now creates one GitHub sub-issue per cardinal dispatch under the parent.
+  - **Lifecycle.** Title `[<phase>:<cardinal>] <task>`; body per `core/templates/sub-issue-dispatch.md`; labels `ginee:role:*` + `ginee:phase:*` + inherited `value:*`/`complexity:*`. Cardinal posts progress comments carrying `time:` + `cumulative:`; D29 phase-report return doubles as the closing comment with mandatory `## Time spent`. Stop-state (`Status: In-progress`) → progress comment; sub-issue stays open. Parent sticky `<!-- ginee:dispatch-map -->` aggregates per-cardinal rollup.
+  - **Assignee precedence** (per issue #106 owner comment) — non-empty human assignee overrules the `ginee:role:*` tag; cardinal suspended until cleared. Rationale: GitHub's assignee column means a human is responsible; cardinals are not GitHub users; when both exist, the human (visible accountability) wins.
+  - **Opt-out resolution** — `notrack:` task prefix → `ginee:track:off` parent label → `local/framework.config.yaml § dispatch.tracking` → framework default (`sub-issues` on `github.repo`). TODO / freeform / no-`gh` adapters fall back to in-context.
+  - **Resume across sessions** — parent + open sub-issues = full state; D36 registry is in-conversation only, sub-issue history bridges the cross-session gap.
+  - **Decisions affected** — D14 (sub-issue surface gains dispatch-create) · D26 (sub-issue artefacts subject to 5-check self-lint) · D29 (conditional `## Time spent` section) · D33 (marker on closing comment) · D34 (slug-glued IDs in titles) · D35 (lifecycle lands in `core/process/dispatch.md`) · D36 / D17 (compatible).
+  - **Files updated** — `core/MIGRATIONS/D39-sub-issue-dispatch.md` (NEW) · `core/templates/sub-issue-dispatch.md` (NEW) · `core/github-integration.md § Sub-issue dispatch` (NEW section) · `core/process/dispatch.md` (new rule row) · `core/roles/team-lead.md` (kernel bullet) · `core/roles/team-lead.details.md § Sub-issue dispatch` (NEW — authoring procedure + failure modes) · `core/templates/phase-report.md` (conditional `## Time spent` + in-flight cadence reference) · `core/templates/framework.config.yaml` (`dispatch.tracking:` block) · `CLAUDE.md` + `PLAN.md` (D39 row) · `docs/CHEATSHEET.md` + `docs/CONCEPTS.md` + this file.
+  - **Backwards compatibility** — purely additive. New optional `dispatch.tracking:` key in `local/framework.config.yaml`; absent ⇒ default `sub-issues` on `github.repo`-configured adopters. Pre-existing in-flight tasks unchanged; sub-issue mode activates on the **next** dispatch under that parent. Adopters wanting legacy behaviour set `dispatch.tracking: in-context` once.
+  - Migration: `core/MIGRATIONS/D39-sub-issue-dispatch.md`.
 
 - **D40 — Changelog + release-notes protocol** ([#81](https://github.com/kostiantyn-matsebora/ginee/issues/81)). Codifies surface-specific voice + shape rules for the three release-surface files (`docs/CHANGELOG.md` · `.github/release-notes/v*.md` · `core/MIGRATIONS/D<N>-*.md`). Closes a recurring drift mode — pre-D40 no spec bound these surfaces to surface-specific voice + word-count rules; the v0.12.0 sidecar took 4 authoring passes to converge.
   - **Topology.** Three surfaces, three voices, three caps. Migration spec — framework-dev voice, no cap. CHANGELOG — verbose record per Keep-a-Changelog; lead-in ≤ 25 words + sub-bullets. Release-notes sidecar — user-value voice, ≤ 20 words per bullet, `(D<N>)` tag suffix.
@@ -18,9 +30,16 @@ All notable changes to ginee. The format follows [Keep a Changelog](https://keep
   - **5 mandatory checks** before publishing a sidecar — per-bullet word cap · user-value voice · `(D<N>)` tag · no implementation boilerplate · migration link in footer.
   - **Enforcement** — LLM self-review at draft time; one-line orchestrator advisory on violation; never auto-rewrites; never re-dispatches purely for format. Same machinery as D22 / D26 / D29 / D30.
   - **D34 carve-out** — sidecar D-tags stay bare (`(D31)`); slug-glued form (`D31-model-tier`) is required only in framework specs · adopter docs · cardinal returns where copy-paste-to-filesystem-search matters. Sidecars carry the spec link in the footer.
-  - **Files updated** — `core/MIGRATIONS/D40-changelog-protocol.md` (NEW) · `core/changelog-protocol.md` (NEW, load-on-demand spec) · `core/process.md § Documentation style` (one-line pointer) · `core/protocols/doc-authoring-protocol.md § Scope` (release-surfaces row) · `core/doc-authoring-examples.md § 14` (NEW bad/good pair — sidecar bullet) · `docs/CONCEPTS.md` + `docs/CHEATSHEET.md` (adopter-facing) · `CLAUDE.md` + `PLAN.md` (D40 row) · this file.
+  - **Spec location.** `core/changelog-protocol.md` is team-lead-loaded (release-artefact authoring lives on team-lead's surface per D25's doc-ownership map — framework-meta governance alongside CRs · work-breakdown). Moved from `core/process.md § Documentation style` to `core/roles/team-lead.md` kernel after code-review feedback; the 6 non-team-lead cardinals correctly pay zero bytes for this rule.
+  - **Files updated** — `core/MIGRATIONS/D40-changelog-protocol.md` (NEW) · `core/changelog-protocol.md` (NEW, load-on-demand spec) · `core/protocols/doc-authoring-protocol.md § Scope` (release-surfaces row) · `core/doc-authoring-examples.md § 14` (NEW bad/good pair — sidecar bullet) · `core/roles/team-lead.md` (kernel bullet) · `docs/CONCEPTS.md` + `docs/CHEATSHEET.md` (adopter-facing) · `CLAUDE.md` + `PLAN.md` (D40 row) · this file.
   - **Backwards compatibility** — purely additive. Framework-internal authoring rule; no adopter file affected; no `local/*` schema change. Forward-only — pre-D40 sidecars (`v0.4.0` → `v0.15.0`) not retroactively rewritten. Adopter action: **none**.
   - Migration: `core/MIGRATIONS/D40-changelog-protocol.md`.
+
+### Per-role context cost — team-lead only
+
+`team-lead` grew **+2,047 bytes (~+3.4%)** since v0.15.0 — D39 + D40 each added a kernel bullet. **All 6 non-team-lead cardinals unchanged** (D39 cardinal-kernel addenda + D40 `core/process.md` pointer were both refactored to team-lead's surface after code-review feedback). Headroom on every role > 30%; no ceiling adjustments needed.
+
+Full per-role snapshot: [`reference/CONTEXT_COSTS.html`](https://kostiantyn-matsebora.github.io/ginee/reference/CONTEXT_COSTS.html).
 
 ## 0.15.0 — 2026-05-24
 
