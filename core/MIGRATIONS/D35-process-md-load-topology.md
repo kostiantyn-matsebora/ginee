@@ -111,7 +111,7 @@ Per `core/roles/ai-engineer.md § Lossless rule`, every rule from pre-D35 `core/
 | Coordination protocol (PR rules) | `core/process.md § Coordination protocol` |
 | Load-on-demand specs index | `core/process.md § Load-on-demand specs` |
 | Task model | `core/process/dispatch.md § Task model` |
-| Post-task check-in pointer | `core/process.md § Post-task check-in` |
+| Post-task check-in pointer | `core/process.md § Post-task check-in` (D35) — later relocated to `core/process/dispatch.md § Post-task check-in` as a team-lead-only kernel summary alongside GitHub integration + Triage scoring |
 
 No rule, table row, gate, or invariant from pre-D35 process.md was dropped.
 

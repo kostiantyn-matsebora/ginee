@@ -137,19 +137,9 @@ Each row gives the spec's kernel summary + full-spec path + load triggers. Defau
 - Full spec + extraction recipes + staleness mechanism: **`core/protocols/index-protocol.md`**. `.idx` DSL grammar: **`core/index-syntax.md`**.
 - **Load triggers:** `team-lead` enumerates classes during initial discovery or `rediscover` · `team-lead` detects SHA-256 drift in `local/index/manifest.yaml` pre-dispatch · `ai-engineer` dispatched to extract or re-extract · role's "Source of truth" lookup pointed at `local/index/<file>` needs the protocol contract (rare).
 
-#### GitHub integration — issues + discussions
+#### Team-lead-only specs
 
-- `team-lead` files / picks up / triages / closes GitHub issues as a task source alongside TODO files + direct instructions; promotes discussions to issues on user request; threads phase progress as issue comments; links resulting PRs via `Closes #N`.
-- Full spec — tool surface (gh CLI / MCP / HTTPS) · repo discovery (origin inference + override) · label scheme · state mapping · outbound/inbound/triage/promote workflows · forbidden actions: **`core/github-integration.md`**.
-- **Load triggers:** `team-lead` dispatched to file (`file bug` / `file feature`) · pick up / triage (`pick up #<N>` / `triage`) · promote (`promote discussion #<N>`) · specialist posts phase-transition progress on a tracking issue mid-task.
-
-#### Triage scoring — value × complexity priority
-
-- `ginee-triage` ranks ready work by `score = value / complexity` (default WSJF formula; `H=3, M=2, L=1`).
-- Two label namespaces (ATAM convention): `value:high|medium|low` + `complexity:high|medium|low`; TODO equivalent `☐ [v:H c:L] …`.
-- On pickup: `team-lead` asks user (H/M/L) for missing `value`; dispatches `solution-architect` for missing `complexity`.
-- Full spec (axes · formula · label provisioning · auto-estimate hook · TODO parser · sort contract · adopter overrides): **`core/triage-scoring.md`**.
-- **Load triggers:** `team-lead` runs `triage` and needs the sort contract · `team-lead` picks up an issue and needs to evaluate / record scoring labels · `ginee-triage` / `ginee-pick-up` skills sort or auto-estimate.
+Three specs are orchestration-only and live in `core/process/dispatch.md § Team-lead-only load-on-demand specs` (loaded only by `team-lead` and the skill-runner main thread on `ginee-*` skill entry): **GitHub integration — issues + discussions** · **Triage scoring — value × complexity priority** · **Post-task check-in**. Cross-references from specialist outputs continue to resolve at their full-spec paths (`core/github-integration.md` · `core/triage-scoring.md` · `core/post-task-check-in.md`); specialists need not load the kernel summaries.
 
 #### Delivery modes — branch+PR / working-tree / commit-no-push
 
@@ -192,8 +182,3 @@ Each row gives the spec's kernel summary + full-spec path + load triggers. Defau
 - Full procedure (5-step hand-off · orchestrator wiring · doc-update routing): **`core/cross-agent-handoff.md`**.
 - **Load triggers:** specialist's final report flags a root cause outside their domain · orchestrator detects a hand-off-shaped event and needs the procedure. Default in-domain tasks do not load this file.
 
-### Post-task check-in
-
-- After every completed user request, orchestrator runs a check-in: pick next pending TODO item, ask the user a fixed set of options, mark `☐` → `☒` on Yes.
-- Full procedure (4-step check-in · TODO option tables · cross-cutting rules · nested-TODO discovery): **`core/post-task-check-in.md`**.
-- **Load triggers:** a user request just completed (work delivered or question answered) · Phase 8 user-approval is about to fire (interactive mode), OR delivery handoff Accept fires (auto mode). Mid-task turns do not load this file.
