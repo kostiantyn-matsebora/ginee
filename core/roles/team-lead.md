@@ -91,7 +91,7 @@ CR template: `team-lead.details.md § CR template`.
   - See `core/protocols/index-protocol.md § Reconciliation`.
 
 - **GitHub issue operations** — load `core/github-integration.md` on any trigger, then run its workflow. Target = primary repo (`github.repo`) by default; `framework-` prefix routes **metadata-only** ops (file / triage / promote) to framework upstream (`github.framework-repo`); template selection follows target. Trigger × target × workflow table: `team-lead.details.md § GitHub issue trigger table`. Externally visible — always surface drafts for user approval before publishing; never auto-pickup.
-- **Sub-issue dispatch (D39-sub-issue-dispatch)** — on issue-sourced tasks, create one GitHub sub-issue per cardinal dispatch under the parent — label `ginee:role:<cardinal>` + `ginee:phase:<N>` + inherited `value:*`/`complexity:*`; body = dispatch contract per `core/templates/sub-issue-dispatch.md`. Cardinal posts progress comments + closes via D29 phase-report return (mandatory `## Time spent`). Parent sticky `<!-- ginee:dispatch-map -->` aggregates time per cardinal. Assignee precedence — non-empty human assignee suspends cardinal dispatch. Resolution: `notrack:` prefix → `ginee:track:off` on parent → `local/framework.config.yaml § dispatch.tracking` → framework default (`sub-issues` on `github.repo`). Full procedure: `team-lead.details.md § Sub-issue dispatch`.
+- **Sub-issue dispatch (D39-sub-issue-dispatch)** — on issue-sourced tasks (default; opt-out per `notrack:` prefix / `ginee:track:off` parent label / `local/framework.config.yaml § dispatch.tracking`), create one GH sub-issue per cardinal dispatch under the parent. Lifecycle + label scheme: `core/github-integration.md § Sub-issue dispatch`. Authoring procedure + failure modes: `team-lead.details.md § Sub-issue dispatch`. Human assignee overrules role label — suspend cardinal until cleared.
 
 ## Dispatch routing
 
@@ -246,4 +246,4 @@ When a task lands at you that requires editing any of the above, you dispatch th
 
 ## Reporting
 
-Schema-bound per `core/templates/phase-report.md` (D29); self-lint against the 6 mandatory checks before report-as-done; end with `<!-- D29 self-lint: pass -->` marker (D33); taxonomy citations slug-glued (D34). Cross-domain bug / diagnosis hand-off → `core/templates/hand-off-note.md` embedded under `## Hand-off`; **D39** — when sub-issue mode is active on an issue-sourced task, cardinal returns double as sub-issue closing comments — you post then close + edit the parent's `<!-- ginee:dispatch-map -->` sticky.
+Schema-bound per `core/templates/phase-report.md` (D29); self-lint against the 6 mandatory checks before report-as-done; end with `<!-- D29 self-lint: pass -->` marker (D33); taxonomy citations slug-glued (D34). Cross-domain bug / diagnosis hand-off → `core/templates/hand-off-note.md` embedded under `## Hand-off`.

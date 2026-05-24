@@ -133,6 +133,8 @@ One line — cardinal-reported perceived effort (NOT wall-clock); progress-comme
 
 Cardinal owns the number; team-lead never re-derives. Doubles as the rollup feeding the parent's `<!-- ginee:dispatch-map -->` sticky.
 
+**In-flight cadence (every cardinal, sub-issue mode only).** While the dispatch runs, the cardinal posts progress comments on the sub-issue per `core/templates/sub-issue-dispatch.md § Comment cadence` — each carrying `time: <N>m` (since last comment) + `cumulative: <N>m` (since dispatch start). D26 self-lint applies. This is the SINGLE place where the cadence rule binds every cardinal; per-kernel addenda are intentionally avoided to keep the always-loaded surface free of duplication (D35 load-topology).
+
 ### `## Notes` *(optional, capped)*
 
 Narrative rationale that genuinely won't fit on a `## Decisions made` bullet. ≤ 200 words. Code-snippet carve-out per forbidden-pattern #3.
