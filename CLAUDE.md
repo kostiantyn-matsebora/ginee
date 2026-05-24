@@ -183,6 +183,14 @@ Canonical in the plan file. Summary:
   - Waiver: PR label `context-economy:waived` + `**Context economy waiver:** <reason>` in body.
   - Spec: `scripts/context-economy-check.ps1`. Migration: `core/MIGRATIONS/D21-context-economy-gates.md`.
 
+## Release checklist (before bumping `core/VERSION`)
+
+1. `pwsh -File scripts/measure-role-context.ps1 -UpdateDoc` — refresh `docs/reference/CONTEXT_COSTS.md` snapshot. Pester gates this.
+2. `pwsh -File scripts/measure-role-context.ps1` — compare vs. prior tag. Material shift (≥ 10% per role, or headroom < 20%) → one-line release-notes entry.
+3. Tighten `scripts/templates/role-context-ceilings.json` if measurements stabilised; loosening any ceiling = `ai-engineer` review required.
+4. `Invoke-Pester -Path tests/measure-role-context.Tests.ps1` — all 17 tests must pass.
+5. Commit regenerated `CONTEXT_COSTS.md` + ceiling adjustments in the release-prep PR; do not tag until the snapshot is current.
+
 ## Resuming work in a new session
 
 1. Read `CLAUDE.md` (this file) + `PLAN.md` + `core/process.md`.
