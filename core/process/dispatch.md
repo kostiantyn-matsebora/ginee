@@ -93,6 +93,30 @@ Phase 1–8 applies to any task. A task originates from one of four sources:
 - PR descriptions for issue-sourced tasks include `Closes #<N>` so GitHub auto-closes the issue on merge.
 - Priority signals via `value:high|medium|low` + `complexity:high|medium|low` labels (ATAM convention); ranked by `ginee-triage` per `core/triage-scoring.md`.
 
+## Team-lead-only load-on-demand specs
+
+The kernel summaries below are orchestration-only — relocated from `core/process.md § Load-on-demand specs` because the load triggers are all team-lead-driven. Specialists never load this file, so they never pay for these summaries; cross-references from specialist outputs resolve directly to the full-spec paths.
+
+### GitHub integration — issues + discussions
+
+- `team-lead` files / picks up / triages / closes GitHub issues as a task source alongside TODO files + direct instructions; promotes discussions to issues on user request; threads phase progress as issue comments; links resulting PRs via `Closes #N`.
+- Full spec — tool surface (gh CLI / MCP / HTTPS) · repo discovery (origin inference + override) · label scheme · state mapping · outbound/inbound/triage/promote workflows · forbidden actions: **`core/github-integration.md`**.
+- **Load triggers:** `team-lead` dispatched to file (`file bug` / `file feature`) · pick up / triage (`pick up #<N>` / `triage`) · promote (`promote discussion #<N>`) · specialist posts phase-transition progress on a tracking issue mid-task.
+
+### Triage scoring — value × complexity priority
+
+- `ginee-triage` ranks ready work by `score = value / complexity` (default WSJF formula; `H=3, M=2, L=1`).
+- Two label namespaces (ATAM convention): `value:high|medium|low` + `complexity:high|medium|low`; TODO equivalent `☐ [v:H c:L] …`.
+- On pickup: `team-lead` asks user (H/M/L) for missing `value`; dispatches `solution-architect` for missing `complexity`.
+- Full spec (axes · formula · label provisioning · auto-estimate hook · TODO parser · sort contract · adopter overrides): **`core/triage-scoring.md`**.
+- **Load triggers:** `team-lead` runs `triage` and needs the sort contract · `team-lead` picks up an issue and needs to evaluate / record scoring labels · `ginee-triage` / `ginee-pick-up` skills sort or auto-estimate.
+
+### Post-task check-in
+
+- After every completed user request, orchestrator runs a check-in: pick next pending TODO item, ask the user a fixed set of options, mark `☐` → `☒` on Yes.
+- Full procedure (4-step check-in · TODO option tables · cross-cutting rules · nested-TODO discovery): **`core/post-task-check-in.md`**.
+- **Load triggers:** a user request just completed (work delivered or question answered) · Phase 8 user-approval is about to fire (interactive mode), OR delivery handoff Accept fires (auto mode). Mid-task turns do not load this file.
+
 ## Relation to the cross-domain bugs cycle
 
 - Source: `core/cross-domain-bugs.md` — specific instantiation of the lifecycle for bugs cutting across 2+ domains.
