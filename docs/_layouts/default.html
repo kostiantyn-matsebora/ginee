@@ -55,7 +55,7 @@
       <li><a href="{{ '/GETTING_STARTED.html' | relative_url }}"{% if page.url contains 'GETTING_STARTED' %} class="active"{% endif %}>Getting Started</a></li>
       <li><a href="{{ '/CONCEPTS.html' | relative_url }}"{% if page.url contains 'CONCEPTS' %} class="active"{% endif %}>Concepts</a></li>
       <li><a href="{{ '/ARCHITECTURE.html' | relative_url }}"{% if page.url contains 'ARCHITECTURE' %} class="active"{% endif %}>Architecture</a></li>
-      <li><a href="{{ '/reference/' | relative_url }}"{% if page.url contains '/reference/' or page.url contains 'PROCESS' or page.url contains 'ROLES' or page.url contains 'INDEX_PROTOCOL' %} class="active"{% endif %}>Reference</a></li>
+      <li><a href="{{ '/reference/' | relative_url }}"{% if page.url contains '/reference/' or page.url contains 'PROCESS' or page.url contains 'ROLES' or page.url contains 'INDEX_PROTOCOL' or page.url contains 'CONTEXT_COSTS' %} class="active"{% endif %}>Reference</a></li>
       <li><a href="{{ '/CHEATSHEET.html' | relative_url }}"{% if page.url contains 'CHEATSHEET' %} class="active"{% endif %}>Cheatsheet</a></li>
       <li><a href="{{ '/CHANGELOG.html' | relative_url }}"{% if page.url contains 'CHANGELOG' %} class="active"{% endif %}>Changelog</a></li>
       <li><a href="{{ '/CONTRIBUTING.html' | relative_url }}"{% if page.url contains 'CONTRIBUTING' %} class="active"{% endif %}>Contributing</a></li>
@@ -65,11 +65,12 @@
   <section class="main-content">
     {% unless page.no_toc %}
       <aside class="page-toc" aria-label="On this page" data-auto-toc>
-        {% if page.url contains '/reference/' or page.url contains 'PROCESS' or page.url contains 'ROLES' or page.url contains 'INDEX_PROTOCOL' %}
+        {% if page.url contains '/reference/' or page.url contains 'PROCESS' or page.url contains 'ROLES' or page.url contains 'INDEX_PROTOCOL' or page.url contains 'CONTEXT_COSTS' %}
           {%- assign ref_index = '/reference/' | relative_url -%}
           {%- assign ref_process = '/reference/PROCESS.html' | relative_url -%}
           {%- assign ref_roles = '/reference/ROLES.html' | relative_url -%}
           {%- assign ref_index_proto = '/reference/INDEX_PROTOCOL.html' | relative_url -%}
+          {%- assign ref_context_costs = '/reference/CONTEXT_COSTS.html' | relative_url -%}
           <nav class="section-nav" aria-label="Reference pages">
             <h4>Reference pages</h4>
             <ul>
@@ -77,6 +78,7 @@
               <li{% if page.url contains 'PROCESS' %} class="current"{% endif %}><a href="{{ ref_process }}">Process spec</a></li>
               <li{% if page.url contains 'ROLES' %} class="current"{% endif %}><a href="{{ ref_roles }}">Role kernels</a></li>
               <li{% if page.url contains 'INDEX_PROTOCOL' %} class="current"{% endif %}><a href="{{ ref_index_proto }}">Index protocol</a></li>
+              <li{% if page.url contains 'CONTEXT_COSTS' %} class="current"{% endif %}><a href="{{ ref_context_costs }}">Per-role context costs</a></li>
             </ul>
           </nav>
         {% endif %}
