@@ -55,6 +55,7 @@
 5. **Verify.** Ask Claude for the status of each cardinal. Each should:
    - Report its charter (read from `.agents/ginee/core/roles/<role>.md`).
    - Confirm the project's bindings.
+   - If a `.agents/ginee/local/roles/<role>.md` extension is present (D37-local-role-extensions), surface its project-specific craft notes as part of the status report.
 
 ## How to invoke
 

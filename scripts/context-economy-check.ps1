@@ -85,6 +85,7 @@ $Script:OtherWatchedPatterns = @(
   '^core/process/[^/]+\.md$'        # D35 — phase + dispatch files (load-on-demand by role)
   '^core/protocols/[^/]+\.md$'      # load-on-demand protocol specs (relocated from core/)
   '^core/roles/[^/]+\.details\.md$' # load-on-demand role details
+  '^local/roles/[^/]+\.md$'         # D37 — cardinal extensions (load if present)
   '^core/skills/'
   '^core/templates/'
   '^adapters/'
