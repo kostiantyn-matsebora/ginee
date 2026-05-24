@@ -12,15 +12,7 @@
 
 ## Voice rule — sidecar
 
-Lead each bullet with the **adopter-visible verb / outcome**. Mechanism (if mentioned at all) follows. End with the `(D<N>)` tag.
-
-| Implementation voice (bad) | User-value voice (good) |
-|---|---|
-| Three vendor-neutral tiers declared as role-kernel `default-tier:` | Lower LLM bills — cheaper models on execution work |
-| 5 required sections + 2 conditional + Notes carve-out | ~70% smaller subagent returns — more room in your context |
-| Step 1 no longer requires installer scripts inside `.agents/ginee/` | `/ginee-update` works again |
-| MUST surface ≥ 1 adopt candidate or `(none viable)` cite | Team picks existing libraries first |
-| Affinity-injection protocol surfaces matching tools in dispatch prompts | Specialists hinted toward host tools they'd otherwise miss |
+Lead each bullet with the **adopter-visible verb / outcome**. Mechanism (if mentioned at all) follows. End with the `(D<N>)` tag. Worked bad/good pairs: `core/doc-authoring-examples.md § 14`.
 
 ## 5 mandatory checks — sidecar self-lint
 
