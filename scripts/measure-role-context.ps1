@@ -82,7 +82,7 @@ function Get-PhaseParticipation {
   return @()
 }
 
-function Get-FileMetrics {
+function Get-FileMetric {
   param([string]$Path)
   $item = Get-Item -LiteralPath $Path
   $lines = (Get-Content -LiteralPath $Path -Encoding UTF8 | Measure-Object).Count
@@ -99,11 +99,11 @@ function Measure-Role {
 
   # Always-loaded common.
   $processMd = Join-Path $RepoRoot 'core/process.md'
-  $m = Get-FileMetrics -Path $processMd
+  $m = Get-FileMetric -Path $processMd
   $null = $files.Add([PSCustomObject]@{ Path = 'core/process.md'; Bytes = $m.Bytes; Lines = $m.Lines; Reason = 'always-loaded common' })
 
   # Role kernel.
-  $m = Get-FileMetrics -Path $kernelPath
+  $m = Get-FileMetric -Path $kernelPath
   $null = $files.Add([PSCustomObject]@{ Path = "core/roles/$RoleName.md"; Bytes = $m.Bytes; Lines = $m.Lines; Reason = 'role kernel' })
 
   # Phase-participation files.
@@ -113,7 +113,7 @@ function Measure-Role {
     $phaseFiles = @(Get-ChildItem -Path $glob -ErrorAction SilentlyContinue)
     foreach ($pf in $phaseFiles) {
       $rel = ($pf.FullName.Substring($RepoRoot.Length).TrimStart('\', '/')) -replace '\\', '/'
-      $pm = Get-FileMetrics -Path $pf.FullName
+      $pm = Get-FileMetric -Path $pf.FullName
       $null = $files.Add([PSCustomObject]@{ Path = $rel; Bytes = $pm.Bytes; Lines = $pm.Lines; Reason = "phase-$n" })
     }
   }
@@ -122,7 +122,7 @@ function Measure-Role {
   if ($RoleName -eq 'team-lead') {
     $dispatchMd = Join-Path $RepoRoot 'core/process/dispatch.md'
     if (Test-Path -LiteralPath $dispatchMd) {
-      $m = Get-FileMetrics -Path $dispatchMd
+      $m = Get-FileMetric -Path $dispatchMd
       $null = $files.Add([PSCustomObject]@{ Path = 'core/process/dispatch.md'; Bytes = $m.Bytes; Lines = $m.Lines; Reason = 'orchestration (team-lead only)' })
     }
   }
