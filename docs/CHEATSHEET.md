@@ -199,6 +199,20 @@ Status: Done | In-progress | Blocked | Hand-off
 
 **6 mandatory checks before report-as-done** — 5 from D22 / D26 + *no narrative preamble*. **Forbidden** — narrative preamble · restated dispatch context · code snippets outside the Notes carve-out · verbose rationale outside `## Notes` · parenthetical comma-soup. Target reduction vs free-form returns: ~70%.
 
+## Release-surface authoring (D40)
+
+Three surfaces, three voices, three caps — applies only to maintainers drafting release artefacts.
+
+| Surface | Voice | Bullet cap |
+|---|---|---|
+| `core/MIGRATIONS/D<N>-*.md` | Framework-dev (precise jargon OK) | None — structured tables / lists |
+| `docs/CHANGELOG.md` | Framework-dev in sub-bullets; lead-in ≤ 25 words | Lead-in ≤ 25 words + sub-bullets |
+| `.github/release-notes/v*.md` | **User-value** — adopter benefit at line start | **≤ 20 words per bullet** + `(D<N>)` tag |
+
+**Sidecar self-lint** — 5 checks before publish: word cap · user-value voice · `(D<N>)` tag · no implementation boilerplate · migration link in footer.
+
+**Pattern** — lead with adopter verb (`/ginee-update works again` not `Step 1 no longer requires installer scripts inside .agents/ginee/`). Full spec: [`core/changelog-protocol.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/core/changelog-protocol.md).
+
 ## Option-list shape (D30)
 
 Every Phase 2 design proposal + every iteration-protocol Propose step (Phase 4–7 > 15-min sub-tasks with a live adopt-vs-build axis) MUST surface ≥ 1 adopt candidate OR an explicit `(none viable — <reason>)` cite.

@@ -104,6 +104,7 @@ Bindings may NOT override generic process.
 
 **Enforcement procedure** (lint command, attestation format, no-tool fallback): `core/protocols/doc-authoring-protocol.md` — load at Phase 5 / report-as-done.
 **Paired bad-vs-good examples** (6 doc classes): `core/doc-authoring-examples.md` — load on first-time authoring or explicit request.
+**Release-surface authoring rules** (changelog · sidecar · migration — voice, word cap, mandatory checks): `core/changelog-protocol.md` (D40-changelog-protocol) — load when drafting any of those three files.
 
 ## Reporting — schema-bound (D29-strict-subagent-return-schema)
 

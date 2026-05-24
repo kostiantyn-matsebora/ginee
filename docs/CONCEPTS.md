@@ -292,6 +292,32 @@ When ginee authors markdown — adopter docs (D22) OR ginee-authored GitHub arte
 
 Full spec: [`core/protocols/doc-authoring-protocol.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/core/protocols/doc-authoring-protocol.md). Examples (9 bad/good pairs): [`core/doc-authoring-examples.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/core/doc-authoring-examples.md).
 
+## Changelog + release-notes protocol (D40)
+
+Extends the doc-authoring scope to the three release-surface files. Closes a recurring drift mode — pre-D40, release-notes sidecars repeatedly drifted into framework-dev voice + oversized bullets, requiring multi-pass rewrites after publish (the v0.12.0 sidecar took four passes to converge).
+
+**Three surfaces, three voices, three caps:**
+
+| Surface | Purpose | Voice | Bullet cap |
+|---|---|---|---|
+| `core/MIGRATIONS/D<N>-*.md` | Full spec — schema · checks · rollback · file list | Framework-dev (precise jargon OK) | None — structured tables / lists |
+| `docs/CHANGELOG.md` | Verbose record per Keep-a-Changelog | Framework-dev OK in sub-bullets; lead-in ≤ 25 words | Lead-in ≤ 25 words + sub-bullets |
+| `.github/release-notes/v*.md` | Marketing on the GH Release page | **User-value voice** — adopter-visible benefit at line start | **≤ 20 words per bullet** + `(D<N>)` tag |
+
+**Voice rule — sidecar.** Lead with the adopter-visible verb / outcome — *"`/ginee-update` works again"* not *"Step 1 no longer requires installer scripts inside `.agents/ginee/`"*; *"Lower LLM bills"* not *"Three vendor-neutral tiers declared as role-kernel `default-tier:`"*.
+
+**5 mandatory checks** before publishing a sidecar — per-bullet word cap · user-value voice · `(D<N>)` tag suffix · no implementation boilerplate (file-update lists / "purely additive" stat blocks belong in the migration) · migration link in footer.
+
+**Enforcement** — LLM self-review at draft time; one-line orchestrator advisory on violation; never auto-rewrites. Same machinery as D22 / D26 / D29 / D30.
+
+**D34 carve-out** — sidecar D-tags stay bare (`(D31)`) rather than slug-glued (`D31-model-tier`); the slug form is required only in framework specs · adopter docs · cardinal returns. Sidecars carry the spec link in the footer.
+
+**Scope (out-of-scope)** — retroactive rewrite of pre-D40 sidecars (forward-only); external markdown linter / CI gate (self-lint only); translation / localization; style / tone / branding beyond voice.
+
+Adopter impact — **none** (framework-internal authoring rule; affects ginee maintainers writing release artefacts, not adopters).
+
+Full spec: [`core/changelog-protocol.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/core/changelog-protocol.md) + [`core/MIGRATIONS/D40-changelog-protocol.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/core/MIGRATIONS/D40-changelog-protocol.md).
+
 ## Subagent-return schema (D29)
 
 Every cardinal-dispatch return is **schema-bound** per `core/templates/phase-report.md` — same machinery as the D22 / D26 doc-authoring protocol, scoped to the subagent-return surface. Goal: cut ~70% off subagent-return bloat (today's largest orchestration-thread contributor).
