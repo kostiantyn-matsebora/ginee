@@ -10,6 +10,25 @@ All notable changes to ginee. The format follows [Keep a Changelog](https://keep
 
 ## Unreleased
 
+## 0.14.0 — 2026-05-24
+
+### Added
+
+- **D35 — `core/process.md` load topology split** ([#89](https://github.com/kostiantyn-matsebora/ginee/issues/89)). Pre-D35 the 477-line lifecycle spec was always-loaded on every cardinal dispatch — every role paid the cost of phases it never participated in. D35 extracts the 8 phase blocks + orchestration content into `core/process/phase-<N>-<name>.md` + `core/process/dispatch.md`; slims `core/process.md` to common-only (Purpose · Reading order · Engineering principles · Doc style · Reporting · Coordination protocol · Load-on-demand index). Each cardinal kernel declares `phase-participation: [N, M, …]` in frontmatter; adapter loads only matching phase files. Roster: `team-lead [1-8]` + `dispatch.md` · `solution-architect [1, 2, 4, 5, 6, 7]` · `backend / frontend / devops [2, 4, 5, 6]` · `qa-engineer [5, 6]` · `ai-engineer []`. **Token reduction:** backend Phase 4 dispatch -38%; qa Phase 5 -48%; ai-engineer -58%. Spec: `core/MIGRATIONS/D35-process-md-load-topology.md`.
+- **Per-role context-cost measurement + CI gate + adopter doc** ([#100](https://github.com/kostiantyn-matsebora/ginee/pull/100)). `scripts/measure-role-context.ps1` measures the framework-only context cost per cardinal on first dispatch. Auto-generates the snapshot in `docs/reference/CONTEXT_COSTS.md` from templates under `scripts/templates/` (substitution-only — no markdown formatting logic in the script). New Pester test (`tests/measure-role-context.Tests.ps1`) — 17 assertions including doc-currency gate, D35 phase-participation contract verification, and per-role byte ceilings from `scripts/templates/role-context-ceilings.json` (single source of truth shared by the test and the doc generator). Refresh flow: `pwsh -File scripts/measure-role-context.ps1 -UpdateDoc`.
+- **Release checklist in `CLAUDE.md`**. 5 numbered steps before tagging — refresh snapshot · analyse movement vs. prior tag · tighten ceilings if stabilised · verify gate · commit + tag. Catches snapshot-drift across releases.
+
+### Changed
+
+- **`core/process.md` slimmed from 477 to ~180 lines.** All cardinals except `team-lead` see materially less always-loaded context. Migration is automatic on the next dispatch — anchor moves are documented in `core/MIGRATIONS/D35-process-md-load-topology.md § Anchor migration` for adopters citing `core/process.md § Phase N` from `local/*`.
+- **`*-protocol.md` specs relocated to `core/protocols/`** ([#98](https://github.com/kostiantyn-matsebora/ginee/pull/98)). `core/doc-authoring-protocol.md` · `core/index-protocol.md` · `core/iteration-protocol.md` · `core/options-protocol.md` → `core/protocols/<name>.md`. Sweeps 65 files of internal references. Adopters citing the old paths from `local/*` should update their cites.
+- **Team-lead-only kernel summaries relocated to `core/process/dispatch.md`** ([#99](https://github.com/kostiantyn-matsebora/ginee/pull/99)). `GitHub integration · Triage scoring · Post-task check-in` kernel summaries moved out of always-loaded `core/process.md`. Specialists no longer pay for orchestration-only spec summaries.
+- **D21 watched-paths extended** — `core/process/*.md` + `core/protocols/*.md` join the "other watched" tier (50-line / 2 KB net-added).
+
+### Fixed
+
+- **Reference sidebar surfaces the new context-costs page** ([#101](https://github.com/kostiantyn-matsebora/ginee/pull/101)). The layout's hard-coded list was missed in #100 — the new page rendered without a sidebar entry. Layout now includes `CONTEXT_COSTS` in both the top-nav active-state detector and the section-nav sidebar.
+
 ## 0.13.0 — 2026-05-23
 
 ### Added
