@@ -13,6 +13,7 @@ The canonical specs. These mirror the `core/*.md` files in the [source repo](htt
 - [**Process spec**]({{ '/reference/PROCESS.html' | relative_url }}) — Phase 1–8 lifecycle, dispatch + parallelism rules, iteration protocol, doc co-ownership, task model.
 - [**Role kernels**]({{ '/reference/ROLES.html' | relative_url }}) — the 7 cardinals + 5 specialists. What each owns, what each must not edit, source-of-truth tables with load triggers.
 - [**Index protocol**]({{ '/reference/INDEX_PROTOCOL.html' | relative_url }}) — `local/index/` extraction, lossless coverage + compression floor, consumer coupling, per-file load triggers, manifest schema.
+- [**Per-role context costs**]({{ '/reference/CONTEXT_COSTS.html' | relative_url }}) — bytes / lines / approximate tokens each cardinal pays on first dispatch on current main. CI-gated per-role ceilings (D35).
 
 ## Specs by concern
 
