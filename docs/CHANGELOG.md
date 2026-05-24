@@ -10,6 +10,18 @@ All notable changes to ginee. The format follows [Keep a Changelog](https://keep
 
 ## Unreleased
 
+### Added
+
+- **D40 — Changelog + release-notes protocol** ([#81](https://github.com/kostiantyn-matsebora/ginee/issues/81)). Codifies surface-specific voice + shape rules for the three release-surface files (`docs/CHANGELOG.md` · `.github/release-notes/v*.md` · `core/MIGRATIONS/D<N>-*.md`). Closes a recurring drift mode — pre-D40 no spec bound these surfaces to surface-specific voice + word-count rules; the v0.12.0 sidecar took 4 authoring passes to converge.
+  - **Topology.** Three surfaces, three voices, three caps. Migration spec — framework-dev voice, no cap. CHANGELOG — verbose record per Keep-a-Changelog; lead-in ≤ 25 words + sub-bullets. Release-notes sidecar — user-value voice, ≤ 20 words per bullet, `(D<N>)` tag suffix.
+  - **Voice rule.** Sidecar bullets lead with the adopter-visible verb / outcome — *"`/ginee-update` works again"* not *"Step 1 no longer requires installer scripts inside `.agents/ginee/`"*.
+  - **5 mandatory checks** before publishing a sidecar — per-bullet word cap · user-value voice · `(D<N>)` tag · no implementation boilerplate · migration link in footer.
+  - **Enforcement** — LLM self-review at draft time; one-line orchestrator advisory on violation; never auto-rewrites; never re-dispatches purely for format. Same machinery as D22 / D26 / D29 / D30.
+  - **D34 carve-out** — sidecar D-tags stay bare (`(D31)`); slug-glued form (`D31-model-tier`) is required only in framework specs · adopter docs · cardinal returns where copy-paste-to-filesystem-search matters. Sidecars carry the spec link in the footer.
+  - **Files updated** — `core/MIGRATIONS/D40-changelog-protocol.md` (NEW) · `core/changelog-protocol.md` (NEW, load-on-demand spec) · `core/process.md § Documentation style` (one-line pointer) · `core/protocols/doc-authoring-protocol.md § Scope` (release-surfaces row) · `core/doc-authoring-examples.md § 14` (NEW bad/good pair — sidecar bullet) · `docs/CONCEPTS.md` + `docs/CHEATSHEET.md` (adopter-facing) · `CLAUDE.md` + `PLAN.md` (D40 row) · this file.
+  - **Backwards compatibility** — purely additive. Framework-internal authoring rule; no adopter file affected; no `local/*` schema change. Forward-only — pre-D40 sidecars (`v0.4.0` → `v0.15.0`) not retroactively rewritten. Adopter action: **none**.
+  - Migration: `core/MIGRATIONS/D40-changelog-protocol.md`.
+
 ## 0.15.0 — 2026-05-24
 
 ### Added
