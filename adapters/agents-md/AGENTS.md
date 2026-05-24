@@ -41,7 +41,7 @@ Project uses the [`ginee`](.agents/ginee/) framework — vendor-neutral multi-ag
 | Rule | What | Reference |
 |---|---|---|
 | Strict-domain | No role works outside its domain. | `core/process.md § Strict-domain rule` |
-| Estimation-first dispatch | Phase 4/5/6 work > 15 min — dispatched role responds first with task decomposition + per-task estimates. | `core/iteration-protocol.md` |
-| Iteration protocol | Scope > 15 min — work in 3–5 min batches with visible intermediate results. | `core/iteration-protocol.md` |
+| Estimation-first dispatch | Phase 4/5/6 work > 15 min — dispatched role responds first with task decomposition + per-task estimates. | `core/protocols/iteration-protocol.md` |
+| Iteration protocol | Scope > 15 min — work in 3–5 min batches with visible intermediate results. | `core/protocols/iteration-protocol.md` |
 | Doc co-ownership | `solution-architect` owns documentation semantics; `ai-engineer` owns shape + load topology. | `core/process.md § Doc co-ownership` |
 | SAD freeze + CR/ADR | After SAD finalized — requirements changes → `docs/cr/`; architecture changes → `docs/adr/`. | `core/roles/solution-architect.md § SAD freeze + change governance` |

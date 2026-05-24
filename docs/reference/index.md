@@ -19,9 +19,9 @@ The canonical specs. These mirror the `core/*.md` files in the [source repo](htt
 | Concern | Canonical spec | Linked from |
 |---|---|---|
 | Phased lifecycle, dispatch, iteration | [`core/process.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/core/process.md) | Concepts § Phased task lifecycle |
-| Iteration protocol detail | [`core/iteration-protocol.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/core/iteration-protocol.md) | Concepts § Iteration protocol |
+| Iteration protocol detail | [`core/protocols/iteration-protocol.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/core/protocols/iteration-protocol.md) | Concepts § Iteration protocol |
 | Automatic mode | [`core/automatic-mode.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/core/automatic-mode.md) | Concepts § Phased task lifecycle (auto mode) |
-| Index protocol + recipes | [`core/index-protocol.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/core/index-protocol.md) | Concepts § Index protocol |
+| Index protocol + recipes | [`core/protocols/index-protocol.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/core/protocols/index-protocol.md) | Concepts § Index protocol |
 | `.idx` DSL grammar | [`core/index-syntax.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/core/index-syntax.md) | Index protocol |
 | Doc roles (all-roles authorship + ai-engineer shape — D25) | [`core/doc-roles.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/core/doc-roles.md) | Process spec |
 | Cross-domain bugs | [`core/cross-domain-bugs.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/core/cross-domain-bugs.md) | Process spec |

@@ -124,7 +124,7 @@
 - State so explicitly.
 - **Never** claim PASS without doing it.
 
-**Doc-style protocol** *(when PR touches adopter markdown — rules in `core/process.md § Documentation style`; enforcement in `core/doc-authoring-protocol.md`)*
+**Doc-style protocol** *(when PR touches adopter markdown — rules in `core/process.md § Documentation style`; enforcement in `core/protocols/doc-authoring-protocol.md`)*
 
 - `<discovered linter command>: PASS / N findings` OR `no linter configured; self-checked against § Mandatory checks`.
 

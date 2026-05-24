@@ -21,7 +21,7 @@
   - Accept / Feedback / Reject replace yes/no.
   - Accept's concrete action depends on resolved mode (see `core/delivery-modes.md § Auto-mode integration`).
 - **Post-acceptance doc-optimization hook.** If the task touched any documentation (project-instruction files, architecture docs, role definitions, ADRs, CRs, READMEs):
-  - Orchestrator MUST dispatch `ai-engineer` to run `core/iteration-protocol.md` scoped to the doc diff.
+  - Orchestrator MUST dispatch `ai-engineer` to run `core/protocols/iteration-protocol.md` scoped to the doc diff.
   - Polish step, not a gate.
   - First proposal batch returns "no productive proposals" → hook completes immediately.
   - No user permission required to invoke.

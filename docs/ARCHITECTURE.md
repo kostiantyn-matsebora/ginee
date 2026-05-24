@@ -63,10 +63,13 @@ core/
 │   ├── phase-8-user-approval.md      Delivery finalize · doc-optimization hook
 │   └── dispatch.md                   Skill-runner boundary · dispatch & parallelism ·
 │                                     automatic mode · task model · cross-domain bugs map
-├── iteration-protocol.md       Estimation-first dispatch + 3–5 min stoppable batches
+├── protocols/                  Load-on-demand protocol specs
+│   ├── iteration-protocol.md       Estimation-first dispatch + 3–5 min stoppable batches
+│   ├── doc-authoring-protocol.md   Enforcement + attestation (D22 / D26 / D29)
+│   ├── index-protocol.md           local/index/ extraction, lossless rule, compression
+│   │                               floor, consumer coupling, load triggers
+│   └── options-protocol.md         Adopt-vs-build proposal shape (D30)
 ├── automatic-mode.md           D12 — per-task `auto:` opt-in; elides intermediate gates
-├── index-protocol.md           local/index/ extraction, lossless rule, compression
-│                               floor, consumer coupling, load triggers
 ├── index-syntax.md             .idx DSL grammar
 ├── delivery-modes.md           D17 — branch+PR / working-tree / commit-no-push
 ├── github-integration.md       D14 — issues + discussions as 4th task source
@@ -253,7 +256,7 @@ RECONCILIATION  (@ai-engineer reindex [scope])
    → sample-and-check + dormant-index audit on every touched class
 ```
 
-Full spec: [`core/index-protocol.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/core/index-protocol.md).
+Full spec: [`core/protocols/index-protocol.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/core/protocols/index-protocol.md).
 
 ## Skills — workflow entry points
 

@@ -49,7 +49,7 @@ In-scope for security reports:
 
 - Bypass of role-domain boundaries that lets a non-owning specialist write to forbidden surfaces (per `local/bindings.md § Project role boundaries` + cardinal kernel forbidden-actions blocks)
 - Path-traversal or injection in install scripts (`install.sh`, `install.ps1`)
-- `builtin:runtime-facts` recipe leaking real secret values from `.env` or production appsettings (per safeguard in `core/index-protocol.md § Source types § Code`)
+- `builtin:runtime-facts` recipe leaking real secret values from `.env` or production appsettings (per safeguard in `core/protocols/index-protocol.md § Source types § Code`)
 - Privilege issues in the GitHub Actions workflows (`.github/workflows/*.yml`)
 - Marker / sentinel writers producing content that escapes intended bounds (`CLAUDE.md` pointer-append step)
 

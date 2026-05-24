@@ -19,7 +19,7 @@ body:
         - core/process.md (lifecycle / dispatch / iteration)
         - core/roles/* (cardinal role kernels)
         - core/templates/* (bindings / pr-description / hand-off-note / etc.)
-        - core/index-protocol.md (`local/index/` extraction, manifest, recipes)
+        - core/protocols/index-protocol.md (`local/index/` extraction, manifest, recipes)
         - core/github-integration.md (issue/PR/label flow)
         - core/delivery-modes.md (branch / wt / commit)
         - adapters/* (claude / copilot-cli / agents-md / generic)

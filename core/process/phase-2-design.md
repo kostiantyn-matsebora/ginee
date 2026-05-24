@@ -15,14 +15,14 @@
   | Engineer-proposed architectural deltas | originating engineer drafts; `solution-architect` reviews per `§ Review` (APPROVE / REJECT / REQUEST-CHANGES) |
 
   Parallel where independent. **Mode-aware** — greenfield mode authors the architecture doc; delta mode produces ADRs + CRs and never rewrites the doc wholesale.
-- **Option-shape rule (D30-adopt-existing-solution).** Every design proposal MUST surface ≥ 1 adopt-existing-solution candidate **or** an explicit `(none viable — <reason>)` cite. Full schema · 5 mandatory checks · enforcement: `core/options-protocol.md` (load-on-demand).
+- **Option-shape rule (D30-adopt-existing-solution).** Every design proposal MUST surface ≥ 1 adopt-existing-solution candidate **or** an explicit `(none viable — <reason>)` cite. Full schema · 5 mandatory checks · enforcement: `core/protocols/options-protocol.md` (load-on-demand).
 - **Acceptance.**
   - Fixed wire shape + mockup behaviour + work breakdown.
   - Visual / contract harness green (where one exists).
   - Cross-references resolved.
   - Artefacts presentable as a coherent whole.
   - ASRs traceable to ADRs (each ASR is addressed by ≥ 1 ADR OR an existing architecture-doc section).
-  - Option lists pass `core/options-protocol.md § 5 mandatory checks`.
+  - Option lists pass `core/protocols/options-protocol.md § 5 mandatory checks`.
 
 ## Cross-phase rule
 

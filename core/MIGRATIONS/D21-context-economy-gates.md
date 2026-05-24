@@ -20,7 +20,7 @@ The rule in `CLAUDE.md § Framework authoring — context economy` (any framewor
 | Tier | Paths | Threshold |
 |---|---|---|
 | Always-loaded (strictest) | `CLAUDE.md`, `core/process.md`, `core/roles/*.md` | 25 lines OR 1 KB net-added |
-| Other watched | `PLAN.md`, `core/*.md` specs, `core/process/*.md` (D35-process-md-load-topology phase + dispatch files), `core/roles/*.details.md`, `core/skills/**`, `core/templates/**`, `adapters/**`, `extras/roles/**` | 50 lines OR 2 KB net-added |
+| Other watched | `PLAN.md`, `core/*.md` specs, `core/process/*.md` (D35-process-md-load-topology phase + dispatch files), `core/protocols/*.md`, `core/roles/*.details.md`, `core/skills/**`, `core/templates/**`, `adapters/**`, `extras/roles/**` | 50 lines OR 2 KB net-added |
 
 **Note on PLAN.md classification.** PLAN.md sits in "other", not "always-loaded" — it is the canonical design doc, read at session start but not auto-loaded by the harness on every dispatch (see #36 framing). Earlier D21 incorrectly placed it in always-loaded; corrected in 0.5.1 alongside the #36 trim.
 

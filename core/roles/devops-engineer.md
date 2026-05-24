@@ -12,7 +12,7 @@ You own **everything between the application code and the running production ser
 
 ## Source of truth
 
-Index-first per `core/index-protocol.md` (`local/index/`); two-tier loading per `core/index-protocol.md § Role consumption pattern`:
+Index-first per `core/protocols/index-protocol.md` (`local/index/`); two-tier loading per `core/protocols/index-protocol.md § Role consumption pattern`:
 
 | Read | What it gives you | Load when |
 |---|---|---|
@@ -163,7 +163,7 @@ When you author or modify any PowerShell / bash script under a devops-owned path
 
 Rules:
 
-- **Failed lint / failing tests / sub-threshold coverage = stoppable intermediate state.** Same-task fix per `core/iteration-protocol.md`; never a follow-up ticket.
+- **Failed lint / failing tests / sub-threshold coverage = stoppable intermediate state.** Same-task fix per `core/protocols/iteration-protocol.md`; never a follow-up ticket.
 - **Test path** declared in `local/framework.config.yaml § devops-scripts.tests-path`; under the devops tree, NOT QA's `testing/` tree.
 - **Scope is `changed + added` lines** — untouched legacy scripts not retroactively gated. Optional `devops-scripts.coverage-grace: <until-date | issue-N>` for an adopter-declared catch-up window.
 - **Data-only files exempt** (e.g. `*.psd1` config-data manifests, generated files, fixture JSON) — the gate applies to scripts with executable behaviour, not configuration data.
@@ -196,7 +196,7 @@ When an infra / CI / topology change implies an architectural delta (new compone
 
 ## Adoption research before authoring (D30)
 
-- **Surface.** Phase 2 design + iteration-protocol Propose → option list per `core/options-protocol.md`.
+- **Surface.** Phase 2 design + iteration-protocol Propose → option list per `core/protocols/options-protocol.md`.
 - **Floor.** ≥ 1 `adopt` candidate (name · version · source · license · fit) OR explicit `(none viable — <reason>)`.
 - **DevOps-typical axes** — IaC module · CI action · container base image · proxy / gateway · secret manager · cost-attribution tool · script library.
 - **Inapplicable scope** (local infra tweak · internal pipeline rename) → `"axis n/a — <reason>"` and skip.

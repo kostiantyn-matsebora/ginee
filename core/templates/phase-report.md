@@ -12,7 +12,7 @@
 | `## Open issues` | **required** (else `(none)`) | Bullets — `<issue> — <owner / blocker>` | ≤ 80 chars / bullet |
 | `## Next dispatch needed` | **required** (else `(none)`) | One-liner — `<role> · <surface> · <reason>` | 1 line |
 | `## Hand-off` | required **if failed dispatch / cross-domain root cause outside domain** (per `core/cross-agent-handoff.md`) | Embed `core/templates/hand-off-note.md` shape | per template |
-| `## Stop-state` | required **if `Status: In-progress`** (iteration-protocol stop boundary) | Three-bucket bullets — Done / In-progress / Not-started | per `core/iteration-protocol.md § Stoppable intermediate states` |
+| `## Stop-state` | required **if `Status: In-progress`** (iteration-protocol stop boundary) | Three-bucket bullets — Done / In-progress / Not-started | per `core/protocols/iteration-protocol.md § Stoppable intermediate states` |
 | `## Notes` | **optional** — narrative-rationale escape hatch only | Free-form prose | ≤ 200 words |
 
 **Status header** (single line at top): `Status: Done | In-progress | Blocked | Hand-off`. For iteration-protocol intermediate returns: same schema, sections marked `(in-progress)` where partial, plus the required `## Stop-state`.
@@ -88,7 +88,7 @@ Empty case: `(none)`.
 
 - `<short imperative>` — `<cite: FR-NN-slug / NFR-NN-slug / ADR-NNNN-slug / mockup §X>`
 
-Taxonomy IDs slug-glued per D34 — `ADR-0001-topology-derivation-five-pass`, not bare `ADR-0001`. Resolution lookup + lint rule: `core/doc-authoring-protocol.md § Taxonomy identifier pairing (D34)`.
+Taxonomy IDs slug-glued per D34 — `ADR-0001-topology-derivation-five-pass`, not bare `ADR-0001`. Resolution lookup + lint rule: `core/protocols/doc-authoring-protocol.md § Taxonomy identifier pairing (D34)`.
 
 Empty case: `(none)`.
 

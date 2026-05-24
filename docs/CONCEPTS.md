@@ -129,7 +129,7 @@ Full spec: [`core/roles/solution-architect.md`](https://github.com/kostiantyn-ma
 - **Per-file load triggers** — role kernel `Source of truth` tables carry a `Load when` column. `always` for foundational reads; trigger phrase for scope-loaded files. Specialist reports the loaded set in its first response.
 - **SHA-256 staleness** — `team-lead` checks drift pre-dispatch; offers `@ai-engineer reindex <source>` or `@team-lead rediscover` on mismatch. Never auto-reindexes.
 
-Full spec: [`core/index-protocol.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/core/index-protocol.md).
+Full spec: [`core/protocols/index-protocol.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/core/protocols/index-protocol.md).
 
 ## Delivery modes
 
@@ -254,7 +254,7 @@ When ginee authors markdown — adopter docs (D22) OR ginee-authored GitHub arte
 - Discussion bodies (read-only context per D14).
 - Style / tone / branding (protocol governs **structure** only).
 
-Full spec: [`core/doc-authoring-protocol.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/core/doc-authoring-protocol.md). Examples (9 bad/good pairs): [`core/doc-authoring-examples.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/core/doc-authoring-examples.md).
+Full spec: [`core/protocols/doc-authoring-protocol.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/core/protocols/doc-authoring-protocol.md). Examples (9 bad/good pairs): [`core/doc-authoring-examples.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/core/doc-authoring-examples.md).
 
 ## Subagent-return schema (D29)
 
@@ -302,7 +302,7 @@ Every Phase 2 design proposal **and** every iteration-protocol Propose step (Pha
 
 **Enforcement.** LLM self-review before surfacing the proposal. No external linter. Orchestrator surfaces a one-line advisory on violations but never auto-rewrites (analogous to D29).
 
-Full spec: [`core/options-protocol.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/core/options-protocol.md). Bad/good example: [`core/doc-authoring-examples.md § 11`](https://github.com/kostiantyn-matsebora/ginee/blob/main/core/doc-authoring-examples.md). Migration: [`core/MIGRATIONS/D30-adopt-existing-solution.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/core/MIGRATIONS/D30-adopt-existing-solution.md).
+Full spec: [`core/protocols/options-protocol.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/core/protocols/options-protocol.md). Bad/good example: [`core/doc-authoring-examples.md § 11`](https://github.com/kostiantyn-matsebora/ginee/blob/main/core/doc-authoring-examples.md). Migration: [`core/MIGRATIONS/D30-adopt-existing-solution.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/core/MIGRATIONS/D30-adopt-existing-solution.md).
 
 ## Per-role + per-task model tier (D31)
 

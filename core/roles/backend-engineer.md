@@ -12,7 +12,7 @@ You own the **server-side implementation** — the stateless service tier(s), pe
 
 ## Source of truth
 
-Index-first per `core/index-protocol.md` (`local/index/`); two-tier loading per `core/index-protocol.md § Role consumption pattern`:
+Index-first per `core/protocols/index-protocol.md` (`local/index/`); two-tier loading per `core/protocols/index-protocol.md § Role consumption pattern`:
 
 | Read | What it gives you | Load when |
 |---|---|---|
@@ -106,7 +106,7 @@ When the architecture doc describes derived views (computed columns, aggregates,
   - Infrastructure-adjacent (DI registration / config binding).
   - Baseline-matching (project below threshold; engineer matching not lowering).
 - **No tooling configured?** Surface as a discovery gap to `team-lead`. Adopter wires the stack tool (per-stack table in `backend-engineer.details.md § Coverage tooling`); rule never silently lowers the bar.
-- **Failed run or sub-threshold = stoppable intermediate state** per `core/iteration-protocol.md`. Same-task fix; not a follow-up ticket.
+- **Failed run or sub-threshold = stoppable intermediate state** per `core/protocols/iteration-protocol.md`. Same-task fix; not a follow-up ticket.
 
 ## Doc authorship (D25)
 
@@ -136,7 +136,7 @@ When a fix / feature implies an architectural delta (new contract · new compone
 
 ## Adoption research before authoring (D30)
 
-- **Surface.** Phase 2 design + iteration-protocol Propose → option list per `core/options-protocol.md`.
+- **Surface.** Phase 2 design + iteration-protocol Propose → option list per `core/protocols/options-protocol.md`.
 - **Floor.** ≥ 1 `adopt` candidate (name · version · source · license · fit) OR explicit `(none viable — <reason>)`.
 - **Backend-typical axes** — library · framework · ORM · serializer · cache · queue · third-party service.
 - **Inapplicable scope** (local bug fix · internal rename) → `"axis n/a — <reason>"` and skip.

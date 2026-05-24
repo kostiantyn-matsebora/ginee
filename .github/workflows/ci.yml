@@ -45,11 +45,11 @@ jobs:
           for f in \
             core/VERSION \
             core/process.md \
-            core/index-protocol.md \
+            core/protocols/index-protocol.md \
             core/index-syntax.md \
             core/github-integration.md \
             core/delivery-modes.md \
-            core/iteration-protocol.md \
+            core/protocols/iteration-protocol.md \
             core/automatic-mode.md \
             core/doc-roles.md \
             core/cross-domain-bugs.md \

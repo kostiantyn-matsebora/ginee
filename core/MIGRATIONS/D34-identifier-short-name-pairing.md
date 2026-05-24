@@ -71,7 +71,7 @@ Same machinery as D22 / D26 / D29 — LLM self-review at draft time. No external
 | Path | Change |
 |---|---|
 | `core/process.md § Documentation style § Mandatory checks before report-as-done` | Check #5 extended with the slug-glued rule + cross-ref to the resolution lookup. |
-| `core/doc-authoring-protocol.md` | New `## Taxonomy identifier pairing (D34)` section — form table · resolution lookup · self-lint regex · enforcement. |
+| `core/protocols/doc-authoring-protocol.md` | New `## Taxonomy identifier pairing (D34)` section — form table · resolution lookup · self-lint regex · enforcement. |
 | `core/templates/phase-report.md § Section templates § ## Decisions made` | Cite-form updated to slug-glued · pointer line to resolution lookup. |
 | `core/templates/pr-description.md § Cites` | CR / ADR / FR / NFR rows updated to slug-glued form with worked examples. |
 | `core/templates/issues/framework-bug-report.md § Locked decisions referenced` | Banner + placeholder updated to slug-glued. |
@@ -101,7 +101,7 @@ Same machinery as D22 / D26 / D29 — LLM self-review at draft time. No external
 Not recommended — D34 is purely additive and improves reader signal-to-noise. To revert:
 
 1. Remove the slug-glued clause from `core/process.md § Mandatory checks` check #5.
-2. Remove `## Taxonomy identifier pairing (D34)` from `core/doc-authoring-protocol.md`.
+2. Remove `## Taxonomy identifier pairing (D34)` from `core/protocols/doc-authoring-protocol.md`.
 3. Revert `core/templates/phase-report.md § ## Decisions made` example to bare-ID form.
 4. Revert `core/templates/pr-description.md § Cites` table to bare-ID form.
 5. Revert the 2 framework issue templates' decision-citation sections.

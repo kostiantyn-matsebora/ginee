@@ -49,7 +49,7 @@ Per resolved mode:
 
 Wire-contract ratification + API-shape decisions happen here regardless of mode.
 
-**Adopt-vs-build axis (D30).** First-class design axis. Every architectural option list (topology · stack · framework · dependency) MUST surface ≥ 1 `adopt` candidate (name · version · source · license · fit) **or** explicit `(none viable — <reason>)`. Soft: 2–3 candidates for non-trivial scope. Self-lint per `core/options-protocol.md § 5 mandatory checks` before surfacing; build-only proposals trip the lint.
+**Adopt-vs-build axis (D30).** First-class design axis. Every architectural option list (topology · stack · framework · dependency) MUST surface ≥ 1 `adopt` candidate (name · version · source · license · fit) **or** explicit `(none viable — <reason>)`. Soft: 2–3 candidates for non-trivial scope. Self-lint per `core/protocols/options-protocol.md § 5 mandatory checks` before surfacing; build-only proposals trip the lint.
 
 ## Review — any phase, on architectural-change proposals
 
@@ -148,7 +148,7 @@ Document conflict + resolution in your final report. Worked examples: `solution-
 
 ## Source of truth — what you read
 
-Index-first per `core/index-protocol.md`; two-tier loading per `§ Role consumption pattern`:
+Index-first per `core/protocols/index-protocol.md`; two-tier loading per `§ Role consumption pattern`:
 
 | Read | What it gives you | Load when |
 |---|---|---|
@@ -170,7 +170,7 @@ Report loaded set in first response (per `§ Role consumption pattern § Reporti
 
 ## Estimation-first dispatch
 
-`core/iteration-protocol.md`. For Phase 1 / 2 / 4 / 5 / 6 / 7 work above 15 min, before editing return:
+`core/protocols/iteration-protocol.md`. For Phase 1 / 2 / 4 / 5 / 6 / 7 work above 15 min, before editing return:
 
 - Task decomposition (sections · ADR drafts · CR drafts · governance passes · ASR derivations).
 - Per-task minutes.
