@@ -32,6 +32,7 @@
 | Doc-only changes | `solution-architect` only (architecture-family) or mockup-owning role only (UI-only edit with no architecture implication). |
 | Infrastructure changes affecting application config (env var, secret, endpoint URL) | Coordinate `devops-engineer` + affected service-owning role; service-owner first to confirm the app reads the new value, devops second. |
 | Surface owns the dispatch decision | Routing is determined by the touched surface per `local/bindings.md` — never by estimated task size. "Looks fast" is not grounds to self-execute or assign to a non-owning role. |
+| Warm specialist reuse (D36-warm-specialist-reuse) | On 2nd+ dispatch of the same role within the same task AND within that role's `phase-participation:` window, resume the existing specialist via the adapter's native mechanism instead of fresh-spawning. Team-lead maintains an in-conversation warm registry per task; clears on Phase 8 acceptance or abandonment. Forced-fresh on stale state · worktree mismatch · `local/*` drift · explicit `fresh:` prefix · resume-failure. Adapters lacking a resume mechanism fall back to fresh-spawn (no behavioural change). Full spec: `core/MIGRATIONS/D36-warm-specialist-reuse.md`. |
 
 **Per-task model tier (D31-model-tier).** Each dispatch resolves a `<tier>` (`reasoning` / `standard` / `fast`); adapters translate tiers → vendor-specific model IDs. Resolution order — stop at first match:
 

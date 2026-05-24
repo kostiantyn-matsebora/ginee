@@ -153,6 +153,21 @@ Per D35-process-md-load-topology, the 8 lifecycle phases + orchestration content
 
 Non-participating phase files are not surfaced to that role. The shared pointer subagents under `.agents/ginee/adapters/_shared/agents/*.md` render this contract; no per-adapter loader change is required on Claude (the kernel body itself cites the load paths). Full spec: `core/MIGRATIONS/D35-process-md-load-topology.md`.
 
+## Warm specialist reuse (D36)
+
+Per D36-warm-specialist-reuse, the same specialist is resumed (not fresh-spawned) on 2nd+ dispatch within one Phase 1–8 task AND within that role's `phase-participation:` window. Saves 15–50 k tokens of duplicated reload per task on a typical 3–5-dispatch workload.
+
+| Step | Action on Claude |
+|---|---|
+| First dispatch of role `R` in task `T` | Team-lead calls `Agent` with `run_in_background: true`; receives the agent-id; records `{role, agent-id, task, last-phase}` in its in-conversation registry. |
+| 2nd+ dispatch of `R` in `T` (new phase within `phase-participation:`) | Team-lead calls `SendMessage` to the recorded agent-id with the new payload — new instruction + phase identity + drift advisory (no kernel reload). |
+| Forced-fresh trigger | Team-lead opens a new background `Agent` and replaces the registry entry; old agent receives `## Forced-fresh — release`. |
+| Phase 8 acceptance / abandonment | Team-lead sends `## Phase 8 close — release` to every background agent; registry cleared. |
+
+Adopter opt-out: `local/framework.config.yaml § warm-reuse.enabled: false`. Default on Claude is `true` (resume capability present).
+
+Forced-fresh triggers + drift-advisory shape + full lifecycle: `core/MIGRATIONS/D36-warm-specialist-reuse.md`.
+
 ## Updates
 
 **Recommended — `/ginee-update`** (or "update ginee" / "upgrade the framework"). The skill fetches the installer from upstream at the target ref and drives `--update-only` for you — no local installer needed (D27). Performs all steps below automatically, including the pointer-block sync in step 5.
