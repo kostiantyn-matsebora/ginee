@@ -8,7 +8,7 @@ permalink: /reference/INDEX_PROTOCOL.html
 
 > Navigator page. Canonical spec in the repo.
 
-**Canonical:** [`core/index-protocol.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/core/index-protocol.md)
+**Canonical:** [`core/protocols/index-protocol.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/core/protocols/index-protocol.md)
 
 ## What the index is
 
@@ -26,16 +26,16 @@ The win — measured on a real adopter (deployment-dashboard, ~470 KB raw docs):
 
 | Topic | Where in the spec |
 |---|---|
-| Why the index exists | [§ Why](https://github.com/kostiantyn-matsebora/ginee/blob/main/core/index-protocol.md#why) |
-| Where compression pays off | [§ Where compression pays off](https://github.com/kostiantyn-matsebora/ginee/blob/main/core/index-protocol.md#where-compression-pays-off--and-where-it-doesnt) |
-| Source types (doc + code categories) | [§ Source types](https://github.com/kostiantyn-matsebora/ginee/blob/main/core/index-protocol.md#source-types) |
-| Manifest schema (sha256, byte-size, consumed-by) | [§ Manifest shape](https://github.com/kostiantyn-matsebora/ginee/blob/main/core/index-protocol.md#manifest-shape) |
-| Consumer coupling | [§ Consumer coupling](https://github.com/kostiantyn-matsebora/ginee/blob/main/core/index-protocol.md#consumer-coupling) |
-| Dormant-index audit | [§ Dormant-index audit](https://github.com/kostiantyn-matsebora/ginee/blob/main/core/index-protocol.md#dormant-index-audit) |
-| Lifecycle — initial extraction + staleness + re-extraction | [§ Lifecycle](https://github.com/kostiantyn-matsebora/ginee/blob/main/core/index-protocol.md#lifecycle) |
-| Lossless rule (coverage + compression floor + sample-and-check) | [§ Lossless rule for index](https://github.com/kostiantyn-matsebora/ginee/blob/main/core/index-protocol.md#lossless-rule-for-index) |
-| Role consumption pattern (load triggers + reporting + overrides) | [§ Role consumption pattern](https://github.com/kostiantyn-matsebora/ginee/blob/main/core/index-protocol.md#role-consumption-pattern) |
-| Adopter-declared classes | [§ Extension — adopter-declared classes](https://github.com/kostiantyn-matsebora/ginee/blob/main/core/index-protocol.md#extension--adopter-declared-classes) |
+| Why the index exists | [§ Why](https://github.com/kostiantyn-matsebora/ginee/blob/main/core/protocols/index-protocol.md#why) |
+| Where compression pays off | [§ Where compression pays off](https://github.com/kostiantyn-matsebora/ginee/blob/main/core/protocols/index-protocol.md#where-compression-pays-off--and-where-it-doesnt) |
+| Source types (doc + code categories) | [§ Source types](https://github.com/kostiantyn-matsebora/ginee/blob/main/core/protocols/index-protocol.md#source-types) |
+| Manifest schema (sha256, byte-size, consumed-by) | [§ Manifest shape](https://github.com/kostiantyn-matsebora/ginee/blob/main/core/protocols/index-protocol.md#manifest-shape) |
+| Consumer coupling | [§ Consumer coupling](https://github.com/kostiantyn-matsebora/ginee/blob/main/core/protocols/index-protocol.md#consumer-coupling) |
+| Dormant-index audit | [§ Dormant-index audit](https://github.com/kostiantyn-matsebora/ginee/blob/main/core/protocols/index-protocol.md#dormant-index-audit) |
+| Lifecycle — initial extraction + staleness + re-extraction | [§ Lifecycle](https://github.com/kostiantyn-matsebora/ginee/blob/main/core/protocols/index-protocol.md#lifecycle) |
+| Lossless rule (coverage + compression floor + sample-and-check) | [§ Lossless rule for index](https://github.com/kostiantyn-matsebora/ginee/blob/main/core/protocols/index-protocol.md#lossless-rule-for-index) |
+| Role consumption pattern (load triggers + reporting + overrides) | [§ Role consumption pattern](https://github.com/kostiantyn-matsebora/ginee/blob/main/core/protocols/index-protocol.md#role-consumption-pattern) |
+| Adopter-declared classes | [§ Extension — adopter-declared classes](https://github.com/kostiantyn-matsebora/ginee/blob/main/core/protocols/index-protocol.md#extension--adopter-declared-classes) |
 
 ## Recipes (in `ai-engineer.details.md`)
 

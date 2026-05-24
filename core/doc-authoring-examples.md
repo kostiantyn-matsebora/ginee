@@ -356,4 +356,4 @@ Reader knows every citation at a glance; `grep -r D28-skill-runner-boundary core
 
 **Lookup failure** — surface inline (`D28-?? (slug lookup failed)`); carry forward; never invent.
 
-Full lookup table + self-lint regex: `core/doc-authoring-protocol.md § Taxonomy identifier pairing (D34)`.
+Full lookup table + self-lint regex: `core/protocols/doc-authoring-protocol.md § Taxonomy identifier pairing (D34)`.

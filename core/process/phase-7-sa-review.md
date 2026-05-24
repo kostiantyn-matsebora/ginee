@@ -10,7 +10,7 @@
   - Phase 5 manual-smoke section was actually written (empty = REJECT, return to Phase 5).
   - ASR coverage — every ASR touched by the change is addressed by ≥ 1 ADR or architecture-doc section.
 - **Constraint.** Sign-off only; no code edits.
-- **Iteration.** Runs under `core/iteration-protocol.md` when follow-up architecture-doc edits exceed 15 min.
+- **Iteration.** Runs under `core/protocols/iteration-protocol.md` when follow-up architecture-doc edits exceed 15 min.
 - **Acceptance.**
   - APPROVE (with or without pending additive architecture-doc edits), OR
   - RETURN-TO-engineer with specific findings.

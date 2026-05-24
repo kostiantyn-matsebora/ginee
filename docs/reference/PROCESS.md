@@ -27,7 +27,7 @@ permalink: /reference/PROCESS.html
 
 | Spec | Load trigger |
 |---|---|
-| [`core/iteration-protocol.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/core/iteration-protocol.md) | Phase 4 / 5 / 6 / 7 work &gt; 15 min, OR doc-roles pass, OR user-given timeframe |
+| [`core/protocols/iteration-protocol.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/core/protocols/iteration-protocol.md) | Phase 4 / 5 / 6 / 7 work &gt; 15 min, OR doc-roles pass, OR user-given timeframe |
 | [`core/automatic-mode.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/core/automatic-mode.md) | Task prefixed `auto:` or PM proposes auto |
 | [`core/doc-roles.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/core/doc-roles.md) | New role-owned doc landing, doc grows past threshold, cross-ref repair after split, structure dispute author vs ai-engineer (D25) |
 | [`core/cross-domain-bugs.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/core/cross-domain-bugs.md) | Bug spans 2+ domains |
@@ -35,4 +35,4 @@ permalink: /reference/PROCESS.html
 | [`core/post-task-check-in.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/core/post-task-check-in.md) | After every completed user request |
 | [`core/github-integration.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/core/github-integration.md) | PM ops on GitHub issues / discussions |
 | [`core/delivery-modes.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/core/delivery-modes.md) | PM resolving delivery mode pre-Phase-4 |
-| [`core/index-protocol.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/core/index-protocol.md) | Discovery / staleness check / re-extraction |
+| [`core/protocols/index-protocol.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/core/protocols/index-protocol.md) | Discovery / staleness check / re-extraction |

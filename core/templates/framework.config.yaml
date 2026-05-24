@@ -152,7 +152,7 @@ unit-backend:
 # --- Project-doc index (D13) ---
 # Adopter-declared index classes — pre-declare doc classes that the index
 # layer should handle. Takes precedence over auto-detection. Full spec:
-# core/index-protocol.md § Extension.
+# core/protocols/index-protocol.md § Extension.
 # Uncomment + adjust for your project's adopter-specific doc types.
 # index:
 #   dir: local/index

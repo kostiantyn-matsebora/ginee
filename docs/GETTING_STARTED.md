@@ -141,11 +141,11 @@ Use ginee to pick up issue #42                              # freeform
 
 `/ginee-address-review` covers the interval **between Phase 7 (internal SA review) and Phase 8 (user accept)** when a PR is exposed to external reviewers — fetches `pulls/{N}/comments` + `/reviews`, routes each remark to the owning specialist, surfaces a consolidated plan table for your approval (no exception even in `auto:` mode), then reconciles fixes into one cycle commit + per-thread replies. Lossless coverage (every remark → fix OR reply) + idempotent re-invocation. Full spec: [`core/github-integration.md § Review-comment ingestion`](https://github.com/kostiantyn-matsebora/ginee/blob/main/core/github-integration.md#review-comment-ingestion).
 
-PRs auto-close issues via `Closes #N`. For tasks &gt; 15 minutes of estimated work, the [iteration protocol](https://github.com/kostiantyn-matsebora/ginee/blob/main/core/iteration-protocol.md) kicks in: each specialist returns a task decomposition + per-task estimate **before** editing, you approve, then 3–5 min stoppable batches.
+PRs auto-close issues via `Closes #N`. For tasks &gt; 15 minutes of estimated work, the [iteration protocol](https://github.com/kostiantyn-matsebora/ginee/blob/main/core/protocols/iteration-protocol.md) kicks in: each specialist returns a task decomposition + per-task estimate **before** editing, you approve, then 3–5 min stoppable batches.
 
 ### Adopter docs (architecture, ADRs, runbooks) — doc-authoring protocol (D22)
 
-When ginee authors adopter markdown (architecture doc, ADRs, CRs, READMEs, runbooks, scenarios, API docs), the [doc-authoring protocol](https://github.com/kostiantyn-matsebora/ginee/blob/main/core/doc-authoring-protocol.md) is **binding**: structure over prose (tables / bullets / definitions), 5 mandatory checks, and the discovered markdown / prose linter (`markdownlint` / `vale` / `proselint` / `prettier-md`) runs at Phase 5. No linter configured → discovery report recommends a baseline; you decide — never auto-installed.
+When ginee authors adopter markdown (architecture doc, ADRs, CRs, READMEs, runbooks, scenarios, API docs), the [doc-authoring protocol](https://github.com/kostiantyn-matsebora/ginee/blob/main/core/protocols/doc-authoring-protocol.md) is **binding**: structure over prose (tables / bullets / definitions), 5 mandatory checks, and the discovered markdown / prose linter (`markdownlint` / `vale` / `proselint` / `prettier-md`) runs at Phase 5. No linter configured → discovery report recommends a baseline; you decide — never auto-installed.
 
 ## 4. Update later
 

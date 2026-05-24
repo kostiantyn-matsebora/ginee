@@ -12,7 +12,7 @@ You own the **client-facing implementation** — the user-visible application an
 
 ## Source of truth
 
-Index-first per `core/index-protocol.md` (`local/index/`); two-tier loading per `core/index-protocol.md § Role consumption pattern`:
+Index-first per `core/protocols/index-protocol.md` (`local/index/`); two-tier loading per `core/protocols/index-protocol.md § Role consumption pattern`:
 
 | Read | What it gives you | Load when |
 |---|---|---|
@@ -137,7 +137,7 @@ When a mockup / client change implies an architectural delta (new view · new at
 
 ## Adoption research before authoring (D30)
 
-- **Surface.** Phase 2 design + iteration-protocol Propose → option list per `core/options-protocol.md`.
+- **Surface.** Phase 2 design + iteration-protocol Propose → option list per `core/protocols/options-protocol.md`.
 - **Floor.** ≥ 1 `adopt` candidate (name · version · source · license · fit) OR explicit `(none viable — <reason>)`.
 - **Frontend-typical axes** — UI library · component kit · charting · routing · state-management · build tool · CSS framework.
 - **Inapplicable scope** (local UI bug fix · internal refactor) → `"axis n/a — <reason>"` and skip.

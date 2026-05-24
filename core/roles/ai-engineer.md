@@ -11,7 +11,7 @@ phase-participation: []  # D35 — between-phase optimizer; loads no phase files
 The universal meta-engineering cardinal. Owns shape and load topology of every prompt-bearing or LLM-loaded file.
 
 - **Source of truth** — `core/process.md § Reading order`. Adopter-doc shape rules in `core/process.md § Documentation style` (always-loaded); D22 makes them binding for all role outputs.
-- **Estimation-first dispatch** — `core/iteration-protocol.md`.
+- **Estimation-first dispatch** — `core/protocols/iteration-protocol.md`.
   - Above the 15-min threshold: return task decomposition + per-task minutes + lossless evidence plan **before** editing.
   - Then 3–5 min iterations, each stoppable.
 - **Doc-roles counterpart** — `core/doc-roles.md` (renamed from `doc-co-ownership.md` per D25).
@@ -46,7 +46,7 @@ The universal meta-engineering cardinal. Owns shape and load topology of every p
 | Architecture docs / READMEs / ADRs | Same — structure over prose, cite don't restate, hoist duplicates. |
 | Skills / prompt files | <ul><li>Restructure for token efficiency.</li><li>Respect the skill contract (front-matter, trigger conditions).</li></ul> |
 | New files spawned by a split | <ul><li>Author the new file.</li><li>Rewrite the source with a pointer.</li><li>Update every cross-reference in dependent files in the same pass.</li></ul> |
-| Project knowledge index (`local/index/*`) — covers doc + code categories | <ul><li>Extract per `core/index-protocol.md` recipes — built-in for known classes (doc: architecture / adr / cr / scenario / mockup; code: package-manifest / container-orchestration / commands / conventions / runtime-facts / repo-structure); novel-class recipe for adopter-specific sources.</li><li>Write/update `local/index/manifest.yaml` (SHA-256 per source + recipe id + `category: doc | code`).</li><li>Re-extract on `team-lead`-flagged drift.</li><li>Run sample-and-check (5 random items per affected index file).</li><li>Full recipe table + extraction tips: `ai-engineer.details.md § Project extraction recipes`.</li></ul> |
+| Project knowledge index (`local/index/*`) — covers doc + code categories | <ul><li>Extract per `core/protocols/index-protocol.md` recipes — built-in for known classes (doc: architecture / adr / cr / scenario / mockup; code: package-manifest / container-orchestration / commands / conventions / runtime-facts / repo-structure); novel-class recipe for adopter-specific sources.</li><li>Write/update `local/index/manifest.yaml` (SHA-256 per source + recipe id + `category: doc | code`).</li><li>Re-extract on `team-lead`-flagged drift.</li><li>Run sample-and-check (5 random items per affected index file).</li><li>Full recipe table + extraction tips: `ai-engineer.details.md § Project extraction recipes`.</li></ul> |
 
 ## Out-of-scope (hand off to the doc's authoring role per `core/doc-roles.md`)
 
@@ -72,7 +72,7 @@ Catalogue: `ai-engineer.details.md § Anti-patterns`.
 
 ## Adoption research before authoring (D30)
 
-- **Surface.** Phase 2 design + iteration-protocol Propose → option list per `core/options-protocol.md`.
+- **Surface.** Phase 2 design + iteration-protocol Propose → option list per `core/protocols/options-protocol.md`.
 - **Floor.** ≥ 1 `adopt` candidate (name · version · source · license · fit) OR explicit `(none viable — <reason>)`.
 - **AI-engineer-typical axes** — markdown linter · prose linter · doc generator · cross-ref tooling · diff-render tool.
 - **Inapplicable scope** (lossless-rule restructure pass · cross-ref grep) → `"axis n/a — <reason>"` and skip.

@@ -12,7 +12,7 @@ You own **all testing concerns** outside individual component unit tests: functi
 
 ## Source of truth
 
-Index-first per `core/index-protocol.md` (`local/index/`); two-tier loading per `core/index-protocol.md § Role consumption pattern`:
+Index-first per `core/protocols/index-protocol.md` (`local/index/`); two-tier loading per `core/protocols/index-protocol.md § Role consumption pattern`:
 
 | Read | What it gives you | Load when |
 |---|---|---|
@@ -169,7 +169,7 @@ When a test surfaces an architectural concern (failing NFR oracle · contract dr
 
 ## Adoption research before authoring (D30)
 
-- **Surface.** Phase 2 design + iteration-protocol Propose → option list per `core/options-protocol.md`.
+- **Surface.** Phase 2 design + iteration-protocol Propose → option list per `core/protocols/options-protocol.md`.
 - **Floor.** ≥ 1 `adopt` candidate (name · version · source · license · fit) OR explicit `(none viable — <reason>)`.
 - **QA-typical axes** — test runner · assertion library · e2e harness · fixture / factory library · visual-diff tool · API-mock server.
 - **Inapplicable scope** (single-scenario addition · fixture tweak) → `"axis n/a — <reason>"` and skip.

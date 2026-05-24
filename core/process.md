@@ -66,7 +66,7 @@ Bindings may NOT override generic process.
 
 ## Documentation style — structure over prose
 
-**Binding, not aspirational** — framework-self-dev (per `CLAUDE.md § Framework authoring`) + adopter-project outputs authored by any role (D22-doc-authoring-protocol — protocol + 6 paired examples + discovery-driven enforcement: `core/doc-authoring-protocol.md`).
+**Binding, not aspirational** — framework-self-dev (per `CLAUDE.md § Framework authoring`) + adopter-project outputs authored by any role (D22-doc-authoring-protocol — protocol + 6 paired examples + discovery-driven enforcement: `core/protocols/doc-authoring-protocol.md`).
 
 **Scope.** Applies to project-instruction files · role definitions (`core/roles/`, `local/roles/`) · future skills · architecture doc + mockup + ADRs · per-component READMEs · **GitHub issue bodies authored via `ginee-file-*` skills (D26-doc-protocol-scope-extension)** · **framework-authored GitHub comments — Phase-transition · sticky `ginee:score` / `ginee:review-cycle` · audit comments · per-thread review-replies (D26-doc-protocol-scope-extension)**.
 
@@ -100,9 +100,9 @@ Bindings may NOT override generic process.
 2. No table cell holds a multi-sentence sub-paragraph.
 3. No bullet runs > 25 words *unless* it carries nested sub-bullets.
 4. Inventories (services, components, endpoints, env vars) are tables, not prose.
-5. Cross-references cite anchors (`§Name`, `#anchor`); never restate content. **Taxonomy identifiers carry their short name in slug-glued form (D34-identifier-short-name-pairing)** — `D28-skill-runner-boundary` / `ADR-0001-topology-derivation-five-pass` / `CR-0010-component-ci-pipeline` / `FR-04-deploy-rollback`, never bare `D28` / `ADR-0001` / `CR-0010` / `FR-04`. Issue / PR / commit references are NOT taxonomy IDs and stay bare (`#87`, PR-link, SHA). Full lookup procedure: `core/doc-authoring-protocol.md § Taxonomy identifier pairing (D34-identifier-short-name-pairing)`.
+5. Cross-references cite anchors (`§Name`, `#anchor`); never restate content. **Taxonomy identifiers carry their short name in slug-glued form (D34-identifier-short-name-pairing)** — `D28-skill-runner-boundary` / `ADR-0001-topology-derivation-five-pass` / `CR-0010-component-ci-pipeline` / `FR-04-deploy-rollback`, never bare `D28` / `ADR-0001` / `CR-0010` / `FR-04`. Issue / PR / commit references are NOT taxonomy IDs and stay bare (`#87`, PR-link, SHA). Full lookup procedure: `core/protocols/doc-authoring-protocol.md § Taxonomy identifier pairing (D34-identifier-short-name-pairing)`.
 
-**Enforcement procedure** (lint command, attestation format, no-tool fallback): `core/doc-authoring-protocol.md` — load at Phase 5 / report-as-done.
+**Enforcement procedure** (lint command, attestation format, no-tool fallback): `core/protocols/doc-authoring-protocol.md` — load at Phase 5 / report-as-done.
 **Paired bad-vs-good examples** (6 doc classes): `core/doc-authoring-examples.md` — load on first-time authoring or explicit request.
 
 ## Reporting — schema-bound (D29-strict-subagent-return-schema)
@@ -134,7 +134,7 @@ Each row gives the spec's kernel summary + full-spec path + load triggers. Defau
 
 - Heavy project docs (architecture · mockup · ADRs · CRs · scenarios + any adopter-specific class) → lightweight summaries under `local/index/`.
 - Roles read the index first; originals only when an entry points to a section needing verbatim consumption.
-- Full spec + extraction recipes + staleness mechanism: **`core/index-protocol.md`**. `.idx` DSL grammar: **`core/index-syntax.md`**.
+- Full spec + extraction recipes + staleness mechanism: **`core/protocols/index-protocol.md`**. `.idx` DSL grammar: **`core/index-syntax.md`**.
 - **Load triggers:** `team-lead` enumerates classes during initial discovery or `rediscover` · `team-lead` detects SHA-256 drift in `local/index/manifest.yaml` pre-dispatch · `ai-engineer` dispatched to extract or re-extract · role's "Source of truth" lookup pointed at `local/index/<file>` needs the protocol contract (rare).
 
 #### GitHub integration — issues + discussions
@@ -169,14 +169,14 @@ Each row gives the spec's kernel summary + full-spec path + load triggers. Defau
 #### Doc roles — all-roles authorship + ai-engineer shape (D25-classical-architect)
 
 - **Ownership split.** Authoring role owns documentation **semantics** per `core/doc-roles.md § Authorship` — authoring role differs by doc class (SA · team-lead · backend-engineer · frontend-engineer · devops-engineer · qa-engineer · mockup-owning role). `ai-engineer` owns **shape + load topology** across the whole doc set. Neither overrides the other's invariants.
-- **Runs under** `core/iteration-protocol.md` below.
+- **Runs under** `core/protocols/iteration-protocol.md` below.
 - Full definition (authorship table · routing table · lossless edit rule · SA architectural-coherence review · dispatch triggers): **`core/doc-roles.md`**.
 - **Load triggers** (when to fetch the full file): new role-owned doc landing · doc grows past size threshold · cross-reference repair after a split/move · structure dispute (author vs. ai-engineer).
 
 #### Iteration protocol — propose → review → implement
 
 - Generalized loop for non-trivial work.
-- Full definition (scope · estimation-first dispatch · sizing · each-iteration steps · loop termination · conflict resolution · stoppable intermediate states · timeframe-bounded autonomous work): **`core/iteration-protocol.md`**.
+- Full definition (scope · estimation-first dispatch · sizing · each-iteration steps · loop termination · conflict resolution · stoppable intermediate states · timeframe-bounded autonomous work): **`core/protocols/iteration-protocol.md`**.
 - **Load triggers** — orchestrator (or specialist) fetches when any holds: Phase 4 / 5 / 6 / 7 dispatch with estimated total scope > 15 min · doc-roles pass between `ai-engineer` and any authoring role (per `core/doc-roles.md`) · user gives a timeframe (e.g., "spend 30 min on X"). Default short tasks ( ≤ 15 min, no timeframe ) do not load this file.
 
 #### Cross-domain bugs — integration + compliance cycle

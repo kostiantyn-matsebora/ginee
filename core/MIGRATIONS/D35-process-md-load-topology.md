@@ -43,7 +43,7 @@ Selected from three options surfaced in #89 (A / B / C):
 | B — audience extraction with section markers | Rejected | Requires per-adapter section-strip mechanism; more complex than pure file boundaries. |
 | C — `<details>`-wrapped chunks with `load-trigger` markers | Rejected | HTML-in-Markdown coupling; opaque to adapters lacking the strip implementation. |
 
-Adopt-existing-solution candidate (per D30-adopt-existing-solution): the framework's **own load-on-demand extraction pattern**, already proven via `core/automatic-mode.md` · `core/options-protocol.md` · `core/doc-authoring-protocol.md` · `core/delivery-modes.md` · `core/index-protocol.md`. D35 applies the same machinery at finer granularity (per-phase) inside `core/process/`. No external library / framework adopted — pattern adoption only.
+Adopt-existing-solution candidate (per D30-adopt-existing-solution): the framework's **own load-on-demand extraction pattern**, already proven via `core/automatic-mode.md` · `core/protocols/options-protocol.md` · `core/protocols/doc-authoring-protocol.md` · `core/delivery-modes.md` · `core/protocols/index-protocol.md`. D35 applies the same machinery at finer granularity (per-phase) inside `core/process/`. No external library / framework adopted — pattern adoption only.
 
 ## Role participation contract
 

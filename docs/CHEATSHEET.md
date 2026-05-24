@@ -185,7 +185,7 @@ Options:
 
 **5 mandatory checks before surfacing** — adopt floor present · citations complete (name · version · source · license · fit) · tagging explicit (`adopt` / `build` / `hybrid` — no silent mixing) · empty research documented · fit rationale concrete (not hand-waved). Self-lint runs in-thread; no external linter. **License gating** — framework expresses no opinion; adopters wire policy in `local/`. Inapplicable sub-tasks cite *"axis n/a — <reason>"* and skip.
 
-Full spec: `core/options-protocol.md`. Example: `core/doc-authoring-examples.md § 11`.
+Full spec: `core/protocols/options-protocol.md`. Example: `core/doc-authoring-examples.md § 11`.
 
 ## Model tier (D31)
 
@@ -277,7 +277,7 @@ Framework defaults: `branch` for issue / TODO-sourced; `wt` for freeform. Auto-m
 | Framework feels out of date / missing a recent feature | Local install behind upstream | `/ginee-update` (latest release) or `/ginee-update <tag>` (named ref); never auto-updates — adopter approves the plan |
 | Triage shows everything "Unscored" | No `value:*` / `complexity:*` labels yet | Reporter sets `value` at file-time; SA auto-estimates `complexity` on pickup; or `@team-lead recompute score #<N>` after `gh issue edit` |
 | Review comments piling up on a PR | No invocation yet | `/ginee-address-review #<PR>` — plan-table approval is forced-interactive even in `auto:` |
-| Adopter doc PR fails markdown lint | D22 doc-authoring protocol — discovered linter ran | Apply default-shape map (tables / bullets / definitions) per `core/doc-authoring-protocol.md`; verify with `${commands.lint.docs}` |
+| Adopter doc PR fails markdown lint | D22 doc-authoring protocol — discovered linter ran | Apply default-shape map (tables / bullets / definitions) per `core/protocols/doc-authoring-protocol.md`; verify with `${commands.lint.docs}` |
 | ginee-filed issue / framework-authored comment has dense parenthetical-soup prose | D26 scope extension — self-lint missed it | Restructure per default-shape map (tables for inventories · bullets for multi-rule · no parenthetical comma-lists in sentences); covers every section, including Summary |
 
 ## Where things live
@@ -289,8 +289,12 @@ Framework defaults: `branch` for issue / TODO-sourced; `wt` for freeform. Auto-m
 │   ├── process/                # D35 — phase + dispatch files, load-on-demand per role
 │   │   ├── phase-{1..8}-*.md   #   one file per lifecycle phase
 │   │   └── dispatch.md         #   orchestration — skill-runner · parallelism · auto mode
+│   ├── protocols/              # load-on-demand protocol specs
+│   │   ├── iteration-protocol.md         # estimation-first dispatch
+│   │   ├── doc-authoring-protocol.md     # D22 / D26 / D29 enforcement
+│   │   ├── index-protocol.md             # local/index/ extraction + load triggers
+│   │   └── options-protocol.md           # D30 adopt-vs-build shape
 │   ├── roles/                  # 7 cardinal role kernels (each declares phase-participation:)
-│   ├── index-protocol.md       # local/index/ extraction + load triggers
 │   ├── github-integration.md   # issue / PR / label flow
 │   ├── delivery-modes.md       # branch / wt / commit
 │   ├── doc-roles.md            # D25 — all-roles authorship + ai-engineer shape
