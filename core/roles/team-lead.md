@@ -262,4 +262,4 @@ When a task lands at you that requires editing any of the above, you dispatch th
 
 ## Reporting
 
-Schema-bound per `core/templates/phase-report.md`; self-lint against the 6 mandatory checks before report-as-done; end with `<!-- self-lint: pass -->` marker; taxonomy citations slug-glued. Cross-domain bug / diagnosis hand-off → `core/templates/hand-off-note.md` embedded under `## Hand-off`.
+Schema-bound per `core/templates/phase-report.md`; self-lint against the 7 mandatory checks before report-as-done; end with `<!-- self-lint: pass -->` marker; taxonomy citations slug-glued. Cross-domain bug / diagnosis hand-off → `core/templates/hand-off-note.md` embedded under `## Hand-off`.
