@@ -97,7 +97,7 @@ Empty case: `(no drift)`. The advisory always appears so the specialist sees an 
 
 Each `adapters/*/install.md` gains a short "Warm specialist reuse (D36)" section noting how (or if) the adapter supports the contract. Concretely:
 
-- **Claude adapter:** team-lead spawns the specialist with `run_in_background: true` on first dispatch; records the agent-id; uses `SendMessage` to resume. On task close, sends a `## Phase 8 close — release` signal so the background agent terminates cleanly.
+- **Claude adapter:** see `migrations/warm-reuse-claude-plumbing.md` for the architecture refinement (registry ownership on Claude lives on the skill-runner, not team-lead — team-lead is itself a subagent without `Agent` / `SendMessage`, and its conversation does not survive across dispatches). Skill-runner spawns team-lead with `run_in_background: true` on first dispatch; passes the registry as input on every team-lead cycle; team-lead writes `mode: warm-resume | fresh-spawn` + `agent-id:` on each plan line; skill-runner executes verbatim. Requires `CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1`. Full procedure: `adapters/claude/install.md § Warm specialist reuse`.
 - **Adapters without resume capability:** ship the section saying "Warm reuse falls back to fresh-spawn on this adapter; no behavioural change." Update if/when the host gains a resume mechanism.
 
 ## Opt-out
