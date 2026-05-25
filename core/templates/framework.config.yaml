@@ -62,11 +62,30 @@ adr-directory: docs/adr/
 # ADRs — Architecture Decision Records.
 cr-directory: docs/cr/
 # CRs — Change Requests.
+ui-directory: docs/ui/
+# UI mockup / interaction docs.
+#   - Per-screen interaction notes.
+#   - Component-shape docs.
+#   - Comment out if none; subject to doc-size-caps when set.
 diagrams-directory: docs/diagrams/
 # Diagrams.
 #   - C4.
 #   - Sequence.
 #   - Deployment.
+
+# --- Per-class doc-size caps ---
+# Total file-size cap per doc class. Breach without `Optimized-By: ai-engineer`
+# trailer fails `scripts/context-economy-check.ps1`. Defaults shown; override
+# per class. Full spec: core/protocols/doc-size-caps.md.
+#
+# doc-size-caps:
+#   adr:
+#     cap-bytes: 4096          # default
+#   cr:
+#     cap-bytes: 6144          # default
+#   ui:
+#     cap-bytes: 4096          # default
+#   # ui: disabled             # opt out for this class
 
 # --- Task & workflow ---
 todo: TODO

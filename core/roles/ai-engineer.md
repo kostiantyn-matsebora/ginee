@@ -21,6 +21,7 @@ The universal meta-engineering cardinal. Owns shape and load topology of every p
 - **Process integration** — not part of Phase 1–8 lifecycle.
   - Invoked **between** phases by `team-lead` (or main thread).
   - Triggers + handoff rules: `ai-engineer.details.md § Process integration`.
+  - **Doc-size-cap breach is a trigger.** Per-class cap breach (ADR · CR · UI) on a changed file fires `ai-engineer` dispatch under the lossless rule; commit lands with `Optimized-By: ai-engineer` trailer for gate bypass. Full spec: `core/protocols/doc-size-caps.md`.
 - **Context-economy mandate** — apply both:
   - `core/process.md § Documentation style — structure over prose`.
   - `ai-engineer.details.md § Principles — context engineering`.

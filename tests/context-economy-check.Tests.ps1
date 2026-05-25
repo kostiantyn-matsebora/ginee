@@ -497,6 +497,198 @@ Optimized-By: ai-engineer" *> $null
     }
   }
 
+  Context 'Per-class doc-size caps' {
+    BeforeAll {
+      function New-SandboxRepoWithDoc {
+        [System.Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseShouldProcessForStateChangingFunctions', '', Justification = 'Test-only helper.')]
+        [CmdletBinding()]
+        param([hashtable]$DocFiles, [string]$ConfigYaml)
+        $root = Join-Path ([System.IO.Path]::GetTempPath()) "ginee-ce-caps-$([guid]::NewGuid().Guid)"
+        New-Item -ItemType Directory -Force -Path $root | Out-Null
+        Push-Location $root
+        try {
+          & git init -q --initial-branch=main *> $null
+          & git config user.email 'test@example.com' *> $null
+          & git config user.name 'Test' *> $null
+          & git config commit.gpgsign false *> $null
+          & git config core.hooksPath /dev/null *> $null
+          New-Item -ItemType Directory -Force -Path (Join-Path $root 'core/roles') | Out-Null
+          New-Item -ItemType Directory -Force -Path (Join-Path $root 'local') | Out-Null
+          Set-Content -LiteralPath (Join-Path $root 'CLAUDE.md') -Value 'baseline'
+          Set-Content -LiteralPath (Join-Path $root 'core/process.md') -Value 'baseline'
+          if ($ConfigYaml) {
+            Set-Content -LiteralPath (Join-Path $root 'local/framework.config.yaml') -Value $ConfigYaml
+          }
+          & git add . *> $null
+          & git commit -q -m 'baseline' *> $null
+          & git checkout -q -b feature *> $null
+          foreach ($entry in $DocFiles.GetEnumerator()) {
+            $abs = Join-Path $root $entry.Key
+            $dir = Split-Path $abs -Parent
+            if (-not (Test-Path -LiteralPath $dir)) { New-Item -ItemType Directory -Force -Path $dir | Out-Null }
+            Set-Content -LiteralPath $abs -Value $entry.Value
+          }
+          if ($DocFiles.Count -gt 0) {
+            & git add . *> $null
+            & git commit -q -m 'doc edit' *> $null
+          }
+        } finally { Pop-Location }
+        return $root
+      }
+    }
+
+    It 'flags an oversized ADR against the framework default cap' {
+      $oversized = 'x' * 5000
+      $root = New-SandboxRepoWithDoc -DocFiles @{ 'docs/adr/ADR-0001.md' = $oversized }
+      try {
+        $r = Invoke-CheckInProc -Root $root -Params @{ BaseRef = 'main'; Json = $true }
+        $r.Code | Should -Be 1
+        $r.Json.sizeCapBreaches.Count | Should -Be 1
+        $b = $r.Json.sizeCapBreaches[0]
+        $b.Path | Should -Be 'docs/adr/ADR-0001.md'
+        $b.Class | Should -Be 'adr'
+        $b.CapBytes | Should -Be 4096
+        $b.CurrentBytes | Should -BeGreaterThan 4096
+      } finally {
+        Remove-Item -Recurse -Force $root -ErrorAction SilentlyContinue
+      }
+    }
+
+    It 'allows a CR up to the higher default (6144 bytes)' {
+      $under = 'x' * 5000
+      $root = New-SandboxRepoWithDoc -DocFiles @{ 'docs/cr/CR-0001.md' = $under }
+      try {
+        $r = Invoke-CheckInProc -Root $root -Params @{ BaseRef = 'main'; Json = $true }
+        $r.Code | Should -Be 0
+        $r.Json.sizeCapBreaches.Count | Should -Be 0
+      } finally {
+        Remove-Item -Recurse -Force $root -ErrorAction SilentlyContinue
+      }
+    }
+
+    It 'flags an oversized UI doc against the framework default cap' {
+      $oversized = 'x' * 5000
+      $root = New-SandboxRepoWithDoc -DocFiles @{ 'docs/ui/screen-A.md' = $oversized }
+      try {
+        $r = Invoke-CheckInProc -Root $root -Params @{ BaseRef = 'main'; Json = $true }
+        $r.Code | Should -Be 1
+        $r.Json.sizeCapBreaches.Count | Should -Be 1
+        $r.Json.sizeCapBreaches[0].Class | Should -Be 'ui'
+      } finally {
+        Remove-Item -Recurse -Force $root -ErrorAction SilentlyContinue
+      }
+    }
+
+    It 'honours adopter cap-bytes override' {
+      $cfg = @"
+adr-directory: docs/adr/
+doc-size-caps:
+  adr:
+    cap-bytes: 8192
+"@
+      $oversized = 'x' * 5000  # Over framework default (4096) but under override (8192)
+      $root = New-SandboxRepoWithDoc -DocFiles @{ 'docs/adr/ADR-0001.md' = $oversized } -ConfigYaml $cfg
+      try {
+        $r = Invoke-CheckInProc -Root $root -Params @{ BaseRef = 'main'; Json = $true }
+        $r.Code | Should -Be 0
+        $r.Json.sizeCapBreaches.Count | Should -Be 0
+      } finally {
+        Remove-Item -Recurse -Force $root -ErrorAction SilentlyContinue
+      }
+    }
+
+    It 'honours adopter `disabled` to opt out of a class' {
+      $cfg = @"
+adr-directory: docs/adr/
+doc-size-caps:
+  adr: disabled
+"@
+      $oversized = 'x' * 9000
+      $root = New-SandboxRepoWithDoc -DocFiles @{ 'docs/adr/ADR-0001.md' = $oversized } -ConfigYaml $cfg
+      try {
+        $r = Invoke-CheckInProc -Root $root -Params @{ BaseRef = 'main'; Json = $true }
+        $r.Code | Should -Be 0
+        $r.Json.sizeCapBreaches.Count | Should -Be 0
+      } finally {
+        Remove-Item -Recurse -Force $root -ErrorAction SilentlyContinue
+      }
+    }
+
+    It 'reads adopter-specified class directories (non-default path)' {
+      $cfg = @"
+adr-directory: architecture/decisions/
+"@
+      $oversized = 'x' * 5000
+      $root = New-SandboxRepoWithDoc -DocFiles @{ 'architecture/decisions/ADR-001.md' = $oversized } -ConfigYaml $cfg
+      try {
+        $r = Invoke-CheckInProc -Root $root -Params @{ BaseRef = 'main'; Json = $true }
+        $r.Code | Should -Be 1
+        $r.Json.sizeCapBreaches.Count | Should -Be 1
+        $r.Json.sizeCapBreaches[0].Class | Should -Be 'adr'
+        $r.Json.sizeCapBreaches[0].Path | Should -Be 'architecture/decisions/ADR-001.md'
+      } finally {
+        Remove-Item -Recurse -Force $root -ErrorAction SilentlyContinue
+      }
+    }
+
+    It 'passes a size-cap breach when Optimized-By trailer is present (range mode)' {
+      $oversized = 'x' * 5000
+      $root = New-SandboxRepoWithDoc -DocFiles @{}
+      try {
+        Push-Location $root
+        try {
+          $abs = Join-Path $root 'docs/adr/ADR-0001.md'
+          New-Item -ItemType Directory -Force -Path (Split-Path $abs -Parent) | Out-Null
+          Set-Content -LiteralPath $abs -Value $oversized
+          & git add . *> $null
+          $msg = "land oversized ADR`n`nOptimized-By: ai-engineer"
+          & git commit -q -m $msg *> $null
+        } finally { Pop-Location }
+        $r = Invoke-CheckInProc -Root $root -Params @{ BaseRef = 'main'; Json = $true }
+        $r.Json.sizeCapBreaches.Count | Should -Be 1
+        $r.Json.markerPresent | Should -Be $true
+        $r.Code | Should -Be 0
+      } finally {
+        Remove-Item -Recurse -Force $root -ErrorAction SilentlyContinue
+      }
+    }
+
+    It 'does not flag .md files outside the configured class directories' {
+      $oversized = 'x' * 9000
+      $root = New-SandboxRepoWithDoc -DocFiles @{ 'docs/random-note.md' = $oversized }
+      try {
+        $r = Invoke-CheckInProc -Root $root -Params @{ BaseRef = 'main'; Json = $true }
+        $r.Code | Should -Be 0
+        $r.Json.sizeCapBreaches.Count | Should -Be 0
+      } finally {
+        Remove-Item -Recurse -Force $root -ErrorAction SilentlyContinue
+      }
+    }
+
+    It 'Read-DocSizeCapConfig returns all defaults when local/framework.config.yaml is absent' {
+      $root = New-SandboxRepo
+      try {
+        $cfg = Read-DocSizeCapConfig -RepoRoot $root
+        $cfg.Caps.adr | Should -Be 4096
+        $cfg.Caps.cr | Should -Be 6144
+        $cfg.Caps.ui | Should -Be 4096
+        $cfg.Dirs.adr | Should -Be 'docs/adr/'
+        $cfg.Disabled.adr | Should -Be $false
+      } finally {
+        Remove-Item -Recurse -Force $root -ErrorAction SilentlyContinue
+      }
+    }
+
+    It 'Get-DocClass returns the matching class for a path' {
+      $dirs = @{ adr = 'docs/adr/'; cr = 'docs/cr/'; ui = 'docs/ui/' }
+      (Get-DocClass -Path 'docs/adr/ADR-001.md' -Dirs $dirs) | Should -Be 'adr'
+      (Get-DocClass -Path 'docs/cr/CR-001.md' -Dirs $dirs) | Should -Be 'cr'
+      (Get-DocClass -Path 'docs/ui/home.md' -Dirs $dirs) | Should -Be 'ui'
+      (Get-DocClass -Path 'docs/random.md' -Dirs $dirs) | Should -BeNullOrEmpty
+      (Get-DocClass -Path 'docs/adr/something.txt' -Dirs $dirs) | Should -BeNullOrEmpty
+    }
+  }
+
   Context 'End-to-end via -File (cross-platform invocation contract)' {
     It 'returns exit code 0 on clean tree when invoked via pwsh -File' {
       $root = New-SandboxRepo
