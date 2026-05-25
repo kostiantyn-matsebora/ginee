@@ -11,6 +11,12 @@ Default short tasks do not load this file.
 
 `.idx` grammar spec: `core/index-syntax.md` (load-on-demand on first `.idx` read or write).
 
+## Read order
+
+- **Index-first bedrock.** Cardinals consult `local/index/` summaries + role-kernel `Source of truth § always` rows before any source read; raw source reads are fallback when the index entry's anchor points at a fragment needed verbatim OR the role authors new content in that source.
+- **Trigger conditions for raw source reads.** Index entry insufficient for verbatim citation · role authoring new content in source · novel-class file with no index entry yet (recipe-extracted on first encounter).
+- **Justification-required reporting.** Every raw source read records a one-line justification in the cardinal return per `core/templates/phase-report.md § Source reads (this dispatch)`. Missing-justification carve-out per the same file's `§ Format-only re-dispatch — single carve-out`.
+
 ## Why
 
 Adopter projects accumulate substantial knowledge across two source categories — **documentation** (architecture doc 30–50K, mockup 30–100K, ADRs / CRs / scenarios often 100K+ corpora) and **code / config** (`package.json`, `Dockerfile`, `docker-compose.yml`, `terraform/`, `.editorconfig`, lockfiles). Pulling raw sources into LLM context on every dispatch burns tokens before any work has started. The index replaces full-source reads with lightweight per-class summaries; roles read originals only when the index points to a fragment they need verbatim.

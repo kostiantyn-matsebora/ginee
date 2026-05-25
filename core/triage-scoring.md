@@ -79,7 +79,8 @@ Edge cases:
 **Trigger.** `team-lead` picks up an issue and `complexity:*` is absent.
 
 1. `team-lead` dispatches `solution-architect` with the issue body + repo context.
-2. `solution-architect` returns an `H` / `M` / `L` estimate using ATAM-style signals:
+2. `solution-architect` gathers signals from `issue body + index entries` only; raw source reads require a one-line justification in the return per `core/templates/phase-report.md § Source reads (this dispatch)`.
+3. `solution-architect` returns an `H` / `M` / `L` estimate using ATAM-style signals:
 
    | Signal | Weight | Drives toward |
    |---|---|---|
@@ -88,8 +89,8 @@ Edge cases:
    | Novel concepts (new spec / new role / new ADR needed) | high | novel → H |
    | Existing pattern reuse | reduces estimate | reuse → L |
 
-3. `team-lead` posts a comment recording the estimate (`<!-- ginee:complexity-estimate by=solution-architect value=H -->`) and adds `complexity:high` / `:medium` / `:low` label.
-4. Continues normal Phase 1–8 flow.
+4. `team-lead` posts a comment recording the estimate (`<!-- ginee:complexity-estimate by=solution-architect value=H -->`) and adds `complexity:high` / `:medium` / `:low` label.
+5. Continues normal Phase 1–8 flow.
 
 **Value is never auto-estimated.** Missing `value:*` → `team-lead` asks the user (H / M / L) before proceeding past Phase 1. User answer → label added.
 

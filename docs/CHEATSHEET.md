@@ -224,12 +224,15 @@ Status: Done | In-progress | Blocked | Hand-off
 ## Verification log        # table — command · outcome              (required)
 ## Open issues             # bullets — issue + owner (≤ 80 ch)      (required; (none) if empty)
 ## Next dispatch needed    # one-liner — role · surface · reason    (required; (none) if empty)
+## Source reads (this dispatch)  # table — path · justification · index entry  (required; (none) if empty)
 ## Hand-off                # core/templates/hand-off-note.md         (forced-handoff only)
 ## Stop-state              # Done / In-progress / Not-started        (Status: In-progress only)
 ## Notes                   # free prose · ≤ 200 words                (optional escape hatch)
 ```
 
 **6 mandatory checks before report-as-done** — 5 from D22 / D26 + *no narrative preamble*. **Forbidden** — narrative preamble · restated dispatch context · code snippets outside the Notes carve-out · verbose rationale outside `## Notes` · parenthetical comma-soup. Target reduction vs free-form returns: ~70%.
+
+**Index-first read order** — cardinals consult `local/index/` summaries first; raw source reads are fallback + require a one-line justification in `## Source reads`. Orchestrator's single format-only re-dispatch carve-out fires when raw source appears in `## Files touched` AND `## Source reads` is missing / `(none)`. Bedrock: `core/protocols/index-protocol.md § Read order`.
 
 ## Release-surface authoring (D40)
 

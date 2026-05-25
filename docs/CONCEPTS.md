@@ -399,15 +399,18 @@ Every cardinal-dispatch return is **schema-bound** per `core/templates/phase-rep
 | `## Verification log` | required | Table — `command` · `outcome` |
 | `## Open issues` | required | Bullets — `<issue> — <owner>` |
 | `## Next dispatch needed` | required | One-liner — `<role> · <surface> · <reason>` |
+| `## Source reads (this dispatch)` | required (else `(none)`) | Table — `Path` · `Justification` · `Index entry consulted` |
 | `## Hand-off` | conditional — forced handoff per `core/cross-agent-handoff.md` | `core/templates/hand-off-note.md` shape |
 | `## Stop-state` | conditional — `Status: In-progress` | Done / In-progress / Not-started bullets |
 | `## Notes` | **optional** — narrative escape hatch | Free prose · ≤ 200 words · ≤ 5-line code-snippet carve-out |
 
-**6 mandatory checks before report-as-done** — 5 from D22 / D26 + *no narrative preamble* (first non-Status line must be a `##` section header).
+**6 mandatory checks before report-as-done** — 5 from D22 / D26 + *no narrative preamble* (first non-Status line must be a `##` section header). `## Source reads` joins as required-with-empty-case (matching `## Hand-off` / `## Stop-state` precedent) — count unchanged.
 
 **Forbidden patterns** — narrative preamble · restated dispatch context · code snippets outside the Notes carve-out · verbose rationale outside `## Notes` · parenthetical comma-soup.
 
-**Enforcement.** LLM self-review against the schema before returning. No external linter. Orchestrator surfaces a one-line advisory on violations but never re-dispatches purely for format and never auto-rewrites (analogous to D14 reporter-content forbidden).
+**Enforcement.** LLM self-review against the schema before returning. No external linter. Orchestrator surfaces a one-line advisory on violations and consumes anyway. **Single carve-out** — when raw source paths appear in `## Files touched` AND `## Source reads (this dispatch)` is missing or `(none)`, orchestrator re-dispatches for the justification cycle. Never auto-rewrites (analogous to D14 reporter-content forbidden).
+
+**Index-first read order.** Cardinals consult `local/index/` summaries + role-kernel `Source of truth § always` rows before any raw source read; raw reads are fallback when an index entry's anchor points at a fragment needed verbatim OR the role authors new content in that source. Every raw read records a one-line justification in `## Source reads (this dispatch)`. Full bedrock rule: [`core/protocols/index-protocol.md § Read order`](https://github.com/kostiantyn-matsebora/ginee/blob/main/core/protocols/index-protocol.md).
 
 Full schema: [`core/templates/phase-report.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/core/templates/phase-report.md). Bad/good example: [`core/doc-authoring-examples.md § 10`](https://github.com/kostiantyn-matsebora/ginee/blob/main/core/doc-authoring-examples.md). Migration: [`migrations/strict-subagent-return-schema.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/migrations/strict-subagent-return-schema.md).
 
