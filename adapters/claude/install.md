@@ -171,14 +171,94 @@ Non-participating phase files are not surfaced to that role. The shared pointer 
 
 The same specialist is resumed (not fresh-spawned) on 2nd+ dispatch within one Phase 1–8 task AND within that role's `phase-participation:` window. Saves 15–50 k tokens of duplicated reload per task on a typical 3–5-dispatch workload.
 
-| Step | Action on Claude |
-|---|---|
-| First dispatch of role `R` in task `T` | Team-lead calls `Agent` with `run_in_background: true`; receives the agent-id; records `{role, agent-id, task, last-phase}` in its in-conversation registry. |
-| 2nd+ dispatch of `R` in `T` (new phase within `phase-participation:`) | Team-lead calls `SendMessage` to the recorded agent-id with the new payload — new instruction + phase identity + drift advisory (no kernel reload). |
-| Forced-fresh trigger | Team-lead opens a new background `Agent` and replaces the registry entry; old agent receives `## Forced-fresh — release`. |
-| Phase 8 acceptance / abandonment | Team-lead sends `## Phase 8 close — release` to every background agent; registry cleared. |
+### Prerequisite — `CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1`
 
-Adopter opt-out: `local/framework.config.yaml § warm-reuse.enabled: false`. Default on Claude is `true` (resume capability present).
+Claude Code gates `SendMessage` (the resume tool) behind an experimental flag. Without it the tool is genuinely absent from the session and warm reuse silently falls back to fresh-spawn on every dispatch. Set the flag once per project (or globally) and **restart Claude Code**:
+
+```json
+// .claude/settings.json (project) or ~/.claude/settings.json (global)
+{
+  "env": { "CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS": "1" }
+}
+```
+
+Env vars resolve at boot — Claude Code must restart for the change to take effect. After restart, `SendMessage` appears in the deferred-tool registry. References: `anthropics/claude-code#36196` · `#42737` · `#35240`.
+
+Adopters who cannot enable the flag (organisational policy, etc.) set `local/framework.config.yaml § warm-reuse.enabled: false` and accept the fresh-spawn cost — team-lead falls through to the capability-less-adapter behaviour transparently.
+
+### Architecture — skill-runner owns the plumbing; team-lead owns the decision
+
+The Claude `Agent` / `Task` tool is top-level only — subagents do not inherit it (see `§ Subagent dispatch limitation` above). On Claude that means team-lead is itself a subagent without `Agent` / `SendMessage`, and its conversation does not survive across dispatches — so the warm registry cannot live in team-lead's context as it does on adapters where team-lead has the resume tool.
+
+The skill-runner (main thread; durable across one Phase 1–8 task) holds the registry; team-lead reads it back as dispatch input + writes warm-vs-fresh decisions into its plan; the skill-runner executes those decisions verbatim. Decision authority is unchanged — only mechanical plumbing moves.
+
+| Surface | Owns |
+|---|---|
+| skill-runner (main thread) | Warm registry holder · team-lead bootstrap (`Agent` with `run_in_background: true` on first dispatch · record team-lead agent-id · `SendMessage` to team-lead for every later cycle in the task) · specialist agent-id round-trip (capture on first `Agent` call · pass registry as input to team-lead's next dispatch · execute team-lead's `SendMessage` instructions verbatim) |
+| team-lead (re-invoked via `SendMessage` each cycle) | All warm-vs-fresh decisions · `mode: warm-resume \| fresh-spawn` field on every plan line · `agent-id: <id>` on `warm-resume` lines (from the registry the skill-runner passed in) · forced-fresh trigger evaluation per `migrations/warm-specialist-reuse.md § Forced-fresh triggers` |
+
+The carve-out is mechanical — skill-runner never reads `mode:` and second-guesses it; never picks an agent-id when team-lead omitted the field; never spawns or releases an agent outside an approved plan-line. Full boundary: `migrations/warm-reuse-claude-plumbing.md`.
+
+### Plan-line shape
+
+Every team-lead plan line for a dispatch carries:
+
+- `role: <cardinal>`
+- `mode: fresh-spawn` (first dispatch of `role` in the task, or any forced-fresh trigger fires) **or** `mode: warm-resume`
+- `agent-id: <id>` (required when `mode: warm-resume`; absent on `fresh-spawn`)
+- Standard dispatch contract — phase · scope · acceptance · drift advisory per `migrations/warm-specialist-reuse.md § Drift advisory`
+
+Skill-runner reads the line and: `mode: fresh-spawn` → `Agent` with `run_in_background: true` + capture new agent-id into registry · `mode: warm-resume` → `SendMessage` to the named `agent-id` with the payload.
+
+### Loop
+
+1. **First skill-runner batch** — parse · label / sticky ops · branch ops · `Agent` `run_in_background: true` to spawn team-lead · record team-lead's agent-id · pass parsed task + registry as input.
+2. **team-lead** authors the plan (per-line `mode:` + `agent-id:` as above).
+3. **User approves** (Phase 3; elided per `core/automatic-mode.md` in `auto:` mode).
+4. **skill-runner verbatim-executes** each plan line; captures new agent-ids into registry; updates registry.
+5. **skill-runner `SendMessage`s team-lead** with collected returns + updated registry → team-lead synthesises + plans next cycle.
+6. **Repeat** 2–5 until phase complete.
+7. **Phase 8 acceptance / abandonment** — skill-runner sends `## Phase 8 close — release` to every recorded agent-id (including team-lead's); registry cleared.
+
+### Known caveats
+
+| Caveat | Reference |
+|---|---|
+| Friendly-name `SendMessage` resume fails — raw `agent-id` only | `anthropics/claude-code#42999` |
+| First resume incurs a cache miss (the resumed agent reads its history afresh) | `anthropics/claude-code#44724` |
+
+Both are upstream issues outside ginee's control. The registry stores raw agent-ids exclusively. The first-resume cache miss is amortised across warm-reuse savings for the rest of the task.
+
+### Worked round-trip
+
+```
+skill-runner (Claude main thread)
+  ├─ ginee-pick-up batch — parse #115; checkout branch; create dispatch-map sticky
+  ├─ Agent(team-lead, run_in_background: true)            → captures team-lead-id = "tl-abc"
+  ├─ SendMessage(tl-abc, "Plan Phase 4 for #115")
+  │
+  │  team-lead replies with plan:
+  │    1. {role: backend-engineer, mode: fresh-spawn,  scope: ...}
+  │    2. {role: qa-engineer,      mode: fresh-spawn,  scope: ...}
+  │
+  ├─ user approves
+  ├─ Agent(backend-engineer, ...)                          → captures be-id = "be-xyz"
+  ├─ Agent(qa-engineer, ...)                               → captures qa-id = "qa-pqr"
+  ├─ (returns collected)
+  ├─ SendMessage(tl-abc, "Returns + registry: {be: be-xyz, qa: qa-pqr}")
+  │
+  │  team-lead replies with next plan:
+  │    1. {role: backend-engineer, mode: warm-resume, agent-id: be-xyz,
+  │       scope: "address QA finding F-03", drift-advisory: (no drift)}
+  │
+  ├─ SendMessage(be-xyz, "address QA finding F-03 ...")    ← no fresh spawn; kernel + process + index reads survive
+  ├─ ... loop until phase complete
+  └─ Phase 8: SendMessage(tl-abc, be-xyz, qa-xyz, "## Phase 8 close — release"); registry cleared
+```
+
+### Adopter opt-out
+
+`local/framework.config.yaml § warm-reuse.enabled: false`. Default on Claude is `true` (capability present when the env-var prerequisite is set). With `enabled: false`, every dispatch fresh-spawns — identical to capability-less-adapter behaviour.
 
 ## Updates
 
