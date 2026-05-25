@@ -11,6 +11,7 @@
 | `## Verification log` | **required** | Table — `command / check` · `outcome` | 1 row per check |
 | `## Open issues` | **required** (else `(none)`) | Bullets — `<issue> — <owner / blocker>` | ≤ 80 chars / bullet |
 | `## Next dispatch needed` | **required** (else `(none)`) | One-liner — `<role> · <surface> · <reason>` | 1 line |
+| `## Source reads (this dispatch)` | **required** (else `(none)`) | Table — `Path` · `Justification` · `Index entry consulted` | 1 row per source read |
 | `## Hand-off` | required **if failed dispatch / cross-domain root cause outside domain** (per `core/cross-agent-handoff.md`) | Embed `core/templates/hand-off-note.md` shape | per template |
 | `## Stop-state` | required **if `Status: In-progress`** (iteration-protocol stop boundary) | Three-bucket bullets — Done / In-progress / Not-started | per `core/protocols/iteration-protocol.md § Stoppable intermediate states` |
 | `## Time spent` | required **if sub-issue mode is active** — return doubles as sub-issue closing comment | One-liner — `<H>h <M>m perceived effort; <N> progress comments on sub-issue #<M>.` | 1 line |
@@ -47,6 +48,10 @@ Run the 6 checks above against the drafted report. Append, as the **last line**,
 - Never auto-rewrite the subagent's content (analogous to the reporter-content forbidden rule in `core/github-integration.md § Forbidden actions`).
 - **Skill-runner forbidden** from "cleaning up" non-compliant returns before passing to team-lead.
 
+### Format-only re-dispatch — single carve-out
+
+Narrow exception to "never re-dispatch purely for format": when raw source paths appear in `## Files touched` (paths **outside** `local/index/`) AND `## Source reads (this dispatch)` is missing or `(none)`, re-dispatch for the justification cycle. Rationale — a missing `## Source reads` block when source was touched is a substantive audit-trail omission (missing decision data), not a format wrinkle, so the carve-out is consistent with the standing rule. Fires only for this content-substantive omission; never for pure format issues (preamble, marker absence, table shape, etc.).
+
 ### Worked advisory examples
 
 | Detected violation | Advisory text (exact) |
@@ -56,6 +61,7 @@ Run the 6 checks above against the drafted report. Append, as the **last line**,
 | Inventory rendered as prose / comma-soup | `"Return missed self-lint: inventory not in table form; consuming anyway."` |
 | Code snippet outside `## Notes` carve-out | `"Return missed self-lint: code outside Notes carve-out; consuming anyway."` |
 | Bullet > 25 words without sub-bullets | `"Return missed self-lint: bullet over-length; consuming anyway."` |
+| Source touched without `## Source reads` block | `"Re-dispatching: source files touched without justification; cite consulted index entries."` |
 | Multiple violations | Cite the first; one line; do not enumerate. |
 
 ### Carry-forward rephrasing for the next dispatch
@@ -120,6 +126,14 @@ Empty case: `(none)`.
 - `<role> · <surface> · <one-line reason>`
 
 Empty case: `(none)`.
+
+### `## Source reads (this dispatch)`
+
+| Path | Justification | Index entry consulted |
+|---|---|---|
+| `<path>` | `<≤ 80 chars — why the index entry didn't suffice>` | `<index file cite>` OR `(no index entry — novel-class / out-of-index path)` |
+
+Empty case: `(none)`. Required-with-empty-case — same shape as `## Hand-off` / `## Stop-state` (does not bump the 6-check count).
 
 ### `## Hand-off` *(when applicable)*
 
