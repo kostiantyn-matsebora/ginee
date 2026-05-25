@@ -95,6 +95,23 @@ $Script:OtherWatchedPatterns = @(
 $Script:MarkerTrailer = 'Optimized-By:'
 $Script:MarkerValue = 'ai-engineer'
 
+# Doc-size caps — per-class total-file-size limits. Defaults match
+# `core/protocols/doc-size-caps.md § Default caps`. Adopter override via
+# `local/framework.config.yaml § doc-size-caps`.
+$Script:DocSizeCapDefaults = @{
+  adr = 4096
+  cr  = 6144
+  ui  = 4096
+}
+# Default directory hints when `local/framework.config.yaml` is absent or the
+# class-directory key is not set. Adopters typically set these explicitly in
+# `local/framework.config.yaml § adr-directory` / `cr-directory` / `ui-directory`.
+$Script:DocClassDirDefaults = @{
+  adr = 'docs/adr/'
+  cr  = 'docs/cr/'
+  ui  = 'docs/ui/'
+}
+
 # ----- Helpers ------------------------------------------------------------
 
 function Resolve-RepoRoot {
@@ -230,6 +247,130 @@ function Get-FileByteDelta {
   }
 
   return ($newBytes - $oldBytes)
+}
+
+function Read-DocSizeCapConfig {
+  <#
+    Reads `local/framework.config.yaml` (relative to RepoRoot if present);
+    returns @{ Dirs = @{ adr; cr; ui }; Caps = @{ adr; cr; ui }; Disabled = @{ adr; cr; ui } }.
+    Missing keys → framework defaults. No framework.config.yaml → all defaults.
+    YAML parsing is regex-based; full YAML parser not required for the limited surface.
+  #>
+  param([string]$RepoRoot)
+
+  $result = @{
+    Dirs     = @{ adr = $Script:DocClassDirDefaults.adr; cr = $Script:DocClassDirDefaults.cr; ui = $Script:DocClassDirDefaults.ui }
+    Caps     = @{ adr = $Script:DocSizeCapDefaults.adr; cr = $Script:DocSizeCapDefaults.cr; ui = $Script:DocSizeCapDefaults.ui }
+    Disabled = @{ adr = $false; cr = $false; ui = $false }
+  }
+
+  $cfgPath = Join-Path $RepoRoot 'local/framework.config.yaml'
+  if (-not (Test-Path -LiteralPath $cfgPath)) { return $result }
+
+  $section = ''
+  $currentClass = ''
+  foreach ($line in Get-Content -LiteralPath $cfgPath) {
+    if ($line -match '^\s*#' -or $line -match '^\s*$') { continue }
+
+    # Dedent transitions — leaving doc-size-caps block.
+    if ($section -eq 'dsc.class' -and $line -notmatch '^    ') { $section = 'dsc'; $currentClass = '' }
+    if ($section -eq 'dsc'       -and $line -notmatch '^  ')   { $section = '' }
+
+    # Top-level directory keys.
+    if ($line -match '^adr-directory:\s*(\S+)') { $result.Dirs.adr = (Normalize-DirPath $Matches[1]); continue }
+    if ($line -match '^cr-directory:\s*(\S+)')  { $result.Dirs.cr  = (Normalize-DirPath $Matches[1]); continue }
+    if ($line -match '^ui-directory:\s*(\S+)')  { $result.Dirs.ui  = (Normalize-DirPath $Matches[1]); continue }
+
+    # Section entries.
+    if ($line -match '^doc-size-caps:\s*$') { $section = 'dsc'; $currentClass = ''; continue }
+    if ($section -eq 'dsc' -and $line -match '^  ([\w-]+):\s*disabled\s*$') {
+      $cls = $Matches[1].ToLower()
+      if ($result.Disabled.ContainsKey($cls)) { $result.Disabled[$cls] = $true }
+      continue
+    }
+    if ($section -eq 'dsc' -and $line -match '^  ([\w-]+):\s*$') {
+      $cls = $Matches[1].ToLower()
+      if ($result.Caps.ContainsKey($cls)) {
+        $section = 'dsc.class'
+        $currentClass = $cls
+      }
+      continue
+    }
+    if ($section -eq 'dsc.class' -and $currentClass -and $line -match '^    cap-bytes:\s*(\d+)') {
+      $result.Caps[$currentClass] = [int]$Matches[1]
+      continue
+    }
+  }
+
+  return $result
+}
+
+function Normalize-DirPath {
+  param([string]$Path)
+  $norm = $Path -replace '\\', '/'
+  if ($norm -notmatch '/$') { $norm = "$norm/" }
+  return $norm
+}
+
+function Get-DocClass {
+  <#
+    Returns 'adr' | 'cr' | 'ui' | $null based on a path matching one of the
+    configured class directories. Match is "path starts with dir AND ends in .md".
+  #>
+  param([string]$Path, [hashtable]$Dirs)
+  $norm = ($Path -replace '\\', '/')
+  if ($norm -notmatch '\.md$') { return $null }
+  foreach ($cls in @('adr', 'cr', 'ui')) {
+    $dir = $Dirs[$cls]
+    if (-not $dir) { continue }
+    if ($norm.StartsWith($dir)) { return $cls }
+  }
+  return $null
+}
+
+function Get-DocSizeCapBreach {
+  <#
+    For each changed file matching a configured doc class, check the file's
+    CURRENT total size against the class cap. Returns array of breach records.
+    Breaches are independent of the delta-threshold gate (a tiny edit can still
+    breach a cap if the file was already over).
+  #>
+  param([string[]]$Paths, [hashtable]$Config, [string]$Mode, [string]$RepoRoot)
+
+  $breaches = @()
+  foreach ($path in $Paths) {
+    $cls = Get-DocClass -Path $path -Dirs $Config.Dirs
+    if (-not $cls) { continue }
+    if ($Config.Disabled[$cls]) { continue }
+
+    $cap = $Config.Caps[$cls]
+    $currentBytes = 0
+    switch ($Mode) {
+      'Range' {
+        $content = & git show "HEAD:$path" 2>$null
+        if ($LASTEXITCODE -eq 0) { $currentBytes = [System.Text.Encoding]::UTF8.GetByteCount(($content -join "`n")) }
+      }
+      'Staged' {
+        $content = & git show ":0:$path" 2>$null
+        if ($LASTEXITCODE -eq 0) { $currentBytes = [System.Text.Encoding]::UTF8.GetByteCount(($content -join "`n")) }
+      }
+      default {
+        $fsPath = Join-Path $RepoRoot $path
+        if (Test-Path -LiteralPath $fsPath) { $currentBytes = (Get-Item -LiteralPath $fsPath).Length }
+      }
+    }
+
+    if ($currentBytes -gt $cap) {
+      $breaches += [PSCustomObject]@{
+        Path         = $path
+        Class        = $cls
+        CurrentBytes = $currentBytes
+        CapBytes     = $cap
+        OverBy       = $currentBytes - $cap
+      }
+    }
+  }
+  $breaches | Write-Output
 }
 
 function Test-MarkerPresent {
@@ -406,23 +547,31 @@ function Invoke-ContextEconomyCheckMain {
     $lintFindings = @(Invoke-StructuralLint -Paths $watchedPaths -RepoRoot $repo)
   }
 
-  $gateFail = ($offenders.Count -gt 0) -and (-not $markerPresent)
+  # Per-class doc-size caps — independent of the delta-threshold gate. Reads
+  # adopter-side `local/framework.config.yaml` for directory keys + per-class
+  # overrides; framework defaults fill gaps. Same Optimized-By trailer bypass.
+  $sizeCapConfig = Read-DocSizeCapConfig -RepoRoot $repo
+  $changedPaths = @($rows | ForEach-Object { $_.Path })
+  $sizeCapBreaches = @(Get-DocSizeCapBreach -Paths $changedPaths -Config $sizeCapConfig -Mode $mode -RepoRoot $repo)
+
+  $gateFail = (($offenders.Count -gt 0) -or ($sizeCapBreaches.Count -gt 0)) -and (-not $markerPresent)
   $lintFail = $lintFindings.Count -gt 0
 
   $result = [PSCustomObject]@{
-    mode          = $mode
-    range         = $spec.Range
-    offenders     = $offenders
-    markerPresent = $markerPresent
-    lintFindings  = $lintFindings
-    gateFail      = $gateFail
-    lintFail      = $lintFail
+    mode            = $mode
+    range           = $spec.Range
+    offenders       = $offenders
+    sizeCapBreaches = $sizeCapBreaches
+    markerPresent   = $markerPresent
+    lintFindings    = $lintFindings
+    gateFail        = $gateFail
+    lintFail        = $lintFail
   }
 
   if ($Json) {
     $result | ConvertTo-Json -Depth 6 -Compress
   } else {
-    if ($offenders.Count -eq 0 -and $lintFindings.Count -eq 0) {
+    if ($offenders.Count -eq 0 -and $sizeCapBreaches.Count -eq 0 -and $lintFindings.Count -eq 0) {
       Write-Host "context-economy-check: pass ($($spec.Range))" -ForegroundColor Green
     } else {
       Write-Host "context-economy-check: $($spec.Range)" -ForegroundColor Cyan
@@ -435,6 +584,15 @@ function Invoke-ContextEconomyCheckMain {
           if ($o.OverBytes) { $reason += "+$($o.NetBytes) bytes > $($o.ThresholdBytes)" }
           Write-Host "  $($o.Path) [$($o.Tier)] — $($reason -join ', ')"
         }
+      }
+      if ($sizeCapBreaches.Count -gt 0) {
+        Write-Host ""
+        Write-Host "Per-class doc-size cap breach ($($sizeCapBreaches.Count) file(s)):" -ForegroundColor Yellow
+        foreach ($b in $sizeCapBreaches) {
+          Write-Host "  $($b.Path) [$($b.Class)] — $($b.CurrentBytes) bytes > cap $($b.CapBytes) (over by $($b.OverBy))"
+        }
+      }
+      if ($offenders.Count -gt 0 -or $sizeCapBreaches.Count -gt 0) {
         if ($markerPresent) {
           Write-Host ""
           Write-Host "  Optimized-By: ai-engineer trailer FOUND — gate passes." -ForegroundColor Green

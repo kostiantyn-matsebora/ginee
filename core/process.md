@@ -82,6 +82,7 @@ Bindings may NOT override generic process.
 | **Drop filler** | No "It is important to note that…", "Please ensure…", "In general…". Lead with the verb or noun. |
 | **Prose** | Narrative exposition only — explaining *why*. Keep tight. |
 | **Framework-self-dev** | Framework-source PRs in the ginee repo are gated by `scripts/context-economy-check.ps1` (Claude Code hook + git hooks + CI workflow). Threshold breach without an `Optimized-By: ai-engineer` trailer fails the gate. |
+| **Per-class doc size caps** | Load-on-demand doc classes (ADR · CR · UI) carry a total file-size cap. Defaults: ADR 4 KB · CR 6 KB · UI 4 KB. Adopter override per class via `local/framework.config.yaml § doc-size-caps`. Breach without `Optimized-By: ai-engineer` trailer fails the same gate. Full spec: `core/protocols/doc-size-caps.md`. |
 
 ### Default-shape map
 
