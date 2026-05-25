@@ -202,6 +202,8 @@ Template carries this: `core/templates/pr-description.md § Issue linkage`.
 
 Address external code-review feedback on an open PR. Sits between Phase 7 (internal SA review) and Phase 8 (user acceptance) for PRs exposed to peer maintainers / OSS contributors / the user wearing a reviewer hat. Explicit invocation only — no extension of the CI-watch loop (`core/protocols/ci-watch.md`).
 
+**Output shapes** — per-thread reply + sticky cycle summary per `core/protocols/review-cycle-schema.md`. Procedure + plan-table contract + lossless coverage stay below; the sidecar schema carries the shape contracts + self-lint markers.
+
 | Path | Form |
 |---|---|
 | Skill (AgentSkills clients) | `/ginee-address-review #<N>` |
@@ -303,7 +305,7 @@ Re-invocation later (new reviewer comment on `T#abc` + new `T#jkl`):
 
 ## Sub-issue dispatch
 
-One sub-issue per `team-lead` → cardinal dispatch under the parent task issue (issue-sourced tasks only; TODO / freeform → in-context). Authoring procedure: `core/roles/team-lead.details.md § Sub-issue dispatch`. Body shape: `core/templates/sub-issue-dispatch.md`.
+One sub-issue per `team-lead` → cardinal dispatch under the parent task issue (issue-sourced tasks only; TODO / freeform → in-context). Authoring procedure: `core/roles/team-lead.details.md § Sub-issue dispatch`. Body shape: `core/templates/sub-issue-dispatch.md`. Rules + self-lint across body / progress / closing surfaces: `core/protocols/sub-issue-dispatch-schema.md`.
 
 | Step | Op |
 |---|---|

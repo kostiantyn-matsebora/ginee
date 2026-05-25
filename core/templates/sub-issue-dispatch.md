@@ -2,6 +2,8 @@
 
 Authored by `team-lead` per `core/protocols/github-integration.md § Sub-issue dispatch`. One sub-issue per cardinal dispatch under the parent task issue. Doc-authoring self-lint applies before posting.
 
+**Rules + lints across body / progress / closing surfaces:** `core/protocols/sub-issue-dispatch-schema.md`. This file carries the literal artefact skeleton; the schema sidecar carries the mandatory checks + self-lint marker contract.
+
 ## Title
 
 ```
