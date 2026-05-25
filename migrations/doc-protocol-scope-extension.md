@@ -49,7 +49,7 @@ Not recommended. The D22 protocol is the framework's structure-over-prose discip
 
 1. Revert `core/protocols/doc-authoring-protocol.md § Scope` to the pre-D26 version.
 2. Revert the 4 `ginee-file-*` skill self-lint steps.
-3. Revert the 2 github-integration.md comment-cadence D26 declarations.
+3. Revert the 2 `core/protocols/github-integration.md` comment-cadence D26 declarations.
 
 ## Issue reference
 

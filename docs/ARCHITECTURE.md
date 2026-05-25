@@ -63,20 +63,26 @@ core/
 │   ├── phase-8-user-approval.md      Delivery finalize · doc-optimization hook
 │   └── dispatch.md                   Skill-runner boundary · dispatch & parallelism ·
 │                                     automatic mode · task model · cross-domain bugs map
-├── protocols/                  Load-on-demand protocol specs
+├── protocols/                  Load-on-demand protocol specs (D46 — all named workflows here)
 │   ├── iteration-protocol.md       Estimation-first dispatch + 3–5 min stoppable batches
 │   ├── doc-authoring-protocol.md   Enforcement + attestation (D22 / D26 / D29)
 │   ├── index-protocol.md           local/index/ extraction, lossless rule, compression
 │   │                               floor, consumer coupling, load triggers
-│   └── options-protocol.md         Adopt-vs-build proposal shape (D30)
-├── automatic-mode.md           D12 — per-task `auto:` opt-in; elides intermediate gates
-├── index-syntax.md             .idx DSL grammar
-├── delivery-modes.md           D17 — branch+PR / working-tree / commit-no-push
-├── github-integration.md       D14 — issues + discussions as 4th task source
-├── doc-roles.md                All-roles authorship + ai-engineer shape (D25)
-├── cross-domain-bugs.md        Propose → implement → verify cycle
-├── cross-agent-handoff.md      Diagnose ≠ fix — structured hand-off procedure
-├── post-task-check-in.md       After every completed user request
+│   ├── options-protocol.md         Adopt-vs-build proposal shape (D30)
+│   ├── blueprint-diff-protocol.md  Pre-implementation visual-SoT diff gate (D41)
+│   ├── doc-size-caps.md            Per-class size enforcement (D44)
+│   ├── automatic-mode.md           D12 — per-task `auto:` opt-in; elides intermediate gates
+│   ├── delivery-modes.md           D17 — branch+PR / working-tree / commit-no-push
+│   ├── ci-watch.md                 D20 — auto-mode post-PR CI watch + iterate-fix loop
+│   ├── triage-scoring.md           D23 — value × complexity ranking + sticky comment
+│   ├── github-integration.md       D14 — issues + discussions as 4th task source
+│   ├── doc-roles.md                All-roles authorship + ai-engineer shape (D25)
+│   ├── doc-authoring-examples.md   Paired examples for the doc-authoring protocol
+│   ├── changelog-protocol.md       D40 — surface-specific voice + shape
+│   ├── cross-domain-bugs.md        Propose → implement → verify cycle
+│   ├── cross-agent-handoff.md      Diagnose ≠ fix — structured hand-off procedure
+│   ├── index-syntax.md             .idx DSL grammar
+│   └── post-task-check-in.md       After every completed user request
 │
 ├── roles/                      7 cardinal role kernels (always present)
 │   ├── team-lead.md             orchestrator + discovery

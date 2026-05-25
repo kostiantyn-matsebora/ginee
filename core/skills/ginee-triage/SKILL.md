@@ -53,7 +53,7 @@ Render scores to 2 decimals. Unscored cells = `—`.
 
 - Primary sort: `Score DESC, Age DESC` (older first within tie).
 - Group unscored items at the bottom under a one-line header: *"Unscored — leverage unknown; ask reporter or auto-estimate on pickup."*
-- Worked example + sort contract: `triage-scoring.md § Examples`.
+- Worked example + sort contract: `core/protocols/triage-scoring.md § Examples`.
 
 ### Step 5 — close with explicit pickup instruction
 

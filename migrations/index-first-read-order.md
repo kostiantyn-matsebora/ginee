@@ -25,8 +25,8 @@ Issue #125 (filed by the framework owner mid-task) captures the live failure mod
 | Trigger | `@team-lead pick up #<N>` against an issue with no `complexity:*` label. |
 | Drift | team-lead's dispatch prompt to SA said *"skim affected paths to ground the estimate"* — no `consult index first` clause. |
 | Symptom | SA loaded full TypeScript / source files under `mockup/src/app/`, `frontend/matrix/`, `docs/adr/`, etc. — burning tokens before the estimate returned. |
-| Root cause 1 | Consume-side rule of `index-protocol.md § Why` (the index *replaces* full reads with summaries) was buried at step 3 of a sub-section. Drifts past on read. |
-| Root cause 2 | `triage-scoring.md § Auto-estimation on pickup` listed signals to gather but was silent on *how* to gather them — gather method inherited whatever team-lead's free-text dispatch prompt said. |
+| Root cause 1 | Consume-side rule of `core/protocols/index-protocol.md § Why` (the index *replaces* full reads with summaries) was buried at step 3 of a sub-section. Drifts past on read. |
+| Root cause 2 | `core/protocols/triage-scoring.md § Auto-estimation on pickup` listed signals to gather but was silent on *how* to gather them — gather method inherited whatever team-lead's free-text dispatch prompt said. |
 | Root cause 3 | Cardinal returns reported `Loaded baselines` (per spec) but not `Source reads + justification` — silent source-read drift invisible to team-lead's gate. |
 
 The index protocol exists to cut adopter token cost. Without a bedrock placement + dispatch-contract wiring + return-shape audit trail, the savings were lossy by default.
