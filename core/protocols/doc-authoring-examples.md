@@ -1,3 +1,11 @@
+---
+audience: all-cardinals
+load: on-demand
+triggers: [doc-authoring-examples, examples, structure-over-prose]
+cap-bytes: 24000
+reads-before-applying: [core/protocols/doc-authoring-protocol.md]
+---
+
 # Doc-authoring examples — paired bad / good
 
 **Load-on-demand.** Fetched when:

@@ -1,3 +1,11 @@
+---
+audience: team-lead-only
+load: on-demand
+triggers: [triage, scoring, value-complexity, wsjf]
+cap-bytes: 16384
+reads-before-applying: []
+---
+
 # Triage scoring — value × complexity priority
 
 **Load-on-demand.** Fetched when:

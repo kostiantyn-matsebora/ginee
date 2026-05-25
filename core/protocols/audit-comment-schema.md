@@ -1,3 +1,11 @@
+---
+audience: team-lead-only
+load: on-demand
+triggers: [ginee:value-prompt, ginee:complexity-estimate, ginee:score-recompute, audit comment, audit trail]
+cap-bytes: 6144
+reads-before-applying: [core/protocols/triage-scoring.md, core/protocols/github-integration.md]
+---
+
 # Audit-comment schema
 
 **Load-on-demand.** Loaded when `team-lead` / skill-runner posts an immutable audit comment on an issue — pickup-time value-prompt response · SA complexity auto-estimate · sticky-score recompute.

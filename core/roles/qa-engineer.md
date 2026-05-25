@@ -4,6 +4,11 @@ description: Use for any quality-assurance work — functional / API tests, end-
 aliases: [quality-engineer, test-engineer, sdet]
 default-tier: standard  # test authoring + harness; skill-runner ops kept narrow
 phase-participation: [5, 6]  # testing (5) · parallel exercises during bug fixing (6)
+audience: qa-engineer
+load: always
+triggers: []
+cap-bytes: 16384
+reads-before-applying: []
 ---
 
 # QA Engineer — Quality & Testing

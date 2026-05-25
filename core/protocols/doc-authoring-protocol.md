@@ -1,3 +1,11 @@
+---
+audience: all-cardinals
+load: on-demand
+triggers: [doc-authoring, documentation, structure-over-prose, self-lint]
+cap-bytes: 8192
+reads-before-applying: []
+---
+
 # Doc-authoring protocol — adopter docs + ginee-authored GitHub artefacts + subagent returns
 
 **Load-on-demand at Phase 5 / report-as-done** for any doc-touching task. Default shape rules + mandatory checks live in `core/process.md § Documentation style` (always-loaded); this file carries scope + enforcement + attestation.

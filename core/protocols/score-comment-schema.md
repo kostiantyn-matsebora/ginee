@@ -1,3 +1,11 @@
+---
+audience: team-lead-only
+load: on-demand
+triggers: [ginee:score, sticky score comment, recompute score, triage score sticky]
+cap-bytes: 6144
+reads-before-applying: [core/protocols/triage-scoring.md]
+---
+
 # Score-comment schema
 
 **Load-on-demand.** Loaded when `team-lead` posts / refreshes the sticky `ginee:score` comment — initial pickup · `@team-lead recompute score #<N>` · any ginee-driven label change.

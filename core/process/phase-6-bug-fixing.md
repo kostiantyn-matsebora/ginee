@@ -1,3 +1,11 @@
+---
+audience: all-cardinals
+load: on-demand
+triggers: [phase-6, bug-fixing]
+cap-bytes: 4096
+reads-before-applying: []
+---
+
 # Phase 6 — Bug fixing
 
 **Load triggers** — any cardinal whose `phase-participation:` includes `6`. Per-role roster: `team-lead` · `solution-architect` (review on architectural fix) · `qa-engineer` (parallel exercises) · owning engineering cardinal.

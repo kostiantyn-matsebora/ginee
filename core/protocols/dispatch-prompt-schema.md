@@ -1,3 +1,11 @@
+---
+audience: team-lead-only
+load: on-demand
+triggers: [dispatch prompt, dispatch contract, specialist dispatch, dispatch payload]
+cap-bytes: 6144
+reads-before-applying: [core/process/dispatch.md, core/templates/phase-report.md]
+---
+
 # Dispatch-prompt schema
 
 **Load-on-demand.** Loaded when `team-lead` drafts a specialist dispatch payload — Phase 1–8 cardinal · sub-issue · review-cycle · skill-runner first-batch dispatch (per `core/process/dispatch.md § Skill-runner — surface boundary`).

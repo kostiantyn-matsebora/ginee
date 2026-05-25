@@ -1,3 +1,11 @@
+---
+audience: team-lead-only
+load: on-demand
+triggers: [delivery, delivery-mode, branch, worktree]
+cap-bytes: 12000
+reads-before-applying: []
+---
+
 # Delivery modes
 
 **Load-on-demand.** Fetched when:

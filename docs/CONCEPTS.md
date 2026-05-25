@@ -171,6 +171,32 @@ Full spec: [`core/roles/team-lead.md § CR-gate`](https://github.com/kostiantyn-
 
 Full spec: [`core/protocols/index-protocol.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/core/protocols/index-protocol.md).
 
+## Hot-spec frontmatter (D47)
+
+Every hot-spec file in `core/` (the files cardinals load at dispatch time) carries a YAML frontmatter block at the top declaring its load contract:
+
+```yaml
+---
+audience: <role | all-cardinals | team-lead-only>
+load: always | on-demand
+triggers: [keyword1, keyword2]                # required when load == on-demand
+cap-bytes: <N>                                # explicit per-file byte budget
+reads-before-applying: [path1, path2]         # explicit content-dependency chain; [] if none
+---
+```
+
+**Scope.** `core/process.md` · `core/process/*.md` · `core/protocols/*.md` · `core/roles/*.md` · `core/roles/*.details.md`.
+
+**Excluded.** `core/templates/*.md` (concrete output shapes) · `core/skills/ginee-*/SKILL.md` (already use AgentSkills frontmatter) · `local/roles/*.md` (adopter-owned per D37).
+
+**Adopter impact.** None — `/ginee-update` lands the frontmatter wholesale. Adopters writing custom roles under `local/roles/` MAY adopt the same format but are not required to.
+
+**Why.** Eliminates the per-dispatch inference cost — cardinals know from the file's head whether to load it, when its rules apply, and which other specs to consult first. Compounds across every adopter dispatch.
+
+**Validator.** `scripts/context-economy-check.ps1` fails CI on missing frontmatter; same `Optimized-By: ai-engineer` trailer-bypass machinery as the existing context-economy gate (D21) + per-class doc-size caps (D44).
+
+Full spec: [`core/protocols/hot-spec-format.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/core/protocols/hot-spec-format.md). Migration: [`migrations/hot-spec-frontmatter.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/migrations/hot-spec-frontmatter.md).
+
 ## Delivery modes
 
 PM resolves one of three delivery modes per task — picked by precedence:

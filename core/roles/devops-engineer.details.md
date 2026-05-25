@@ -1,3 +1,11 @@
+---
+audience: devops-engineer
+load: on-demand
+triggers: [devops-details, infrastructure, iac, ci-cd, container]
+cap-bytes: 8192
+reads-before-applying: []
+---
+
 # DevOps Engineer — Domain Elaboration
 
 Companion to `core/roles/devops-engineer.md`. The kernel file holds normative rules; this file holds elaboration, patterns, and stack-specific guidance.

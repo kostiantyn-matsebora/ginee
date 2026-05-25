@@ -1,3 +1,11 @@
+---
+audience: all-cardinals
+load: on-demand
+triggers: [changelog, release-notes, release]
+cap-bytes: 4096
+reads-before-applying: [core/protocols/doc-authoring-protocol.md]
+---
+
 # Changelog + release-notes protocol
 
 **Load-on-demand** when drafting any of: `docs/CHANGELOG.md` entry · `.github/release-notes/v*.md` sidecar. Authoring rule for the release surfaces. Self-lint by the author before publish; same machinery as the doc-authoring protocol (`core/protocols/doc-authoring-protocol.md`).

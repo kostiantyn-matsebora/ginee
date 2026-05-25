@@ -1,3 +1,11 @@
+---
+audience: all-cardinals
+load: on-demand
+triggers: [phase-5, testing]
+cap-bytes: 4096
+reads-before-applying: []
+---
+
 # Phase 5 — Testing
 
 **Load triggers** — any cardinal whose `phase-participation:` includes `5`. Per-role roster: `team-lead` · `solution-architect` (NFR-oracle dip) · `qa-engineer` · engineering cardinals touched by the change.

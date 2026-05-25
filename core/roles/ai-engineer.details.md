@@ -1,3 +1,11 @@
+---
+audience: ai-engineer
+load: on-demand
+triggers: [ai-engineer-details, context-economy, file-splitting, anti-patterns, extraction-recipes]
+cap-bytes: 18432
+reads-before-applying: []
+---
+
 # AI Engineer — Details
 
 Companion to `core/roles/ai-engineer.md`. Elaborations only; kernel rules are binding.

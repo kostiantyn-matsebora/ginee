@@ -1,3 +1,11 @@
+---
+audience: all-cardinals
+load: always
+triggers: []
+cap-bytes: 18432
+reads-before-applying: []
+---
+
 # Engineering Process
 
 ## Purpose

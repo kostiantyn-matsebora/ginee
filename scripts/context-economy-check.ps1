@@ -95,6 +95,24 @@ $Script:OtherWatchedPatterns = @(
 $Script:MarkerTrailer = 'Optimized-By:'
 $Script:MarkerValue = 'ai-engineer'
 
+# Hot-spec frontmatter scope — files that MUST carry the YAML frontmatter
+# defined in `core/protocols/hot-spec-format.md § Schema`. Excludes
+# `core/templates/*.md` (templates), `core/skills/ginee-*/SKILL.md`
+# (AgentSkills frontmatter governs), and `local/roles/*.md` (adopter-owned
+# per the local-role-extensions carve-out).
+$Script:HotSpecPatterns = @(
+  '^core/process\.md$'
+  '^core/process/[^/]+\.md$'
+  '^core/protocols/[^/]+\.md$'
+  '^core/roles/[^/]+\.md$'           # includes both kernels and *.details.md
+)
+
+# Required keys per `hot-spec-format.md § Schema`. `triggers` is conditional
+# (required only when `load: on-demand`) so it is enforced in code, not in
+# the always-required set.
+$Script:HotSpecRequiredKeys = @('audience', 'load', 'cap-bytes', 'reads-before-applying')
+$Script:HotSpecLoadValues   = @('always', 'on-demand')
+
 # Doc-size caps — per-class total-file-size limits. Defaults match
 # `core/protocols/doc-size-caps.md § Default caps`. Adopter override via
 # `local/framework.config.yaml § doc-size-caps`.
@@ -373,6 +391,168 @@ function Get-DocSizeCapBreach {
   $breaches | Write-Output
 }
 
+function Test-IsHotSpec {
+  param([string]$Path)
+  $norm = $Path -replace '\\', '/'
+  foreach ($p in $Script:HotSpecPatterns) {
+    if ($norm -match $p) { return $true }
+  }
+  return $false
+}
+
+function Get-HotSpecFileContent {
+  <#
+    Returns the file's current content lines (per active mode) or $null if the
+    file does not exist in that view (deleted / not present).
+  #>
+  param([string]$Path, [string]$Mode, [string]$RepoRoot)
+  switch ($Mode) {
+    'Range' {
+      $content = & git show "HEAD:$Path" 2>$null
+      if ($LASTEXITCODE -ne 0) { return $null }
+      return @($content)
+    }
+    'Staged' {
+      $content = & git show ":0:$Path" 2>$null
+      if ($LASTEXITCODE -ne 0) { return $null }
+      return @($content)
+    }
+    default {
+      $fsPath = Join-Path $RepoRoot $Path
+      if (-not (Test-Path -LiteralPath $fsPath)) { return $null }
+      return @(Get-Content -LiteralPath $fsPath)
+    }
+  }
+}
+
+function Read-HotSpecFrontmatter {
+  <#
+    Parse a leading YAML frontmatter block (between two `---` markers at the
+    file head) into a hashtable. Returns $null when no frontmatter block is
+    present at file head.
+
+    YAML parsing is narrowly scoped to the keys + value shapes used by the
+    hot-spec schema:
+      <key>: <scalar>       → string / int
+      <key>: [a, b, c]      → flow-style list of strings
+    Comments (#) and blank lines inside the block are ignored.
+  #>
+  param([string[]]$Lines)
+  if (-not $Lines -or $Lines.Count -lt 2) { return $null }
+  if ($Lines[0] -notmatch '^---\s*$') { return $null }
+
+  $fm = [ordered]@{}
+  $closed = $false
+  for ($i = 1; $i -lt $Lines.Count; $i++) {
+    $line = $Lines[$i]
+    if ($line -match '^---\s*$') { $closed = $true; break }
+    if ($line -match '^\s*$' -or $line -match '^\s*#') { continue }
+    if ($line -match '^([A-Za-z][\w-]*)\s*:\s*(.*)$') {
+      $key = $Matches[1]
+      $raw = $Matches[2].Trim()
+      # Strip inline comment (` # ...`) when present and not inside brackets.
+      if ($raw -notmatch '^\[' -and $raw -match '^(.*?)\s+#') { $raw = $Matches[1].Trim() }
+      if ($raw -match '^\[(.*)\]$') {
+        $inner = $Matches[1].Trim()
+        if (-not $inner) {
+          $fm[$key] = @()
+        } else {
+          $items = $inner -split '\s*,\s*' | ForEach-Object { ($_ -replace '^["'']|["'']$', '').Trim() }
+          $fm[$key] = @($items)
+        }
+      } elseif ($raw -match '^-?\d+$') {
+        $fm[$key] = [int]$raw
+      } else {
+        $fm[$key] = ($raw -replace '^["'']|["'']$', '')
+      }
+    }
+  }
+  if (-not $closed) { return $null }
+  return $fm
+}
+
+function Test-HotSpecFrontmatter {
+  <#
+    For each changed in-scope hot-spec path, parse + validate frontmatter
+    against `core/protocols/hot-spec-format.md § Schema`. Returns an array of
+    failure records — empty array means all in-scope files pass.
+
+    Failure shape: @{ Path; Reason; Detail }
+    Reasons: 'missing' · 'malformed' · 'missing-key' · 'invalid-load' ·
+             'empty-triggers' · 'invalid-cap-bytes'
+  #>
+  param([string[]]$Paths, [string]$Mode, [string]$RepoRoot)
+
+  $failures = @()
+  foreach ($path in $Paths) {
+    if (-not (Test-IsHotSpec -Path $path)) { continue }
+    $lines = Get-HotSpecFileContent -Path $path -Mode $Mode -RepoRoot $RepoRoot
+    if ($null -eq $lines) { continue }  # deleted in this view — nothing to validate
+
+    $fm = Read-HotSpecFrontmatter -Lines $lines
+    if ($null -eq $fm) {
+      $failures += [PSCustomObject]@{
+        Path   = $path
+        Reason = 'missing'
+        Detail = 'no YAML frontmatter block at file head'
+      }
+      continue
+    }
+
+    $missing = @()
+    foreach ($req in $Script:HotSpecRequiredKeys) {
+      if (-not $fm.Contains($req)) { $missing += $req }
+    }
+    if ($missing.Count -gt 0) {
+      $failures += [PSCustomObject]@{
+        Path   = $path
+        Reason = 'missing-key'
+        Detail = "missing required key(s): $($missing -join ', ')"
+      }
+      continue
+    }
+
+    if ($Script:HotSpecLoadValues -notcontains $fm['load']) {
+      $failures += [PSCustomObject]@{
+        Path   = $path
+        Reason = 'invalid-load'
+        Detail = "load='$($fm['load'])' — must be one of: $($Script:HotSpecLoadValues -join ', ')"
+      }
+      continue
+    }
+
+    if ($fm['load'] -eq 'on-demand') {
+      if (-not $fm.Contains('triggers')) {
+        $failures += [PSCustomObject]@{
+          Path   = $path
+          Reason = 'missing-key'
+          Detail = "missing 'triggers' (required when load: on-demand)"
+        }
+        continue
+      }
+      $trig = $fm['triggers']
+      if ($null -eq $trig -or ($trig -is [array] -and $trig.Count -eq 0)) {
+        $failures += [PSCustomObject]@{
+          Path   = $path
+          Reason = 'empty-triggers'
+          Detail = "'triggers' must be non-empty when load: on-demand"
+        }
+        continue
+      }
+    }
+
+    if (-not ($fm['cap-bytes'] -is [int]) -or $fm['cap-bytes'] -le 0) {
+      $failures += [PSCustomObject]@{
+        Path   = $path
+        Reason = 'invalid-cap-bytes'
+        Detail = "cap-bytes='$($fm['cap-bytes'])' — must be a positive integer"
+      }
+      continue
+    }
+  }
+  $failures | Write-Output
+}
+
 function Test-MarkerPresent {
   <#
     Detect an "Optimized-By: ai-engineer" trailer on any commit in the
@@ -554,24 +734,35 @@ function Invoke-ContextEconomyCheckMain {
   $changedPaths = @($rows | ForEach-Object { $_.Path })
   $sizeCapBreaches = @(Get-DocSizeCapBreach -Paths $changedPaths -Config $sizeCapConfig -Mode $mode -RepoRoot $repo)
 
-  $gateFail = (($offenders.Count -gt 0) -or ($sizeCapBreaches.Count -gt 0)) -and (-not $markerPresent)
+  # Hot-spec frontmatter validator — required YAML frontmatter on changed
+  # files within `core/{process,protocols,roles}/**` per
+  # `core/protocols/hot-spec-format.md § Schema`. Trailer bypass identical
+  # to threshold + per-class-cap gates.
+  $hotSpecFailures = @(Test-HotSpecFrontmatter -Paths $changedPaths -Mode $mode -RepoRoot $repo)
+
+  $gateFail = (
+    ($offenders.Count -gt 0) -or
+    ($sizeCapBreaches.Count -gt 0) -or
+    ($hotSpecFailures.Count -gt 0)
+  ) -and (-not $markerPresent)
   $lintFail = $lintFindings.Count -gt 0
 
   $result = [PSCustomObject]@{
-    mode            = $mode
-    range           = $spec.Range
-    offenders       = $offenders
-    sizeCapBreaches = $sizeCapBreaches
-    markerPresent   = $markerPresent
-    lintFindings    = $lintFindings
-    gateFail        = $gateFail
-    lintFail        = $lintFail
+    mode             = $mode
+    range            = $spec.Range
+    offenders        = $offenders
+    sizeCapBreaches  = $sizeCapBreaches
+    hotSpecFailures  = $hotSpecFailures
+    markerPresent    = $markerPresent
+    lintFindings     = $lintFindings
+    gateFail         = $gateFail
+    lintFail         = $lintFail
   }
 
   if ($Json) {
     $result | ConvertTo-Json -Depth 6 -Compress
   } else {
-    if ($offenders.Count -eq 0 -and $sizeCapBreaches.Count -eq 0 -and $lintFindings.Count -eq 0) {
+    if ($offenders.Count -eq 0 -and $sizeCapBreaches.Count -eq 0 -and $hotSpecFailures.Count -eq 0 -and $lintFindings.Count -eq 0) {
       Write-Host "context-economy-check: pass ($($spec.Range))" -ForegroundColor Green
     } else {
       Write-Host "context-economy-check: $($spec.Range)" -ForegroundColor Cyan
@@ -592,7 +783,17 @@ function Invoke-ContextEconomyCheckMain {
           Write-Host "  $($b.Path) [$($b.Class)] — $($b.CurrentBytes) bytes > cap $($b.CapBytes) (over by $($b.OverBy))"
         }
       }
-      if ($offenders.Count -gt 0 -or $sizeCapBreaches.Count -gt 0) {
+      if ($hotSpecFailures.Count -gt 0) {
+        Write-Host ""
+        Write-Host "Hot-spec frontmatter ($($hotSpecFailures.Count) file(s)):" -ForegroundColor Yellow
+        foreach ($f in $hotSpecFailures) {
+          Write-Host "  $($f.Path) [$($f.Reason)] — $($f.Detail)"
+        }
+        Write-Host ""
+        Write-Host "  Add YAML frontmatter per core/protocols/hot-spec-format.md § Schema:" -ForegroundColor Red
+        Write-Host "  audience · load · triggers (when load: on-demand) · cap-bytes · reads-before-applying" -ForegroundColor Red
+      }
+      if ($offenders.Count -gt 0 -or $sizeCapBreaches.Count -gt 0 -or $hotSpecFailures.Count -gt 0) {
         if ($markerPresent) {
           Write-Host ""
           Write-Host "  Optimized-By: ai-engineer trailer FOUND — gate passes." -ForegroundColor Green

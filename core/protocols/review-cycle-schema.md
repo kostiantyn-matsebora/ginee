@@ -1,3 +1,11 @@
+---
+audience: team-lead-only
+load: on-demand
+triggers: [ginee-address-review, address-review, review cycle, ginee:review-cycle, per-thread reply]
+cap-bytes: 6144
+reads-before-applying: [core/protocols/github-integration.md, core/templates/pr-comment-cadence.md]
+---
+
 # Review-cycle schema
 
 **Load-on-demand.** Loaded when `team-lead` runs `ginee-address-review` / `@team-lead address-review #<N>` — per-thread reply authoring · sticky cycle-summary post · reconciliation commit.

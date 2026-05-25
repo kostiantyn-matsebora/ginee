@@ -4,6 +4,11 @@ description: Use for all infrastructure, build, and deploy work — IaC (Terrafo
 aliases: [platform-engineer, sre-light, infra-engineer]
 default-tier: standard  # implementation + tests; the return schema bounds reasoning
 phase-participation: [2, 4, 5, 6]  # infra/deploy contract (2) · implementation (4) · test/fix (5, 6)
+audience: devops-engineer
+load: always
+triggers: []
+cap-bytes: 18432
+reads-before-applying: []
 ---
 
 # DevOps Engineer — Infrastructure, Build, Deploy

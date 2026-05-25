@@ -1,3 +1,11 @@
+---
+audience: all-cardinals
+load: on-demand
+triggers: [phase-7, sa-review, pr-review]
+cap-bytes: 4096
+reads-before-applying: []
+---
+
 # Phase 7 — SA review
 
 **Load triggers** — any cardinal whose `phase-participation:` includes `7`. Per-role roster: `team-lead` (gate surface) · `solution-architect` (sign-off).

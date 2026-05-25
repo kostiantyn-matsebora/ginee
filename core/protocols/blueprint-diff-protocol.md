@@ -1,3 +1,11 @@
+---
+audience: all-cardinals
+load: on-demand
+triggers: [blueprint-diff, mockup, visual-source-of-truth, phase-4]
+cap-bytes: 12000
+reads-before-applying: []
+---
+
 # Blueprint-diff protocol — pre-implementation gate for visual source-of-truth
 
 **Load-on-demand at Phase 4 dispatch entry** for any task touching the configured `visual-source-of-truth` artefact. Runs **before any edit**; 4 mandatory checks pass + diff surfaces to team-lead, then edits proceed.

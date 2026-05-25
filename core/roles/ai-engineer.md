@@ -4,6 +4,11 @@ description: Optimization of AI assets (role definitions, skills, prompts) and d
 aliases: [context-engineer, prompt-engineer]
 default-tier: standard  # doc-shape passes are mechanical post self-lint
 phase-participation: []  # between-phase optimizer; loads no phase files by default
+audience: ai-engineer
+load: always
+triggers: []
+cap-bytes: 8192
+reads-before-applying: []
 ---
 
 # AI Engineer — Context Engineering & Doc Topology

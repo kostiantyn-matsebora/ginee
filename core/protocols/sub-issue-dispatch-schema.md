@@ -1,3 +1,11 @@
+---
+audience: all-cardinals
+load: on-demand
+triggers: [sub-issue, sub-issue dispatch, sub-issue tracking, progress comment, closing comment]
+cap-bytes: 6144
+reads-before-applying: [core/protocols/github-integration.md, core/templates/sub-issue-dispatch.md, core/templates/phase-report.md]
+---
+
 # Sub-issue dispatch schema
 
 **Load-on-demand.** Loaded when `team-lead` opens a sub-issue per cardinal dispatch (sub-issue-tracking mode active per `core/protocols/github-integration.md § Sub-issue dispatch`), or when a cardinal posts progress / closing comments on a sub-issue.
