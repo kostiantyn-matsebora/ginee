@@ -25,6 +25,8 @@
 
 ## Dispatch & parallelism rules
 
+**Dispatch prompt shape.** Every team-lead-authored dispatch payload follows `core/protocols/dispatch-prompt-schema.md` — cardinality + section templates + forbidden patterns + self-lint marker. The rules below govern *who* + *how many*; the schema governs *what each payload looks like*.
+
 | Rule | Action |
 |---|---|
 | Independent work (no shared contract change) | Dispatch specialists in parallel in ONE message. |

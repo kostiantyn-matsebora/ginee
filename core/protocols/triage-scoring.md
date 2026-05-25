@@ -156,6 +156,8 @@ Expected sort (test contract for skill + spec compliance):
 
 Hybrid topology — **one sticky "current score" comment** maintained by `team-lead` + **immutable audit comments** preserved on key events. Sticky + audit comments pass `core/process.md § Mandatory checks before report-as-done`; templates below are already structured (table for the sticky; one-line digest for audits).
 
+**Output shapes** — sticky comment per `core/protocols/score-comment-schema.md`; audit comments per `core/protocols/audit-comment-schema.md`. The rules below stay binding; the sidecar schemas carry the shape contracts + self-lint markers.
+
 ### Sticky comment — current score
 
 - **One per issue.** First posted on pickup (after value-prompt + complexity auto-estimate complete); updated in place on every ginee-driven label change or `@team-lead recompute score #N`.

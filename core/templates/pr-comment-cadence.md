@@ -4,6 +4,8 @@ Sticky comment posted by `team-lead` after every `ginee-address-review` cycle. O
 
 Full ingestion spec: `core/protocols/github-integration.md § Review-comment ingestion`. Template below is already structured (table for thread rows · one-line headline); team-lead self-lints any per-cycle wording before posting per `core/process.md § Mandatory checks before report-as-done`.
 
+**Rules + lints across per-thread reply / sticky surfaces:** `core/protocols/review-cycle-schema.md`. This file carries the literal sticky skeleton; the schema sidecar carries the mandatory checks + self-lint marker contract.
+
 ## Format
 
 ```
