@@ -121,7 +121,9 @@ Full schema (cardinality table · default-shape map · caps · forbidden pattern
 
 ## Change governance — pre-authorship gating
 
-CR (requirement / scope change) + ADR (architectural decision) authorship is gated BEFORE drafting. Ownership preserved per `core/doc-roles.md § Authorship` — `team-lead` owns CRs · `solution-architect` owns ADRs. The gate is an adopter-controlled intercept layer that runs first; on skip the doc is never drafted.
+- **Pre-authorship intercept.** CR (requirement / scope change) + ADR (architectural decision) authorship is gated BEFORE drafting.
+- **Ownership preserved.** `team-lead` owns CRs · `solution-architect` owns ADRs — per `core/doc-roles.md § Authorship`.
+- **Adopter-controlled.** The gate is an intercept layer that runs first; on skip the doc is never drafted.
 
 | Surface | Gate-branch table |
 |---|---|
