@@ -171,6 +171,38 @@ SA has **three activities** across the lifecycle:
 
 Migration on upgrade: `@team-lead rediscover` runs Step 8c re-attribution sweep per [`migrations/classical-architect.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/migrations/classical-architect.md).
 
+## Change governance (D45)
+
+Pre-authorship gate on CR / ADR drafting. Adopter-controlled via `local/framework.config.yaml § change-governance`.
+
+```yaml
+change-governance:
+  cr:
+    enabled: true                       # set false → skip CR authorship
+    skip-when-issue-source: true        # issue IS the requirement record
+  adr:
+    enabled: true                       # set false → skip ADR authorship
+    require-architectural-delta: true   # no delta heuristic → skip ADR
+  prompt-before-create: non-trivial     # always | never | non-trivial
+```
+
+| Prefix | Effect |
+|---|---|
+| `cr:` | Force CR authorship (overrides config) |
+| `nocr:` | Skip CR authorship (overrides config) |
+| `adr:` | Force ADR authorship (overrides config) |
+| `noadr:` | Skip ADR authorship (overrides config) |
+
+Combine with `auto:` · `branch:` · `wt:` · `commit:` · `model:<tier>` · `notrack:`.
+
+**Architectural-delta triggers** (ADR gate) — component boundaries · wire contracts · NFR-bearing claims · architecture invariants · stack / topology / infrastructure.
+
+**Non-trivial heuristic** — ≥ 2 delta triggers OR `local/requirements.md` register-diff non-empty.
+
+**Skip-reason enum** — `config-disabled` · `issue-source-skip` (CR) · `no-architectural-delta` (ADR) · `prefix-override` · `user-declined`. Logged under `## Decisions made` in the phase-report.
+
+Full spec: [`migrations/change-governance-opt-out.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/migrations/change-governance-opt-out.md).
+
 ## Address review on a PR (D24)
 
 ```

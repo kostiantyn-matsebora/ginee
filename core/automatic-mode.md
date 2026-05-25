@@ -65,6 +65,7 @@
 | A test oracle is found to be wrong (per `core/process.md § Test oracles can be wrong`) | Pause; surface observed vs asserted divergence and oracle-tightening proposal. |
 | Token-budget consumed exceeds 1.5× the Phase 4/5 estimate OR wall-clock exceeds 2× the estimate | Pause; surface burn rate; request continue-or-stop. |
 | Any planned action enters the "destructive / external" set above | Pause; surface action + reason + alternatives. |
+| Change-governance gate hits the prompt branch — `change-governance.prompt-before-create: always`, OR `prompt-before-create: non-trivial` AND the non-trivial heuristic fires (≥ 2 architectural-delta triggers OR register-diff non-empty) | Pause; surface proposed CR / ADR draft + skip-OR-author choice. Resume on explicit answer. Full gate: `core/roles/team-lead.md § CR-gate` · `core/roles/solution-architect.md § ADR-gate`. |
 
 On any trigger: `team-lead` halts dispatch, presents a short interactive-fallback report, resumes auto mode only on explicit user direction.
 

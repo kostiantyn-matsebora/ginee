@@ -41,6 +41,28 @@ The architectural decision in one paragraph. Imperative voice.
 Positive, negative, neutral. Knock-on effects on components, contracts, ops.
 ```
 
+## ADR-gate
+
+Companion to `solution-architect.md § ADR-gate`. Kernel carries the 6-branch table + delta triggers + SA-judgment cases; this section carries the non-trivial heuristic + skip-reason enum + phase-report logging shape.
+
+**Non-trivial heuristic.** Fires when EITHER:
+
+- Proposal touches ≥ 2 architectural-delta triggers (per kernel § ADR-gate trigger list), OR
+- `local/requirements.md` register-diff is non-empty (any FR / NFR / Constraint added · modified · retired in the current task).
+
+Below-threshold proposals (single trigger AND empty register-diff) stay silent unless `prompt-before-create: always`.
+
+**Skip-reason enum.** Logged under `## Decisions made` in the phase-report when the gate skips authorship:
+
+| Value | Trigger |
+|---|---|
+| `config-disabled` | `change-governance.adr.enabled: false` |
+| `no-architectural-delta` | `require-architectural-delta: true` AND no delta trigger fires |
+| `prefix-override` | Task prefix `noadr:` |
+| `user-declined` | Forced-interactive prompt; user declined |
+
+**Logging shape.** One row under `## Decisions made` — `ADR skipped — skip-reason: <value>`. Forced-interactive outcome — `ADR authored — user yes` (gate authored) or `ADR declined — user no` with `skip-reason: user-declined`.
+
 ## Architectural-change review flow
 
 Two routing paths depending on what the engineer is proposing:

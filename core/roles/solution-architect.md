@@ -132,6 +132,33 @@ Unchanged in spirit; mechanics applied to the new doc set:
 - **Numbering.** Zero-padded four-digit per family (`CR-0001`, `ADR-0001`); never reused; superseded records keep their number + reference the replacement in their Status line.
 - **Cross-referencing the frozen doc.** CRs / ADRs cite the architecture-doc section they amend; architecture doc is never edited post-freeze to point forward.
 
+### ADR-gate (pre-authorship intercept)
+
+Before drafting any ADR, resolve against `local/framework.config.yaml § change-governance` + per-task prefixes (`core/process/dispatch.md § Per-task prefix grammar — change governance`). Stop at first match:
+
+| Branch | Condition | Action |
+|---|---|---|
+| 1 | `adr.enabled: false` | Skip; `skip-reason: config-disabled` |
+| 2 | Task prefix `noadr:` | Skip; `skip-reason: prefix-override` |
+| 3 | `adr.require-architectural-delta: true` AND no delta trigger fires | Skip; `skip-reason: no-architectural-delta` |
+| 4 | Task prefix `adr:` OR `prompt-before-create: never` | Draft silently |
+| 5 | `prompt-before-create: always` OR non-trivial heuristic fires | Forced-interactive prompt → draft on user yes |
+| 6 | Otherwise (`prompt-before-create: non-trivial` + heuristic does not fire) | Draft silently |
+
+Same 6-branch shape as `core/roles/team-lead.md § CR-gate` — kept parallel for governance coherence.
+
+**Architectural-delta triggers** — proposal touches ≥ 1 of (shared anchor — `team-lead.md § CR-gate` cites this list for its non-trivial heuristic):
+
+1. **Component boundaries** — new / removed entries in `local/index/topology.yaml § services`.
+2. **Wire contracts** — diff against `<architecture-doc> § API / Events` OR `api-contract:` doc OR data-migration files under `server-tier-path`.
+3. **NFR-bearing claims** — diff against `local/requirements.md § NFRs` register.
+4. **Architecture-doc invariants** — diff against `<architecture-doc> § Invariants` or freeze-block.
+5. **Stack / topology / infrastructure** — diff against `local/index/stack.yaml` OR `infrastructure-path:` files.
+
+**SA-judgment-retained cases** — heuristic does not preempt SA judgment. Always SA-call: refactor implying invariant shift · wire-shape breaking vs additive distinction · NFR-adjacent threshold (e.g. latency budget revision below 10%).
+
+Non-trivial heuristic + full skip-reason enum + phase-report logging shape: `solution-architect.details.md § ADR-gate`.
+
 ## Source-of-truth tie-breaker
 
 Per `local/bindings.md § Source-of-truth ownership`:
