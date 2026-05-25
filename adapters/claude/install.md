@@ -214,7 +214,7 @@ Skill-runner reads the line and: `mode: fresh-spawn` → `Agent` with `run_in_ba
 
 1. **First skill-runner batch** — parse · label / sticky ops · branch ops · `Agent` `run_in_background: true` to spawn team-lead · record team-lead's agent-id · pass parsed task + registry as input.
 2. **team-lead** authors the plan (per-line `mode:` + `agent-id:` as above).
-3. **User approves** (Phase 3; elided per `core/automatic-mode.md` in `auto:` mode).
+3. **User approves** (Phase 3; elided per `core/protocols/automatic-mode.md` in `auto:` mode).
 4. **skill-runner verbatim-executes** each plan line; captures new agent-ids into registry; updates registry.
 5. **skill-runner `SendMessage`s team-lead** with collected returns + updated registry → team-lead synthesises + plans next cycle.
 6. **Repeat** 2–5 until phase complete.

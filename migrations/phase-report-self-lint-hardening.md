@@ -50,7 +50,7 @@ Same enforcement pattern as D22 / D26 attestation lines in `## Verification log`
 | `core/roles/team-lead.details.md § Common failure modes` | New D33 row — D29 skip + skill-runner cleanup compound failure. |
 | `core/process.md § Skill-runner — surface boundary (D28)` | New D29 / D33 interaction bullet — skill-runner explicitly forbidden from cleaning up a non-compliant return. |
 | `core/process.md § Reporting — schema-bound (D29)` | New mandatory-marker bullet · extended orchestrator-on-non-compliance bullet (forbids skill-runner cleanup). |
-| `core/doc-authoring-examples.md § 12` (NEW) | Paired bad/good full-return example — narrative-preamble vs schema-compliant + marker. |
+| `core/protocols/doc-authoring-examples.md § 12` (NEW) | Paired bad/good full-return example — narrative-preamble vs schema-compliant + marker. |
 | `CLAUDE.md` · `PLAN.md` | D33 row in locked-decisions table. |
 | `docs/CHANGELOG.md` | D33 entry under Unreleased. |
 | `migrations/phase-report-self-lint-hardening.md` | This file (NEW). |
@@ -78,7 +78,7 @@ Not recommended — D33 closes an enforcement gap that recurred across long sess
 3. Remove the D33 row from `core/roles/team-lead.details.md § Common failure modes`.
 4. Remove the D29 / D33 interaction bullet from `core/process.md § Skill-runner — surface boundary`.
 5. Remove the mandatory-marker bullet from `core/process.md § Reporting — schema-bound (D29)`.
-6. Remove `§ 12` from `core/doc-authoring-examples.md`.
+6. Remove `§ 12` from `core/protocols/doc-authoring-examples.md`.
 
 D29 returns to honour-system enforcement; the issue #86 failure modes resurface.
 

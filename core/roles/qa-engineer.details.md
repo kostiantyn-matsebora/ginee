@@ -219,7 +219,7 @@ Ownership:
 - You do NOT own the mockup itself.
   - `frontend-engineer` does.
 
-Collaboration pattern: see `core/cross-domain-bugs.md`. Your role in the cycle:
+Collaboration pattern: see `core/protocols/cross-domain-bugs.md`. Your role in the cycle:
 
 - `solution-architect` defines an invariant in the architecture doc.
 - **You encode it as a harness assertion** under the project's mockup-visual directory.

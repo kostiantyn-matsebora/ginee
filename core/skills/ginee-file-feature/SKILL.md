@@ -5,7 +5,7 @@ description: File a feature request against the primary GitHub repo (the adopter
 
 # File feature — primary repo
 
-Run the file-an-issue workflow per `.agents/ginee/core/github-integration.md § Outbound — file an issue` with target = primary repo, template = feature-request.
+Run the file-an-issue workflow per `.agents/ginee/core/protocols/github-integration.md § Outbound — file an issue` with target = primary repo, template = feature-request.
 
 ## Activation
 
@@ -14,7 +14,7 @@ Run the file-an-issue workflow per `.agents/ginee/core/github-integration.md § 
 
 ## Procedure
 
-1. Load `.agents/ginee/core/github-integration.md` and `.agents/ginee/core/templates/issues/feature-request.md`.
+1. Load `.agents/ginee/core/protocols/github-integration.md` and `.agents/ginee/core/templates/issues/feature-request.md`.
 2. Resolve target repo (same as `ginee-file-bug`).
 3. Draft the body from the feature-request template. Populate `## Summary`, `## Motivation`, `## Proposed behavior`, `## Affected area`, `## FR / NFR`, `## Acceptance criteria`, `## Out of scope`, `## References` from user prompt + project context. Present multiple design options when the user requested ideas / alternatives.
 4. **Self-lint the draft** against `.agents/ginee/core/process.md § Mandatory checks before report-as-done` — **every section, including Summary**. Catch: prose paragraphs > 2 sentence terminators · comma-separated inventories (incl. parenthetical lists) · multi-rule single-line statements · inventories not rendered as tables.

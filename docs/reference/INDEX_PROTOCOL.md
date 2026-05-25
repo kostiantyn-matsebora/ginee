@@ -47,7 +47,7 @@ The win — measured on a real adopter (deployment-dashboard, ~470 KB raw docs):
 
 ## `.idx` DSL grammar
 
-The compact flat-record format used by `.idx` index files. Canonical: [`core/index-syntax.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/core/index-syntax.md).
+The compact flat-record format used by `.idx` index files. Canonical: [`core/protocols/index-syntax.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/core/protocols/index-syntax.md).
 
 ## Migration notes
 

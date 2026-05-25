@@ -75,7 +75,7 @@ When a split produces new files, you MAY group them in a subdirectory rather tha
 
 ## Project extraction recipes
 
-You own the project knowledge index under `local/index/`. Full protocol: `core/protocols/index-protocol.md`. `.idx` grammar: `core/index-syntax.md`. Templates: `core/templates/index/`. Protocol covers two source categories — **doc** and **code**; same machinery (manifest + SHA-256 + recipes + lossless rule).
+You own the project knowledge index under `local/index/`. Full protocol: `core/protocols/index-protocol.md`. `.idx` grammar: `core/protocols/index-syntax.md`. Templates: `core/templates/index/`. Protocol covers two source categories — **doc** and **code**; same machinery (manifest + SHA-256 + recipes + lossless rule).
 
 ### Doc-category recipes
 
@@ -116,7 +116,7 @@ When you encounter an adopter doc class not covered by a built-in recipe (or the
    - What's the unit of indexing — per-file, per-section, per-row?
    - Are values flat strings or nested sub-trees?
 4. **Pick the format:**
-   - Flat-record uniform shape (every "thing" has the same fields) → `.idx` per `core/index-syntax.md`.
+   - Flat-record uniform shape (every "thing" has the same fields) → `.idx` per `core/protocols/index-syntax.md`.
    - Genuinely nested (sub-trees with arrays/maps) → YAML.
 5. **Propose a per-record schema** of 3–7 fields max — typically `id | title | status | key-signal | source` for flat records. Prefer fewer fields; add only what at least one consumer role will read. (Reading-role identity now known from step 1 — bias schema to their needs.)
 6. **Emit two files:**

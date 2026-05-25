@@ -30,7 +30,7 @@ Optional positional arg narrows scope:
 
 ### Step 2 — parse scoring labels + markers
 
-Per `.agents/ginee/core/triage-scoring.md`:
+Per `.agents/ginee/core/protocols/triage-scoring.md`:
 
 - **Issues:** parse `value:high|medium|low` + `complexity:high|medium|low` from the `labels` array.
 - **TODOs:** parse `[v:H c:L]` inline marker (H/M/L, case-insensitive) between glyph and description; partial markers (`[v:H]` only / `[c:L]` only) handled; missing marker = unscored.

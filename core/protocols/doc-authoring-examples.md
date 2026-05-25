@@ -352,4 +352,4 @@ Trips checks 1 (75+ words), 2 (no adopter-visible benefit at line start; `defaul
 
 Each bullet: adopter-visible verb / outcome at start · concrete user benefit · ≤ 20 words. The verbose CHANGELOG entry carries the resolution chain + adapter writeback; sidecar carries only what an adopter needs to decide whether to bump.
 
-Full surface topology + self-lint checks: `core/changelog-protocol.md`.
+Full surface topology + self-lint checks: `core/protocols/changelog-protocol.md`.

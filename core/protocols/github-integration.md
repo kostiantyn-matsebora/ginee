@@ -78,7 +78,7 @@ Defaults declared under `local/framework.config.yaml § github`:
 | `ready-label` | `ginee:ready` | Pickup candidate (`☐` equivalent). |
 | `in-progress-label` | `ginee:in-progress` | PM has dispatched; phases 1–7 in flight. |
 | `blocked-label` | `ginee:blocked` | Stoppable intermediate state; waiting on user / external. |
-| `value:high|medium|low` | n/a (fixed namespace) | Triage scoring — user/business impact (ATAM importance). Reporter-defined. Per `core/triage-scoring.md`. |
+| `value:high|medium|low` | n/a (fixed namespace) | Triage scoring — user/business impact (ATAM importance). Reporter-defined. Per `core/protocols/triage-scoring.md`. |
 | `complexity:high|medium|low` | n/a (fixed namespace) | Triage scoring — implementation cost (ATAM difficulty). Reporter or `solution-architect` (auto-estimate on pickup). |
 
 PM creates any missing label on first use via `gh label create <name>` (default color). "Done" is implicit — issue closed.
@@ -121,7 +121,7 @@ Trigger: `@team-lead pick up #<N>` — always targets the primary repo (= the wo
    - State must be `OPEN`.
    - Labels include `ready-label` — if absent, skill-runner offers to add it before pickup; on user approval, mechanical label-add.
 3. **Mechanical (skill-runner).** Parse the structured body per the template sections. Forward `affected area` to team-lead in the hand-off payload; skill-runner never resolves routing itself.
-4. **Mixed — mechanical ops + first dispatch.** Scoring labels per `core/triage-scoring.md`:
+4. **Mixed — mechanical ops + first dispatch.** Scoring labels per `core/protocols/triage-scoring.md`:
    - Missing `value:*` → skill-runner asks user (H / M / L) per the skill text; mechanical label-add + audit comment post.
    - Missing `complexity:*` → skill-runner's **one allowed first-batch dispatch** is `@solution-architect` for H / M / L estimate per the skill text; mechanical audit-comment post + label-add on SA return.
    - Mechanical sticky post — find via marker; update in place; never duplicate.
@@ -153,7 +153,7 @@ Trigger: `@team-lead triage` (→ primary) or `@team-lead triage framework` (→
    ```
    gh issue list --repo <target-repo> --label <ready-label> --state open --json number,title,labels,createdAt
    ```
-2. Parse `value:high|medium|low` / `complexity:high|medium|low` labels per `core/triage-scoring.md`; compute score (default `value / complexity` with `H=3, M=2, L=1`).
+2. Parse `value:high|medium|low` / `complexity:high|medium|low` labels per `core/protocols/triage-scoring.md`; compute score (default `value / complexity` with `H=3, M=2, L=1`).
 3. Surface as a table — number / title / `v` / `c` / score / age / labels.
 4. Sort by `Score DESC, Age DESC`. Unscored items grouped at the bottom.
 5. User picks one (or several). PM runs the pickup flow for each.
@@ -188,11 +188,11 @@ When a task is issue-sourced, every resulting PR description includes a `Closes 
 
 Template carries this: `core/templates/pr-description.md § Issue linkage`.
 
-**Post-PR CI watch.** In automatic mode with `automatic-mode.ci-watch: enabled` (default), the orchestrator does not exit at `gh pr create`. It enters the watch loop per `core/ci-watch.md`, posting at most three PR comments per fix cycle (`"CI watch started"` / `"CI fix pushed (cycle N of M)"` / `"CI complete — all green"`), routing attributable failures back through Phase 6, and gating delivery on all-required-green. Interactive mode + `ci-watch: disabled` preserve previously behaviour (exit at "PR opened").
+**Post-PR CI watch.** In automatic mode with `automatic-mode.ci-watch: enabled` (default), the orchestrator does not exit at `gh pr create`. It enters the watch loop per `core/protocols/ci-watch.md`, posting at most three PR comments per fix cycle (`"CI watch started"` / `"CI fix pushed (cycle N of M)"` / `"CI complete — all green"`), routing attributable failures back through Phase 6, and gating delivery on all-required-green. Interactive mode + `ci-watch: disabled` preserve previously behaviour (exit at "PR opened").
 
 ## Review-comment ingestion
 
-Address external code-review feedback on an open PR. Sits between Phase 7 (internal SA review) and Phase 8 (user acceptance) for PRs exposed to peer maintainers / OSS contributors / the user wearing a reviewer hat. Explicit invocation only — no extension of the CI-watch loop (`core/ci-watch.md`).
+Address external code-review feedback on an open PR. Sits between Phase 7 (internal SA review) and Phase 8 (user acceptance) for PRs exposed to peer maintainers / OSS contributors / the user wearing a reviewer hat. Explicit invocation only — no extension of the CI-watch loop (`core/protocols/ci-watch.md`).
 
 | Path | Form |
 |---|---|
@@ -252,7 +252,7 @@ Every unresolved plan-table remark MUST end the cycle as **fix** (patch in cycle
 
 ### User-confirmation gate
 
-No fix committed, no reply posted, no commit pushed without plan-table approval — per `core/process.md § Executing actions with care` (PR is externally visible). In `auto:` mode the gate is a **forced-interactive trigger** per `core/automatic-mode.md § Forced-interactive triggers` (push + reply on external PR = "destructive / external" set) — auto pauses, surfaces the table, resumes only on explicit approval. **No exception for "trivial" remarks** (slope; explicit out-of-scope).
+No fix committed, no reply posted, no commit pushed without plan-table approval — per `core/process.md § Executing actions with care` (PR is externally visible). In `auto:` mode the gate is a **forced-interactive trigger** per `core/protocols/automatic-mode.md § Forced-interactive triggers` (push + reply on external PR = "destructive / external" set) — auto pauses, surfaces the table, resumes only on explicit approval. **No exception for "trivial" remarks** (slope; explicit out-of-scope).
 
 ### Comment cadence
 
@@ -288,7 +288,7 @@ Re-invocation later (new reviewer comment on `T#abc` + new `T#jkl`):
 - Drafting reviews on other people's PRs (reviewer role, not author).
 - Auto-resolving threads — reviewer / PR author owns.
 - Cross-repo coordinated reviews.
-- Auto-detecting new review comments — explicit invocation only; CI-watch loop (`core/ci-watch.md`) unaffected.
+- Auto-detecting new review comments — explicit invocation only; CI-watch loop (`core/protocols/ci-watch.md`) unaffected.
 - Sentiment / tone analysis.
 - Bypassing the user-confirmation gate for "trivial" remarks.
 - Skill-only or command-only delivery — parity mandatory.

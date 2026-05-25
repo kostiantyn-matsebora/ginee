@@ -11,7 +11,7 @@
 
 ## Voice rule — sidecar
 
-Lead each bullet with the **adopter-visible verb / outcome**. Mechanism (if mentioned at all) follows. Worked bad/good pairs: `core/doc-authoring-examples.md`.
+Lead each bullet with the **adopter-visible verb / outcome**. Mechanism (if mentioned at all) follows. Worked bad/good pairs: `core/protocols/doc-authoring-examples.md`.
 
 ## 4 mandatory checks — sidecar self-lint
 

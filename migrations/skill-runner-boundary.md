@@ -55,7 +55,7 @@ The slip recurred across long sessions and burned user attention twice before co
 | `core/skills/ginee-address-review/SKILL.md` | Step 3 "hand to team-lead"; skill-runner-forbiddens entry |
 | `core/skills/ginee-triage/SKILL.md` | New Step 6 hand-off; skill-runner-forbiddens entry |
 | `core/skills/ginee-promote-discussion/SKILL.md` | Step 4 "hand to team-lead"; skill-runner-forbiddens entry |
-| `core/github-integration.md § Inbound — pick up an issue` | Re-narrated with mechanical/team-lead prefixes per step |
+| `core/protocols/github-integration.md § Inbound — pick up an issue` | Re-narrated with mechanical/team-lead prefixes per step |
 | `PLAN.md` · `CLAUDE.md` | D28 row |
 | `docs/CONCEPTS.md` · `docs/CHANGELOG.md` | D28 entries |
 | `migrations/skill-runner-boundary.md` | This file (NEW) |

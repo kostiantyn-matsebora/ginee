@@ -9,7 +9,7 @@
 
 Default short tasks do not load this file.
 
-`.idx` grammar spec: `core/index-syntax.md` (load-on-demand on first `.idx` read or write).
+`.idx` grammar spec: `core/protocols/index-syntax.md` (load-on-demand on first `.idx` read or write).
 
 ## Read order
 
@@ -51,7 +51,7 @@ The protocol was originally framed around documentation, then broadened to "extr
 ```
 local/index/
 ├── manifest.yaml            ← detected classes (doc + code) + SHA-256 + source paths + derived index files
-├── <flat-record indexes>.idx       ← compact DSL per core/index-syntax.md
+├── <flat-record indexes>.idx       ← compact DSL per core/protocols/index-syntax.md
 └── <nested indexes>.yaml           ← YAML for nested data
 ```
 

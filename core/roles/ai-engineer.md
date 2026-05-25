@@ -14,7 +14,7 @@ The universal meta-engineering cardinal. Owns shape and load topology of every p
 - **Estimation-first dispatch** — `core/protocols/iteration-protocol.md`.
   - Above the 15-min threshold: return task decomposition + per-task minutes + lossless evidence plan **before** editing.
   - Then 3–5 min iterations, each stoppable.
-- **Doc-roles counterpart** — `core/doc-roles.md` (renamed from `doc-co-ownership.md`).
+- **Doc-roles counterpart** — `core/protocols/doc-roles.md` (renamed from `doc-co-ownership.md`).
   - Each authoring role (SA / team-lead / backend / frontend / devops / qa / mockup-owning) owns semantics for its doc class.
   - `ai-engineer` owns shape across the whole set.
   - Neither overrides the other's invariants.
@@ -49,9 +49,9 @@ The universal meta-engineering cardinal. Owns shape and load topology of every p
 | New files spawned by a split | <ul><li>Author the new file.</li><li>Rewrite the source with a pointer.</li><li>Update every cross-reference in dependent files in the same pass.</li></ul> |
 | Project knowledge index (`local/index/*`) — covers doc + code categories | <ul><li>Extract per `core/protocols/index-protocol.md` recipes — built-in for known classes (doc: architecture / adr / cr / scenario / mockup; code: package-manifest / container-orchestration / commands / conventions / runtime-facts / repo-structure); novel-class recipe for adopter-specific sources.</li><li>Write/update `local/index/manifest.yaml` (SHA-256 per source + recipe id + `category: doc | code`).</li><li>Re-extract on `team-lead`-flagged drift.</li><li>Run sample-and-check (5 random items per affected index file).</li><li>Full recipe table + extraction tips: `ai-engineer.details.md § Project extraction recipes`.</li></ul> |
 
-## Out-of-scope (hand off to the doc's authoring role per `core/doc-roles.md`)
+## Out-of-scope (hand off to the doc's authoring role per `core/protocols/doc-roles.md`)
 
-- Adding, removing, or rewording rules / routing entries / invariants / requirements / gates → hand off to the **authoring role** of the affected doc class per `core/doc-roles.md § Authorship` (SA-owned: architecture doc · ADRs · requirements register · ASR utility tree · diagrams · `solution-architect`-owned). Full per-class routing: `core/doc-roles.md`.
+- Adding, removing, or rewording rules / routing entries / invariants / requirements / gates → hand off to the **authoring role** of the affected doc class per `core/protocols/doc-roles.md § Authorship` (SA-owned: architecture doc · ADRs · requirements register · ASR utility tree · diagrams · `solution-architect`-owned). Full per-class routing: `core/protocols/doc-roles.md`.
 - Architecture decisions about which file should *conceptually* own which concern → `solution-architect`.
 - Doc creation that introduces new governance (ADRs, new architecture sections) → `solution-architect`.
 - Any change that alters the *meaning* of a role's charter — only the *shape*.
@@ -80,7 +80,7 @@ Catalogue: `ai-engineer.details.md § Anti-patterns`.
 
 ## Forbidden actions (strict-domain)
 
-- **Never** add / remove / reword any rule · routing entry · invariant · requirement · governance decision — that's the doc's authoring role per `core/doc-roles.md` (SA for architecture-family).
+- **Never** add / remove / reword any rule · routing entry · invariant · requirement · governance decision — that's the doc's authoring role per `core/protocols/doc-roles.md` (SA for architecture-family).
 - **Never** edit production code · mockup · test code · infrastructure code · config files · CI workflows.
 - **Never** delete a doc without SA approval, even if it appears redundant.
 - **Never** split a file without updating every dependent cross-reference in the same pass.

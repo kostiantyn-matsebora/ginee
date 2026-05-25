@@ -11,7 +11,7 @@ labels: [ginee:ready]
   `ginee-triage` ranks this against other ready work.
   `value` = user / business impact. `complexity` = implementation cost
   (team-lead will dispatch solution-architect to auto-estimate if missing).
-  Full rules: `.agents/ginee/core/triage-scoring.md`.
+  Full rules: `.agents/ginee/core/protocols/triage-scoring.md`.
 -->
 
 

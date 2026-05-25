@@ -5,7 +5,7 @@ description: File a feature request against the ginee framework upstream repo (N
 
 # File framework-feature — upstream
 
-Run the file-an-issue workflow per `.agents/ginee/core/github-integration.md § Outbound — file an issue` with target = framework upstream, template = framework-feature-request.
+Run the file-an-issue workflow per `.agents/ginee/core/protocols/github-integration.md § Outbound — file an issue` with target = framework upstream, template = framework-feature-request.
 
 ## Activation
 
@@ -14,7 +14,7 @@ Run the file-an-issue workflow per `.agents/ginee/core/github-integration.md § 
 
 ## Procedure
 
-1. Load `.agents/ginee/core/github-integration.md` and `.agents/ginee/core/templates/issues/framework-feature-request.md`.
+1. Load `.agents/ginee/core/protocols/github-integration.md` and `.agents/ginee/core/templates/issues/framework-feature-request.md`.
 2. Resolve target repo from `local/framework.config.yaml § github.framework-repo`. Fail fast with clear message if unset.
 3. Draft the body from the framework-feature-request template. Populate `## Summary`, `## Motivation`, `## Affected framework surface`, `## Proposed behavior`, `## Locked-decision impact` (new D-decision? amends existing?), `## Backward compatibility` (breaks `local/*`? migration note needed?), `## Acceptance criteria`, `## Out of scope`, `## References`.
 4. When the user asked for ideas / alternatives → present 2–3 candidate design solutions in `## Proposed behavior` with tradeoff bullets each. Do NOT pre-decide the recommended approach — let framework owners pick during Phase 2.

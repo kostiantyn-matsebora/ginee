@@ -55,7 +55,7 @@ LLM self-review against the schema **before surfacing**. No external linter.
 | `core/protocols/iteration-protocol.md § Each iteration § Propose` | New bullet — surface adopt-vs-build axis where applicable; cite |
 | `core/roles/solution-architect.md § Design § Phase 2` | Adopt-vs-build as a first-class design axis; pointer |
 | `core/roles/{backend,frontend,devops,qa,ai}-engineer.md` | 1-line "Adoption research before authoring" pointer above `## Forbidden actions` (×5) |
-| `core/doc-authoring-examples.md § 11` | New bad / good example pair — option-list shape |
+| `core/protocols/doc-authoring-examples.md § 11` | New bad / good example pair — option-list shape |
 | `docs/CONCEPTS.md` · `docs/CHEATSHEET.md` · `docs/CHANGELOG.md` | D30 entries |
 | `CLAUDE.md` · `PLAN.md` | D30 row |
 | `migrations/adopt-existing-solution.md` | This file (**NEW**) |
@@ -77,7 +77,7 @@ Not recommended — D30 closes the "LLMs default to authoring novel implementati
 3. Remove Propose-step bullet from `core/protocols/iteration-protocol.md`.
 4. Remove adopt-vs-build axis from `core/roles/solution-architect.md § Design § Phase 2`.
 5. Remove "Adoption research before authoring" pointer from the 5 engineer kernels.
-6. Remove `core/doc-authoring-examples.md § 11`.
+6. Remove `core/protocols/doc-authoring-examples.md § 11`.
 
 Framework still functions; Phase-2 / iteration-protocol proposals return to free-form shape and the failure mode returns.
 

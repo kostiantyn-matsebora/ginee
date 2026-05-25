@@ -111,7 +111,7 @@ The repo-wide opt-out is preserved; the one-off override lands the artefact for 
 | `core/roles/solution-architect.details.md` | New `§ ADR-gate` — non-trivial heuristic + skip-reason enum + logging shape. |
 | `core/process.md` | New top-level `§ Change governance — pre-authorship gating` — gate-table pointer + scope. |
 | `core/process/dispatch.md` | New `### Per-task prefix grammar — change governance` under `§ Task model` — prefix table + combinability rules. |
-| `core/automatic-mode.md` | New row under `§ Forced-interactive triggers` — gate prompt branch fires forced-interactive even under `auto:`. |
+| `core/protocols/automatic-mode.md` | New row under `§ Forced-interactive triggers` — gate prompt branch fires forced-interactive even under `auto:`. |
 | `migrations/change-governance-opt-out.md` | NEW — this file. |
 | `docs/CONCEPTS.md` | New adopter-facing `§ Change governance gating + opt-out` section. |
 | `docs/CHEATSHEET.md` | New `§ Change governance` mini-section — YAML block + prefix grammar + quick table. |

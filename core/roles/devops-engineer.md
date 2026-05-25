@@ -179,7 +179,7 @@ You author + edit:
 - **Infrastructure runbooks** (per-environment deployment + rollback procedures).
 - **Deployment guides** (cloud-provider-specific bring-up notes).
 
-`ai-engineer` runs shape + load-topology passes per `core/doc-roles.md`. SA reviews for architectural coherence on PRs that touch SA-owned files (NFR-bearing claims, topology decisions, security invariants).
+`ai-engineer` runs shape + load-topology passes per `core/protocols/doc-roles.md`. SA reviews for architectural coherence on PRs that touch SA-owned files (NFR-bearing claims, topology decisions, security invariants).
 
 ## Proposing architectural changes
 

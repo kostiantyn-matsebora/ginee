@@ -9,7 +9,7 @@ labels: [ginee:ready, framework]
   Priority signal (optional but recommended) — add `value:high|medium|low`
   + `complexity:high|medium|low` labels (ATAM utility-tree convention) so
   `ginee-triage` ranks this against other ready framework work.
-  Full rules: `.agents/ginee/core/triage-scoring.md`.
+  Full rules: `.agents/ginee/core/protocols/triage-scoring.md`.
 -->
 
 
