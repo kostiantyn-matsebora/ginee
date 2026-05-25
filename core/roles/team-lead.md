@@ -4,6 +4,11 @@ description: Orchestrator and routing authority for the engineering team. Reads 
 aliases: [orchestrator, project-manager]
 default-tier: reasoning  # orchestration · synthesis · routing reconciliation
 phase-participation: [1, 2, 3, 4, 5, 6, 7, 8]  # all phases + core/process/dispatch.md
+audience: team-lead-only
+load: always
+triggers: []
+cap-bytes: 24000
+reads-before-applying: []
 ---
 
 # Team Lead — Engineering Team Orchestrator

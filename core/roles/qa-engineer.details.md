@@ -1,3 +1,11 @@
+---
+audience: qa-engineer
+load: on-demand
+triggers: [qa-details, tests, e2e, fixtures, smoke, harness]
+cap-bytes: 12000
+reads-before-applying: []
+---
+
 # QA Engineer — Domain Elaboration
 
 Companion to `core/roles/qa-engineer.md`. The kernel file holds normative rules; this file holds elaboration, patterns, and stack-specific guidance.

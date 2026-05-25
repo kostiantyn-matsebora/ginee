@@ -1,3 +1,11 @@
+---
+audience: solution-architect
+load: on-demand
+triggers: [sa-details, atam, asr, sad, adr, cr, governance]
+cap-bytes: 8192
+reads-before-applying: []
+---
+
 # Solution Architect — Details
 
 Companion to `core/roles/solution-architect.md`. Elaborations only; kernel rules are binding.

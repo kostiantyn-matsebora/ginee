@@ -1,3 +1,11 @@
+---
+audience: all-cardinals
+load: on-demand
+triggers: [phase-3, design-review]
+cap-bytes: 4096
+reads-before-applying: []
+---
+
 # Phase 3 — Design review
 
 **Load triggers** — any cardinal whose `phase-participation:` includes `3`. Per-role roster: `team-lead` only (gate surface).

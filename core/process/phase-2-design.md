@@ -1,3 +1,11 @@
+---
+audience: all-cardinals
+load: on-demand
+triggers: [phase-2, design, architecture]
+cap-bytes: 4096
+reads-before-applying: []
+---
+
 # Phase 2 — Design & architecture
 
 **Load triggers** — any cardinal whose `phase-participation:` includes `2`. Per-role roster: `team-lead` (work breakdown) · `solution-architect` (architecture / ADRs) · mockup-owning role · service-owning role.

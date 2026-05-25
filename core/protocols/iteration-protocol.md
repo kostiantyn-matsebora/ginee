@@ -1,3 +1,11 @@
+---
+audience: all-cardinals
+load: on-demand
+triggers: [iteration, propose-review-implement, 15-min]
+cap-bytes: 8192
+reads-before-applying: []
+---
+
 # Iteration protocol — propose → review → implement
 
 **Load-on-demand.** Fetched by orchestrator (or specialist) when dispatched work matches an activation cue:

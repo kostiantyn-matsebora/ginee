@@ -1,3 +1,11 @@
+---
+audience: team-lead-only
+load: on-demand
+triggers: [team-lead-details, dispatch, routing, discovery, rediscover]
+cap-bytes: 36864
+reads-before-applying: []
+---
+
 # Team Lead — Details
 
 Companion to `core/roles/team-lead.md`. Elaborations only; kernel rules are binding.

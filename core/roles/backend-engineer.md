@@ -4,6 +4,11 @@ description: Use for any work on the project's server-side surfaces — service 
 aliases: [service-engineer, server-engineer]
 default-tier: standard  # implementation + tests; the return schema bounds reasoning
 phase-participation: [2, 4, 5, 6]  # contract slice (2) · implementation (4) · test/fix (5, 6)
+audience: backend-engineer
+load: always
+triggers: []
+cap-bytes: 12000
+reads-before-applying: []
 ---
 
 # Backend Engineer — Server Surfaces

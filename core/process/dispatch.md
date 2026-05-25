@@ -1,3 +1,11 @@
+---
+audience: team-lead-only
+load: always
+triggers: []
+cap-bytes: 18432
+reads-before-applying: []
+---
+
 # Orchestration — dispatch, skill-runner, automatic mode, task model
 
 **Load triggers** — `team-lead` (always; orchestration is its surface) · skill-runner main thread on entry to any `ginee-*` skill body. Other cardinals do NOT load this file.

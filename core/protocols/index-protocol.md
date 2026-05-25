@@ -1,3 +1,11 @@
+---
+audience: all-cardinals
+load: on-demand
+triggers: [index, project-index, manifest, drift, staleness]
+cap-bytes: 32000
+reads-before-applying: []
+---
+
 # Project knowledge index protocol
 
 **Load-on-demand.** Fetched when:

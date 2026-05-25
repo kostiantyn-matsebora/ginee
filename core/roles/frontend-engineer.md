@@ -4,6 +4,11 @@ description: Use for any work on the project's client-side surfaces — the appl
 aliases: [client-engineer, ui-engineer]
 default-tier: standard  # implementation + tests; the return schema bounds reasoning
 phase-participation: [2, 4, 5, 6]  # mockup + contract slice (2) · implementation (4) · test/fix (5, 6)
+audience: frontend-engineer
+load: always
+triggers: []
+cap-bytes: 12000
+reads-before-applying: []
 ---
 
 # Frontend Engineer — Client Surfaces

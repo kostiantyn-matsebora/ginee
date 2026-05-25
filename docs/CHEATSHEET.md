@@ -234,6 +234,24 @@ Status: Done | In-progress | Blocked | Hand-off
 
 **Index-first read order** — cardinals consult `local/index/` summaries first; raw source reads are fallback + require a one-line justification in `## Source reads`. Orchestrator's single format-only re-dispatch carve-out fires when raw source appears in `## Files touched` AND `## Source reads` is missing / `(none)`. Bedrock: `core/protocols/index-protocol.md § Read order`.
 
+## Hot-spec frontmatter (D47)
+
+Every `core/` hot-spec file (`process.md` · `process/*.md` · `protocols/*.md` · `roles/*.md` · `roles/*.details.md`) carries a YAML header declaring its load contract:
+
+```yaml
+---
+audience: <role | all-cardinals | team-lead-only>
+load: always | on-demand
+triggers: [keyword1, keyword2]                # required when load == on-demand
+cap-bytes: <N>                                # per-file byte budget
+reads-before-applying: [path1, path2]         # [] if none
+---
+```
+
+**Excluded** — `core/templates/*.md` · `core/skills/ginee-*/SKILL.md` · `local/roles/*.md`. **Validator** — `scripts/context-economy-check.ps1` fails CI on missing frontmatter; `Optimized-By: ai-engineer` trailer bypasses. **Failure codes** — `missing` · `malformed` · `missing-key` · `invalid-load` · `empty-triggers` · `invalid-cap-bytes`.
+
+Full spec: `core/protocols/hot-spec-format.md`.
+
 ## Release-surface authoring (D40)
 
 Three surfaces, three voices, three caps — applies only to maintainers drafting release artefacts.

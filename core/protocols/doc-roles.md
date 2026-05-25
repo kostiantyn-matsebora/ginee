@@ -1,3 +1,11 @@
+---
+audience: all-cardinals
+load: on-demand
+triggers: [doc-roles, doc-ownership, authorship]
+cap-bytes: 6144
+reads-before-applying: []
+---
+
 # Doc roles — all-roles authorship + ai-engineer shape
 
 **Load-on-demand.**

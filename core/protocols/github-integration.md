@@ -1,3 +1,11 @@
+---
+audience: team-lead-only
+load: on-demand
+triggers: [github, issues, discussions, pr, review-comments]
+cap-bytes: 24000
+reads-before-applying: []
+---
+
 # GitHub integration — issues + discussions
 
 **Load-on-demand.** Fetched when:

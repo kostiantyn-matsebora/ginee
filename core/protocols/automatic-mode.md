@@ -1,3 +1,11 @@
+---
+audience: team-lead-only
+load: on-demand
+triggers: [auto, automatic-mode, ci-watch]
+cap-bytes: 12000
+reads-before-applying: []
+---
+
 # Automatic mode
 
 **Load-on-demand.**

@@ -1,3 +1,11 @@
+---
+audience: all-cardinals
+load: on-demand
+triggers: [options, adopt-vs-build, proposal, phase-2]
+cap-bytes: 8192
+reads-before-applying: []
+---
+
 # Option protocol — adopt-vs-build proposal shape
 
 **Load-on-demand.** Fetched by the proposing role on activation. 5 mandatory checks below run **before surfacing**; no edits / no dispatch until the option list passes.

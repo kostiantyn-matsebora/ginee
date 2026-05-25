@@ -1,3 +1,11 @@
+---
+audience: ai-engineer
+load: on-demand
+triggers: [doc-size-caps, size-cap, breach, optimized-by]
+cap-bytes: 8192
+reads-before-applying: []
+---
+
 # Doc-size caps — per-class enforcement
 
 **Audience.** `ai-engineer` (charter trigger) · `team-lead` (advisory routing) · `scripts/context-economy-check.ps1` (gate implementation). Other cardinals never load this file.

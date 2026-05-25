@@ -689,6 +689,387 @@ adr-directory: architecture/decisions/
     }
   }
 
+  Context 'Hot-spec frontmatter validator' {
+    BeforeAll {
+      function New-SandboxRepoWithHotSpec {
+        [System.Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseShouldProcessForStateChangingFunctions', '', Justification = 'Test-only helper.')]
+        [CmdletBinding()]
+        param([hashtable]$Files, [switch]$WithTrailer)
+        $root = Join-Path ([System.IO.Path]::GetTempPath()) "ginee-ce-hotspec-$([guid]::NewGuid().Guid)"
+        New-Item -ItemType Directory -Force -Path $root | Out-Null
+        Push-Location $root
+        try {
+          & git init -q --initial-branch=main *> $null
+          & git config user.email 'test@example.com' *> $null
+          & git config user.name 'Test' *> $null
+          & git config commit.gpgsign false *> $null
+          & git config core.hooksPath /dev/null *> $null
+          # Baseline: minimal repo structure so trees diff cleanly.
+          New-Item -ItemType Directory -Force -Path (Join-Path $root 'core/roles') | Out-Null
+          New-Item -ItemType Directory -Force -Path (Join-Path $root 'core/protocols') | Out-Null
+          New-Item -ItemType Directory -Force -Path (Join-Path $root 'core/process') | Out-Null
+          New-Item -ItemType Directory -Force -Path (Join-Path $root 'core/templates') | Out-Null
+          Set-Content -LiteralPath (Join-Path $root 'CLAUDE.md') -Value 'baseline'
+          & git add . *> $null
+          & git commit -q -m 'baseline' *> $null
+          & git checkout -q -b feature *> $null
+          foreach ($entry in $Files.GetEnumerator()) {
+            $abs = Join-Path $root $entry.Key
+            $dir = Split-Path $abs -Parent
+            if (-not (Test-Path -LiteralPath $dir)) { New-Item -ItemType Directory -Force -Path $dir | Out-Null }
+            Set-Content -LiteralPath $abs -Value $entry.Value
+          }
+          if ($Files.Count -gt 0) {
+            & git add . *> $null
+            if ($WithTrailer) {
+              $msg = "land hot-spec edit`n`nOptimized-By: ai-engineer"
+              & git commit -q -m $msg *> $null
+            } else {
+              & git commit -q -m 'hot-spec edit' *> $null
+            }
+          }
+        } finally { Pop-Location }
+        return $root
+      }
+
+      $script:validFrontmatter = @(
+        '---'
+        'audience: all-cardinals'
+        'load: on-demand'
+        'triggers: [hot-spec, frontmatter]'
+        'cap-bytes: 4096'
+        'reads-before-applying: [core/protocols/doc-size-caps.md]'
+        '---'
+        ''
+        '# Body heading'
+        ''
+        '- one bullet'
+      ) -join "`n"
+
+      $script:malformedMissingLoad = @(
+        '---'
+        'audience: all-cardinals'
+        'triggers: [hot-spec]'
+        'cap-bytes: 4096'
+        'reads-before-applying: []'
+        '---'
+        ''
+        '# Body'
+      ) -join "`n"
+
+      $script:noFrontmatter = @(
+        '# Body heading'
+        ''
+        '- bullet'
+      ) -join "`n"
+
+      $script:emptyTriggers = @(
+        '---'
+        'audience: all-cardinals'
+        'load: on-demand'
+        'triggers: []'
+        'cap-bytes: 4096'
+        'reads-before-applying: []'
+        '---'
+        ''
+        '# Body'
+      ) -join "`n"
+
+      $script:invalidLoad = @(
+        '---'
+        'audience: all-cardinals'
+        'load: lazy'
+        'triggers: [x]'
+        'cap-bytes: 4096'
+        'reads-before-applying: []'
+        '---'
+        ''
+        '# Body'
+      ) -join "`n"
+
+      $script:loadAlwaysNoTriggers = @(
+        '---'
+        'audience: all-cardinals'
+        'load: always'
+        'cap-bytes: 4096'
+        'reads-before-applying: []'
+        '---'
+        ''
+        '# Body'
+      ) -join "`n"
+
+      $script:invalidCapBytes = @(
+        '---'
+        'audience: all-cardinals'
+        'load: always'
+        'cap-bytes: 0'
+        'reads-before-applying: []'
+        '---'
+        ''
+        '# Body'
+      ) -join "`n"
+    }
+
+    It 'Test-IsHotSpec recognises in-scope paths + rejects excluded ones' {
+      Test-IsHotSpec -Path 'core/process.md' | Should -BeTrue
+      Test-IsHotSpec -Path 'core/process/phase-4-implementation.md' | Should -BeTrue
+      Test-IsHotSpec -Path 'core/protocols/hot-spec-format.md' | Should -BeTrue
+      Test-IsHotSpec -Path 'core/roles/team-lead.md' | Should -BeTrue
+      Test-IsHotSpec -Path 'core/roles/team-lead.details.md' | Should -BeTrue
+      # Out-of-scope surfaces
+      Test-IsHotSpec -Path 'core/templates/phase-report.md' | Should -BeFalse
+      Test-IsHotSpec -Path 'core/skills/ginee-update/SKILL.md' | Should -BeFalse
+      Test-IsHotSpec -Path 'local/roles/custom-role.md' | Should -BeFalse
+      Test-IsHotSpec -Path 'CLAUDE.md' | Should -BeFalse
+      Test-IsHotSpec -Path 'adapters/claude/install.md' | Should -BeFalse
+    }
+
+    It 'Read-HotSpecFrontmatter parses a well-formed block' {
+      $lines = $script:validFrontmatter -split "`n"
+      $fm = Read-HotSpecFrontmatter -Lines $lines
+      $fm | Should -Not -BeNullOrEmpty
+      $fm['audience'] | Should -Be 'all-cardinals'
+      $fm['load'] | Should -Be 'on-demand'
+      $fm['cap-bytes'] | Should -Be 4096
+      ,$fm['triggers'] | Should -BeOfType [object[]]
+      $fm['triggers'].Count | Should -Be 2
+    }
+
+    It 'Read-HotSpecFrontmatter returns null when no frontmatter is present' {
+      $lines = $script:noFrontmatter -split "`n"
+      Read-HotSpecFrontmatter -Lines $lines | Should -BeNullOrEmpty
+    }
+
+    It 'passes a file with valid frontmatter (no failures, gate clean)' {
+      $root = New-SandboxRepoWithHotSpec -Files @{ 'core/protocols/hot-spec-format.md' = $script:validFrontmatter }
+      try {
+        $r = Invoke-CheckInProc -Root $root -Params @{ BaseRef = 'main'; Json = $true }
+        $r.Code | Should -Be 0
+        $r.Json.hotSpecFailures.Count | Should -Be 0
+      } finally {
+        Remove-Item -Recurse -Force $root -ErrorAction SilentlyContinue
+      }
+    }
+
+    It 'fails when an in-scope file lacks frontmatter and no trailer is present' {
+      $root = New-SandboxRepoWithHotSpec -Files @{ 'core/protocols/some-spec.md' = $script:noFrontmatter }
+      try {
+        $r = Invoke-CheckInProc -Root $root -Params @{ BaseRef = 'main'; Json = $true }
+        $r.Code | Should -Be 1
+        $r.Json.gateFail | Should -BeTrue
+        $r.Json.hotSpecFailures.Count | Should -Be 1
+        $r.Json.hotSpecFailures[0].Path | Should -Be 'core/protocols/some-spec.md'
+        $r.Json.hotSpecFailures[0].Reason | Should -Be 'missing'
+      } finally {
+        Remove-Item -Recurse -Force $root -ErrorAction SilentlyContinue
+      }
+    }
+
+    It 'passes a missing-frontmatter file when the Optimized-By trailer is present' {
+      $root = New-SandboxRepoWithHotSpec -Files @{ 'core/protocols/some-spec.md' = $script:noFrontmatter } -WithTrailer
+      try {
+        $r = Invoke-CheckInProc -Root $root -Params @{ BaseRef = 'main'; Json = $true }
+        $r.Code | Should -Be 0
+        $r.Json.markerPresent | Should -BeTrue
+        # Failures are still reported (transparency), but the gate passes.
+        $r.Json.hotSpecFailures.Count | Should -Be 1
+        $r.Json.gateFail | Should -BeFalse
+      } finally {
+        Remove-Item -Recurse -Force $root -ErrorAction SilentlyContinue
+      }
+    }
+
+    It 'fails when frontmatter is malformed (missing required key: load)' {
+      $root = New-SandboxRepoWithHotSpec -Files @{ 'core/protocols/some-spec.md' = $script:malformedMissingLoad }
+      try {
+        $r = Invoke-CheckInProc -Root $root -Params @{ BaseRef = 'main'; Json = $true }
+        $r.Code | Should -Be 1
+        $r.Json.hotSpecFailures.Count | Should -Be 1
+        $r.Json.hotSpecFailures[0].Reason | Should -Be 'missing-key'
+        $r.Json.hotSpecFailures[0].Detail | Should -Match 'load'
+      } finally {
+        Remove-Item -Recurse -Force $root -ErrorAction SilentlyContinue
+      }
+    }
+
+    It 'fails when load: on-demand but triggers is an empty list' {
+      $root = New-SandboxRepoWithHotSpec -Files @{ 'core/protocols/some-spec.md' = $script:emptyTriggers }
+      try {
+        $r = Invoke-CheckInProc -Root $root -Params @{ BaseRef = 'main'; Json = $true }
+        $r.Code | Should -Be 1
+        $r.Json.hotSpecFailures[0].Reason | Should -Be 'empty-triggers'
+      } finally {
+        Remove-Item -Recurse -Force $root -ErrorAction SilentlyContinue
+      }
+    }
+
+    It 'fails when load value is outside the allowed enum' {
+      $root = New-SandboxRepoWithHotSpec -Files @{ 'core/protocols/some-spec.md' = $script:invalidLoad }
+      try {
+        $r = Invoke-CheckInProc -Root $root -Params @{ BaseRef = 'main'; Json = $true }
+        $r.Code | Should -Be 1
+        $r.Json.hotSpecFailures[0].Reason | Should -Be 'invalid-load'
+      } finally {
+        Remove-Item -Recurse -Force $root -ErrorAction SilentlyContinue
+      }
+    }
+
+    It 'allows load: always without triggers key' {
+      $root = New-SandboxRepoWithHotSpec -Files @{ 'core/process.md' = $script:loadAlwaysNoTriggers }
+      try {
+        $r = Invoke-CheckInProc -Root $root -Params @{ BaseRef = 'main'; Json = $true }
+        $r.Code | Should -Be 0
+        $r.Json.hotSpecFailures.Count | Should -Be 0
+      } finally {
+        Remove-Item -Recurse -Force $root -ErrorAction SilentlyContinue
+      }
+    }
+
+    It 'fails when cap-bytes is not a positive integer' {
+      $root = New-SandboxRepoWithHotSpec -Files @{ 'core/process.md' = $script:invalidCapBytes }
+      try {
+        $r = Invoke-CheckInProc -Root $root -Params @{ BaseRef = 'main'; Json = $true }
+        $r.Code | Should -Be 1
+        $r.Json.hotSpecFailures[0].Reason | Should -Be 'invalid-cap-bytes'
+      } finally {
+        Remove-Item -Recurse -Force $root -ErrorAction SilentlyContinue
+      }
+    }
+
+    It 'ignores out-of-scope files (templates, skills, local/roles)' {
+      $root = New-SandboxRepoWithHotSpec -Files @{
+        'core/templates/some-template.md' = $script:noFrontmatter
+        'core/skills/ginee-update/SKILL.md' = $script:noFrontmatter
+      }
+      try {
+        $r = Invoke-CheckInProc -Root $root -Params @{ BaseRef = 'main'; Json = $true }
+        $r.Json.hotSpecFailures.Count | Should -Be 0
+      } finally {
+        Remove-Item -Recurse -Force $root -ErrorAction SilentlyContinue
+      }
+    }
+
+    It 'emits human-readable hot-spec failure block when -Json is unset' {
+      $root = New-SandboxRepoWithHotSpec -Files @{ 'core/protocols/some-spec.md' = $script:noFrontmatter }
+      try {
+        $r = Invoke-CheckInProc -Root $root -Params @{ BaseRef = 'main' }
+        $r.Code | Should -Be 1
+        $r.Output | Should -Match 'Hot-spec frontmatter'
+        $r.Output | Should -Match 'hot-spec-format.md'
+      } finally {
+        Remove-Item -Recurse -Force $root -ErrorAction SilentlyContinue
+      }
+    }
+
+    It 'flags an unclosed YAML frontmatter block as missing (no terminating ---)' {
+      $unclosed = @(
+        '---'
+        'audience: all-cardinals'
+        'load: always'
+        'cap-bytes: 4096'
+        'reads-before-applying: []'
+        ''
+        '# Body — no closing --- delimiter'
+      ) -join "`n"
+      $root = New-SandboxRepoWithHotSpec -Files @{ 'core/protocols/some-spec.md' = $unclosed }
+      try {
+        $r = Invoke-CheckInProc -Root $root -Params @{ BaseRef = 'main'; Json = $true }
+        $r.Code | Should -Be 1
+        $r.Json.hotSpecFailures[0].Reason | Should -Be 'missing'
+      } finally {
+        Remove-Item -Recurse -Force $root -ErrorAction SilentlyContinue
+      }
+    }
+
+    It 'fails when load: on-demand AND triggers key is entirely absent' {
+      $onDemandNoTriggers = @(
+        '---'
+        'audience: all-cardinals'
+        'load: on-demand'
+        'cap-bytes: 4096'
+        'reads-before-applying: []'
+        '---'
+        ''
+        '# Body'
+      ) -join "`n"
+      $root = New-SandboxRepoWithHotSpec -Files @{ 'core/protocols/some-spec.md' = $onDemandNoTriggers }
+      try {
+        $r = Invoke-CheckInProc -Root $root -Params @{ BaseRef = 'main'; Json = $true }
+        $r.Code | Should -Be 1
+        $r.Json.hotSpecFailures[0].Reason | Should -Be 'missing-key'
+        $r.Json.hotSpecFailures[0].Detail | Should -Match 'triggers'
+      } finally {
+        Remove-Item -Recurse -Force $root -ErrorAction SilentlyContinue
+      }
+    }
+
+    It 'Read-HotSpecFrontmatter strips inline scalar comments' {
+      $lines = @(
+        '---'
+        'audience: all-cardinals  # narrowest applicable cardinality'
+        'load: always'
+        'cap-bytes: 4096'
+        'reads-before-applying: []'
+        '---'
+      )
+      $fm = Read-HotSpecFrontmatter -Lines $lines
+      $fm['audience'] | Should -Be 'all-cardinals'
+    }
+
+    It 'Get-HotSpecFileContent returns $null for a missing path (all three modes)' {
+      $root = New-SandboxRepo
+      try {
+        Push-Location $root
+        try {
+          $missing = 'core/protocols/does-not-exist.md'
+          (Get-HotSpecFileContent -Path $missing -Mode 'Range'      -RepoRoot $root) | Should -BeNullOrEmpty
+          (Get-HotSpecFileContent -Path $missing -Mode 'Staged'     -RepoRoot $root) | Should -BeNullOrEmpty
+          (Get-HotSpecFileContent -Path $missing -Mode 'ClaudeHook' -RepoRoot $root) | Should -BeNullOrEmpty
+        } finally { Pop-Location }
+      } finally {
+        Remove-Item -Recurse -Force $root -ErrorAction SilentlyContinue
+      }
+    }
+
+    It 'Read-HotSpecFrontmatter returns $null for empty / one-line input' {
+      Read-HotSpecFrontmatter -Lines @() | Should -BeNullOrEmpty
+      Read-HotSpecFrontmatter -Lines @('---') | Should -BeNullOrEmpty
+    }
+
+    It 'Get-HotSpecFileContent returns content in Staged mode' {
+      $root = New-SandboxRepoWithHotSpec -Files @{}
+      try {
+        Push-Location $root
+        try {
+          $abs = Join-Path $root 'core/protocols/staged-spec.md'
+          New-Item -ItemType Directory -Force -Path (Split-Path $abs -Parent) | Out-Null
+          Set-Content -LiteralPath $abs -Value $script:validFrontmatter
+          & git add . *> $null
+        } finally { Pop-Location }
+        $r = Invoke-CheckInProc -Root $root -Params @{ StagedOnly = $true; Json = $true }
+        $r.Code | Should -Be 0
+        $r.Json.hotSpecFailures.Count | Should -Be 0
+      } finally {
+        Remove-Item -Recurse -Force $root -ErrorAction SilentlyContinue
+      }
+    }
+
+    It 'Get-HotSpecFileContent returns content in ClaudeHook (working-tree) mode' {
+      # Stage a committed file first, then modify the working tree so
+      # `git diff HEAD` reports the path. ClaudeHook diffs working-tree vs HEAD.
+      $root = New-SandboxRepoWithHotSpec -Files @{ 'core/protocols/wt-spec.md' = $script:validFrontmatter }
+      try {
+        $abs = Join-Path $root 'core/protocols/wt-spec.md'
+        Set-Content -LiteralPath $abs -Value $script:noFrontmatter
+        $r = Invoke-CheckInProc -Root $root -Params @{ ClaudeHook = $true; Json = $true }
+        $r.Code | Should -Be 1
+        ($r.Json.hotSpecFailures | Where-Object { $_.Path -eq 'core/protocols/wt-spec.md' }).Reason | Should -Be 'missing'
+      } finally {
+        Remove-Item -Recurse -Force $root -ErrorAction SilentlyContinue
+      }
+    }
+  }
+
   Context 'End-to-end via -File (cross-platform invocation contract)' {
     It 'returns exit code 0 on clean tree when invoked via pwsh -File' {
       $root = New-SandboxRepo

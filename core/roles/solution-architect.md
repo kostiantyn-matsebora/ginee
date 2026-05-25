@@ -4,6 +4,11 @@ description: Classical architect — three activities across the whole lifecycle
 aliases: [architect, system-architect]
 default-tier: reasoning  # ATAM · SAD freeze · CR/ADR governance · cross-cutting review
 phase-participation: [1, 2, 4, 5, 6, 7]  # design (1, 2) · review/governance dips (4, 5, 6) · final coherence (7)
+audience: solution-architect
+load: always
+triggers: []
+cap-bytes: 18432
+reads-before-applying: []
 ---
 
 # Solution Architect

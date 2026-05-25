@@ -1,3 +1,11 @@
+---
+audience: all-cardinals
+load: on-demand
+triggers: [phase-4, implementation]
+cap-bytes: 4096
+reads-before-applying: []
+---
+
 # Phase 4 — Implementation
 
 **Load triggers** — any cardinal whose `phase-participation:` includes `4`. Per-role roster: `team-lead` · `solution-architect` (review / governance dips) · all engineering cardinals.

@@ -1,3 +1,11 @@
+---
+audience: team-lead-only
+load: on-demand
+triggers: [ci-watch, post-pr, auto]
+cap-bytes: 12000
+reads-before-applying: []
+---
+
 # CI watch — post-PR iterate-fix-recheck loop
 
 **Load-on-demand.** Fetched when:
