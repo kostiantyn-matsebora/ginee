@@ -99,6 +99,23 @@ Phase 1–8 applies to any task. A task originates from one of four sources:
 - PR descriptions for issue-sourced tasks include `Closes #<N>` so GitHub auto-closes the issue on merge.
 - Priority signals via `value:high|medium|low` + `complexity:high|medium|low` labels (ATAM convention); ranked by `ginee-triage` per `core/triage-scoring.md`.
 
+### Per-task prefix grammar — change governance
+
+CR / ADR authorship can be forced or suppressed at dispatch time via per-task prefixes. Resolved against `local/framework.config.yaml § change-governance` (precedence: prefix > config > default).
+
+| Prefix | Effect |
+|---|---|
+| `cr:` | Force CR authorship (overrides any `cr.enabled: false` / `skip-when-issue-source` / `prompt-before-create` config). |
+| `nocr:` | Skip CR authorship (overrides any `cr.enabled: true` + `prompt-before-create: always` config). Logged `skip-reason: prefix-override`. |
+| `adr:` | Force ADR authorship (overrides any `adr.enabled: false` / `require-architectural-delta` / `prompt-before-create` config). |
+| `noadr:` | Skip ADR authorship (overrides any `adr.enabled: true` config). Logged `skip-reason: prefix-override`. |
+
+**Within change-governance prefixes** — explicit-force (`cr:` / `adr:`) outranks explicit-skip (`nocr:` / `noadr:`) when both somehow appear; explicit-skip outranks config defaults.
+
+**Combinability.** Combine freely with `auto:` · `branch:` / `wt:` / `commit:` · `model:<tier>` · `notrack:` · `fresh:`. Example: `auto: branch: nocr: bump dotnet runtime` — auto-mode, Mode 1 delivery, skip CR.
+
+Full gate-branch tables: `core/roles/team-lead.md § CR-gate` (CRs) · `core/roles/solution-architect.md § ADR-gate` (ADRs).
+
 ## Team-lead-only load-on-demand specs
 
 The kernel summaries below are orchestration-only — relocated from `core/process.md § Load-on-demand specs` because the load triggers are all team-lead-driven. Specialists never load this file, so they never pay for these summaries; cross-references from specialist outputs resolve directly to the full-spec paths.

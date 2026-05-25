@@ -119,6 +119,17 @@ Bindings may NOT override generic process.
 
 Full schema (cardinality table · default-shape map · caps · forbidden patterns · 6 checks · worked size targets): **`core/templates/phase-report.md`**.
 
+## Change governance — pre-authorship gating
+
+CR (requirement / scope change) + ADR (architectural decision) authorship is gated BEFORE drafting. Ownership preserved per `core/doc-roles.md § Authorship` — `team-lead` owns CRs · `solution-architect` owns ADRs. The gate is an adopter-controlled intercept layer that runs first; on skip the doc is never drafted.
+
+| Surface | Gate-branch table |
+|---|---|
+| CR (team-lead) | `core/roles/team-lead.md § CR-gate` |
+| ADR (solution-architect) | `core/roles/solution-architect.md § Architecture-doc freeze + change governance § ADR-gate` |
+
+Both gates resolve against `local/framework.config.yaml § change-governance` + the per-task prefix grammar (`core/process/dispatch.md § Task model`). Skip-reasons are logged under `## Decisions made` in the phase-report per the per-role enum.
+
 ## Coordination protocol
 
 | Trigger | Rule |

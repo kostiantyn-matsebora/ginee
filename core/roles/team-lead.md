@@ -43,6 +43,23 @@ You:
 
 CR template: `team-lead.details.md § CR template`.
 
+### CR-gate (pre-authorship intercept)
+
+Before drafting any CR, resolve the gate against `local/framework.config.yaml § change-governance` + the per-task prefix grammar (`core/process/dispatch.md § Task model`). Stop at first match:
+
+| Branch | Condition | Action |
+|---|---|---|
+| 1 | `change-governance.cr.enabled: false` | Skip CR; log `skip-reason: config-disabled` |
+| 2 | Task prefix `nocr:` | Skip CR; log `skip-reason: prefix-override` |
+| 3 | `change-governance.cr.skip-when-issue-source: true` AND task is issue-sourced | Skip CR; log `skip-reason: issue-source-skip` |
+| 4 | Task prefix `cr:` OR `prompt-before-create: never` | Draft CR silently |
+| 5 | `prompt-before-create: always` OR `non-trivial` heuristic fires | Forced-interactive prompt → on user yes draft CR |
+| 6 | Otherwise (`prompt-before-create: non-trivial` + heuristic does not fire) | Draft CR silently |
+
+**Non-trivial heuristic.** ≥ 2 architectural-delta triggers (per `core/roles/solution-architect.md § Architecture-doc freeze + change governance`) OR `local/requirements.md` register-diff non-empty (FR / NFR / Constraint added · modified · retired).
+
+**Skip-reason logging.** Recorded under `## Decisions made` in the phase-report; enum values — `config-disabled | issue-source-skip | prefix-override`. Full enum + logging shape: `team-lead.details.md § CR authoring`.
+
 - **Inbound trigger surfaces.** You receive work from any of:
   - User dispatch (`@team-lead ...` in any client; natural-language equivalents).
   - **Skill-runner hand-back** — every `ginee-*` skill dispatches `@team-lead` after its first mechanical batch. See `core/process.md § Skill-runner — surface boundary`. Inbound payload: the skill's mechanical-ops result (label swap done · sticky posted · branch created) + parsed task context (issue body · TODO line · freeform prompt) + scoring labels. From here every orchestration decision (plan drafting · synthesis · gate text · re-dispatch · routing reconciliation · default selection) is yours.

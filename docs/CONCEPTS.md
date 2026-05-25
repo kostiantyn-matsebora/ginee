@@ -112,6 +112,46 @@ Three activities across the lifecycle:
 
 Full spec: [`core/roles/solution-architect.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/core/roles/solution-architect.md). Migration: [`migrations/classical-architect.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/migrations/classical-architect.md).
 
+## Change governance gating + opt-out (D45)
+
+Pre-D45, CR / ADR authorship was unconditional once team-lead / SA judged the trigger condition met. Adopters whose source-of-truth for requirement scope is GitHub issues (issue body = the requirement record) had no way to suppress redundant CR drafting; adopters making code changes with no architectural delta had no way to suppress redundant ADR drafting. D45 adds a pre-authorship intercept gate on both surfaces.
+
+**Five-key gate** (`local/framework.config.yaml § change-governance`):
+
+```yaml
+change-governance:
+  cr:
+    enabled: true                       # set false → skip CR authorship
+    skip-when-issue-source: true        # issue-sourced task → issue IS the requirement record
+  adr:
+    enabled: true                       # set false → skip ADR authorship
+    require-architectural-delta: true   # no delta heuristic → skip ADR
+  prompt-before-create: non-trivial     # always | never | non-trivial
+```
+
+**Architectural-delta heuristic** — ADR gate fires when the proposal touches ≥ 1 of: component boundaries · wire contracts · NFR-bearing claims · architecture invariants · stack / topology / infrastructure. SA judgment retained for borderline cases (refactor implying invariant shift · wire-shape breaking-vs-additive · NFR-adjacent threshold).
+
+**Non-trivial heuristic** (drives `prompt-before-create: non-trivial`) — ≥ 2 architectural-delta triggers OR `local/requirements.md` register-diff non-empty.
+
+**Per-task prefixes** override config at dispatch time (precedence: prefix > config > default):
+
+| Prefix | Effect |
+|---|---|
+| `cr:` | Force CR authorship |
+| `nocr:` | Skip CR authorship |
+| `adr:` | Force ADR authorship |
+| `noadr:` | Skip ADR authorship |
+
+Combine freely with `auto:` · `branch:` / `wt:` / `commit:` · `model:<tier>` · `notrack:`. Example — `auto: branch: nocr: bump retry policy` (auto-mode, Mode 1, skip CR).
+
+**Skip-reason logging** — when the gate skips, `## Decisions made` carries one row (`CR skipped — skip-reason: <enum>` / `ADR skipped — skip-reason: <enum>`). Fixed enum — `config-disabled` · `issue-source-skip` (CR only) · `no-architectural-delta` (ADR only) · `prefix-override` · `user-declined`.
+
+**Adopter benefit — issue-as-CR.** Pre-D45 `team-lead` drafted a CR for every issue-sourced scope change, even when the issue body already recorded the change. Post-D45, `cr.skip-when-issue-source: true` (new default per issue #121) suppresses the redundant CR; the issue body remains the requirement record; PR `Closes #<N>` preserves traceability.
+
+**Auto-mode interaction** — `prompt-before-create: always` OR `non-trivial` heuristic firing under auto-mode forces interactive pause per `core/automatic-mode.md § Forced-interactive triggers`. The gate is never silently elided.
+
+Full spec: [`core/roles/team-lead.md § CR-gate`](https://github.com/kostiantyn-matsebora/ginee/blob/main/core/roles/team-lead.md) · [`core/roles/solution-architect.md § ADR-gate`](https://github.com/kostiantyn-matsebora/ginee/blob/main/core/roles/solution-architect.md) · [`core/process.md § Change governance`](https://github.com/kostiantyn-matsebora/ginee/blob/main/core/process.md). Migration: [`migrations/change-governance-opt-out.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/migrations/change-governance-opt-out.md).
+
 ## Index protocol
 
 `local/index/` holds lightweight per-class summaries of the project's knowledge:

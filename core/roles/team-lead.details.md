@@ -286,6 +286,20 @@ Moved from `team-lead.md § Testing scope` for context-economy. Kernel rule live
   - approximate token cost
 - It does not retroactively become a gate.
 
+## CR authoring
+
+Companion to `team-lead.md § CR-gate`. Kernel carries the gate-branch table; this section carries the skip-reason enum + phase-report logging shape.
+
+**Skip-reason enum.** Logged under `## Decisions made` in the phase-report when the gate skips authorship:
+
+| Value | Trigger |
+|---|---|
+| `config-disabled` | `change-governance.cr.enabled: false` |
+| `issue-source-skip` | `change-governance.cr.skip-when-issue-source: true` AND task is issue-sourced |
+| `prefix-override` | Task prefix `nocr:` |
+
+**Logging shape.** One row under `## Decisions made` — `CR skipped — skip-reason: <value>`. Mandatory when the gate skips; absent when the gate authors. Forced-interactive prompt outcome (`prompt-before-create: always` or `non-trivial` fired): record the user verdict — `CR authored — user yes` or `CR declined — user no` (latter logs `skip-reason: user-declined`).
+
 ## CR template
 
 Reassigned from `solution-architect.details.md`. CRs are coordination decisions (requirement / scope changes), not architectural ones. team-lead authors; SA reviews for architectural coherence per `core/doc-roles.md § SA architectural-coherence review`.

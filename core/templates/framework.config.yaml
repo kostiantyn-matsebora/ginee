@@ -73,6 +73,27 @@ diagrams-directory: docs/diagrams/
 #   - Sequence.
 #   - Deployment.
 
+# --- Change-governance gating + opt-out ---
+# Gates CR / ADR authorship BEFORE drafting. Adopter-controlled — projects
+# that file requirement scope via GitHub issues can suppress redundant CR
+# authoring; code changes with no architectural delta can suppress ADRs.
+# Per-task prefixes (cr: / nocr: / adr: / noadr:) override at dispatch time;
+# precedence: prefix > config > default. Within prefixes: explicit-force
+# (cr: / adr:) > explicit-skip (nocr: / noadr:).
+# Full spec: core/roles/team-lead.md § What you author (CR gate) +
+# core/roles/solution-architect.md § Architecture-doc freeze + change
+# governance (ADR gate).
+#
+# All keys optional — defaults shown.
+change-governance:
+  cr:
+    enabled: true                       # set false → skip CR authorship; skip-reason: config-disabled
+    skip-when-issue-source: true        # issue-sourced task → skip CR (issue IS the requirement record); skip-reason: issue-source-skip
+  adr:
+    enabled: true                       # set false → skip ADR authorship; skip-reason: config-disabled
+    require-architectural-delta: true   # no architectural-delta heuristic match → skip ADR; skip-reason: no-architectural-delta
+  prompt-before-create: non-trivial     # always | never | non-trivial (≥ 2 delta triggers OR register-diff non-empty)
+
 # --- Per-class doc-size caps ---
 # Total file-size cap per doc class. Breach without `Optimized-By: ai-engineer`
 # trailer fails `scripts/context-economy-check.ps1`. Defaults shown; override
