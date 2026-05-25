@@ -10,6 +10,8 @@ All notable changes to ginee. The format follows [Keep a Changelog](https://keep
 
 ## Unreleased
 
+## 0.18.0 — 2026-05-25
+
 ### Added
 
 - **D44 — Per-class doc-size caps** ([#113](https://github.com/kostiantyn-matsebora/ginee/issues/113)). Pre-D44 the framework governed doc *shape* (D22 / D26 doc-authoring protocol) + *whole-PR delta* (D21 context-economy gates) but had no per-class *size* dimension. Load-on-demand doc classes (ADR · CR · UI mockup) could grow unbounded; once over an unbudgeted threshold every dispatch that loaded them paid the cost; `ai-engineer` learned about bloat ad-hoc, after it landed.
