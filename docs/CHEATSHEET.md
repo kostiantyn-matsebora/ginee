@@ -214,7 +214,7 @@ Procedure: fetch `pulls/{N}/comments` + `/reviews` → dedup by `thread-id` (ski
 
 ## Subagent-return schema (D29)
 
-Every cardinal-dispatch return is schema-bound per `core/templates/phase-report.md`.
+Every cardinal-dispatch return is schema-bound per `core/templates/phase-report.md`. Dispatch payloads · sticky `ginee:score` · audit comments · sub-issue bodies · review-cycle comments follow sister sidecars under `core/protocols/*-schema.md` (D49).
 
 ```
 Status: Done | In-progress | Blocked | Hand-off
