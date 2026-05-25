@@ -370,7 +370,11 @@ $pruneRoots = @(
   'SECURITY.md',       # how to report security issues to the framework maintainers
   'docs',              # Jekyll site source (lives at kostiantyn-matsebora.github.io/ginee)
   'migrations',        # D42 — migrations are upstream-only; fetched on demand by /ginee-update
-  'core/MIGRATIONS'    # D42 — legacy path on pre-D42 adopter installs; no-op once cleared
+  'core/MIGRATIONS',   # D42 — legacy path on pre-D42 adopter installs; no-op once cleared
+  'scripts',           # framework-dev tooling (context-economy-check / measure-role-context / install-hooks); core/scripts/ kept
+  'tests',             # framework-dev Pester + bats tests
+  'hooks',             # framework-dev git hooks (pre-commit / pre-push for the gate)
+  'PSScriptAnalyzerSettings.psd1'  # framework-dev lint config for scripts/ + tests/
 )
 foreach ($p in $pruneRoots) {
   $path = Join-Path $frameworkDir $p

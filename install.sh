@@ -355,8 +355,13 @@ INSTALL_NOTE="$ADAPTER_DIR/install.md"
 #  - install.sh / install.ps1   already-executed installer scripts
 #  - migrations/      upstream-only; fetched on demand by /ginee-update.
 #  - core/MIGRATIONS/ legacy path on pre-cutover adopter installs; no-op once cleared.
+#  - scripts/         framework-dev tooling (context-economy-check, measure-role-context,
+#                     install-hooks); adopters never invoke these. core/scripts/ kept.
+#  - tests/           framework's own Pester + bats tests.
+#  - hooks/           framework-dev git hooks (pre-commit, pre-push for the gate).
+#  - PSScriptAnalyzerSettings.psd1   framework-dev lint config for scripts/ + tests/.
 step "Pruning framework-dev cruft"
-for p in .github .claude .gitignore .dockerignore install.ps1 install.sh PLAN.md CLAUDE.md README.md SECURITY.md docs migrations core/MIGRATIONS; do
+for p in .github .claude .gitignore .dockerignore install.ps1 install.sh PLAN.md CLAUDE.md README.md SECURITY.md docs migrations core/MIGRATIONS scripts tests hooks PSScriptAnalyzerSettings.psd1; do
   # ${FRAMEWORK_DIR:?} guards against an empty/unset var expanding to a / path (SC2115).
   rm -rf "${FRAMEWORK_DIR:?}/$p"
 done
