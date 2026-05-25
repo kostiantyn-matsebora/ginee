@@ -56,14 +56,14 @@ A per-class cap breach is an `ai-engineer` dispatch trigger:
 
 - **Scope** — the breaching file(s); the lossless rule binds (no rule deletion).
 - **Acceptance** — file size at or below cap OR `Optimized-By: ai-engineer` trailer on the commit landing the optimization pass (records that the pass ran; a load-on-demand split or scope reduction is the natural outcome rather than literal byte-reduction).
-- **Path** — same load-on-demand split pattern proven on `core/automatic-mode.md` · `core/protocols/options-protocol.md` · `core/protocols/doc-authoring-protocol.md`.
+- **Path** — same load-on-demand split pattern proven on `core/protocols/automatic-mode.md` · `core/protocols/options-protocol.md` · `core/protocols/doc-authoring-protocol.md`.
 
 ## Decisions affected
 
 - **Per the existing context-economy gates** — extended with a per-class check on top of the existing whole-PR threshold. Same trailer bypass; same hook + workflow wiring.
 - **Per the doc-authoring protocol** — size cap complements shape rules; size is an orthogonal axis. The five mandatory shape-checks remain unchanged; the four mandatory size-cap-pass checks live in `core/protocols/doc-size-caps.md § Mandatory checks before pushing a breaching commit`.
 - **Per the classical-architect role model** — `ai-engineer` charter gains breach-as-dispatch-trigger; SA still owns architecture-doc semantics. The cap covers *shape and load topology*; SA's doc-class ownership is unchanged.
-- **Per the framework's own load-on-demand pattern** — applied at the doc level. The same approach used to split `core/process.md` (D35) and the protocol family (`core/automatic-mode.md` · `options-protocol.md` · etc.) becomes binding for any over-cap doc.
+- **Per the framework's own load-on-demand pattern** — applied at the doc level. The same approach used to split `core/process.md` (D35) and the protocol family (`core/protocols/automatic-mode.md` · `options-protocol.md` · etc.) becomes binding for any over-cap doc.
 
 ## Files updated
 

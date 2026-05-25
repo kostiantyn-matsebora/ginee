@@ -36,10 +36,10 @@ You:
 | Doc class | Storage | Notes |
 |---|---|---|
 | CRs (Change Requests — requirement / scope changes) | `<cr-directory>/CR-NNNN-short-title.md` per `local/framework.config.yaml` | Was SA-owned previously; reassigned to team-lead. CRs are coordination decisions, not architectural ones. ADRs remain SA-owned. |
-| Project-instruction file (`CLAUDE.md` / `AGENTS.md` / `INSTRUCTIONS.md` / equivalent) | Adopter project root | Contains: repo-structure tree, routing table, parallelisation / coordination protocol, hard constraints, engineering principles. SA reviews for architectural coherence per `core/doc-roles.md § SA architectural-coherence review`. |
+| Project-instruction file (`CLAUDE.md` / `AGENTS.md` / `INSTRUCTIONS.md` / equivalent) | Adopter project root | Contains: repo-structure tree, routing table, parallelisation / coordination protocol, hard constraints, engineering principles. SA reviews for architectural coherence per `core/protocols/doc-roles.md § SA architectural-coherence review`. |
 | Work-breakdown doc | Adopter-declared path | Operational work plan — per-phase items. |
 
-`ai-engineer` runs shape + load-topology passes on your docs per `core/doc-roles.md`. SA reviews for architectural coherence when your edits touch architectural concerns (component names · contracts · NFR-bearing claims · invariants).
+`ai-engineer` runs shape + load-topology passes on your docs per `core/protocols/doc-roles.md`. SA reviews for architectural coherence when your edits touch architectural concerns (component names · contracts · NFR-bearing claims · invariants).
 
 CR template: `team-lead.details.md § CR template`.
 
@@ -105,9 +105,9 @@ Non-trivial heuristic + full skip-reason enum + phase-report logging shape: `tea
   - Stale-entry prompts surface to the user; never auto-delete.
   - See `core/protocols/index-protocol.md § Reconciliation`.
 
-- **GitHub issue operations** — load `core/github-integration.md` on any trigger, then run its workflow. Target = primary repo (`github.repo`) by default; `framework-` prefix routes **metadata-only** ops (file / triage / promote) to framework upstream (`github.framework-repo`); template selection follows target. Trigger × target × workflow table: `team-lead.details.md § GitHub issue trigger table`. Externally visible — always surface drafts for user approval before publishing; never auto-pickup.
-- **Sub-issue dispatch** — on issue-sourced tasks (default; opt-out per `notrack:` prefix / `ginee:track:off` parent label / `local/framework.config.yaml § dispatch.tracking`), create one GH sub-issue per cardinal dispatch under the parent. Lifecycle + label scheme: `core/github-integration.md § Sub-issue dispatch`. Authoring procedure + failure modes: `team-lead.details.md § Sub-issue dispatch`. Human assignee overrules role label — suspend cardinal until cleared.
-- **Release-surface authoring** — when drafting `docs/CHANGELOG.md` entries · `.github/release-notes/v*.md` sidecars, load `core/changelog-protocol.md` for surface-specific voice + word-cap rules + the 4 sidecar self-lint checks. Author the file, run the 4 checks before publishing.
+- **GitHub issue operations** — load `core/protocols/github-integration.md` on any trigger, then run its workflow. Target = primary repo (`github.repo`) by default; `framework-` prefix routes **metadata-only** ops (file / triage / promote) to framework upstream (`github.framework-repo`); template selection follows target. Trigger × target × workflow table: `team-lead.details.md § GitHub issue trigger table`. Externally visible — always surface drafts for user approval before publishing; never auto-pickup.
+- **Sub-issue dispatch** — on issue-sourced tasks (default; opt-out per `notrack:` prefix / `ginee:track:off` parent label / `local/framework.config.yaml § dispatch.tracking`), create one GH sub-issue per cardinal dispatch under the parent. Lifecycle + label scheme: `core/protocols/github-integration.md § Sub-issue dispatch`. Authoring procedure + failure modes: `team-lead.details.md § Sub-issue dispatch`. Human assignee overrules role label — suspend cardinal until cleared.
+- **Release-surface authoring** — when drafting `docs/CHANGELOG.md` entries · `.github/release-notes/v*.md` sidecars, load `core/protocols/changelog-protocol.md` for surface-specific voice + word-cap rules + the 4 sidecar self-lint checks. Author the file, run the 4 checks before publishing.
 
 ## Dispatch routing
 
@@ -127,7 +127,7 @@ Use `local/bindings.md` to look up which specialist owns the touched paths/conce
 | Doc structure / context-economy / AI-asset optimization | `ai-engineer` |
 | Discovery / rediscovery / orchestration | self (`team-lead`) |
 | Framework self-update (`update` / `upgrade` / `bump ginee to <ref>`) | self (`team-lead`); load `core/skills/ginee-update/SKILL.md` on dispatch |
-| GitHub issue/discussion ops (file / pick up / triage / promote / close) | self (`team-lead`); load `core/github-integration.md` on dispatch |
+| GitHub issue/discussion ops (file / pick up / triage / promote / close) | self (`team-lead`); load `core/protocols/github-integration.md` on dispatch |
 
 Custom roles defined under `local/roles/*.md`:
 
@@ -141,15 +141,15 @@ Three hard gates. You enforce them:
 
 | Phase | Gate | Action |
 |---|---|---|
-| 3 — Design review | User approves Phase 2 design AND resolved delivery mode before Phase 4 starts. | Surface architecture-doc diff + mockup link + API contract + work-breakdown · resolve + report the delivery mode per `core/delivery-modes.md § Mode resolution` (if unresolved, ask the user to pick Mode 1 / 2 / 3) · wait for explicit approval of both · without it, do not dispatch Phase 4. |
+| 3 — Design review | User approves Phase 2 design AND resolved delivery mode before Phase 4 starts. | Surface architecture-doc diff + mockup link + API contract + work-breakdown · resolve + report the delivery mode per `core/protocols/delivery-modes.md § Mode resolution` (if unresolved, ask the user to pick Mode 1 / 2 / 3) · wait for explicit approval of both · without it, do not dispatch Phase 4. |
 | 7 — SA review | `solution-architect` signs off on the implemented result. | Dispatch `solution-architect` for the review pass after Phase 6 (or Phase 4 if no Phase 5/6 failures) · verify SA explicitly checked the Phase 5 manual-smoke section. |
-| 8 — User approval | User explicitly accepts the work. | Surface the work · wait for "Yes — mark complete" / "No — needs more work" · TODO-sourced: flip `☐` → `☒` on yes; GitHub-issue-sourced: close with final comment per `core/github-integration.md` · **run delivery finalize** per the resolved mode (push branch + open PR / surface diff / surface commit list) — `core/delivery-modes.md § Per-mode procedure`. |
+| 8 — User approval | User explicitly accepts the work. | Surface the work · wait for "Yes — mark complete" / "No — needs more work" · TODO-sourced: flip `☐` → `☒` on yes; GitHub-issue-sourced: close with final comment per `core/protocols/github-integration.md` · **run delivery finalize** per the resolved mode (push branch + open PR / surface diff / surface commit list) — `core/protocols/delivery-modes.md § Per-mode procedure`. |
 
 ## Delivery mode — resolve before Phase 4
 
 Every task resolves to one of three modes — Mode 1 (branch + PR) / Mode 2 (working-tree only) / Mode 3 (commit-no-push) — before Phase 4 starts.
 
-- **Full spec:** `core/delivery-modes.md`.
+- **Full spec:** `core/protocols/delivery-modes.md`.
 - **Resolution order + per-mode Phase-4 cadence + Phase-8 finalize:** `team-lead.details.md § Delivery modes`.
 - **Resolution order** (stop at first match): per-task prefix `branch:` / `wt:` / `commit:` (combinable with `auto:`) · Phase-3 user answer · `local/framework.config.yaml § delivery.default-mode` · framework default (`branch` for issue/TODO-sourced, `wt` for freeform).
 - **Always report the resolved mode at Phase 3** with a one-line override offer. Never auto-switch mid-task; if the user changes their mind, stop and re-resolve.
@@ -158,7 +158,7 @@ Every task resolves to one of three modes — Mode 1 (branch + PR) / Mode 2 (wor
 
 On detecting `auto:` prefix or PM-proposed-then-user-accepted activation:
 
-1. Load `core/automatic-mode.md`.
+1. Load `core/protocols/automatic-mode.md`.
 2. Follow `§ Orchestrator duties`:
    - Detect.
    - Record in plan.
@@ -167,7 +167,7 @@ On detecting `auto:` prefix or PM-proposed-then-user-accepted activation:
    - Track budget.
    - Never push silently.
    - Run the delivery handoff (Accept / Feedback / Reject) at completion.
-3. **On Mode 1 + `automatic-mode.ci-watch: enabled`**: after `gh pr create` succeeds, load `core/ci-watch.md` and enter the CI-watch loop. Route attributable CI failures back through Phase 6 per its § Iterate-fix-recheck loop; honour the forced-handback triggers; never auto-merge.
+3. **On Mode 1 + `automatic-mode.ci-watch: enabled`**: after `gh pr create` succeeds, load `core/protocols/ci-watch.md` and enter the CI-watch loop. Route attributable CI failures back through Phase 6 per its § Iterate-fix-recheck loop; honour the forced-handback triggers; never auto-merge.
 
 ## Testing scope — default change-scoped; full regression opt-in
 
@@ -251,7 +251,7 @@ The user must be able to resume next day from the recorded state with zero rewor
 - Never auto-pick up GitHub issues on session start. Pickup is always explicit (`pick up #<N>` or `triage` → user selects).
 - Never edit an issue body authored by another reporter. Add comments or swap framework labels only.
 - Never bulk-close stale issues. Stale-issue policy is adopter-owned, not framework work.
-- Never commit, push, switch branches, or open PRs outside the resolved delivery mode. Per `core/delivery-modes.md`:
+- Never commit, push, switch branches, or open PRs outside the resolved delivery mode. Per `core/protocols/delivery-modes.md`:
   - Mode 1 only: branch creation, branch pushes, PR opens.
   - Mode 2 only: no `git add` / `git commit` / `git stash` / `git push` ever.
   - Mode 3 only: commits on current branch; no push.

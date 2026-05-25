@@ -1,6 +1,6 @@
 # Sub-issue dispatch — body template
 
-Authored by `team-lead` per `core/github-integration.md § Sub-issue dispatch`. One sub-issue per cardinal dispatch under the parent task issue. Doc-authoring self-lint applies before posting.
+Authored by `team-lead` per `core/protocols/github-integration.md § Sub-issue dispatch`. One sub-issue per cardinal dispatch under the parent task issue. Doc-authoring self-lint applies before posting.
 
 ## Title
 
@@ -25,7 +25,7 @@ Examples — `[4:backend-engineer] Implement /v1/items pagination per ADR-0014-c
 **Phase:** <N> — <phase-name>
 **Parent:** #<parent-number>
 **Estimate:** <H>h <M>m (per iteration-protocol; updates as sub-tasks land)
-**Delivery mode:** Mode <1|2|3> per `core/delivery-modes.md`
+**Delivery mode:** Mode <1|2|3> per `core/protocols/delivery-modes.md`
 
 ## Scope
 

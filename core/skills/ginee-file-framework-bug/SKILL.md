@@ -5,7 +5,7 @@ description: File a bug report against the ginee framework upstream repo (NOT th
 
 # File framework-bug — upstream
 
-Run the file-an-issue workflow per `.agents/ginee/core/github-integration.md § Outbound — file an issue` with target = framework upstream, template = framework-bug-report.
+Run the file-an-issue workflow per `.agents/ginee/core/protocols/github-integration.md § Outbound — file an issue` with target = framework upstream, template = framework-bug-report.
 
 ## Activation
 
@@ -14,7 +14,7 @@ Run the file-an-issue workflow per `.agents/ginee/core/github-integration.md § 
 
 ## Procedure
 
-1. Load `.agents/ginee/core/github-integration.md` and `.agents/ginee/core/templates/issues/framework-bug-report.md`.
+1. Load `.agents/ginee/core/protocols/github-integration.md` and `.agents/ginee/core/templates/issues/framework-bug-report.md`.
 2. Resolve target repo:
    - `local/framework.config.yaml § github.framework-repo` is required.
    - If unset → fail fast: "framework-repo not configured. Set `github.framework-repo: <owner>/ginee` in `local/framework.config.yaml` first." Offer to populate it.

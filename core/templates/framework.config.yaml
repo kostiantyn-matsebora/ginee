@@ -223,7 +223,7 @@ unit-backend:
 
 # --- Automatic mode — post-PR CI watch ---
 # Behaviour after `gh pr create` in Mode 1 + auto mode. Spec:
-# core/ci-watch.md.
+# core/protocols/ci-watch.md.
 #
 # All keys optional — defaults shown. Apply only when auto mode is
 # active AND the resolved delivery mode is Mode 1; otherwise ignored.
@@ -242,7 +242,7 @@ automatic-mode:
 # --- Delivery modes ---
 # Adopter-wide default for how PM lands task results. Per-task prefix
 # (branch: / wt: / commit:) or Phase-3 user answer overrides. Full
-# spec: core/delivery-modes.md.
+# spec: core/protocols/delivery-modes.md.
 #
 # default-mode values:
 #   branch   — Mode 1: feature branch + PR (recommended for multi-dev
@@ -260,7 +260,7 @@ automatic-mode:
 # Ranks ready work in `ginee-triage` by a derived score from
 # `value:high|medium|low` + `complexity:high|medium|low` labels (issues) /
 # `☐ [v:H c:L] …` markers (TODOs). ATAM utility-tree convention; H=3, M=2, L=1.
-# Spec: core/triage-scoring.md.
+# Spec: core/protocols/triage-scoring.md.
 # All keys optional — defaults shown.
 triage:
   # Score formula:
@@ -321,7 +321,7 @@ capability-tools:
 # parent task issue — labelled by role + phase, threading progress comments
 # + cumulative time, closed by the cardinal's phase-report return. Lets
 # cross-session resume reconstruct state from parent + open sub-issues
-# without transcript replay. Full spec: core/github-integration.md § Sub-issue dispatch.
+# without transcript replay. Full spec: core/protocols/github-integration.md § Sub-issue dispatch.
 #
 # Active only on issue-sourced tasks. TODO / freeform fall back to in-context.
 # Resolution (stop at first match):
@@ -342,7 +342,7 @@ dispatch:
 # --- GitHub integration ---
 # Lets team-lead pick up GitHub issues as a task source alongside
 # TODO files + direct instructions, file new issues from user requests,
-# and promote discussions to issues. Full spec: core/github-integration.md.
+# and promote discussions to issues. Full spec: core/protocols/github-integration.md.
 #
 # Two repos:
 #   repo            — primary (this adopter project). Defaults to `git remote get-url origin`.

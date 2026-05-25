@@ -2,19 +2,19 @@
 
 **Load-on-demand at Phase 5 / report-as-done** for any doc-touching task. Default shape rules + mandatory checks live in `core/process.md § Documentation style` (always-loaded); this file carries scope + enforcement + attestation.
 
-Examples gallery: `core/doc-authoring-examples.md` (load on first-time authoring / explicit request).
+Examples gallery: `core/protocols/doc-authoring-examples.md` (load on first-time authoring / explicit request).
 
 ## Scope
 
 | Surface | Authored by |
 |---|---|
-| Architecture doc · ADRs · CRs · READMEs · runbooks · scenarios · API docs | adopter roles per `core/doc-roles.md` |
+| Architecture doc · ADRs · CRs · READMEs · runbooks · scenarios · API docs | adopter roles per `core/protocols/doc-roles.md` |
 | Project-instruction file (`CLAUDE.md` / `AGENTS.md` / equivalent) | `team-lead` |
 | Role definitions (`core/roles/`, `local/roles/`) · framework specs · skills | framework upstream / adopter `local/roles/` |
 | **GitHub issue bodies** authored via `ginee-file-*` skills | `team-lead` (orchestrator drafts; user approves) |
 | **Framework-authored GitHub comments** — Phase-transition · sticky `ginee:score` / `ginee:review-cycle` · audit comments · per-thread review-replies | `team-lead` + specialists per the comment-cadence procedures |
 | **Subagent returns** — every cardinal-dispatch return per `core/templates/phase-report.md` schema | every cardinal role |
-| **Release surfaces** — `docs/CHANGELOG.md` entries · `.github/release-notes/v*.md` sidecars — surface-specific voice + word cap per `core/changelog-protocol.md` | framework maintainers drafting release artefacts |
+| **Release surfaces** — `docs/CHANGELOG.md` entries · `.github/release-notes/v*.md` sidecars — surface-specific voice + word cap per `core/protocols/changelog-protocol.md` | framework maintainers drafting release artefacts |
 
 **The lint covers every section, including Summary.** No section-by-length exemption — a one-sentence Summary still trips the mandatory checks if it packs a comma-separated inventory into a parenthetical.
 
@@ -22,7 +22,7 @@ Examples gallery: `core/doc-authoring-examples.md` (load on first-time authoring
 
 ### Out of scope
 
-- **Reporter-authored issue bodies / comments.** Per `core/github-integration.md § Forbidden actions` — *"Never edit an issue body authored by another reporter."* `ginee-pick-up` MAY surface a polite restructure advisory on pickup, but never auto-rewrites and never edits reporter content.
+- **Reporter-authored issue bodies / comments.** Per `core/protocols/github-integration.md § Forbidden actions` — *"Never edit an issue body authored by another reporter."* `ginee-pick-up` MAY surface a polite restructure advisory on pickup, but never auto-rewrites and never edits reporter content.
 - **Existing adopter docs.** Forward-only — new + edited content follows the protocol; mass-restructure of legacy docs is a separate user-initiated task.
 - **Discussion bodies.** Read-only context; promote-to-issue first.
 - **Style / tone / branding.** This protocol governs **structure**, not voice. Adopter style guides own those.
@@ -74,8 +74,8 @@ Returns are ephemeral (consumed by the orchestrator in-thread, not published), s
 |---|---|
 | Author | Dispatched cardinal drafts the return per `core/templates/phase-report.md` schema. |
 | Self-lint | Role runs the 6 mandatory checks (5 standing + *no narrative preamble*) against the draft **before** returning. Violations → restructure; un-restructurable content → lift into capped `## Notes`. |
-| Violation reaches orchestrator | `team-lead` surfaces a one-line advisory (`"Return missed self-lint: <violation>; consuming anyway"`), consumes the return, never re-dispatches purely for format, never auto-rewrites (analogous to the reporter-content forbidden rule in `core/github-integration.md § Forbidden actions`). |
+| Violation reaches orchestrator | `team-lead` surfaces a one-line advisory (`"Return missed self-lint: <violation>; consuming anyway"`), consumes the return, never re-dispatches purely for format, never auto-rewrites (analogous to the reporter-content forbidden rule in `core/protocols/github-integration.md § Forbidden actions`). |
 | Iteration-protocol intermediate return | Same schema with sections marked `(in-progress)`; `## Stop-state` required; `Status: In-progress`. |
-| Failed dispatch (forced handoff per `core/cross-agent-handoff.md`) | Same schema + required `## Hand-off` section embedding `core/templates/hand-off-note.md`. |
+| Failed dispatch (forced handoff per `core/protocols/cross-agent-handoff.md`) | Same schema + required `## Hand-off` section embedding `core/templates/hand-off-note.md`. |
 
 **No external linter.** LLM self-review against the schema; identical machinery to the adopter-doc enforcement loop. Forward-only — previously returns are not retroactively rewritten.

@@ -60,7 +60,7 @@
 ## Issue linkage
 
 <!--
-  Required when this PR resolves a GitHub-issue-sourced task (per core/github-integration.md).
+  Required when this PR resolves a GitHub-issue-sourced task (per core/protocols/github-integration.md).
   GitHub auto-closes referenced issues on merge when one of: Closes / Fixes / Resolves precedes the #.
   Use Fixes for bug-report issues; Closes for feature-request issues.
   Drop this section when the task originated from a TODO line or direct instruction.
@@ -92,7 +92,7 @@
 - [ ] `frontend-engineer` — client adapts to new shape
 - [ ] `devops-engineer` — env var / secret / endpoint provisioned
 - [ ] `qa-engineer` — fixtures + assertions match new contract
-- [ ] manual smoke against running stack (per `core/cross-domain-bugs.md` Phase 3) — `<one-line result per new flow>`
+- [ ] manual smoke against running stack (per `core/protocols/cross-domain-bugs.md` Phase 3) — `<one-line result per new flow>`
 
 ## Cost impact (when applicable)
 

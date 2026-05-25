@@ -29,7 +29,7 @@
 | **Test plans · scenario docs · QA reports** | `solution-architect` | **`qa-engineer`** |
 | Mockup | mockup-owning role | mockup-owning role (unchanged) |
 
-**`ai-engineer` counterpart generalized.** Was SA ↔ ai-engineer two-role co-ownership; now all-roles ↔ ai-engineer. `core/doc-co-ownership.md` **renamed** to `core/doc-roles.md` + rewritten.
+**`ai-engineer` counterpart generalized.** Was SA ↔ ai-engineer two-role co-ownership; now all-roles ↔ ai-engineer. `core/doc-co-ownership.md` **renamed** to `core/protocols/doc-roles.md` + rewritten.
 
 **Phase hooks added** to `core/process.md`:
 
@@ -57,7 +57,7 @@ The sweep is adopter-initiated (never automatic). Until `rediscover` runs, exist
 
 **Renamed:**
 
-- `core/doc-co-ownership.md` → `core/doc-roles.md`
+- `core/doc-co-ownership.md` → `core/protocols/doc-roles.md`
 
 **Rewritten:**
 
@@ -90,7 +90,7 @@ The sweep is adopter-initiated (never automatic). Until `rediscover` runs, exist
 
 - **No `local/` schema break.** Adopters' existing `local/bindings.md` continues to work; the ownership-table extension is additive.
 - **Existing CRs / project-instruction files / per-tier docs** continue under the new owners on next edit. team-lead picks up where SA left off for CRs; tier engineers pick up READMEs / API docs / etc.
-- **Old `core/doc-co-ownership.md` references** in adopter-authored `local/roles/*.md` → manual update needed to point at `core/doc-roles.md`. Adopters who haven't authored custom roles aren't affected.
+- **Old `core/doc-co-ownership.md` references** in adopter-authored `local/roles/*.md` → manual update needed to point at `core/protocols/doc-roles.md`. Adopters who haven't authored custom roles aren't affected.
 
 ## Rollback
 

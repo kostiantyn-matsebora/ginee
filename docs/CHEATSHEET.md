@@ -153,7 +153,7 @@ SA has **three activities** across the lifecycle:
 | **Review** | Any phase, on engineer-proposed arch changes | APPROVE / REJECT / REQUEST-CHANGES; never edits code |
 | **Governance** | Continuous, scoped to PRs touching SA-owned files | Drift-flag + dispatch back to owning engineer |
 
-**D25 doc-ownership map** (per `core/doc-roles.md`):
+**D25 doc-ownership map** (per `core/protocols/doc-roles.md`):
 
 | Doc class | Owner |
 |---|---|
@@ -246,7 +246,7 @@ Three surfaces, three voices, three caps — applies only to maintainers draftin
 
 **Sidecar self-lint** — 5 checks before publish: word cap · user-value voice · `(D<N>)` tag · no implementation boilerplate · migration link in footer.
 
-**Pattern** — lead with adopter verb (`/ginee-update works again` not `Step 1 no longer requires installer scripts inside .agents/ginee/`). Full spec: [`core/changelog-protocol.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/core/changelog-protocol.md).
+**Pattern** — lead with adopter verb (`/ginee-update works again` not `Step 1 no longer requires installer scripts inside .agents/ginee/`). Full spec: [`core/protocols/changelog-protocol.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/core/protocols/changelog-protocol.md).
 
 ## Blueprint-diff gate (D41)
 
@@ -290,7 +290,7 @@ Options:
 
 **5 mandatory checks before surfacing** — adopt floor present · citations complete (name · version · source · license · fit) · tagging explicit (`adopt` / `build` / `hybrid` — no silent mixing) · empty research documented · fit rationale concrete (not hand-waved). Self-lint runs in-thread; no external linter. **License gating** — framework expresses no opinion; adopters wire policy in `local/`. Inapplicable sub-tasks cite *"axis n/a — <reason>"* and skip.
 
-Full spec: `core/protocols/options-protocol.md`. Example: `core/doc-authoring-examples.md § 11`.
+Full spec: `core/protocols/options-protocol.md`. Example: `core/protocols/doc-authoring-examples.md § 11`.
 
 ## Model tier (D31)
 
@@ -394,15 +394,26 @@ Framework defaults: `branch` for issue / TODO-sourced; `wt` for freeform. Auto-m
 │   ├── process/                # D35 — phase + dispatch files, load-on-demand per role
 │   │   ├── phase-{1..8}-*.md   #   one file per lifecycle phase
 │   │   └── dispatch.md         #   orchestration — skill-runner · parallelism · auto mode
-│   ├── protocols/              # load-on-demand protocol specs
-│   │   ├── iteration-protocol.md         # estimation-first dispatch
+│   ├── protocols/              # load-on-demand protocol specs (D46 — all named workflows here)
+│   │   ├── automatic-mode.md             # D12 auto-mode
+│   │   ├── delivery-modes.md             # D17 branch / wt / commit
+│   │   ├── ci-watch.md                   # D20 post-PR CI watch
+│   │   ├── triage-scoring.md             # D23 value × complexity
 │   │   ├── doc-authoring-protocol.md     # D22 / D26 / D29 enforcement
+│   │   ├── doc-authoring-examples.md     # paired bad/good examples
+│   │   ├── doc-roles.md                  # D25 all-roles authorship
+│   │   ├── doc-size-caps.md              # D44 per-class size caps
 │   │   ├── index-protocol.md             # local/index/ extraction + load triggers
-│   │   └── options-protocol.md           # D30 adopt-vs-build shape
+│   │   ├── index-syntax.md               # .idx DSL grammar
+│   │   ├── iteration-protocol.md         # estimation-first dispatch
+│   │   ├── options-protocol.md           # D30 adopt-vs-build shape
+│   │   ├── blueprint-diff-protocol.md    # D41 visual-SoT diff gate
+│   │   ├── changelog-protocol.md         # D40 release-surface authoring
+│   │   ├── github-integration.md         # issue / PR / label flow
+│   │   ├── cross-agent-handoff.md        # structured hand-off
+│   │   ├── cross-domain-bugs.md          # propose → implement → verify
+│   │   └── post-task-check-in.md         # after every completed request
 │   ├── roles/                  # 7 cardinal role kernels (each declares phase-participation:)
-│   ├── github-integration.md   # issue / PR / label flow
-│   ├── delivery-modes.md       # branch / wt / commit
-│   ├── doc-roles.md            # D25 — all-roles authorship + ai-engineer shape
 │   └── templates/              # bindings, PR description, hand-off note,
 │                               # requirements-register (D25), asr-utility-tree (D25)
 ├── adapters/<client>/          # upstream — per-client renderings (pointer files)

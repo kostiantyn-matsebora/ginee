@@ -95,7 +95,7 @@ Options:
 - build — minimal in-house — see ADR draft.
 ```
 
-Bad / good doc-style examples for option lists: `core/doc-authoring-examples.md § 11`.
+Bad / good doc-style examples for option lists: `core/protocols/doc-authoring-examples.md § 11`.
 
 ## Enforcement
 
@@ -116,7 +116,7 @@ Bad / good doc-style examples for option lists: `core/doc-authoring-examples.md 
 | `core/roles/solution-architect.md` | SA `§ Design § Phase 2` lists adopt-vs-build as a first-class design axis. SA Review on engineer-proposed architectural changes inspects the option list. |
 | GitHub artefacts (issue bodies · framework comments) | Option lists in ginee-authored artefacts follow both the doc-authoring shape rules and the option-shape rules here — both lints run. |
 | `core/templates/phase-report.md` | Option lists in a return land under `## Decisions made` (one-line each, cite) or capped `## Notes` carve-out (≤ 200 words) when longer. No new section. |
-| `core/delivery-modes.md` | Mode selection itself is a Phase 3 question — not an adopt-vs-build choice. Out of scope. |
+| `core/protocols/delivery-modes.md` | Mode selection itself is a Phase 3 question — not an adopt-vs-build choice. Out of scope. |
 
 ## Reporting
 

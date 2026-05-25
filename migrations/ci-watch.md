@@ -6,7 +6,7 @@
 
 ## What changed
 
-Automatic mode + Mode 1 no longer exits at `gh pr create`. With `automatic-mode.ci-watch: enabled` (the framework default), `team-lead` enters a CI-watch state per `core/ci-watch.md` and runs an iterate-fix-recheck loop on attributable failures until all required checks are green or a forced-handback trigger fires.
+Automatic mode + Mode 1 no longer exits at `gh pr create`. With `automatic-mode.ci-watch: enabled` (the framework default), `team-lead` enters a CI-watch state per `core/protocols/ci-watch.md` and runs an iterate-fix-recheck loop on attributable failures until all required checks are green or a forced-handback trigger fires.
 
 | Aspect | Behaviour |
 |---|---|
@@ -20,10 +20,10 @@ Automatic mode + Mode 1 no longer exits at `gh pr create`. With `automatic-mode.
 
 ## Modified
 
-- `core/ci-watch.md` (new) — full spec: activation, policies, watch loop, classification, iterate-fix-recheck, forced-handback, exit-clean, config-key reference.
-- `core/automatic-mode.md` — § Delivery handoff Accept row + § Orchestrator-duties Accept step reference the new spec for Mode 1 + `ci-watch: enabled`.
-- `core/delivery-modes.md` — § Mode 1 Phase-8 finalize gains a step 5 ("enter CI-watch"); § Auto-mode integration table reflects the same.
-- `core/github-integration.md` — § PR linkage describes the post-create watch and the three permitted PR-comment surfaces.
+- `core/protocols/ci-watch.md` (new) — full spec: activation, policies, watch loop, classification, iterate-fix-recheck, forced-handback, exit-clean, config-key reference.
+- `core/protocols/automatic-mode.md` — § Delivery handoff Accept row + § Orchestrator-duties Accept step reference the new spec for Mode 1 + `ci-watch: enabled`.
+- `core/protocols/delivery-modes.md` — § Mode 1 Phase-8 finalize gains a step 5 ("enter CI-watch"); § Auto-mode integration table reflects the same.
+- `core/protocols/github-integration.md` — § PR linkage describes the post-create watch and the three permitted PR-comment surfaces.
 - `core/roles/team-lead.md` — § Automatic mode adds a step 3 for CI-watch.
 - `core/templates/framework.config.yaml` — new `automatic-mode:` block with all `ci-watch-*` knobs.
 - `core/templates/pr-description.md` — optional `## CI status` placeholder section.

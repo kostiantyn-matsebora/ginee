@@ -17,7 +17,7 @@
 
   Excludes (load-on-demand or out-of-scope):
     - core/roles/<role>.details.md (load-on-demand sidecar)
-    - core/protocols/*.md, core/automatic-mode.md, etc. (load-on-demand specs)
+    - core/protocols/*.md, core/protocols/automatic-mode.md, etc. (load-on-demand specs)
     - local/* (per-project state — not framework cost)
     - Citations from role-kernel body (counted only if always-loaded).
 

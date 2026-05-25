@@ -98,7 +98,7 @@ Phase 2 design ready. Delivery mode: branch+PR (per `delivery.default-mode` in f
 2. `gh pr create` (or GitHub MCP / HTTPS) with body from `core/templates/pr-description.md`.
 3. For issue-sourced tasks, PR description includes `Closes #<N>` (or `Fixes #<N>` for bugs).
 4. Report PR URL.
-5. **Automatic mode + `ci-watch: enabled`**: enter the CI-watch state per `core/ci-watch.md`. Interactive mode and `ci-watch: disabled` exit here.
+5. **Automatic mode + `ci-watch: enabled`**: enter the CI-watch state per `core/protocols/ci-watch.md`. Interactive mode and `ci-watch: disabled` exit here.
 
 **Forbidden:**
 
@@ -156,7 +156,7 @@ When auto mode is active, the resolved delivery mode determines what the deliver
 
 | Mode | Delivery-handoff Accept action |
 |---|---|
-| 1 (branch + PR) | Push branch; open PR per `core/templates/pr-description.md`; **enter CI-watch per `core/ci-watch.md`** when `automatic-mode.ci-watch: enabled`. |
+| 1 (branch + PR) | Push branch; open PR per `core/templates/pr-description.md`; **enter CI-watch per `core/protocols/ci-watch.md`** when `automatic-mode.ci-watch: enabled`. |
 | 2 (wt) | No-op — changes already in working tree; user commits + pushes. |
 | 3 (commit-no-push) | No-op — commits already on current branch; user pushes. |
 

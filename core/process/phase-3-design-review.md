@@ -9,7 +9,7 @@
   - Remarks → loop back to Phase 2.
 - **Distinct from.** Phase 8 (closes TODO); TODO-workflow checkpoint (sits before Phase 1).
 - **Acceptance.** Explicit user approval. Without it, Phase 4 does not start.
-- **In automatic mode.** Elided when Phase 2 produces no user-visible behaviour change. Forced back to interactive per `core/automatic-mode.md § Forced-interactive triggers`.
+- **In automatic mode.** Elided when Phase 2 produces no user-visible behaviour change. Forced back to interactive per `core/protocols/automatic-mode.md § Forced-interactive triggers`.
 
 ## Implementation gate
 

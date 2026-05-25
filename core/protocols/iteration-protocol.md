@@ -3,7 +3,7 @@
 **Load-on-demand.** Fetched by orchestrator (or specialist) when dispatched work matches an activation cue:
 
 - Phase 4 / 5 / 6 / 7 dispatch with estimated total scope > 15 min.
-- Doc-roles pass between `ai-engineer` and any authoring role (per `core/doc-roles.md`).
+- Doc-roles pass between `ai-engineer` and any authoring role (per `core/protocols/doc-roles.md`).
 - User gives a timeframe (e.g., "spend 30 min on X", "do as much as you can in an hour") — see § Timeframe-bounded autonomous work.
 
 Default short tasks ( ≤ 15 min, no timeframe ) do not load this file.
@@ -11,7 +11,7 @@ Default short tasks ( ≤ 15 min, no timeframe ) do not load this file.
 ## Scope
 
 - All team work in Phases 4–7 (Implementation, Testing, Bug fixing, SA review) with estimated total scope > 15 min.
-- Doc-roles passes between `ai-engineer` and any authoring role (per `core/doc-roles.md`).
+- Doc-roles passes between `ai-engineer` and any authoring role (per `core/protocols/doc-roles.md`).
 
 **User intervention** bounded to:
 
@@ -28,7 +28,7 @@ Default short tasks ( ≤ 15 min, no timeframe ) do not load this file.
   1. Synthesizes all specialist proposals.
   2. Surfaces total + per-task breakdown to the user when scope warrants.
   3. Waits for approval or redirect before any specialist enters implement.
-- **Applies to** Phase 4, Phase 5, Phase 6, Phase 7, and `ai-engineer` ↔ authoring-role doc-roles passes (per `core/doc-roles.md`).
+- **Applies to** Phase 4, Phase 5, Phase 6, Phase 7, and `ai-engineer` ↔ authoring-role doc-roles passes (per `core/protocols/doc-roles.md`).
 
 ## Sizing
 
@@ -50,7 +50,7 @@ Default short tasks ( ≤ 15 min, no timeframe ) do not load this file.
 
      | Work class | Reviewer |
      |---|---|
-     | Doc semantics (any authoring role) | The doc's authoring role per `core/doc-roles.md § Authorship`. SA reviews for architectural coherence per `§ SA architectural-coherence review`. |
+     | Doc semantics (any authoring role) | The doc's authoring role per `core/protocols/doc-roles.md § Authorship`. SA reviews for architectural coherence per `§ SA architectural-coherence review`. |
      | Phase 4–7 engineering | orchestrator (surfacing to user when scope warrants) |
 3. **Implement.**
    - Specialist executes accepted items.
@@ -70,7 +70,7 @@ Any one of:
 
 ## Conflict resolution
 
-- **Doc semantics** → the doc's authoring role wins per `core/doc-roles.md § Authorship` (SA wins on architectural-coherence concerns).
+- **Doc semantics** → the doc's authoring role wins per `core/protocols/doc-roles.md § Authorship` (SA wins on architectural-coherence concerns).
 - **Implementation craft within a specialist's domain** → domain-owning specialist wins (per `local/bindings.md` → "Project role boundaries").
 - **Product intent** → user wins.
 - **Re-proposal limit.** Specialist may re-propose with new evidence ONCE per item. Second decline is final.

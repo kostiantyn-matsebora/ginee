@@ -150,7 +150,7 @@ You author + edit:
 - **Scenario docs** (the Gherkin-style scenario specs already detailed in § Test case scenarios above).
 - **QA reports** (release-readiness summaries; coverage gaps; regression results).
 
-`ai-engineer` runs shape + load-topology passes per `core/doc-roles.md`. SA reviews for architectural coherence on PRs that touch SA-owned files (NFR-bearing assertions, contract-coverage claims).
+`ai-engineer` runs shape + load-topology passes per `core/protocols/doc-roles.md`. SA reviews for architectural coherence on PRs that touch SA-owned files (NFR-bearing assertions, contract-coverage claims).
 
 ## Proposing architectural changes
 

@@ -30,10 +30,10 @@ Reporter-authored content (your own issue bodies, your own comments) is **unchan
 | `core/process.md § Documentation style` | Artefacts list extended — issue bodies + framework-authored comments |
 | `core/skills/ginee-file-{bug,feature,framework-bug,framework-feature}/SKILL.md` | Added self-lint step before user approval |
 | `core/templates/issues/{bug-report,feature-request,framework-bug-report,framework-feature-request}.md` | D26 shape-rule banner at top |
-| `core/github-integration.md` | Comment-cadence subsections (Inbound pickup · Review-comment ingestion) declare D26 binding |
-| `core/triage-scoring.md` | Cross-reference D26 in `§ Score comment + audit trail` |
+| `core/protocols/github-integration.md` | Comment-cadence subsections (Inbound pickup · Review-comment ingestion) declare D26 binding |
+| `core/protocols/triage-scoring.md` | Cross-reference D26 in `§ Score comment + audit trail` |
 | `core/templates/pr-comment-cadence.md` | Cross-reference D26 |
-| `core/doc-authoring-examples.md` | 3 new bad/good pairs (Issue Summary · Issue body section · Phase-transition comment) |
+| `core/protocols/doc-authoring-examples.md` | 3 new bad/good pairs (Issue Summary · Issue body section · Phase-transition comment) |
 | `CLAUDE.md` · `PLAN.md` | D26 row added |
 
 ## Backward compatibility
@@ -49,7 +49,7 @@ Not recommended. The D22 protocol is the framework's structure-over-prose discip
 
 1. Revert `core/protocols/doc-authoring-protocol.md § Scope` to the pre-D26 version.
 2. Revert the 4 `ginee-file-*` skill self-lint steps.
-3. Revert the 2 github-integration.md comment-cadence D26 declarations.
+3. Revert the 2 `core/protocols/github-integration.md` comment-cadence D26 declarations.
 
 ## Issue reference
 

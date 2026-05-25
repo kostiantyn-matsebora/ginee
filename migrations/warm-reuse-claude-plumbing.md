@@ -38,7 +38,7 @@ Decision authority is unchanged from D28 / D36 — team-lead still decides every
 
 1. **First skill-runner batch** — parse · label / sticky ops · branch ops · `Agent` `run_in_background: true` to spawn team-lead · record team-lead's agent-id · pass parsed task + registry as input.
 2. **team-lead authors plan** — for every dispatch line: `role: <cardinal>` · `mode: fresh-spawn` (first dispatch in task; or any forced-fresh trigger fires) OR `mode: warm-resume` + `agent-id: <id>` (from the registry the skill-runner passed in) · standard dispatch contract.
-3. **User approves the plan** (Phase 3; or elided per `core/automatic-mode.md` in `auto:` mode).
+3. **User approves the plan** (Phase 3; or elided per `core/protocols/automatic-mode.md` in `auto:` mode).
 4. **skill-runner executes verbatim** — for each plan line: `mode: fresh-spawn` → `Agent` with `run_in_background: true` + capture new agent-id into registry · `mode: warm-resume` → `SendMessage` to the named agent-id with the payload + drift advisory.
 5. **skill-runner collects returns + `SendMessage`s team-lead** with returns + updated registry; team-lead synthesises + plans next cycle.
 6. **Repeat** 2–5 until phase complete.

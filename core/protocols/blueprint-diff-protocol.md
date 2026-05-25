@@ -50,7 +50,7 @@
 4. **Surface to team-lead.** Dispatching role returns the diff payload + classification table; team-lead presents to user. **No edits to the visual SoT until classification passes.**
 5. **Gate Phase 4 edits.**
    - All entries `Expected` / `Pre-existing` → edits proceed.
-   - Any entry `Unexpected` → forced-interactive gate per `core/automatic-mode.md § Forced-interactive triggers`; user resolves (approve · re-scope · reject) before edits continue. Auto-mode does **not** elide this gate.
+   - Any entry `Unexpected` → forced-interactive gate per `core/protocols/automatic-mode.md § Forced-interactive triggers`; user resolves (approve · re-scope · reject) before edits continue. Auto-mode does **not** elide this gate.
 
 ## 4 mandatory checks before edits begin
 
@@ -65,7 +65,7 @@ Doc-shape checks from `core/process.md § Documentation style` still apply to su
 
 - **Editing the visual SoT before the protocol completes** — even one-line tweaks. The diff captures the baseline state; pre-diff edits poison the comparison.
 - **Auto-resolving unexpected deltas.** Always surface to user; never silently re-scope.
-- **Silently skipping the protocol on auto-mode.** Auto mode elides routine gates; this one is forced-interactive, same shape as review-comment ingestion (`core/github-integration.md § Review-comment ingestion`).
+- **Silently skipping the protocol on auto-mode.** Auto mode elides routine gates; this one is forced-interactive, same shape as review-comment ingestion (`core/protocols/github-integration.md § Review-comment ingestion`).
 - **Substituting the geometry / mockup-visual harness for the blueprint diff.** Harness runs at Phase 5/6 on edits; this protocol runs at Phase 4 entry on the *baseline*. The adopter incident proves these are complementary, not interchangeable.
 - **Pointing `blueprint-ref` at the working copy.** Defeats the purpose — the reference must be a frozen state (commit · tag · snapshot · external URL).
 
@@ -94,15 +94,15 @@ Blueprint-diff (html-mockup) vs origin/main on docs/mockup.html: 4 expected / 0 
 
 | Surface | Interaction |
 |---|---|
-| `core/automatic-mode.md` | Unexpected-delta gate is forced-interactive — auto-mode does NOT elide it. Same carve-out as review-comment ingestion. |
-| `core/github-integration.md` (issues) | Issue body's expected-change set drives the `Expected` classification. Reporter ambiguity → forced-interactive gate; never silent. |
-| `core/delivery-modes.md` | Mode-independent — protocol runs at Phase 4 entry in all three delivery modes. |
+| `core/protocols/automatic-mode.md` | Unexpected-delta gate is forced-interactive — auto-mode does NOT elide it. Same carve-out as review-comment ingestion. |
+| `core/protocols/github-integration.md` (issues) | Issue body's expected-change set drives the `Expected` classification. Reporter ambiguity → forced-interactive gate; never silent. |
+| `core/protocols/delivery-modes.md` | Mode-independent — protocol runs at Phase 4 entry in all three delivery modes. |
 | `core/protocols/doc-authoring-protocol.md` | Doc-shape rules apply to surrounding return text; the 4-check layer here applies on top of Verification-log entries. |
 | `core/roles/solution-architect.md` | Mockup-owning role (typically `frontend-engineer` per `local/bindings.md § Source-of-truth ownership`) gains the diff-and-surface obligation. <ul><li>Charter addendum: `core/roles/frontend-engineer.md § Mockup ownership`.</li></ul> |
 | `core/templates/phase-report.md` | Verification-log row carries the diff outcome; no new section needed. Full payload optionally lifted to `## Notes` carve-out. |
 | `core/protocols/options-protocol.md` | Diff tooling layer adopts existing tools per type (`git diff` · Figma compare · pixelmatch / odiff); protocol layer is build per the framework's load-on-demand spec pattern. |
 | Warm specialist reuse (`core/process/dispatch.md`) | Warm-resumed specialist re-runs the protocol on each new dispatch — `blueprint-ref` may have advanced since the prior cycle. |
-| Sub-issue dispatch (`core/github-integration.md § Sub-issue dispatch`) | Sub-issue body carries the expected-change set; closing comment's `## Verification log` carries the diff outcome. |
+| Sub-issue dispatch (`core/protocols/github-integration.md § Sub-issue dispatch`) | Sub-issue body carries the expected-change set; closing comment's `## Verification log` carries the diff outcome. |
 
 ## Out of scope
 

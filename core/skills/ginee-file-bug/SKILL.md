@@ -5,7 +5,7 @@ description: File a bug report against the primary GitHub repo (the adopter's ow
 
 # File bug — primary repo
 
-Run the file-an-issue workflow per `.agents/ginee/core/github-integration.md § Outbound — file an issue` with target = primary repo.
+Run the file-an-issue workflow per `.agents/ginee/core/protocols/github-integration.md § Outbound — file an issue` with target = primary repo.
 
 ## Activation
 
@@ -14,7 +14,7 @@ Run the file-an-issue workflow per `.agents/ginee/core/github-integration.md § 
 
 ## Procedure
 
-1. Load `.agents/ginee/core/github-integration.md` and `.agents/ginee/core/templates/issues/bug-report.md`.
+1. Load `.agents/ginee/core/protocols/github-integration.md` and `.agents/ginee/core/templates/issues/bug-report.md`.
 2. Resolve target repo:
    - Override: `local/framework.config.yaml § github.repo`.
    - Else: `git remote get-url origin` (strip `.git`).

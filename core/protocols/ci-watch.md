@@ -10,7 +10,7 @@ Default short tasks (Mode 2 / Mode 3 / `ci-watch: disabled`) do not load this fi
 
 ## Why
 
-Per `core/automatic-mode.md`, auto-mode's invariant is to minimize user intervention. Without this spec, Mode 1 finalize stops at `gh pr create` — CI red after push lands as a fresh human prompt instead of an orchestrator dispatch. CI-watch extends the **single delivery handoff** through to "CI green," running an iterate-fix-recheck loop for attributable failures.
+Per `core/protocols/automatic-mode.md`, auto-mode's invariant is to minimize user intervention. Without this spec, Mode 1 finalize stops at `gh pr create` — CI red after push lands as a fresh human prompt instead of an orchestrator dispatch. CI-watch extends the **single delivery handoff** through to "CI green," running an iterate-fix-recheck loop for attributable failures.
 
 ## Activation
 
@@ -68,7 +68,7 @@ Mixed runs (one attributable + one unattributable) → handback wins — never a
 Triggered when the first watch cycle returns ≥ 1 attributable (or auto-retried-flake-still-failing-but-attributable) failure.
 
 1. **Phase 6 dispatch.** `team-lead` reads the failing run log (`gh run view <id> --log-failed`), routes to the owning specialist per `local/bindings.md § Project role boundaries` based on touched paths + failure category.
-2. **Fix commits** land on the same branch — standard Mode 1 commit cadence per `core/delivery-modes.md § Mode 1`.
+2. **Fix commits** land on the same branch — standard Mode 1 commit cadence per `core/protocols/delivery-modes.md § Mode 1`.
 3. **Push** the new commits — triggers a fresh CI run on the PR.
 4. **Re-enter watch state** at step 1 of § Watch state. `gh pr checks` reports the latest run by design; stale check_run results are ignored.
 5. **Loop terminates** on one of:
@@ -79,7 +79,7 @@ Triggered when the first watch cycle returns ≥ 1 attributable (or auto-retried
 
 ## Forced-handback triggers
 
-Same structural rule as `core/automatic-mode.md § Forced-interactive triggers`, scoped to CI-watch:
+Same structural rule as `core/protocols/automatic-mode.md § Forced-interactive triggers`, scoped to CI-watch:
 
 | Trigger | Action |
 |---|---|
@@ -89,7 +89,7 @@ Same structural rule as `core/automatic-mode.md § Forced-interactive triggers`,
 | `ci-watch-timeout-minutes` exceeded mid-cycle | Post "CI still running after N minutes, handing back" comment; record stoppable-intermediate-state. |
 | `ci-watch-max-fix-cycles` reached (default 3) | Post cumulative fix-cycle log; ask user to direct. |
 | User interrupts at any poll boundary | Record state; exit per `core/protocols/iteration-protocol.md § Stoppable intermediate states`. No orphaned watch threads. |
-| Token-budget / wall-clock thresholds exceed `core/automatic-mode.md § Forced-interactive triggers` ceilings | Inherit existing escalation. |
+| Token-budget / wall-clock thresholds exceed `core/protocols/automatic-mode.md § Forced-interactive triggers` ceilings | Inherit existing escalation. |
 
 On any trigger: `team-lead` halts the watch, surfaces a structured report (last green check / failing check / commits attempted / cycle count), resumes auto mode only on explicit user direction.
 
@@ -137,7 +137,7 @@ All keys optional — framework defaults shown.
 - **Never modify the PR description silently** mid-watch. Optional `## CI status` placeholder in `core/templates/pr-description.md` is updated only on exit-clean or final handback.
 - **Never auto-merge, never auto-approve, never auto-dismiss reviews.** All human decisions.
 - **Never edit the changeset to make a flake pass.** Flakes are surfaced, retried once, then escalated.
-- **Never federate watches across PRs.** One PR per task per `core/delivery-modes.md § Out of scope`.
+- **Never federate watches across PRs.** One PR per task per `core/protocols/delivery-modes.md § Out of scope`.
 
 ## Out of scope
 
@@ -151,9 +151,9 @@ All keys optional — framework defaults shown.
 
 ## References
 
-- `core/automatic-mode.md § Delivery handoff` — Accept action calls into this spec for Mode 1.
-- `core/delivery-modes.md § Mode 1` — finalize procedure references this spec as a post-`gh pr create` step.
-- `core/github-integration.md § PR linkage` — describes the comment surfaces this spec writes to.
+- `core/protocols/automatic-mode.md § Delivery handoff` — Accept action calls into this spec for Mode 1.
+- `core/protocols/delivery-modes.md § Mode 1` — finalize procedure references this spec as a post-`gh pr create` step.
+- `core/protocols/github-integration.md § PR linkage` — describes the comment surfaces this spec writes to.
 - `core/protocols/iteration-protocol.md § Stoppable intermediate states` — interrupt contract.
 - `core/process.md § Phase 6 — Bug fixing` — where attributable failures route.
 - `core/process.md § Executing actions with care` — never-auto-merge invariant.

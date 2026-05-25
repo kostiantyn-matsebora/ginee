@@ -75,7 +75,7 @@ Per-project, the table in `local/bindings.md § Source-of-truth ownership` maps:
 
 Roles **never** read raw `docs/**` "before any work." The index is the only default read surface; full source loads only when verbatim wording matters.
 
-**D25 doc-ownership map** — per [`core/doc-roles.md § Authorship`](https://github.com/kostiantyn-matsebora/ginee/blob/main/core/doc-roles.md):
+**D25 doc-ownership map** — per [`core/protocols/doc-roles.md § Authorship`](https://github.com/kostiantyn-matsebora/ginee/blob/main/core/protocols/doc-roles.md):
 
 | Doc class | Owner |
 |---|---|
@@ -148,7 +148,7 @@ Combine freely with `auto:` · `branch:` / `wt:` / `commit:` · `model:<tier>` �
 
 **Adopter benefit — issue-as-CR.** Pre-D45 `team-lead` drafted a CR for every issue-sourced scope change, even when the issue body already recorded the change. Post-D45, `cr.skip-when-issue-source: true` (new default per issue #121) suppresses the redundant CR; the issue body remains the requirement record; PR `Closes #<N>` preserves traceability.
 
-**Auto-mode interaction** — `prompt-before-create: always` OR `non-trivial` heuristic firing under auto-mode forces interactive pause per `core/automatic-mode.md § Forced-interactive triggers`. The gate is never silently elided.
+**Auto-mode interaction** — `prompt-before-create: always` OR `non-trivial` heuristic firing under auto-mode forces interactive pause per `core/protocols/automatic-mode.md § Forced-interactive triggers`. The gate is never silently elided.
 
 Full spec: [`core/roles/team-lead.md § CR-gate`](https://github.com/kostiantyn-matsebora/ginee/blob/main/core/roles/team-lead.md) · [`core/roles/solution-architect.md § ADR-gate`](https://github.com/kostiantyn-matsebora/ginee/blob/main/core/roles/solution-architect.md) · [`core/process.md § Change governance`](https://github.com/kostiantyn-matsebora/ginee/blob/main/core/process.md). Migration: [`migrations/change-governance-opt-out.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/migrations/change-governance-opt-out.md).
 
@@ -188,7 +188,7 @@ PM resolves one of three delivery modes per task — picked by precedence:
 
 Combinable with `auto:` — `auto: branch: fix the deploy logs spam` is valid.
 
-Full spec: [`core/delivery-modes.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/core/delivery-modes.md).
+Full spec: [`core/protocols/delivery-modes.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/core/protocols/delivery-modes.md).
 
 ## GitHub issues + discussions as a task source
 
@@ -204,7 +204,7 @@ Slash commands work on tier-1 clients (Claude Code, Copilot CLI). Natural-langua
 
 PRs reference the issue with `Fixes #<N>` / `Closes #<N>` — GitHub auto-closes on merge.
 
-Full spec: [`core/github-integration.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/core/github-integration.md).
+Full spec: [`core/protocols/github-integration.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/core/protocols/github-integration.md).
 
 ## Sub-issue dispatch — cross-session traceability + time-tracking (D39)
 
@@ -265,7 +265,7 @@ Full spec: [`migrations/sub-issue-dispatch.md`](https://github.com/kostiantyn-ma
 
 **Manual override** — `@team-lead recompute score #<N>` re-reads current labels (catches manual `gh issue edit` between sessions) and refreshes the sticky.
 
-Pickup is **never** gated on score — score informs order, not eligibility. Full spec: [`core/triage-scoring.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/core/triage-scoring.md).
+Pickup is **never** gated on score — score informs order, not eligibility. Full spec: [`core/protocols/triage-scoring.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/core/protocols/triage-scoring.md).
 
 ## Review-comment ingestion (D24)
 
@@ -281,7 +281,7 @@ Pickup is **never** gated on score — score informs order, not eligibility. Ful
 | 6 | Squash fix patches into one cycle commit + push; post per-thread replies |
 | 7 | Post one sticky cycle summary — `Review cycle N: M remarks addressed (K code, M-K reply). HEAD: <sha>.` |
 
-**Forced-interactive gate** — plan-table approval is non-bypassable; applies even in `auto:` mode per [`core/automatic-mode.md § Forced-interactive triggers`](https://github.com/kostiantyn-matsebora/ginee/blob/main/core/automatic-mode.md). No exception for "trivial" remarks.
+**Forced-interactive gate** — plan-table approval is non-bypassable; applies even in `auto:` mode per [`core/protocols/automatic-mode.md § Forced-interactive triggers`](https://github.com/kostiantyn-matsebora/ginee/blob/main/core/protocols/automatic-mode.md). No exception for "trivial" remarks.
 
 **Lossless coverage** — every plan-table thread MUST end the cycle as `fix` OR `reply`. No silent drops.
 
@@ -289,7 +289,7 @@ Pickup is **never** gated on score — score informs order, not eligibility. Ful
 
 **Explicit invocation only** — no extension of the D20 CI-watch loop; auto-detection of new review comments is out-of-scope.
 
-Full spec: [`core/github-integration.md § Review-comment ingestion`](https://github.com/kostiantyn-matsebora/ginee/blob/main/core/github-integration.md#review-comment-ingestion).
+Full spec: [`core/protocols/github-integration.md § Review-comment ingestion`](https://github.com/kostiantyn-matsebora/ginee/blob/main/core/protocols/github-integration.md#review-comment-ingestion).
 
 ## Doc-authoring protocol (D22 + D26)
 
@@ -330,7 +330,7 @@ When ginee authors markdown — adopter docs (D22) OR ginee-authored GitHub arte
 - Discussion bodies (read-only context per D14).
 - Style / tone / branding (protocol governs **structure** only).
 
-Full spec: [`core/protocols/doc-authoring-protocol.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/core/protocols/doc-authoring-protocol.md). Examples (9 bad/good pairs): [`core/doc-authoring-examples.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/core/doc-authoring-examples.md).
+Full spec: [`core/protocols/doc-authoring-protocol.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/core/protocols/doc-authoring-protocol.md). Examples (9 bad/good pairs): [`core/protocols/doc-authoring-examples.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/core/protocols/doc-authoring-examples.md).
 
 ## Changelog + release-notes protocol (D40)
 
@@ -356,7 +356,7 @@ Extends the doc-authoring scope to the three release-surface files. Closes a rec
 
 Adopter impact — **none** (framework-internal authoring rule; affects ginee maintainers writing release artefacts, not adopters).
 
-Full spec: [`core/changelog-protocol.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/core/changelog-protocol.md) + [`migrations/changelog-protocol.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/migrations/changelog-protocol.md).
+Full spec: [`core/protocols/changelog-protocol.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/core/protocols/changelog-protocol.md) + [`migrations/changelog-protocol.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/migrations/changelog-protocol.md).
 
 ## Blueprint-diff gate for visual source-of-truth (D41)
 
@@ -400,7 +400,7 @@ Every cardinal-dispatch return is **schema-bound** per `core/templates/phase-rep
 | `## Open issues` | required | Bullets — `<issue> — <owner>` |
 | `## Next dispatch needed` | required | One-liner — `<role> · <surface> · <reason>` |
 | `## Source reads (this dispatch)` | required (else `(none)`) | Table — `Path` · `Justification` · `Index entry consulted` |
-| `## Hand-off` | conditional — forced handoff per `core/cross-agent-handoff.md` | `core/templates/hand-off-note.md` shape |
+| `## Hand-off` | conditional — forced handoff per `core/protocols/cross-agent-handoff.md` | `core/templates/hand-off-note.md` shape |
 | `## Stop-state` | conditional — `Status: In-progress` | Done / In-progress / Not-started bullets |
 | `## Notes` | **optional** — narrative escape hatch | Free prose · ≤ 200 words · ≤ 5-line code-snippet carve-out |
 
@@ -412,7 +412,7 @@ Every cardinal-dispatch return is **schema-bound** per `core/templates/phase-rep
 
 **Index-first read order.** Cardinals consult `local/index/` summaries + role-kernel `Source of truth § always` rows before any raw source read; raw reads are fallback when an index entry's anchor points at a fragment needed verbatim OR the role authors new content in that source. Every raw read records a one-line justification in `## Source reads (this dispatch)`. Full bedrock rule: [`core/protocols/index-protocol.md § Read order`](https://github.com/kostiantyn-matsebora/ginee/blob/main/core/protocols/index-protocol.md).
 
-Full schema: [`core/templates/phase-report.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/core/templates/phase-report.md). Bad/good example: [`core/doc-authoring-examples.md § 10`](https://github.com/kostiantyn-matsebora/ginee/blob/main/core/doc-authoring-examples.md). Migration: [`migrations/strict-subagent-return-schema.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/migrations/strict-subagent-return-schema.md).
+Full schema: [`core/templates/phase-report.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/core/templates/phase-report.md). Bad/good example: [`core/protocols/doc-authoring-examples.md § 10`](https://github.com/kostiantyn-matsebora/ginee/blob/main/core/protocols/doc-authoring-examples.md). Migration: [`migrations/strict-subagent-return-schema.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/migrations/strict-subagent-return-schema.md).
 
 ## Adopt-vs-build option lists (D30)
 
@@ -435,7 +435,7 @@ Every Phase 2 design proposal **and** every iteration-protocol Propose step (Pha
 
 **Enforcement.** LLM self-review before surfacing the proposal. No external linter. Orchestrator surfaces a one-line advisory on violations but never auto-rewrites (analogous to D29).
 
-Full spec: [`core/protocols/options-protocol.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/core/protocols/options-protocol.md). Bad/good example: [`core/doc-authoring-examples.md § 11`](https://github.com/kostiantyn-matsebora/ginee/blob/main/core/doc-authoring-examples.md). Migration: [`migrations/adopt-existing-solution.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/migrations/adopt-existing-solution.md).
+Full spec: [`core/protocols/options-protocol.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/core/protocols/options-protocol.md). Bad/good example: [`core/protocols/doc-authoring-examples.md § 11`](https://github.com/kostiantyn-matsebora/ginee/blob/main/core/protocols/doc-authoring-examples.md). Migration: [`migrations/adopt-existing-solution.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/migrations/adopt-existing-solution.md).
 
 ## Per-role + per-task model tier (D31)
 

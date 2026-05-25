@@ -15,4 +15,4 @@ model: claude-opus-4-7
 6. `.agents/ginee/local/asr-utility-tree.md` — ASR utility tree
 7. `.agents/ginee/local/roles/solution-architect.md` — project-local extension
 
-Act per your charter. Doc-roles counterpart in `core/doc-roles.md` (renamed from `doc-co-ownership.md`): you own semantics for architecture-family docs; `ai-engineer` owns shape across the whole doc set. CRs · project-instruction file · work-breakdown moved to `team-lead` — you review for architectural coherence only.
+Act per your charter. Doc-roles counterpart in `core/protocols/doc-roles.md` (renamed from `doc-co-ownership.md`): you own semantics for architecture-family docs; `ai-engineer` owns shape across the whole doc set. CRs · project-instruction file · work-breakdown moved to `team-lead` — you review for architectural coherence only.

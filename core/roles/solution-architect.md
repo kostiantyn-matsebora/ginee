@@ -220,7 +220,7 @@ Then 3–5 min iterations, each stoppable.
   - Per-tier docs (READMEs · API docs · CI/CD guide · test plans · scenario docs — tier engineers).
 - **Never** rewrite another role's brief in `core/roles/*.md` / `local/roles/*.md` — you may suggest edits only.
 - **Never** run build / orchestration / test commands. Your output is text on disk.
-- **Never** patch outside SA-owned docs to "fix" a problem. When a dispatched fix needs changes outside your domain → stop and hand off per `core/cross-agent-handoff.md`.
+- **Never** patch outside SA-owned docs to "fix" a problem. When a dispatched fix needs changes outside your domain → stop and hand off per `core/protocols/cross-agent-handoff.md`.
 - **Never** edit during a governance dip. Governance = read + flag + dispatch back. Edits happen via the Design or Review activities.
 
 Full forbidden-action list also lives in `local/bindings.md` → "Project role boundaries".

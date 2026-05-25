@@ -25,11 +25,11 @@ User asks "pick up X" / "work on X" / "start on X" / "begin X" where X is one of
 
 ### Step 2 — per source
 
-**GitHub issue** — per `.agents/ginee/core/github-integration.md § Inbound — pick up an issue`:
+**GitHub issue** — per `.agents/ginee/core/protocols/github-integration.md § Inbound — pick up an issue`:
 
 1. Fetch + parse the issue.
 2. Validate `OPEN` state + `ready-label`.
-3. **Scoring labels + sticky comment** per `.agents/ginee/core/triage-scoring.md § Score comment + audit trail`:
+3. **Scoring labels + sticky comment** per `.agents/ginee/core/protocols/triage-scoring.md § Score comment + audit trail`:
    - Missing `value:*` → ask user (H / M / L); add `value:high|medium|low` label; post `<!-- ginee:value-prompt -->` audit comment.
    - Missing `complexity:*` → dispatch `solution-architect` for H / M / L estimate; post `<!-- ginee:complexity-estimate by=solution-architect value=H at=<ISO> -->` audit comment + add `complexity:high|medium|low` label.
    - Post / update the sticky `<!-- ginee:score v=1 -->` comment (one per issue; find via marker; never duplicate). `Reasoning` column populated only for ginee-set rows.
@@ -40,7 +40,7 @@ User asks "pick up X" / "work on X" / "start on X" / "begin X" where X is one of
 
 **TODO line** — per `.agents/ginee/core/process.md § Task model § TODO file rules`:
 
-1. Read the TODO line at the cited path + line; parse optional `[v:N c:M]` marker per `.agents/ginee/core/triage-scoring.md`.
+1. Read the TODO line at the cited path + line; parse optional `[v:N c:M]` marker per `.agents/ginee/core/protocols/triage-scoring.md`.
 2. Confirm with the user this is the intended task.
 3. Run Phase 1–8.
 4. On Phase 8 acceptance, flip `☐` → `☒` on the source line.
@@ -76,4 +76,4 @@ team-lead runs the full lifecycle per `.agents/ginee/core/roles/team-lead.md` + 
 - TODO item: never auto-add new TODO lines (`§ TODO file rules` — never auto-generated, never auto-extended).
 - Never silently close out — Phase 8 acceptance is always surfaced.
 - Never run the framework-upstream variant from an adopter project — addressing a framework issue requires working in the framework repo (where origin = framework; plain `pick up #<N>` works).
-- **Skill-runner forbiddens.** After Step 3 hand-off the skill-runner must not draft plans · synthesize parallel returns · answer routing/governance questions by reading project files · propose default-selection options · re-dispatch specialists in the main thread · **set, recommend, or carry a tracking-mode posture in the hand-off payload — the four-tier resolution chain (`core/github-integration.md § Sub-issue dispatch`) is closed and re-derived by team-lead on every parent dispatch**. Every such decision dispatches `@team-lead`. Full boundary: `.agents/ginee/core/process/dispatch.md § Skill-runner — surface boundary`.
+- **Skill-runner forbiddens.** After Step 3 hand-off the skill-runner must not draft plans · synthesize parallel returns · answer routing/governance questions by reading project files · propose default-selection options · re-dispatch specialists in the main thread · **set, recommend, or carry a tracking-mode posture in the hand-off payload — the four-tier resolution chain (`core/protocols/github-integration.md § Sub-issue dispatch`) is closed and re-derived by team-lead on every parent dispatch**. Every such decision dispatches `@team-lead`. Full boundary: `.agents/ginee/core/process/dispatch.md § Skill-runner — surface boundary`.

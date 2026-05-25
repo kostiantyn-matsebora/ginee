@@ -241,7 +241,7 @@ Before dispatching a specialist whose task may consume any indexed source doc, v
 
 ## GitHub issue operations
 
-Full procedures + tool-surface details + label scheme + state mapping + forbidden actions: **`core/github-integration.md`**. Kernel routing summary lives in `team-lead.md § Dispatch routing` and `§ GitHub issue operations`.
+Full procedures + tool-surface details + label scheme + state mapping + forbidden actions: **`core/protocols/github-integration.md`**. Kernel routing summary lives in `team-lead.md § Dispatch routing` and `§ GitHub issue operations`.
 
 Repo discovery — origin inference first, `local/framework.config.yaml § github.repo` overrides. Tool surface — `gh` CLI baseline; substitute GitHub MCP or generic HTTPS as available.
 
@@ -253,23 +253,23 @@ Moved from `team-lead.md § GitHub issue operations` for context-economy. Kernel
 |---|---|---|
 | `@team-lead file bug <…>` / `file feature <…>` | primary | Draft via `core/templates/issues/bug-report.md` / `feature-request.md`; surface for approval; `gh issue create` with `ready-label`. |
 | `@team-lead file framework-bug <…>` / `file framework-feature <…>` | framework upstream | Same flow with `core/templates/issues/framework-bug-report.md` / `framework-feature-request.md`. Fail fast if `github.framework-repo` unset. |
-| `@team-lead pick up #<N>` | primary | Fetch + parse + swap `ready` → `in-progress`; **on missing `value:*` → ask user (H/M/L); on missing `complexity:*` → dispatch `solution-architect` for H/M/L estimate; post sticky `<!-- ginee:score v=1 -->` comment + audit trail** per `core/triage-scoring.md`; run Phase 1–8; comment at transitions; close on Phase 8 acceptance. No `framework-` variant — addressing a framework issue requires working in the framework repo (where origin = framework, so plain `pick up #<N>` applies). |
-| `@team-lead triage` / `triage framework` | primary / framework | `gh issue list --label <ready-label> --state open`; surface as table with `v` / `c` / `Score` columns; sort by `Score DESC, Age DESC` per `core/triage-scoring.md`; propose pickup order; **never pick on your own**. |
-| `@team-lead recompute score #<N>` | primary | Re-read current labels (catches manual `gh issue edit` between sessions); update the sticky `<!-- ginee:score v=1 -->` comment in place; post `<!-- ginee:score-recompute -->` audit comment with reason + delta. Per `core/triage-scoring.md § Score comment + audit trail`. |
+| `@team-lead pick up #<N>` | primary | Fetch + parse + swap `ready` → `in-progress`; **on missing `value:*` → ask user (H/M/L); on missing `complexity:*` → dispatch `solution-architect` for H/M/L estimate; post sticky `<!-- ginee:score v=1 -->` comment + audit trail** per `core/protocols/triage-scoring.md`; run Phase 1–8; comment at transitions; close on Phase 8 acceptance. No `framework-` variant — addressing a framework issue requires working in the framework repo (where origin = framework, so plain `pick up #<N>` applies). |
+| `@team-lead triage` / `triage framework` | primary / framework | `gh issue list --label <ready-label> --state open`; surface as table with `v` / `c` / `Score` columns; sort by `Score DESC, Age DESC` per `core/protocols/triage-scoring.md`; propose pickup order; **never pick on your own**. |
+| `@team-lead recompute score #<N>` | primary | Re-read current labels (catches manual `gh issue edit` between sessions); update the sticky `<!-- ginee:score v=1 -->` comment in place; post `<!-- ginee:score-recompute -->` audit comment with reason + delta. Per `core/protocols/triage-scoring.md § Score comment + audit trail`. |
 | `@team-lead promote discussion #<N>` / `promote discussion framework#<N>` | primary / framework | Fetch discussion; draft an issue citing it; surface for approval; create issue + comment on discussion linking it. |
-| `@team-lead address-review #<PR>` | primary | Fetch PR review-comments + reviews; deduplicate + filter by idempotency markers; build consolidated plan table (routing per `local/bindings.md § Source-of-truth ownership`, fallback `team-lead`); **surface for user approval — forced-interactive even in `auto:` mode**; on accept dispatch specialists in parallel (fix-track or reply-track); squash fixes into one cycle commit + push; post per-thread replies with `<!-- ginee:review-reply r=<thread-id> -->`; post one sticky `<!-- ginee:review-cycle n=<N> -->` summary. Idempotent across re-invocations; lossless coverage rule enforced. No `framework-` variant. Per `core/github-integration.md § Review-comment ingestion` + dispatch contract in `§ Review-comment dispatch` below. |
+| `@team-lead address-review #<PR>` | primary | Fetch PR review-comments + reviews; deduplicate + filter by idempotency markers; build consolidated plan table (routing per `local/bindings.md § Source-of-truth ownership`, fallback `team-lead`); **surface for user approval — forced-interactive even in `auto:` mode**; on accept dispatch specialists in parallel (fix-track or reply-track); squash fixes into one cycle commit + push; post per-thread replies with `<!-- ginee:review-reply r=<thread-id> -->`; post one sticky `<!-- ginee:review-cycle n=<N> -->` summary. Idempotent across re-invocations; lossless coverage rule enforced. No `framework-` variant. Per `core/protocols/github-integration.md § Review-comment ingestion` + dispatch contract in `§ Review-comment dispatch` below. |
 | Phase transition on an issue-sourced task | issue's source repo | Post structured comment (design review / SA review / Phase 8 / stoppable intermediate). |
 
 Quick trigger → spec-section index (legacy reference):
 
 | Trigger | Spec section |
 |---|---|
-| `@team-lead file bug <…>` / `file feature <…>` | `core/github-integration.md § Outbound — file an issue` |
-| `@team-lead pick up #<N>` | `core/github-integration.md § Inbound — pick up an issue` |
-| `@team-lead triage` | `core/github-integration.md § Triage — list ready issues` |
-| `@team-lead promote discussion #<N>` | `core/github-integration.md § Promote — discussion → issue` |
-| `@team-lead address-review #<PR>` | `core/github-integration.md § Review-comment ingestion` + dispatch in § Review-comment dispatch (below) |
-| Phase transition on issue-sourced task | `core/github-integration.md § Inbound — pick up an issue` (Comment cadence table) |
+| `@team-lead file bug <…>` / `file feature <…>` | `core/protocols/github-integration.md § Outbound — file an issue` |
+| `@team-lead pick up #<N>` | `core/protocols/github-integration.md § Inbound — pick up an issue` |
+| `@team-lead triage` | `core/protocols/github-integration.md § Triage — list ready issues` |
+| `@team-lead promote discussion #<N>` | `core/protocols/github-integration.md § Promote — discussion → issue` |
+| `@team-lead address-review #<PR>` | `core/protocols/github-integration.md § Review-comment ingestion` + dispatch in § Review-comment dispatch (below) |
+| Phase transition on issue-sourced task | `core/protocols/github-integration.md § Inbound — pick up an issue` (Comment cadence table) |
 
 ## Testing — full regression offer text
 
@@ -305,7 +305,7 @@ Companion to `team-lead.md § CR-gate`. Kernel carries the 6-branch table; this 
 
 ## CR template
 
-Reassigned from `solution-architect.details.md`. CRs are coordination decisions (requirement / scope changes), not architectural ones. team-lead authors; SA reviews for architectural coherence per `core/doc-roles.md § SA architectural-coherence review`.
+Reassigned from `solution-architect.details.md`. CRs are coordination decisions (requirement / scope changes), not architectural ones. team-lead authors; SA reviews for architectural coherence per `core/protocols/doc-roles.md § SA architectural-coherence review`.
 
 ```markdown
 # CR-NNNN — <short title>
@@ -335,7 +335,7 @@ Numbering: zero-padded four-digit per family (`CR-0001`). Never reused. Supersed
 
 ## Sub-issue dispatch
 
-Lifecycle table + resolution + labels + sticky shape live in `core/github-integration.md § Sub-issue dispatch`. This section covers authoring concerns only.
+Lifecycle table + resolution + labels + sticky shape live in `core/protocols/github-integration.md § Sub-issue dispatch`. This section covers authoring concerns only.
 
 ### Authoring procedure per dispatch
 
@@ -363,7 +363,7 @@ Lifecycle table + resolution + labels + sticky shape live in `core/github-integr
 
 ## Review-comment dispatch
 
-Full procedure: **`core/github-integration.md § Review-comment ingestion`** (ingestion + idempotency + comment shape). Kernel registration: `team-lead.md § GitHub issue operations`. This section covers dispatch-specific concerns only.
+Full procedure: **`core/protocols/github-integration.md § Review-comment ingestion`** (ingestion + idempotency + comment shape). Kernel registration: `team-lead.md § GitHub issue operations`. This section covers dispatch-specific concerns only.
 
 ### File → role routing
 
@@ -395,11 +395,11 @@ Team-lead after specialists return:
 
 ### Auto-mode pause point
 
-Plan-table approval is a **forced-interactive trigger** per `core/automatic-mode.md § Forced-interactive triggers` — push + reply on external PR enters the "destructive / external" set. Build plan → pause → surface → resume on explicit approval → reconcile + sticky. Never auto-approve, regardless of `auto:` or per-remark size.
+Plan-table approval is a **forced-interactive trigger** per `core/protocols/automatic-mode.md § Forced-interactive triggers` — push + reply on external PR enters the "destructive / external" set. Build plan → pause → surface → resume on explicit approval → reconcile + sticky. Never auto-approve, regardless of `auto:` or per-remark size.
 
 ## Delivery modes
 
-Full procedure: **`core/delivery-modes.md`**. Kernel summary lives in `team-lead.md § Delivery mode — resolve before Phase 4`.
+Full procedure: **`core/protocols/delivery-modes.md`**. Kernel summary lives in `team-lead.md § Delivery mode — resolve before Phase 4`.
 
 ### Phase 3 — resolve + report the mode
 

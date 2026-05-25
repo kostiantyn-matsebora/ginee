@@ -75,7 +75,7 @@ Cross-references on mockup changes:
 | Geometric / interaction invariant touched (UX-responsiveness or other harness-encoded invariant) | <ul><li>Run the mockup-visual harness.</li><li>Include PASS/FAIL table in final report.</li><li>**All-green is the definition of done.**</li><li>A failing assertion is not "the test is wrong"; it is the bug.</li></ul> |
 | New mockup surface (new view, layout, or invariant) needs new harness assertion | <ul><li>Flag for `qa-engineer` in final report.</li><li>You do not edit the harness; `qa-engineer` does.</li></ul> |
 
-Strict-domain violation cautionary case (what happens when `solution-architect` edits mockup code directly): `core/cross-domain-bugs.md`. Each domain in its lane.
+Strict-domain violation cautionary case (what happens when `solution-architect` edits mockup code directly): `core/protocols/cross-domain-bugs.md`. Each domain in its lane.
 
 ## Implement the documented UI states exactly
 
@@ -128,7 +128,7 @@ You author + edit:
 - Component docs (props · slots · usage examples).
 - Style guides (project-specific styling rules — supplementing the architecture doc's NFR-bearing constraints, not contradicting them).
 
-`ai-engineer` runs shape + load-topology passes per `core/doc-roles.md`. SA reviews for architectural coherence on PRs that touch SA-owned files.
+`ai-engineer` runs shape + load-topology passes per `core/protocols/doc-roles.md`. SA reviews for architectural coherence on PRs that touch SA-owned files.
 
 ## Proposing architectural changes
 

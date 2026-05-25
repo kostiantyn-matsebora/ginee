@@ -12,7 +12,7 @@
 | `## Open issues` | **required** (else `(none)`) | Bullets — `<issue> — <owner / blocker>` | ≤ 80 chars / bullet |
 | `## Next dispatch needed` | **required** (else `(none)`) | One-liner — `<role> · <surface> · <reason>` | 1 line |
 | `## Source reads (this dispatch)` | **required** (else `(none)`) | Table — `Path` · `Justification` · `Index entry consulted` | 1 row per source read |
-| `## Hand-off` | required **if failed dispatch / cross-domain root cause outside domain** (per `core/cross-agent-handoff.md`) | Embed `core/templates/hand-off-note.md` shape | per template |
+| `## Hand-off` | required **if failed dispatch / cross-domain root cause outside domain** (per `core/protocols/cross-agent-handoff.md`) | Embed `core/templates/hand-off-note.md` shape | per template |
 | `## Stop-state` | required **if `Status: In-progress`** (iteration-protocol stop boundary) | Three-bucket bullets — Done / In-progress / Not-started | per `core/protocols/iteration-protocol.md § Stoppable intermediate states` |
 | `## Time spent` | required **if sub-issue mode is active** — return doubles as sub-issue closing comment | One-liner — `<H>h <M>m perceived effort; <N> progress comments on sub-issue #<M>.` | 1 line |
 | `## Notes` | **optional** — narrative-rationale escape hatch only | Free-form prose | ≤ 200 words |
@@ -45,7 +45,7 @@ Run the 6 checks above against the drafted report. Append, as the **last line**,
 
 - Surface a one-line advisory before consuming (`"Return missed self-lint: <violation>; consuming anyway."`).
 - **Never re-dispatch purely for format.** Absorb the verbose return once; carry the rule forward to the subagent's next dispatch.
-- Never auto-rewrite the subagent's content (analogous to the reporter-content forbidden rule in `core/github-integration.md § Forbidden actions`).
+- Never auto-rewrite the subagent's content (analogous to the reporter-content forbidden rule in `core/protocols/github-integration.md § Forbidden actions`).
 - **Skill-runner forbidden** from "cleaning up" non-compliant returns before passing to team-lead.
 
 ### Format-only re-dispatch — single carve-out
@@ -137,7 +137,7 @@ Empty case: `(none)`. Required-with-empty-case — same shape as `## Hand-off` /
 
 ### `## Hand-off` *(when applicable)*
 
-Per `core/templates/hand-off-note.md`. Required when the dispatch hit a forced-handoff (root cause outside the subagent's domain per `core/cross-agent-handoff.md`).
+Per `core/templates/hand-off-note.md`. Required when the dispatch hit a forced-handoff (root cause outside the subagent's domain per `core/protocols/cross-agent-handoff.md`).
 
 ### `## Stop-state` *(when `Status: In-progress`)*
 
@@ -175,4 +175,4 @@ A return materially above these targets is a self-lint failure; restructure befo
 
 - Surface a one-line advisory before consuming (`"Return missed self-lint: <violation>; consuming anyway."`).
 - **Never re-dispatch purely for format.** The orchestrator absorbs the verbose return once; the subagent's next dispatch carries the rule forward.
-- Never auto-rewrite the subagent's content (analogous to the reporter-content forbidden rule in `core/github-integration.md § Forbidden actions`).
+- Never auto-rewrite the subagent's content (analogous to the reporter-content forbidden rule in `core/protocols/github-integration.md § Forbidden actions`).

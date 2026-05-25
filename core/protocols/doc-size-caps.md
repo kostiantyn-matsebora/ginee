@@ -56,7 +56,7 @@ A per-class cap breach is an `ai-engineer` dispatch trigger per `core/roles/ai-e
 
 - **Scope** — the breaching file(s); the lossless rule binds (no rule deletion).
 - **Acceptance** — file size at or below cap OR `Optimized-By: ai-engineer` trailer on the commit that lands the optimization pass (recording that the pass ran but determined a load-on-demand split / archive / scope-reduction was the correct outcome rather than literal byte-reduction).
-- **Path** — same load-on-demand split pattern proven on `core/automatic-mode.md` · `core/protocols/options-protocol.md` · `core/protocols/doc-authoring-protocol.md` (D30 adopt-existing-solution — framework's own load-on-demand pattern, applied at the doc level).
+- **Path** — same load-on-demand split pattern proven on `core/protocols/automatic-mode.md` · `core/protocols/options-protocol.md` · `core/protocols/doc-authoring-protocol.md` (D30 adopt-existing-solution — framework's own load-on-demand pattern, applied at the doc level).
 
 ## Mandatory checks before pushing a breaching commit
 

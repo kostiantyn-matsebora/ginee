@@ -116,7 +116,7 @@ You author + edit:
 - API docs (request / response shapes · status codes · examples).
 - Service docs (deployment topology notes that aren't IaC · per-service runbooks).
 
-`ai-engineer` runs shape + load-topology passes on your docs per `core/doc-roles.md`. SA reviews for architectural coherence on PRs that touch SA-owned files (architecture-doc invariants, contracts, NFRs).
+`ai-engineer` runs shape + load-topology passes on your docs per `core/protocols/doc-roles.md`. SA reviews for architectural coherence on PRs that touch SA-owned files (architecture-doc invariants, contracts, NFRs).
 
 ## Proposing architectural changes
 

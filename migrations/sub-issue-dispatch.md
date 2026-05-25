@@ -49,7 +49,7 @@ No umbrella issue is auto-filed for TODO/freeform tasks. Adopters wanting tracki
 | `ginee:role:<cardinal>` | `team-lead` · `solution-architect` · `ai-engineer` · `backend-engineer` · `frontend-engineer` · `devops-engineer` · `qa-engineer` | Author-set by team-lead at sub-issue create |
 | `ginee:phase:<N>` | `1` … `8` | Set at sub-issue create; team-lead updates on phase transition |
 | `ginee:track:off` | (presence only) | Set on **parent** to opt-out for that issue's lifetime |
-| `value:high|medium|low` + `complexity:high|medium|low` | per `core/triage-scoring.md` | Inherited verbatim from parent at create |
+| `value:high|medium|low` + `complexity:high|medium|low` | per `core/protocols/triage-scoring.md` | Inherited verbatim from parent at create |
 
 Missing labels → team-lead creates them on first use via `gh label create <name>` (default color), same as D14 + D23.
 

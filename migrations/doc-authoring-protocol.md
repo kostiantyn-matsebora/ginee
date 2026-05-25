@@ -11,7 +11,7 @@
 |---|---|---|---|
 | Binding declaration + shape map + mandatory checks | The working contract — every role consults these when authoring docs. | `core/process.md § Documentation style` | **always-loaded** |
 | Enforcement procedure + attestation format + out-of-scope | How to invoke the discovered lint, what to write in the phase report. | `core/protocols/doc-authoring-protocol.md` | load-on-demand at Phase 5 / report-as-done |
-| Paired bad / good examples — 6 doc classes | Learning material. Useful first time authoring a class; dead weight once internalized. | `core/doc-authoring-examples.md` | load-on-demand on first-time / explicit request |
+| Paired bad / good examples — 6 doc classes | Learning material. Useful first time authoring a class; dead weight once internalized. | `core/protocols/doc-authoring-examples.md` | load-on-demand on first-time / explicit request |
 | Attestation entry | One-line Verification-log line. | `core/templates/phase-report.md`, `core/templates/pr-description.md` | always-loaded with template |
 | Discovery | `team-lead` runs the existing `builtin:commands` + `builtin:conventions` recipes, which now recognise markdown / prose linters. | `core/roles/ai-engineer.details.md § Recipes` | load-on-demand at indexing |
 | Enforcement command | `${commands.lint.docs}` discovered from `package.json § scripts` / `Makefile` / `justfile` / etc. | `local/index/commands.yaml` | load-on-demand at Phase 5 |

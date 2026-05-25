@@ -21,15 +21,15 @@ The canonical specs. These mirror the `core/*.md` files in the [source repo](htt
 |---|---|---|
 | Phased lifecycle, dispatch, iteration | [`core/process.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/core/process.md) | Concepts § Phased task lifecycle |
 | Iteration protocol detail | [`core/protocols/iteration-protocol.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/core/protocols/iteration-protocol.md) | Concepts § Iteration protocol |
-| Automatic mode | [`core/automatic-mode.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/core/automatic-mode.md) | Concepts § Phased task lifecycle (auto mode) |
+| Automatic mode | [`core/protocols/automatic-mode.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/core/protocols/automatic-mode.md) | Concepts § Phased task lifecycle (auto mode) |
 | Index protocol + recipes | [`core/protocols/index-protocol.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/core/protocols/index-protocol.md) | Concepts § Index protocol |
-| `.idx` DSL grammar | [`core/index-syntax.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/core/index-syntax.md) | Index protocol |
-| Doc roles (all-roles authorship + ai-engineer shape — D25) | [`core/doc-roles.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/core/doc-roles.md) | Process spec |
-| Cross-domain bugs | [`core/cross-domain-bugs.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/core/cross-domain-bugs.md) | Process spec |
-| Cross-agent hand-off | [`core/cross-agent-handoff.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/core/cross-agent-handoff.md) | Process spec |
-| Post-task check-in | [`core/post-task-check-in.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/core/post-task-check-in.md) | Process spec |
-| GitHub integration | [`core/github-integration.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/core/github-integration.md) | Concepts § GitHub issues |
-| Delivery modes | [`core/delivery-modes.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/core/delivery-modes.md) | Concepts § Delivery modes |
+| `.idx` DSL grammar | [`core/protocols/index-syntax.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/core/protocols/index-syntax.md) | Index protocol |
+| Doc roles (all-roles authorship + ai-engineer shape — D25) | [`core/protocols/doc-roles.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/core/protocols/doc-roles.md) | Process spec |
+| Cross-domain bugs | [`core/protocols/cross-domain-bugs.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/core/protocols/cross-domain-bugs.md) | Process spec |
+| Cross-agent hand-off | [`core/protocols/cross-agent-handoff.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/core/protocols/cross-agent-handoff.md) | Process spec |
+| Post-task check-in | [`core/protocols/post-task-check-in.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/core/protocols/post-task-check-in.md) | Process spec |
+| GitHub integration | [`core/protocols/github-integration.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/core/protocols/github-integration.md) | Concepts § GitHub issues |
+| Delivery modes | [`core/protocols/delivery-modes.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/core/protocols/delivery-modes.md) | Concepts § Delivery modes |
 | Cardinal role kernels | [`core/roles/*.md`](https://github.com/kostiantyn-matsebora/ginee/tree/main/core/roles) | Concepts § The 7-cardinal team |
 | Specialist roles (opt-in) | [`extras/roles/*.md`](https://github.com/kostiantyn-matsebora/ginee/tree/main/extras/roles) | Concepts § Specialists |
 | Templates (bindings, PR, hand-off, ...) | [`core/templates/*.md`](https://github.com/kostiantyn-matsebora/ginee/tree/main/core/templates) | Contributing |

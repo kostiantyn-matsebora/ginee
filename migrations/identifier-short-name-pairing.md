@@ -77,7 +77,7 @@ Same machinery as D22 / D26 / D29 — LLM self-review at draft time. No external
 | `core/templates/issues/framework-bug-report.md § Locked decisions referenced` | Banner + placeholder updated to slug-glued. |
 | `core/templates/issues/framework-feature-request.md § Locked-decision impact` | Banner + example list updated to slug-glued. |
 | `core/roles/{team-lead,solution-architect,ai-engineer,backend-engineer,frontend-engineer,devops-engineer,qa-engineer}.md § Reporting` | One-line addendum — `; taxonomy citations slug-glued (D34).` |
-| `core/doc-authoring-examples.md § 12` | NEW bad/good pair — Phase-7 sign-off with bare IDs → slug-glued. |
+| `core/protocols/doc-authoring-examples.md § 12` | NEW bad/good pair — Phase-7 sign-off with bare IDs → slug-glued. |
 | `CLAUDE.md` · `PLAN.md` | D34 row in locked-decisions table. |
 | `docs/CHANGELOG.md` | D34 entry under Unreleased. |
 | `migrations/identifier-short-name-pairing.md` | This file (NEW). |
@@ -106,7 +106,7 @@ Not recommended — D34 is purely additive and improves reader signal-to-noise. 
 4. Revert `core/templates/pr-description.md § Cites` table to bare-ID form.
 5. Revert the 2 framework issue templates' decision-citation sections.
 6. Remove the `; taxonomy citations slug-glued (D34).` clause from the 7 cardinal `## Reporting` sections.
-7. Remove `§ 12` from `core/doc-authoring-examples.md`.
+7. Remove `§ 12` from `core/protocols/doc-authoring-examples.md`.
 
 Outputs return to bare-ID form; the reader context-switch cost returns.
 

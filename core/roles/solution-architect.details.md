@@ -2,7 +2,7 @@
 
 Companion to `core/roles/solution-architect.md`. Elaborations only; kernel rules are binding.
 
-**Note:** CR template moved to `team-lead.details.md § CR template` — CRs are coordination decisions, not architectural ones. SA reviews CRs for architectural coherence per `core/doc-roles.md § SA architectural-coherence review` but does NOT author them.
+**Note:** CR template moved to `team-lead.details.md § CR template` — CRs are coordination decisions, not architectural ones. SA reviews CRs for architectural coherence per `core/protocols/doc-roles.md § SA architectural-coherence review` but does NOT author them.
 
 ## Doc-ownership redistribution table
 

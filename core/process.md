@@ -104,13 +104,13 @@ Bindings may NOT override generic process.
 5. Cross-references cite anchors (`§Name`, `#anchor`); never restate content. Cite rules by file path + section (e.g. `core/process.md § Reporting`), not by opaque identifier.
 
 **Enforcement procedure** (lint command, attestation format, no-tool fallback): `core/protocols/doc-authoring-protocol.md` — load at Phase 5 / report-as-done.
-**Paired bad-vs-good examples** (6 doc classes): `core/doc-authoring-examples.md` — load on first-time authoring or explicit request.
+**Paired bad-vs-good examples** (6 doc classes): `core/protocols/doc-authoring-examples.md` — load on first-time authoring or explicit request.
 
 ## Reporting — schema-bound
 
 **Every cardinal-dispatch return is schema-bound** per `core/templates/phase-report.md`. Same machinery as the doc-authoring protocol (`core/protocols/doc-authoring-protocol.md`), scoped to the subagent-return surface.
 
-- **Mandatory sections** — `## Files touched` · `## Decisions made` · `## Verification log` · `## Open issues` · `## Next dispatch needed`. Empty case: `(none)`. `## Hand-off` required on forced-handoff per `core/cross-agent-handoff.md`. `## Stop-state` required when `Status: In-progress`.
+- **Mandatory sections** — `## Files touched` · `## Decisions made` · `## Verification log` · `## Open issues` · `## Next dispatch needed`. Empty case: `(none)`. `## Hand-off` required on forced-handoff per `core/protocols/cross-agent-handoff.md`. `## Stop-state` required when `Status: In-progress`.
 - **Optional escape hatch** — `## Notes` for narrative rationale (≤ 200 words). Code-snippet carve-out: ≤ 5 lines, only when the orchestrator needs verbatim text.
 - **Forbidden patterns** — narrative preamble · restated dispatch context · code snippets outside the carve-out · verbose rationale outside `## Notes` · parenthetical comma-soup.
 - **Self-lint at report-as-done** — 5 mandatory checks per `core/protocols/doc-authoring-protocol.md` + "no narrative preamble" (6 total); LLM self-review against the schema before returning. No external linter.
@@ -122,7 +122,7 @@ Full schema (cardinality table · default-shape map · caps · forbidden pattern
 ## Change governance — pre-authorship gating
 
 - CR (requirement / scope change) + ADR (architectural decision) authorship is gated BEFORE drafting; on skip the doc is never drafted.
-- Ownership preserved — `team-lead` owns CRs · `solution-architect` owns ADRs (per `core/doc-roles.md § Authorship`).
+- Ownership preserved — `team-lead` owns CRs · `solution-architect` owns ADRs (per `core/protocols/doc-roles.md § Authorship`).
 
 | Surface | Gate-branch table |
 |---|---|
@@ -147,19 +147,19 @@ Each row gives the spec's kernel summary + full-spec path + load triggers. Defau
 
 - Heavy project docs (architecture · mockup · ADRs · CRs · scenarios + any adopter-specific class) → lightweight summaries under `local/index/`.
 - Roles read the index first; originals only when an entry points to a section needing verbatim consumption.
-- Full spec + extraction recipes + staleness mechanism: **`core/protocols/index-protocol.md`**. `.idx` DSL grammar: **`core/index-syntax.md`**.
+- Full spec + extraction recipes + staleness mechanism: **`core/protocols/index-protocol.md`**. `.idx` DSL grammar: **`core/protocols/index-syntax.md`**.
 - **Load triggers:** `team-lead` enumerates classes during initial discovery or `rediscover` · `team-lead` detects SHA-256 drift in `local/index/manifest.yaml` pre-dispatch · `ai-engineer` dispatched to extract or re-extract · role's "Source of truth" lookup pointed at `local/index/<file>` needs the protocol contract (rare).
 
 #### Team-lead-only specs
 
-Three specs are orchestration-only and live in `core/process/dispatch.md § Team-lead-only load-on-demand specs` (loaded only by `team-lead` and the skill-runner main thread on `ginee-*` skill entry): **GitHub integration — issues + discussions** · **Triage scoring — value × complexity priority** · **Post-task check-in**. Cross-references from specialist outputs continue to resolve at their full-spec paths (`core/github-integration.md` · `core/triage-scoring.md` · `core/post-task-check-in.md`); specialists need not load the kernel summaries.
+Three specs are orchestration-only and live in `core/process/dispatch.md § Team-lead-only load-on-demand specs` (loaded only by `team-lead` and the skill-runner main thread on `ginee-*` skill entry): **GitHub integration — issues + discussions** · **Triage scoring — value × complexity priority** · **Post-task check-in**. Cross-references from specialist outputs continue to resolve at their full-spec paths (`core/protocols/github-integration.md` · `core/protocols/triage-scoring.md` · `core/protocols/post-task-check-in.md`); specialists need not load the kernel summaries.
 
 #### Delivery modes — branch+PR / working-tree / commit-no-push
 
 - Every task resolves to one of three modes: **Mode 1** (feature branch + PR) / **Mode 2** (working-tree only) / **Mode 3** (commit-no-push).
 - Picked via per-task prefix (`branch:` / `wt:` / `commit:`), Phase-3 user answer, or `local/framework.config.yaml § delivery.default-mode`.
 - Resolved before Phase 4; honoured through Phase 8 finalize.
-- Full spec (precedence · per-mode procedure · auto-mode integration · forbidden actions): **`core/delivery-modes.md`**.
+- Full spec (precedence · per-mode procedure · auto-mode integration · forbidden actions): **`core/protocols/delivery-modes.md`**.
 - **Load triggers:** `team-lead` about to dispatch a task needs to resolve / propose the mode · specialist enters Phase 4 needs commit cadence · `team-lead` at Phase 8 finalize · auto-mode delivery-handoff Accept action fires.
 
 #### Strict-domain rule — no specialist works outside its domain
@@ -171,27 +171,27 @@ Three specs are orchestration-only and live in `core/process/dispatch.md § Team
 
 #### Doc roles — all-roles authorship + ai-engineer shape
 
-- **Ownership split.** Authoring role owns documentation **semantics** per `core/doc-roles.md § Authorship` — authoring role differs by doc class (SA · team-lead · backend-engineer · frontend-engineer · devops-engineer · qa-engineer · mockup-owning role). `ai-engineer` owns **shape + load topology** across the whole doc set. Neither overrides the other's invariants.
+- **Ownership split.** Authoring role owns documentation **semantics** per `core/protocols/doc-roles.md § Authorship` — authoring role differs by doc class (SA · team-lead · backend-engineer · frontend-engineer · devops-engineer · qa-engineer · mockup-owning role). `ai-engineer` owns **shape + load topology** across the whole doc set. Neither overrides the other's invariants.
 - **Runs under** `core/protocols/iteration-protocol.md` below.
-- Full definition (authorship table · routing table · lossless edit rule · SA architectural-coherence review · dispatch triggers): **`core/doc-roles.md`**.
+- Full definition (authorship table · routing table · lossless edit rule · SA architectural-coherence review · dispatch triggers): **`core/protocols/doc-roles.md`**.
 - **Load triggers** (when to fetch the full file): new role-owned doc landing · doc grows past size threshold · cross-reference repair after a split/move · structure dispute (author vs. ai-engineer).
 
 #### Iteration protocol — propose → review → implement
 
 - Generalized loop for non-trivial work.
 - Full definition (scope · estimation-first dispatch · sizing · each-iteration steps · loop termination · conflict resolution · stoppable intermediate states · timeframe-bounded autonomous work): **`core/protocols/iteration-protocol.md`**.
-- **Load triggers** — orchestrator (or specialist) fetches when any holds: Phase 4 / 5 / 6 / 7 dispatch with estimated total scope > 15 min · doc-roles pass between `ai-engineer` and any authoring role (per `core/doc-roles.md`) · user gives a timeframe (e.g., "spend 30 min on X"). Default short tasks ( ≤ 15 min, no timeframe ) do not load this file.
+- **Load triggers** — orchestrator (or specialist) fetches when any holds: Phase 4 / 5 / 6 / 7 dispatch with estimated total scope > 15 min · doc-roles pass between `ai-engineer` and any authoring role (per `core/protocols/doc-roles.md`) · user gives a timeframe (e.g., "spend 30 min on X"). Default short tasks ( ≤ 15 min, no timeframe ) do not load this file.
 
 #### Cross-domain bugs — integration + compliance cycle
 
 - **Trigger.** A bug spans 2+ domains.
 - **Model.** Four-phase: (1) contract change · (2) parallel domain implementations · (3) integration verification with manual smoke · (4) compliance review.
-- **Full procedure** (manual-smoke checklist + anti-pattern rules): `core/cross-domain-bugs.md`. Load when a cross-domain bug or task is detected.
+- **Full procedure** (manual-smoke checklist + anti-pattern rules): `core/protocols/cross-domain-bugs.md`. Load when a cross-domain bug or task is detected.
 - **Lifecycle mapping:** cycle Phases 1 / 2 / 3 / 4 → lifecycle Phases 2 / 4 / 5–6 / 7. Detailed mapping table in `core/process/dispatch.md § Relation to the cross-domain bugs cycle`.
 
 #### Cross-agent handoff — diagnose ≠ fix
 
 - When a specialist discovers a root cause **outside** their domain: diagnose fully, do NOT fix, hand off to the owning specialist with a structured note.
-- Full procedure (5-step hand-off · orchestrator wiring · doc-update routing): **`core/cross-agent-handoff.md`**.
+- Full procedure (5-step hand-off · orchestrator wiring · doc-update routing): **`core/protocols/cross-agent-handoff.md`**.
 - **Load triggers:** specialist's final report flags a root cause outside their domain · orchestrator detects a hand-off-shaped event and needs the procedure. Default in-domain tasks do not load this file.
 

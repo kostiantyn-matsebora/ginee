@@ -14,13 +14,13 @@
 
 New artefacts:
 
-- `core/triage-scoring.md` — spec (axes, formula, label provisioning, auto-estimate hook, TODO syntax, sort contract).
+- `core/protocols/triage-scoring.md` — spec (axes, formula, label provisioning, auto-estimate hook, TODO syntax, sort contract).
 - New `triage:` block in `core/templates/framework.config.yaml`.
 
 Modified:
 
 - `core/process.md § Task model` — TODO marker syntax noted; new spec-section pointer.
-- `core/github-integration.md § Triage` — sort key now score-based; `§ Label scheme` lists scoring labels; pickup adds sticky-comment write.
+- `core/protocols/github-integration.md § Triage` — sort key now score-based; `§ Label scheme` lists scoring labels; pickup adds sticky-comment write.
 - `core/roles/team-lead.md` — pickup adds value-prompt + complexity-auto-estimate + sticky-comment write; new `recompute score #<N>` trigger; triage sorts by score.
 - `core/skills/ginee-triage/SKILL.md` — score column + sort.
 - `core/skills/ginee-pick-up/SKILL.md` — auto-estimate + sticky-comment hook.
@@ -35,7 +35,7 @@ After re-fetching framework files on upgrade:
 1. **(Optional) Provision labels eagerly.** `team-lead` creates missing labels on first triage / pickup. Pre-create to set custom colors:
    ```
    gh label create value:high --color b60205 --description "ginee triage: ATAM importance — high"
-   # ... see core/triage-scoring.md § Labels — first-use provisioning (6 labels total)
+   # ... see core/protocols/triage-scoring.md § Labels — first-use provisioning (6 labels total)
    ```
 2. **(Optional) Override the scoring formula** in `local/framework.config.yaml`:
    ```yaml
@@ -66,7 +66,7 @@ Labels match the existing framework idiom; adopters already use `ginee:ready` / 
 
 ## Tests — spec examples, not a runtime script
 
-The issue's AC ("tests cover score computation + sort order + unscored fallback") is fulfilled by the **worked-sort fixture** in `core/triage-scoring.md § Examples`. No `.ps1` / `.sh` helper ships because:
+The issue's AC ("tests cover score computation + sort order + unscored fallback") is fulfilled by the **worked-sort fixture** in `core/protocols/triage-scoring.md § Examples`. No `.ps1` / `.sh` helper ships because:
 
 - All other ginee skills are LLM-driven markdown specs; no skill ships runtime code.
 - A helper would require pwsh / bash in every adopter environment for what is a one-line ratio.
