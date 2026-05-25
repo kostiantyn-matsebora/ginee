@@ -29,17 +29,17 @@
 
 ## Mandatory checks before report-as-done
 
-Same 5 as `core/process.md § Documentation style § Mandatory checks` **plus**:
+Same 6 as `core/process.md § Documentation style § Mandatory checks` **plus**:
 
-6. **No narrative preamble.** First non-Status line is a `##` section header — never a sentence describing what the subagent did.
+7. **No narrative preamble.** First non-Status line is a `##` section header — never a sentence describing what the subagent did.
 
-Run all 6 against the drafted report **before** returning. Violations → restructure; if a violation genuinely can't be restructured, lift the offending content into `## Notes` (still capped at 200 words).
+Run all 7 against the drafted report **before** returning. Violations → restructure; if a violation genuinely can't be restructured, lift the offending content into `## Notes` (still capped at 200 words).
 
 ## Before-return checklist + mandatory marker
 
-Run the 6 checks above against the drafted report. Append, as the **last line**, the literal attestation marker `<!-- self-lint: pass -->`. Form is fixed; case-sensitive; placement after every section + `(none)` placeholder + `## Notes` if present. Write the marker **after** running the checks — never blindly. Honest-fail: un-restructurable content lifted to `## Notes` still writes the marker (the cap is the legal escape hatch). Marker is not a pass/fail gate (orchestrator consumes on absence) and not a re-dispatch trigger.
+Run the 7 checks above against the drafted report. Append, as the **last line**, the literal attestation marker `<!-- self-lint: pass -->`. Form is fixed; case-sensitive; placement after every section + `(none)` placeholder + `## Notes` if present. Write the marker **after** running the checks — never blindly. Honest-fail: un-restructurable content lifted to `## Notes` still writes the marker (the cap is the legal escape hatch). Marker is not a pass/fail gate (orchestrator consumes on absence) and not a re-dispatch trigger.
 
-**Why a marker.** Without a marker the 6 checks are aspirational — agents can skip them silently and the orchestrator has no structural detection. Marker absence is a single-line detectable signal; same mechanism as the doc-authoring attestation lines in `## Verification log`, scoped to the return envelope.
+**Why a marker.** Without a marker the 7 checks are aspirational — agents can skip them silently and the orchestrator has no structural detection. Marker absence is a single-line detectable signal; same mechanism as the doc-authoring attestation lines in `## Verification log`, scoped to the return envelope.
 
 ## Orchestrator behaviour on non-compliant returns
 
@@ -72,7 +72,7 @@ Append a **single-line** reminder at the end of the next dispatch prompt to the 
 <original dispatch text>
 
 Return format: schema-bound per core/templates/phase-report.md;
-last cycle's return missed self-lint (<violation>) — apply the 6 checks + marker this cycle.
+last cycle's return missed self-lint (<violation>) — apply the 7 checks + marker this cycle.
 ```
 
 ## Section templates
