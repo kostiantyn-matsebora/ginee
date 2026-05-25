@@ -499,7 +499,9 @@ Optimized-By: ai-engineer" *> $null
 
   Context 'Per-class doc-size caps' {
     BeforeAll {
-      function New-SandboxRepoWithDocs {
+      function New-SandboxRepoWithDoc {
+        [System.Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseShouldProcessForStateChangingFunctions', '', Justification = 'Test-only helper.')]
+        [CmdletBinding()]
         param([hashtable]$DocFiles, [string]$ConfigYaml)
         $root = Join-Path ([System.IO.Path]::GetTempPath()) "ginee-ce-caps-$([guid]::NewGuid().Guid)"
         New-Item -ItemType Directory -Force -Path $root | Out-Null
@@ -537,7 +539,7 @@ Optimized-By: ai-engineer" *> $null
 
     It 'flags an oversized ADR against the framework default cap' {
       $oversized = 'x' * 5000
-      $root = New-SandboxRepoWithDocs -DocFiles @{ 'docs/adr/ADR-0001.md' = $oversized }
+      $root = New-SandboxRepoWithDoc -DocFiles @{ 'docs/adr/ADR-0001.md' = $oversized }
       try {
         $r = Invoke-CheckInProc -Root $root -Params @{ BaseRef = 'main'; Json = $true }
         $r.Code | Should -Be 1
@@ -554,7 +556,7 @@ Optimized-By: ai-engineer" *> $null
 
     It 'allows a CR up to the higher default (6144 bytes)' {
       $under = 'x' * 5000
-      $root = New-SandboxRepoWithDocs -DocFiles @{ 'docs/cr/CR-0001.md' = $under }
+      $root = New-SandboxRepoWithDoc -DocFiles @{ 'docs/cr/CR-0001.md' = $under }
       try {
         $r = Invoke-CheckInProc -Root $root -Params @{ BaseRef = 'main'; Json = $true }
         $r.Code | Should -Be 0
@@ -566,7 +568,7 @@ Optimized-By: ai-engineer" *> $null
 
     It 'flags an oversized UI doc against the framework default cap' {
       $oversized = 'x' * 5000
-      $root = New-SandboxRepoWithDocs -DocFiles @{ 'docs/ui/screen-A.md' = $oversized }
+      $root = New-SandboxRepoWithDoc -DocFiles @{ 'docs/ui/screen-A.md' = $oversized }
       try {
         $r = Invoke-CheckInProc -Root $root -Params @{ BaseRef = 'main'; Json = $true }
         $r.Code | Should -Be 1
@@ -585,7 +587,7 @@ doc-size-caps:
     cap-bytes: 8192
 "@
       $oversized = 'x' * 5000  # Over framework default (4096) but under override (8192)
-      $root = New-SandboxRepoWithDocs -DocFiles @{ 'docs/adr/ADR-0001.md' = $oversized } -ConfigYaml $cfg
+      $root = New-SandboxRepoWithDoc -DocFiles @{ 'docs/adr/ADR-0001.md' = $oversized } -ConfigYaml $cfg
       try {
         $r = Invoke-CheckInProc -Root $root -Params @{ BaseRef = 'main'; Json = $true }
         $r.Code | Should -Be 0
@@ -602,7 +604,7 @@ doc-size-caps:
   adr: disabled
 "@
       $oversized = 'x' * 9000
-      $root = New-SandboxRepoWithDocs -DocFiles @{ 'docs/adr/ADR-0001.md' = $oversized } -ConfigYaml $cfg
+      $root = New-SandboxRepoWithDoc -DocFiles @{ 'docs/adr/ADR-0001.md' = $oversized } -ConfigYaml $cfg
       try {
         $r = Invoke-CheckInProc -Root $root -Params @{ BaseRef = 'main'; Json = $true }
         $r.Code | Should -Be 0
@@ -617,7 +619,7 @@ doc-size-caps:
 adr-directory: architecture/decisions/
 "@
       $oversized = 'x' * 5000
-      $root = New-SandboxRepoWithDocs -DocFiles @{ 'architecture/decisions/ADR-001.md' = $oversized } -ConfigYaml $cfg
+      $root = New-SandboxRepoWithDoc -DocFiles @{ 'architecture/decisions/ADR-001.md' = $oversized } -ConfigYaml $cfg
       try {
         $r = Invoke-CheckInProc -Root $root -Params @{ BaseRef = 'main'; Json = $true }
         $r.Code | Should -Be 1
@@ -631,7 +633,7 @@ adr-directory: architecture/decisions/
 
     It 'passes a size-cap breach when Optimized-By trailer is present (range mode)' {
       $oversized = 'x' * 5000
-      $root = New-SandboxRepoWithDocs -DocFiles @{}
+      $root = New-SandboxRepoWithDoc -DocFiles @{}
       try {
         Push-Location $root
         try {
@@ -653,7 +655,7 @@ adr-directory: architecture/decisions/
 
     It 'does not flag .md files outside the configured class directories' {
       $oversized = 'x' * 9000
-      $root = New-SandboxRepoWithDocs -DocFiles @{ 'docs/random-note.md' = $oversized }
+      $root = New-SandboxRepoWithDoc -DocFiles @{ 'docs/random-note.md' = $oversized }
       try {
         $r = Invoke-CheckInProc -Root $root -Params @{ BaseRef = 'main'; Json = $true }
         $r.Code | Should -Be 0

@@ -277,9 +277,9 @@ function Read-DocSizeCapConfig {
     if ($section -eq 'dsc'       -and $line -notmatch '^  ')   { $section = '' }
 
     # Top-level directory keys.
-    if ($line -match '^adr-directory:\s*(\S+)') { $result.Dirs.adr = (Normalize-DirPath $Matches[1]); continue }
-    if ($line -match '^cr-directory:\s*(\S+)')  { $result.Dirs.cr  = (Normalize-DirPath $Matches[1]); continue }
-    if ($line -match '^ui-directory:\s*(\S+)')  { $result.Dirs.ui  = (Normalize-DirPath $Matches[1]); continue }
+    if ($line -match '^adr-directory:\s*(\S+)') { $result.Dirs.adr = (ConvertTo-NormalizedDirPath $Matches[1]); continue }
+    if ($line -match '^cr-directory:\s*(\S+)')  { $result.Dirs.cr  = (ConvertTo-NormalizedDirPath $Matches[1]); continue }
+    if ($line -match '^ui-directory:\s*(\S+)')  { $result.Dirs.ui  = (ConvertTo-NormalizedDirPath $Matches[1]); continue }
 
     # Section entries.
     if ($line -match '^doc-size-caps:\s*$') { $section = 'dsc'; $currentClass = ''; continue }
@@ -305,7 +305,7 @@ function Read-DocSizeCapConfig {
   return $result
 }
 
-function Normalize-DirPath {
+function ConvertTo-NormalizedDirPath {
   param([string]$Path)
   $norm = $Path -replace '\\', '/'
   if ($norm -notmatch '/$') { $norm = "$norm/" }
