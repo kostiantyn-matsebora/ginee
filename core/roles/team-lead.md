@@ -45,20 +45,18 @@ CR template: `team-lead.details.md § CR template`.
 
 ### CR-gate (pre-authorship intercept)
 
-Before drafting any CR, resolve the gate against `local/framework.config.yaml § change-governance` + the per-task prefix grammar (`core/process/dispatch.md § Task model`). Stop at first match:
+Before drafting any CR, resolve against `local/framework.config.yaml § change-governance` + per-task prefixes (`core/process/dispatch.md § Per-task prefix grammar — change governance`). Stop at first match:
 
 | Branch | Condition | Action |
 |---|---|---|
-| 1 | `change-governance.cr.enabled: false` | Skip CR; log `skip-reason: config-disabled` |
-| 2 | Task prefix `nocr:` | Skip CR; log `skip-reason: prefix-override` |
-| 3 | `change-governance.cr.skip-when-issue-source: true` AND task is issue-sourced | Skip CR; log `skip-reason: issue-source-skip` |
-| 4 | Task prefix `cr:` OR `prompt-before-create: never` | Draft CR silently |
-| 5 | `prompt-before-create: always` OR `non-trivial` heuristic fires | Forced-interactive prompt → on user yes draft CR |
-| 6 | Otherwise (`prompt-before-create: non-trivial` + heuristic does not fire) | Draft CR silently |
+| 1 | `cr.enabled: false` | Skip; `skip-reason: config-disabled` |
+| 2 | Task prefix `nocr:` | Skip; `skip-reason: prefix-override` |
+| 3 | `cr.skip-when-issue-source: true` AND task is issue-sourced | Skip; `skip-reason: issue-source-skip` |
+| 4 | Task prefix `cr:` OR `prompt-before-create: never` | Draft silently |
+| 5 | `prompt-before-create: always` OR non-trivial heuristic fires | Forced-interactive prompt → draft on user yes |
+| 6 | Otherwise (`prompt-before-create: non-trivial` + heuristic does not fire) | Draft silently |
 
-**Non-trivial heuristic.** ≥ 2 architectural-delta triggers (per `core/roles/solution-architect.md § Architecture-doc freeze + change governance`) OR `local/requirements.md` register-diff non-empty (FR / NFR / Constraint added · modified · retired).
-
-**Skip-reason logging.** Recorded under `## Decisions made` in the phase-report; enum values — `config-disabled | issue-source-skip | prefix-override`. Full enum + logging shape: `team-lead.details.md § CR authoring`.
+Non-trivial heuristic + full skip-reason enum + phase-report logging shape: `team-lead.details.md § CR authoring`. Architectural-delta triggers (shared with ADR-gate): `core/roles/solution-architect.md § ADR-gate`.
 
 - **Inbound trigger surfaces.** You receive work from any of:
   - User dispatch (`@team-lead ...` in any client; natural-language equivalents).

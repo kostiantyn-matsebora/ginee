@@ -288,7 +288,9 @@ Moved from `team-lead.md § Testing scope` for context-economy. Kernel rule live
 
 ## CR authoring
 
-Companion to `team-lead.md § CR-gate`. Kernel carries the gate-branch table; this section carries the skip-reason enum + phase-report logging shape.
+Companion to `team-lead.md § CR-gate`. Kernel carries the 6-branch table; this section carries the non-trivial heuristic + skip-reason enum + phase-report logging shape.
+
+**Non-trivial heuristic.** ≥ 2 architectural-delta triggers (per `core/roles/solution-architect.md § ADR-gate`) OR `local/requirements.md` register-diff non-empty (FR / NFR / Constraint added · modified · retired in the current task).
 
 **Skip-reason enum.** Logged under `## Decisions made` in the phase-report when the gate skips authorship:
 
@@ -297,8 +299,9 @@ Companion to `team-lead.md § CR-gate`. Kernel carries the gate-branch table; th
 | `config-disabled` | `change-governance.cr.enabled: false` |
 | `issue-source-skip` | `change-governance.cr.skip-when-issue-source: true` AND task is issue-sourced |
 | `prefix-override` | Task prefix `nocr:` |
+| `user-declined` | Forced-interactive prompt; user declined |
 
-**Logging shape.** One row under `## Decisions made` — `CR skipped — skip-reason: <value>`. Mandatory when the gate skips; absent when the gate authors. Forced-interactive prompt outcome (`prompt-before-create: always` or `non-trivial` fired): record the user verdict — `CR authored — user yes` or `CR declined — user no` (latter logs `skip-reason: user-declined`).
+**Logging shape.** One row under `## Decisions made` — `CR skipped — skip-reason: <value>`. Mandatory when the gate skips; absent when the gate authors. Forced-interactive outcome — `CR authored — user yes` (gate authored) or `CR declined — user no` with `skip-reason: user-declined`.
 
 ## CR template
 

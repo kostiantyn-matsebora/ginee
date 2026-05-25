@@ -102,16 +102,14 @@ Phase 1–8 applies to any task. A task originates from one of four sources:
 
 ### Per-task prefix grammar — change governance
 
-CR / ADR authorship can be forced or suppressed at dispatch time via per-task prefixes. Resolved against `local/framework.config.yaml § change-governance` (precedence: prefix > config > default).
+CR / ADR authorship can be forced or suppressed at dispatch time via per-task prefixes. Resolved against `local/framework.config.yaml § change-governance`. Precedence — explicit-force > explicit-skip > config > default.
 
 | Prefix | Effect |
 |---|---|
-| `cr:` | Force CR authorship (overrides any `cr.enabled: false` / `skip-when-issue-source` / `prompt-before-create` config). |
-| `nocr:` | Skip CR authorship (overrides any `cr.enabled: true` + `prompt-before-create: always` config). Logged `skip-reason: prefix-override`. |
-| `adr:` | Force ADR authorship (overrides any `adr.enabled: false` / `require-architectural-delta` / `prompt-before-create` config). |
-| `noadr:` | Skip ADR authorship (overrides any `adr.enabled: true` config). Logged `skip-reason: prefix-override`. |
-
-**Within change-governance prefixes** — explicit-force (`cr:` / `adr:`) outranks explicit-skip (`nocr:` / `noadr:`) when both somehow appear; explicit-skip outranks config defaults.
+| `cr:` | Force CR authorship (overrides `cr.enabled: false` / `skip-when-issue-source` / `prompt-before-create`). |
+| `nocr:` | Skip CR authorship (overrides `cr.enabled: true` + `prompt-before-create: always`); logs `skip-reason: prefix-override`. |
+| `adr:` | Force ADR authorship (overrides `adr.enabled: false` / `require-architectural-delta` / `prompt-before-create`). |
+| `noadr:` | Skip ADR authorship (overrides `adr.enabled: true`); logs `skip-reason: prefix-override`. |
 
 **Combinability.** Combine freely with `auto:` · `branch:` / `wt:` / `commit:` · `model:<tier>` · `notrack:` · `fresh:`. Example: `auto: branch: nocr: bump dotnet runtime` — auto-mode, Mode 1 delivery, skip CR.
 

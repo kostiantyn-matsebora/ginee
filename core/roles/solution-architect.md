@@ -134,18 +134,20 @@ Unchanged in spirit; mechanics applied to the new doc set:
 
 ### ADR-gate (pre-authorship intercept)
 
-Before drafting any ADR, resolve the gate against `local/framework.config.yaml § change-governance` + the per-task prefix grammar (`core/process/dispatch.md § Task model`). Stop at first match:
+Before drafting any ADR, resolve against `local/framework.config.yaml § change-governance` + per-task prefixes (`core/process/dispatch.md § Per-task prefix grammar — change governance`). Stop at first match:
 
 | Branch | Condition | Action |
 |---|---|---|
-| 1 | `change-governance.adr.enabled: false` | Skip ADR; log `skip-reason: config-disabled` |
-| 2 | Task prefix `noadr:` | Skip ADR; log `skip-reason: prefix-override` |
-| 3 | `change-governance.adr.require-architectural-delta: true` AND no delta trigger fires | Skip ADR; log `skip-reason: no-architectural-delta` |
-| 4 | Task prefix `adr:` OR `prompt-before-create: never` | Draft ADR silently |
-| 5 | `prompt-before-create: always` OR `non-trivial` heuristic fires | Forced-interactive prompt → on user yes draft ADR |
-| 6 | Otherwise (`prompt-before-create: non-trivial` + heuristic does not fire) | Draft ADR silently |
+| 1 | `adr.enabled: false` | Skip; `skip-reason: config-disabled` |
+| 2 | Task prefix `noadr:` | Skip; `skip-reason: prefix-override` |
+| 3 | `adr.require-architectural-delta: true` AND no delta trigger fires | Skip; `skip-reason: no-architectural-delta` |
+| 4 | Task prefix `adr:` OR `prompt-before-create: never` | Draft silently |
+| 5 | `prompt-before-create: always` OR non-trivial heuristic fires | Forced-interactive prompt → draft on user yes |
+| 6 | Otherwise (`prompt-before-create: non-trivial` + heuristic does not fire) | Draft silently |
 
-**Architectural-delta triggers** — proposal touches ≥ 1 of:
+Same 6-branch shape as `core/roles/team-lead.md § CR-gate` — kept parallel for governance coherence.
+
+**Architectural-delta triggers** — proposal touches ≥ 1 of (shared anchor — `team-lead.md § CR-gate` cites this list for its non-trivial heuristic):
 
 1. **Component boundaries** — new / removed entries in `local/index/topology.yaml § services`.
 2. **Wire contracts** — diff against `<architecture-doc> § API / Events` OR `api-contract:` doc OR data-migration files under `server-tier-path`.
@@ -155,7 +157,7 @@ Before drafting any ADR, resolve the gate against `local/framework.config.yaml �
 
 **SA-judgment-retained cases** — heuristic does not preempt SA judgment. Always SA-call: refactor implying invariant shift · wire-shape breaking vs additive distinction · NFR-adjacent threshold (e.g. latency budget revision below 10%).
 
-**Skip-reason logging.** Recorded under `## Decisions made` in the phase-report; enum values — `config-disabled | no-architectural-delta | prefix-override`. Full enum + non-trivial heuristic definition: `solution-architect.details.md § ADR-gate`.
+Non-trivial heuristic + full skip-reason enum + phase-report logging shape: `solution-architect.details.md § ADR-gate`.
 
 ## Source-of-truth tie-breaker
 

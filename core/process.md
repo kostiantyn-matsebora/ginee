@@ -121,16 +121,15 @@ Full schema (cardinality table · default-shape map · caps · forbidden pattern
 
 ## Change governance — pre-authorship gating
 
-- **Pre-authorship intercept.** CR (requirement / scope change) + ADR (architectural decision) authorship is gated BEFORE drafting.
-- **Ownership preserved.** `team-lead` owns CRs · `solution-architect` owns ADRs — per `core/doc-roles.md § Authorship`.
-- **Adopter-controlled.** The gate is an intercept layer that runs first; on skip the doc is never drafted.
+- CR (requirement / scope change) + ADR (architectural decision) authorship is gated BEFORE drafting; on skip the doc is never drafted.
+- Ownership preserved — `team-lead` owns CRs · `solution-architect` owns ADRs (per `core/doc-roles.md § Authorship`).
 
 | Surface | Gate-branch table |
 |---|---|
 | CR (team-lead) | `core/roles/team-lead.md § CR-gate` |
-| ADR (solution-architect) | `core/roles/solution-architect.md § Architecture-doc freeze + change governance § ADR-gate` |
+| ADR (solution-architect) | `core/roles/solution-architect.md § ADR-gate` |
 
-Both gates resolve against `local/framework.config.yaml § change-governance` + the per-task prefix grammar (`core/process/dispatch.md § Task model`). Skip-reasons are logged under `## Decisions made` in the phase-report per the per-role enum.
+Both resolve against `local/framework.config.yaml § change-governance` + per-task prefixes (`core/process/dispatch.md § Per-task prefix grammar — change governance`); skip-reasons log under `## Decisions made` per the per-role enum.
 
 ## Coordination protocol
 
