@@ -10,6 +10,72 @@ All notable changes to ginee. The format follows [Keep a Changelog](https://keep
 
 ## Unreleased
 
+## 0.19.0 — 2026-05-25
+
+### Added
+
+- **Index-first read order — bedrock + dispatch-contract wiring + Source-reads audit trail** ([#125](https://github.com/kostiantyn-matsebora/ginee/issues/125)). Pre-this-release the consume-side rule of `core/protocols/index-protocol.md § Why` was buried at step 3 of `§ Role consumption pattern`. Cardinals silently fell through to full source reads whenever the dispatch prompt was free-text. Three coupled changes — top-level `## Read order` H2 promoted to bedrock; `core/protocols/triage-scoring.md § Auto-estimation on pickup` gains explicit `issue body + index entries only; raw reads require justification` clause; new `## Source reads (this dispatch)` mandatory-with-empty-case section in cardinal returns + narrow `### Format-only re-dispatch — single carve-out`. Adopter docs synced. Migration: `migrations/index-first-read-order.md`.
+
+- **D45 — Change-governance gating + opt-out** ([#121](https://github.com/kostiantyn-matsebora/ginee/issues/121)). Pre-D45 CR / ADR authorship was unconditional once team-lead / SA judged the trigger condition met. D45 adds a pre-authorship intercept gate on both surfaces — ownership preserved per `core/protocols/doc-roles.md § Authorship`.
+  - **Five-key gate** in `local/framework.config.yaml § change-governance` — `cr.enabled` · `cr.skip-when-issue-source` · `adr.enabled` · `adr.require-architectural-delta` · `prompt-before-create` (`always | never | non-trivial`).
+  - **Per-task prefixes** — `cr:` / `nocr:` / `adr:` / `noadr:` resolved against config (precedence: prefix > config > default). Combine freely with `auto:` · `branch:` / `wt:` / `commit:` · `model:<tier>` · `notrack:`.
+  - **Architectural-delta triggers (ADR gate)** — 5 triggers per `core/roles/solution-architect.md § ADR-gate`: component boundaries · wire contracts · NFR-bearing claims · architecture invariants · stack / topology / infrastructure. SA-judgment-retained cases preserved.
+  - **Non-trivial heuristic** — fires when ≥ 2 delta triggers OR `local/requirements.md` register-diff non-empty.
+  - **Skip-reason enum** logged under `## Decisions made`. CR: `config-disabled | issue-source-skip | prefix-override | user-declined`. ADR: `config-disabled | no-architectural-delta | prefix-override | user-declined`.
+  - **Forced-interactive under auto-mode** — `prompt-before-create: always` OR `non-trivial` heuristic firing under `auto:` pauses + surfaces draft. Auto-mode does NOT elide this gate.
+  - **Default change** — `cr.skip-when-issue-source: true` is the new default. Adopters who want pre-cutover behaviour set `false`.
+  - Migration: `migrations/change-governance-opt-out.md`.
+
+- **D46 — `core/` taxonomy flatten** (framework-hygiene; no associated issue). Pre-D46 the `core/` root mixed three concerns — the lifecycle spec (`process.md`), invariants (`VERSION`), and 12 ad-hoc protocol files that pre-dated the `protocols/` subdirectory.
+  - **Moved files** — `automatic-mode.md` · `changelog-protocol.md` · `ci-watch.md` · `cross-agent-handoff.md` · `cross-domain-bugs.md` · `delivery-modes.md` · `doc-authoring-examples.md` · `doc-roles.md` · `github-integration.md` · `index-syntax.md` · `post-task-check-in.md` · `triage-scoring.md`. All via `git mv` (history preserved).
+  - **Stays at root** — `core/process.md` (THE lifecycle spec) · `core/VERSION` (installer-fetch contract).
+  - **No semantic change.** Every rule survives byte-for-byte; only paths changed. Watched-path patterns in `scripts/context-economy-check.ps1` already covered both locations.
+  - **Reference sweep scope** — `core/**` · `adapters/**` · `extras/**` · `docs/**` · `migrations/<prior>.md` · `.github/workflows/` · `.github/ISSUE_TEMPLATE/` · `CLAUDE.md` · `PLAN.md`. `.github/release-notes/v*.md` not touched (point-in-time records).
+  - **Adopter impact** — None for the typical install — `/ginee-update` replaces `<fw>/core/` wholesale. Adopters whose `local/` files cite framework spec paths run the sed snippet in the migration.
+  - Migration: `migrations/core-taxonomy-flatten.md`.
+
+- **D47 — Hot-spec frontmatter standard** ([#129](https://github.com/kostiantyn-matsebora/ginee/issues/129)). Pre-D47 the load topology of every hot-spec file was implicit — declared across CLAUDE.md's load-topology section + per-role kernel `Source of truth § always` rows + various per-spec preambles. The LLM paid the inference cost on every dispatch. D47 makes the load contract explicit at the head of each spec.
+  - **5-key YAML frontmatter** — `audience` · `load` (`always` · `on-demand`) · `triggers` (required when `load: on-demand`) · `cap-bytes` (positive integer) · `reads-before-applying` (list; `[]` if none).
+  - **New protocol — `core/protocols/hot-spec-format.md`** — declares schema + authoring rules + validator contract; self-applies as worked example.
+  - **Sweep** — 41 hot-spec files acquire frontmatter via a single bounded PR. Lossless rule binds.
+  - **Validator extension** — `scripts/context-economy-check.ps1` gains `Test-IsHotSpec` · `Get-HotSpecFileContent` · `Read-HotSpecFrontmatter` · `Test-HotSpecFrontmatter`. 6 failure reason codes (`missing` · `malformed` · `missing-key` · `invalid-load` · `empty-triggers` · `invalid-cap-bytes`). Same `Optimized-By: ai-engineer` trailer-bypass machinery as existing gates.
+  - **Pester coverage** — 19 new test cases (61 total pass; 91.64% whole-script coverage); PSScriptAnalyzer clean.
+  - **Role kernel frontmatter merge** — hot-spec keys appended INTO the existing Claude subagent frontmatter block (single `---` block).
+  - **`cap-bytes` tiered above current file size** — corpus has hot specs from 4 KB to 32 KB. Sweep set each file's cap at the next clean tier. Subsequent load-on-demand splits are the canonical tightening path.
+  - **Validator scope** — `core/process.md` · `core/process/*.md` · `core/protocols/*.md` · `core/roles/*.md` · `core/roles/*.details.md`. Excluded: `core/templates/*.md` · `core/skills/ginee-*/SKILL.md` (already use AgentSkills frontmatter) · `local/roles/*.md` (adopter-owned per D37).
+  - Migration: `migrations/hot-spec-frontmatter.md`.
+
+- **D48 — RFC 2119 keyword convention** ([#130](https://github.com/kostiantyn-matsebora/ginee/issues/130)). Pre-D48 the framework mixed binding-strength conventions — `**bold**` for emphasis, `always` for MUST-ish, `binding` for MUST NOT-bypass, `mandatory` / `required` for MUST. LLMs spent interpretation cycles disambiguating between emphasis and normative weight. D48 collapses the axis to RFC 2119 keywords (MUST · MUST NOT · SHOULD · SHOULD NOT · MAY).
+  - **New mandatory check #6** added to `core/process.md § Documentation style § Mandatory checks before report-as-done` + `core/protocols/doc-authoring-protocol.md`.
+  - **Standing-checks count refresh.** 5-standing-checks → 6; subagent-return-surface 6-checks → 7. Touchpoints — `core/process.md § Reporting`, `core/protocols/doc-authoring-protocol.md` (multiple lines), `docs/CONCEPTS.md`, `docs/CHEATSHEET.md`.
+  - **Imperative voice carve-out.** Numbered procedures where every step is implicitly MUST do not need RFC 2119 keywords on every step.
+  - **Enforcement.** LLM self-review at draft time; same machinery as the rest of the doc-authoring protocol. No external linter; no auto-rewrite.
+  - **Scope.** Forward-only — existing rules across `core/`, `adapters/`, `extras/`, and authored adopter docs stay as-written until next edited.
+  - **Paired bad/good example** added at `core/protocols/doc-authoring-examples.md § 14`.
+  - Migration: `migrations/rfc2119-keywords.md`.
+
+- **D49 — Output-schema sidecars** ([#131](https://github.com/kostiantyn-matsebora/ginee/issues/131)). Pre-D49 only `core/templates/phase-report.md` had an explicit cardinality table + section templates + forbidden patterns + self-lint marker. Every other structured output the framework produces (dispatch prompts · sticky `ginee:score` · audit comments · sub-issue body + cadence · per-thread review reply + sticky `ginee:review-cycle`) was reconstructed by pattern-matching prior examples on every dispatch. D49 closes the gap with five output-schema sidecars under `core/protocols/`.
+  - **5 new specs** — `dispatch-prompt-schema.md` · `score-comment-schema.md` · `audit-comment-schema.md` · `sub-issue-dispatch-schema.md` · `review-cycle-schema.md`. Each follows the phase-report meta-template (Schema · Section templates · Forbidden patterns · Worked example · Self-lint checks).
+  - **Lossless cross-ref consolidation** in 5 existing surfaces — sentence-appends only; no rule deleted or reworded.
+  - **Audit-comment registry closed** at 3 marker types (`ginee:value-prompt` · `ginee:complexity-estimate` · `ginee:score-recompute`); new types via row addition.
+  - Migration: `migrations/output-schema-sidecars.md`.
+
+### Changed
+
+- **Per-role context costs grew ~5–10%** vs v0.18.0 from D45–D49 spec additions:
+
+  | Role | v0.18.0 | v0.19.0 | Δ | Headroom |
+  |---|---:|---:|---:|---:|
+  | `ai-engineer` | 23,854 | 25,241 | +5.8% | ~37% |
+  | `qa-engineer` | 33,161 | 34,752 | +4.8% | ~37% |
+  | `backend-engineer` | 33,847 | 35,703 | +5.5% | ~35% |
+  | `frontend-engineer` | 34,099 | 35,966 | +5.5% | ~35% |
+  | `devops-engineer` | 39,443 | 41,298 | +4.7% | ~36% |
+  | `solution-architect` | 39,868 | 44,025 | **+10.4%** | ~32% |
+  | `team-lead` | 63,694 | 69,402 | +9.0% | ~23% |
+
+  All roles under ceiling; team-lead retains the smallest headroom at ~23% but stays above the 20% release-checklist floor. SA crosses the +10% material-shift threshold (D45 + D47 contributions). Full per-role snapshot in `docs/reference/CONTEXT_COSTS.md`.
+
 ## 0.18.0 — 2026-05-25
 
 ### Added
