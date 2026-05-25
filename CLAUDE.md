@@ -59,7 +59,7 @@ ginee/
 │   │                           # pr-description · bindings · framework.config.yaml ·
 │   │                           # project-profile · role-authoring-template)
 │   ├── skills/                 # ginee-* invocation skills (one dir per skill)
-│   └── scripts/                # migration helpers (e.g. engineering-team → ginee rename)
+│   └── scripts/                # framework-rename + similar adopter-side migration helpers
 │
 ├── adapters/                   # per-client renderings of core/
 │   ├── claude/                 # Claude Code subagents + CLAUDE-pointer.md
