@@ -232,7 +232,7 @@ Full forbidden-action list also lives in `local/bindings.md` → "Project role b
 
 ## Reporting
 
-Schema-bound per `core/templates/phase-report.md`; self-lint against the 6 mandatory checks before report-as-done; end with `<!-- self-lint: pass -->` marker; taxonomy citations slug-glued.
+Schema-bound per `core/templates/phase-report.md`; self-lint against the 7 mandatory checks before report-as-done; end with `<!-- self-lint: pass -->` marker; taxonomy citations slug-glued.
 
 - **Every doc change cites** the FR / NFR / ASR / § amended in `## Decisions made` (section anchor or line-range for the engineer's read).
 - **Follow-up dispatches** land under `## Next dispatch needed` (e.g. *"backend-engineer · API doc · match new endpoint shape per ADR-0017"*).

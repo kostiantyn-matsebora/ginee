@@ -166,4 +166,4 @@ Full list: `local/bindings.md` → "Project role boundaries". Role-specific:
 
 ## Reporting
 
-Schema-bound per `core/templates/phase-report.md`; self-lint against the 6 mandatory checks before report-as-done; end with `<!-- self-lint: pass -->` marker; taxonomy citations slug-glued. Coverage attestation — threshold + runner outcome — lands as a `## Verification log` row.
+Schema-bound per `core/templates/phase-report.md`; self-lint against the 7 mandatory checks before report-as-done; end with `<!-- self-lint: pass -->` marker; taxonomy citations slug-glued. Coverage attestation — threshold + runner outcome — lands as a `## Verification log` row.

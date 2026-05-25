@@ -26,7 +26,17 @@ Examples gallery: `core/protocols/doc-authoring-examples.md` (load on first-time
 
 **The lint covers every section, including Summary.** No section-by-length exemption — a one-sentence Summary still trips the mandatory checks if it packs a comma-separated inventory into a parenthetical.
 
-**Subagent-return surface adds a 6th check** — *no narrative preamble* (first non-Status line must be a `##` section header). The 5 standing checks apply unchanged. Full schema: `core/templates/phase-report.md`.
+**Subagent-return surface adds a 7th check** — *no narrative preamble* (first non-Status line must be a `##` section header). The 6 standing checks apply unchanged. Full schema: `core/templates/phase-report.md`.
+
+## Mandatory check — binding-strength signal
+
+Authored markdown signals binding strength via RFC 2119 keywords:
+
+- **MUST · MUST NOT · SHOULD · SHOULD NOT · MAY** — the only modifiers that carry normative weight.
+- Do not use `always` / `never` / `binding` / `mandatory` / `required` as rule modifiers. They read as RFC 2119 synonyms without the precision; LLMs spend interpretation cycles disambiguating.
+- Imperative voice alone is permitted inside numbered procedures where every step is implicitly MUST.
+
+Single binding-strength convention removes the ambiguity from prior mixed signalling (bold-italic-caps for emphasis, `always` for MUST, `binding` for MUST NOT-bypass). The 6 standing checks (per `core/process.md § Documentation style § Mandatory checks before report-as-done`) gain this as check #6; the subagent-return surface's *no narrative preamble* becomes check #7.
 
 ### Out of scope
 
@@ -72,7 +82,7 @@ Different from adopter-doc enforcement (which piggybacks on the discovered linte
 | Violation | Surfaces as a suggestion in the user-approval prompt. User accepts the restructure / rejects / overrides. No silent publish. |
 | Publish | Only after user approval of the linted draft. |
 
-**No external linter.** The check is LLM self-review against the same 5 mandatory rules used for adopter docs.
+**No external linter.** The check is LLM self-review against the same 6 mandatory rules used for adopter docs.
 
 ## Enforcement for subagent returns
 
@@ -81,7 +91,7 @@ Returns are ephemeral (consumed by the orchestrator in-thread, not published), s
 | Stage | Mechanism |
 |---|---|
 | Author | Dispatched cardinal drafts the return per `core/templates/phase-report.md` schema. |
-| Self-lint | Role runs the 6 mandatory checks (5 standing + *no narrative preamble*) against the draft **before** returning. Violations → restructure; un-restructurable content → lift into capped `## Notes`. |
+| Self-lint | Role runs the 7 mandatory checks (6 standing + *no narrative preamble*) against the draft **before** returning. Violations → restructure; un-restructurable content → lift into capped `## Notes`. |
 | Violation reaches orchestrator | `team-lead` surfaces a one-line advisory (`"Return missed self-lint: <violation>; consuming anyway"`), consumes the return, never re-dispatches purely for format, never auto-rewrites (analogous to the reporter-content forbidden rule in `core/protocols/github-integration.md § Forbidden actions`). |
 | Iteration-protocol intermediate return | Same schema with sections marked `(in-progress)`; `## Stop-state` required; `Status: In-progress`. |
 | Failed dispatch (forced handoff per `core/protocols/cross-agent-handoff.md`) | Same schema + required `## Hand-off` section embedding `core/templates/hand-off-note.md`. |

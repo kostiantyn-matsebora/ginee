@@ -102,4 +102,4 @@ Before completing any pass:
 
 ## Reporting
 
-Schema-bound per `core/templates/phase-report.md`; self-lint against the 6 mandatory checks before report-as-done; end with `<!-- self-lint: pass -->` marker; taxonomy citations slug-glued. Lossless self-check sample goes in `## Verification log` as a row (`Lossless self-check — <N> rules sampled, all present`).
+Schema-bound per `core/templates/phase-report.md`; self-lint against the 7 mandatory checks before report-as-done; end with `<!-- self-lint: pass -->` marker; taxonomy citations slug-glued. Lossless self-check sample goes in `## Verification log` as a row (`Lossless self-check — <N> rules sampled, all present`).

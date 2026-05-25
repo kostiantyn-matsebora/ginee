@@ -110,6 +110,7 @@ Bindings may NOT override generic process.
 3. No bullet runs > 25 words *unless* it carries nested sub-bullets.
 4. Inventories (services, components, endpoints, env vars) are tables, not prose.
 5. Cross-references cite anchors (`§Name`, `#anchor`); never restate content. Cite rules by file path + section (e.g. `core/process.md § Reporting`), not by opaque identifier.
+6. Binding-strength signal uses RFC 2119 keywords — MUST · MUST NOT · SHOULD · SHOULD NOT · MAY. Do not use `always` / `never` / `binding` / `mandatory` / `required` as rule modifiers. Imperative voice alone is permitted inside numbered procedures where every step is implicitly MUST.
 
 **Enforcement procedure** (lint command, attestation format, no-tool fallback): `core/protocols/doc-authoring-protocol.md` — load at Phase 5 / report-as-done.
 **Paired bad-vs-good examples** (6 doc classes): `core/protocols/doc-authoring-examples.md` — load on first-time authoring or explicit request.
@@ -121,11 +122,11 @@ Bindings may NOT override generic process.
 - **Mandatory sections** — `## Files touched` · `## Decisions made` · `## Verification log` · `## Open issues` · `## Next dispatch needed`. Empty case: `(none)`. `## Hand-off` required on forced-handoff per `core/protocols/cross-agent-handoff.md`. `## Stop-state` required when `Status: In-progress`.
 - **Optional escape hatch** — `## Notes` for narrative rationale (≤ 200 words). Code-snippet carve-out: ≤ 5 lines, only when the orchestrator needs verbatim text.
 - **Forbidden patterns** — narrative preamble · restated dispatch context · code snippets outside the carve-out · verbose rationale outside `## Notes` · parenthetical comma-soup.
-- **Self-lint at report-as-done** — 5 mandatory checks per `core/protocols/doc-authoring-protocol.md` + "no narrative preamble" (6 total); LLM self-review against the schema before returning. No external linter.
-- **Mandatory marker** — every return ends with the literal line `<!-- self-lint: pass -->` as attestation that the 6 checks ran. Absence = structural skip signal; orchestrator surfaces the advisory at receive-time + carries the rule forward to the next dispatch. Marker is not a pass/fail gate; the return is still consumed.
+- **Self-lint at report-as-done** — 6 mandatory checks per `core/protocols/doc-authoring-protocol.md` + "no narrative preamble" (7 total); LLM self-review against the schema before returning. No external linter.
+- **Mandatory marker** — every return ends with the literal line `<!-- self-lint: pass -->` as attestation that the 7 checks ran. Absence = structural skip signal; orchestrator surfaces the advisory at receive-time + carries the rule forward to the next dispatch. Marker is not a pass/fail gate; the return is still consumed.
 - **Orchestrator on non-compliance** — surfaces one-line advisory · consumes the return · never re-dispatches purely for format · never auto-rewrites · skill-runner forbidden from "cleaning up" the return before passing to team-lead (skill-runner surface boundary per `core/process/dispatch.md`).
 
-Full schema (cardinality table · default-shape map · caps · forbidden patterns · 6 checks · worked size targets): **`core/templates/phase-report.md`**.
+Full schema (cardinality table · default-shape map · caps · forbidden patterns · 7 checks · worked size targets): **`core/templates/phase-report.md`**.
 
 ## Change governance — pre-authorship gating
 

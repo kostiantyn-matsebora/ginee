@@ -319,7 +319,7 @@ Full spec: [`core/protocols/github-integration.md § Review-comment ingestion`](
 
 ## Doc-authoring protocol (D22 + D26)
 
-When ginee authors markdown — adopter docs (D22) OR ginee-authored GitHub artefacts (D26) — `core/process.md § Documentation style — structure over prose` is **binding**, not aspirational. Five mandatory checks; structure-default-by-class shape map.
+When ginee authors markdown — adopter docs (D22) OR ginee-authored GitHub artefacts (D26) — `core/process.md § Documentation style — structure over prose` is binding, not aspirational. Six mandatory checks (D48 added RFC 2119 binding-strength signal — MUST · MUST NOT · SHOULD · SHOULD NOT · MAY — instead of `always` / `never` / `binding` / `mandatory` / `required` as rule modifiers); structure-default-by-class shape map.
 
 **Scope:**
 
@@ -430,7 +430,7 @@ Every cardinal-dispatch return is **schema-bound** per `core/templates/phase-rep
 | `## Stop-state` | conditional — `Status: In-progress` | Done / In-progress / Not-started bullets |
 | `## Notes` | **optional** — narrative escape hatch | Free prose · ≤ 200 words · ≤ 5-line code-snippet carve-out |
 
-**6 mandatory checks before report-as-done** — 5 from D22 / D26 + *no narrative preamble* (first non-Status line must be a `##` section header). `## Source reads` joins as required-with-empty-case (matching `## Hand-off` / `## Stop-state` precedent) — count unchanged.
+**7 mandatory checks before report-as-done** — 6 from D22 / D26 / D48 + *no narrative preamble* (first non-Status line must be a `##` section header). `## Source reads` joins as required-with-empty-case (matching `## Hand-off` / `## Stop-state` precedent) — count adjusted to reflect D48's RFC 2119 binding-strength check.
 
 **Forbidden patterns** — narrative preamble · restated dispatch context · code snippets outside the Notes carve-out · verbose rationale outside `## Notes` · parenthetical comma-soup.
 
