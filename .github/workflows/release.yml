@@ -108,6 +108,9 @@ jobs:
             --exclude 'install.sh' --exclude 'install.ps1' \
             --exclude 'PLAN.md' --exclude 'CLAUDE.md' --exclude 'README.md' --exclude 'SECURITY.md' \
             --exclude 'docs' \
+            --exclude 'migrations' --exclude 'core/MIGRATIONS' \
+            --exclude 'scripts' --exclude 'tests' --exclude 'hooks' \
+            --exclude 'PSScriptAnalyzerSettings.psd1' \
             --exclude 'local/*' \
             ./ "_stage/${PKG}/"
           # Preserve empty local/roles/ so consumers see the structure
