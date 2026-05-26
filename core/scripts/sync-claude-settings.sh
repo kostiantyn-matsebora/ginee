@@ -47,6 +47,7 @@ POSTEDIT_HOOK_CMD="pwsh -NoProfile -File $FRAMEWORK_REL/adapters/claude/hooks/po
 UPSH_HOOK_CMD="pwsh -NoProfile -File $FRAMEWORK_REL/adapters/claude/hooks/user-prompt-submit.ps1"
 STOP_HOOK_CMD="pwsh -NoProfile -File $FRAMEWORK_REL/adapters/claude/hooks/stop.ps1"
 SESSION_START_CMD="pwsh -NoProfile -File $FRAMEWORK_REL/adapters/claude/hooks/session-start.ps1"
+ATTEST_OB_CMD="pwsh -NoProfile -File $FRAMEWORK_REL/adapters/claude/hooks/attest-optimized-by.ps1"
 STATUSLINE_CMD="pwsh -NoProfile -File $FRAMEWORK_REL/adapters/claude/statusline.ps1"
 
 EDIT_HOOK_MARKER="adapters/claude/hooks/pre-tool-use-edit"
@@ -56,6 +57,7 @@ POSTEDIT_HOOK_MARKER="adapters/claude/hooks/post-tool-use-edit"
 UPSH_HOOK_MARKER="adapters/claude/hooks/user-prompt-submit"
 STOP_HOOK_MARKER="adapters/claude/hooks/stop"
 SESSION_START_MARKER="adapters/claude/hooks/session-start"
+ATTEST_OB_MARKER="adapters/claude/hooks/attest-optimized-by"
 STATUSLINE_MARKER="adapters/claude/statusline"
 
 mkdir -p "$CLAUDE_DIR"
@@ -123,10 +125,11 @@ add_entry() {
   fi
 }
 
-# PreToolUse — T2, T3, T8.
+# PreToolUse — T2, T3, T8, T13.
 add_entry "PreToolUse" "$EDIT_HOOK_MARKER"    "Edit|Write|MultiEdit" "$EDIT_HOOK_CMD"
 add_entry "PreToolUse" "$BASH_HOOK_MARKER"    "Bash"                  "$BASH_HOOK_CMD"
 add_entry "PreToolUse" "$SENDMSG_HOOK_MARKER" "SendMessage"           "$SENDMSG_HOOK_CMD"
+add_entry "PreToolUse" "$ATTEST_OB_MARKER"    "Bash"                  "$ATTEST_OB_CMD"
 
 # PostToolUse — T6 only (framework-self-dev context-economy-check.ps1 is not
 # wired in adopter installs: scripts/ is pruned + the gate is framework-only).

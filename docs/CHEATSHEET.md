@@ -159,7 +159,7 @@ Four further hooks layer prompt-time / action-time / turn-time enforcement (pare
 
 Opt-out tactic-ids: `user-prompt-submit-hook` · `posttooluse-edit-hook` · `stop-hook` · `pretooluse-send-message-hook`. Full specs: [`migrations/user-prompt-submit-hook.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/migrations/user-prompt-submit-hook.md) · [`migrations/posttooluse-edit-hook.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/migrations/posttooluse-edit-hook.md) · [`migrations/stop-hook.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/migrations/stop-hook.md) · [`migrations/carry-forward-injection.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/migrations/carry-forward-injection.md).
 
-## Compliance — Tier 3 closeout (T9 / T10 / T11 / T12)
+## Compliance — Tier 3 closeout (T9 / T10 / T11 / T12 / T13)
 
 Last batch of the maximum-force Claude playbook (parent: [#135](https://github.com/kostiantyn-matsebora/ginee/issues/135)).
 
@@ -169,6 +169,7 @@ Last batch of the maximum-force Claude playbook (parent: [#135](https://github.c
 | **T10 — slash commands** | `/ginee-dispatch` · `/ginee-phase-report` · `/ginee-self-lint` · `/ginee-commit` · `/ginee-pr` · `/ginee-issue-pickup` | `.claude/commands/ginee-*.md` |
 | **T11 — main-thread lockdown + dispatch-cap** | `permissions.deny` blocks framework-side `Edit` / `Write` / destructive Bash; `warm-reuse.dispatch-cap: 15` triggers forced-fresh + `## Carry-forward summary` | `.claude/settings.json`; `local/framework.config.yaml` |
 | **T12 — SessionStart resume** | `[ginee:resume]` block with branch + open `ginee:in-progress` issues | `.claude/settings.json § hooks.SessionStart` |
+| **T13 — Optimized-By attestation (ask-mode, push-time)** | When `git push` would push a range carrying `Optimized-By: ai-engineer` trailer AND no `Agent(subagent_type=ai-engineer)` dispatch in transcript → Claude Code permission prompt; user allows (cross-session work · manual pass · WIP) or denies (cancel + dispatch first). Path-agnostic. | `.claude/settings.json § hooks.PreToolUse` (matcher: `Bash`) |
 
 ```yaml
 # local/framework.config.yaml — Tier 3 per-tactic opt-outs
@@ -177,12 +178,13 @@ compliance:
     - slash-commands
     - main-thread-permissions
     - session-start-hook
+    - optimized-by-attestation
 # Warm registry soft cap — over-cap forces fresh + summary handoff per warm-cardinal-default.md
 warm-reuse:
   dispatch-cap: 15
 ```
 
-Slash commands install via `install.{ps1,sh}` (re-run via `/ginee-update`). All four tactics fail-open on error. Full specs: [`migrations/claude-md-bookending.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/migrations/claude-md-bookending.md) · [`migrations/slash-commands-suite.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/migrations/slash-commands-suite.md) · [`migrations/warm-cardinal-default.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/migrations/warm-cardinal-default.md) · [`migrations/session-start-hook.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/migrations/session-start-hook.md).
+Slash commands install via `install.{ps1,sh}` (re-run via `/ginee-update`). All five tactics fail-open on error. Full specs: [`migrations/claude-md-bookending.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/migrations/claude-md-bookending.md) · [`migrations/slash-commands-suite.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/migrations/slash-commands-suite.md) · [`migrations/warm-cardinal-default.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/migrations/warm-cardinal-default.md) · [`migrations/session-start-hook.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/migrations/session-start-hook.md) · [`migrations/optimized-by-attestation.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/migrations/optimized-by-attestation.md).
 
 ## Sub-issue dispatch (D39)
 

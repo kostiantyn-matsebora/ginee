@@ -35,12 +35,13 @@ Describe 'sync-claude-settings.ps1' {
       $s = Read-SettingsJson $script:tgt
       $s | Should -Not -BeNullOrEmpty
       $s.statusLine.command | Should -Match 'adapters/claude/statusline\.ps1$'
-      # T2 + T3 + T8 → 3 PreToolUse matcher entries.
-      $s.hooks.PreToolUse.Count | Should -Be 3
-      $matchers = @($s.hooks.PreToolUse | ForEach-Object { $_.matcher })
-      $matchers | Should -Contain 'Edit|Write|MultiEdit'
-      $matchers | Should -Contain 'Bash'
-      $matchers | Should -Contain 'SendMessage'
+      # T2 + T3 + T8 + T13 → 4 PreToolUse matcher entries (two on Bash — pre-tool-use-bash + attest-optimized-by).
+      $s.hooks.PreToolUse.Count | Should -Be 4
+      $cmds = @($s.hooks.PreToolUse | ForEach-Object { $_.hooks[0].command })
+      ($cmds -match 'pre-tool-use-edit').Count        | Should -Be 1
+      ($cmds -match 'pre-tool-use-bash').Count        | Should -Be 1
+      ($cmds -match 'pre-tool-use-send-message').Count | Should -Be 1
+      ($cmds -match 'attest-optimized-by').Count       | Should -Be 1
       # PostToolUse — T6 only (context-economy-check is framework-self-dev,
       # not wired into adopter settings since scripts/ is pruned on install).
       $s.hooks.PostToolUse.Count | Should -Be 1
@@ -77,7 +78,7 @@ compliance:
       Invoke-Sync -Target $script:tgt | Should -Be 0
       $s = Read-SettingsJson $script:tgt
       # Hooks still wired (T11 only skipped).
-      $s.hooks.PreToolUse.Count | Should -Be 3
+      $s.hooks.PreToolUse.Count | Should -Be 4
       # No permissions.deny additions.
       ($s.permissions -and $s.permissions.deny -and ($s.permissions.deny | Where-Object { $_ -like 'Edit(*core/**)' }).Count) `
         | Should -Not -BeTrue
@@ -122,8 +123,8 @@ compliance:
       Invoke-Sync -Target $script:tgt | Should -Be 0
       $s = Read-SettingsJson $script:tgt
       $s.statusLine.command | Should -Be $custom
-      # But T2/T3/T8 PreToolUse hooks still added
-      $s.hooks.PreToolUse.Count | Should -Be 3
+      # T2/T3/T8/T13 PreToolUse hooks still added
+      $s.hooks.PreToolUse.Count | Should -Be 4
     }
 
     It 'refreshes a ginee-owned statusLine command if the path changed' {

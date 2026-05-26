@@ -197,7 +197,8 @@ triage:
 # Tactic ids: subagent-tools-whitelist (T1) · pretooluse-edit-hook (T2) ·
 # pretooluse-bash-hook (T3) · compliance-statusline (T4) · user-prompt-submit-hook (T5) ·
 # posttooluse-edit-hook (T6) · stop-hook (T7) · pretooluse-send-message-hook (T8) ·
-# slash-commands (T10) · main-thread-permissions (T11) · session-start-hook (T12).
+# slash-commands (T10) · main-thread-permissions (T11) · session-start-hook (T12) ·
+# optimized-by-attestation (T13).
 # compliance:
 #   disabled:
 #     - subagent-tools-whitelist
