@@ -346,13 +346,15 @@ jobs:
                 [ -f "$ROOT/.claude/skills/${skill}/SKILL.md" ] || { echo "::error::Missing .claude/skills/${skill}/SKILL.md"; exit 1; }
               done
               grep -qF "## Engineering team framework" "$ROOT/CLAUDE.md" || { echo "::error::CLAUDE.md missing pointer sentinel"; exit 1; }
-              # Compliance playbook hooks — Tier 1 (T2/T3) + Tier 2 (T5/T6/T7/T8) + statusline (T4).
+              # Compliance playbook hooks — Tier 1 (T2/T3) + Tier 2 (T5/T6/T7/T8) + Tier 3 (T12/T13) + statusline (T4).
               for f in pre-tool-use-edit.ps1 pre-tool-use-edit.sh \
                        pre-tool-use-bash.ps1 pre-tool-use-bash.sh \
                        pre-tool-use-send-message.ps1 pre-tool-use-send-message.sh \
                        post-tool-use-edit.ps1 post-tool-use-edit.sh \
                        user-prompt-submit.ps1 user-prompt-submit.sh \
                        stop.ps1 stop.sh \
+                       session-start.ps1 session-start.sh \
+                       attest-optimized-by.ps1 attest-optimized-by.sh \
                        keyword-triggers.yaml carry-forward-rules.yaml; do
                 [ -f "$ROOT/.agents/ginee/adapters/claude/hooks/${f}" ] \
                   || { echo "::error::Missing .agents/ginee/adapters/claude/hooks/${f}"; exit 1; }
@@ -360,6 +362,12 @@ jobs:
               for f in statusline.ps1 statusline.sh; do
                 [ -f "$ROOT/.agents/ginee/adapters/claude/${f}" ] \
                   || { echo "::error::Missing .agents/ginee/adapters/claude/${f}"; exit 1; }
+              done
+              # T10 slash commands — six deterministic-template files must land in adopter .claude/commands/.
+              for f in ginee-dispatch ginee-phase-report ginee-self-lint \
+                       ginee-commit ginee-pr ginee-issue-pickup; do
+                [ -f "$ROOT/.claude/commands/${f}.md" ] \
+                  || { echo "::error::Missing .claude/commands/${f}.md (T10 slash command not synced by installer)"; exit 1; }
               done
               # sync-claude-settings.{ps1,sh} must survive install (under core/scripts/, not pruned).
               for f in sync-claude-settings.ps1 sync-claude-settings.sh; do
@@ -384,11 +392,13 @@ jobs:
                 # PostToolUse: T6 only (context-economy-check is framework-self-dev — not wired in adopter settings).
                 jq -e 'any(.hooks.PostToolUse[]?.hooks[]?; .command | test("post-tool-use-edit"))' "$SETTINGS" >/dev/null \
                   || { echo "::error::Missing T6 PostToolUse post-tool-use-edit entry"; exit 1; }
-                # UserPromptSubmit + Stop hooks present.
+                # UserPromptSubmit + Stop + SessionStart hooks present.
                 [ "$(jq -r '.hooks.UserPromptSubmit | length' "$SETTINGS")" = "1" ] \
                   || { echo "::error::Missing T5 UserPromptSubmit entry"; exit 1; }
                 [ "$(jq -r '.hooks.Stop | length' "$SETTINGS")" = "1" ] \
                   || { echo "::error::Missing T7 Stop entry"; exit 1; }
+                [ "$(jq -r '.hooks.SessionStart | length' "$SETTINGS")" = "1" ] \
+                  || { echo "::error::Missing T12 SessionStart entry"; exit 1; }
                 # statusLine wired.
                 jq -e '.statusLine.command | test("adapters/claude/statusline")' "$SETTINGS" >/dev/null \
                   || { echo "::error::Missing T4 statusLine entry"; exit 1; }
@@ -554,13 +564,15 @@ jobs:
               if (-not (Select-String -Path "$root\CLAUDE.md" -SimpleMatch -Quiet '## Engineering team framework')) {
                 Write-Error "CLAUDE.md missing pointer sentinel"
               }
-              # Compliance playbook hooks — Tier 1 (T2/T3) + Tier 2 (T5/T6/T7/T8) + statusline (T4).
+              # Compliance playbook hooks — Tier 1 (T2/T3) + Tier 2 (T5/T6/T7/T8) + Tier 3 (T12/T13) + statusline (T4).
               $hookFiles = 'pre-tool-use-edit.ps1','pre-tool-use-edit.sh',
                            'pre-tool-use-bash.ps1','pre-tool-use-bash.sh',
                            'pre-tool-use-send-message.ps1','pre-tool-use-send-message.sh',
                            'post-tool-use-edit.ps1','post-tool-use-edit.sh',
                            'user-prompt-submit.ps1','user-prompt-submit.sh',
                            'stop.ps1','stop.sh',
+                           'session-start.ps1','session-start.sh',
+                           'attest-optimized-by.ps1','attest-optimized-by.sh',
                            'keyword-triggers.yaml','carry-forward-rules.yaml'
               foreach ($f in $hookFiles) {
                 if (-not (Test-Path "$root\.agents\ginee\adapters\claude\hooks\$f")) {
@@ -570,6 +582,12 @@ jobs:
               foreach ($f in 'statusline.ps1','statusline.sh') {
                 if (-not (Test-Path "$root\.agents\ginee\adapters\claude\$f")) {
                   Write-Error "Missing .agents/ginee/adapters/claude/$f"
+                }
+              }
+              # T10 slash commands — six deterministic-template files must land in adopter .claude/commands/.
+              foreach ($cmd in 'ginee-dispatch','ginee-phase-report','ginee-self-lint','ginee-commit','ginee-pr','ginee-issue-pickup') {
+                if (-not (Test-Path "$root\.claude\commands\$cmd.md")) {
+                  Write-Error "Missing .claude/commands/$cmd.md (T10 slash command not synced by installer)"
                 }
               }
               foreach ($f in 'sync-claude-settings.ps1','sync-claude-settings.sh') {
@@ -591,6 +609,7 @@ jobs:
               }
               if ($cfg.hooks.UserPromptSubmit.Count -ne 1) { Write-Error "Missing T5 UserPromptSubmit entry" }
               if ($cfg.hooks.Stop.Count -ne 1) { Write-Error "Missing T7 Stop entry" }
+              if ($cfg.hooks.SessionStart.Count -ne 1) { Write-Error "Missing T12 SessionStart entry" }
               if ($cfg.statusLine.command -notmatch 'adapters/claude/statusline') {
                 Write-Error "Missing T4 statusLine entry"
               }
