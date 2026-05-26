@@ -412,6 +412,16 @@ switch ($Adapter) {
     Copy-Item -Recurse (Join-Path $frameworkDir 'core\skills\ginee-*') $skillsDir
     Write-Host "Copied 10 ginee-* skills to .claude/skills/" -ForegroundColor Green
 
+    # T10 / #146 — slash command suite. Six ginee-*.md files sync to .claude/commands/.
+    $commandsDir = Join-Path $Target '.claude\commands'
+    New-Item -ItemType Directory -Force $commandsDir | Out-Null
+    Get-ChildItem $commandsDir -Filter 'ginee-*.md' -ErrorAction SilentlyContinue | Remove-Item -Force
+    $cmdSrc = Join-Path $frameworkDir 'adapters\claude\commands\ginee-*.md'
+    if (Get-ChildItem $cmdSrc -ErrorAction SilentlyContinue) {
+      Copy-Item $cmdSrc $commandsDir
+      Write-Host "Copied 6 ginee-* slash commands to .claude/commands/" -ForegroundColor Green
+    }
+
     # Sync CLAUDE-pointer.md block into project's CLAUDE.md.
     # - Existing block (sentinel present): refresh body in place — pointer blocks
     #   evolve across releases (D11 rename being the most extreme case).

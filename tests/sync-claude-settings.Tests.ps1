@@ -30,7 +30,7 @@ Describe 'sync-claude-settings.ps1' {
     BeforeEach { $script:tgt = Get-FreshTarget }
     AfterEach { Remove-Item -Recurse -Force -ErrorAction SilentlyContinue $script:tgt }
 
-    It 'creates settings.json with statusLine + Tier1/Tier2 hook entries' {
+    It 'creates settings.json with statusLine + Tier1/Tier2/Tier3 hook entries' {
       Invoke-Sync -Target $script:tgt | Should -Be 0
       $s = Read-SettingsJson $script:tgt
       $s | Should -Not -BeNullOrEmpty
@@ -47,9 +47,40 @@ Describe 'sync-claude-settings.ps1' {
       $postCmds = @($s.hooks.PostToolUse[0].hooks | ForEach-Object { $_.command })
       ($postCmds -match 'post-tool-use-edit').Count       | Should -Be 1
       ($postCmds -match 'context-economy-check').Count | Should -Be 0
-      # T5 + T7 land their own event keys.
+      # T5 + T7 + T12 land their own event keys.
       $s.hooks.UserPromptSubmit.Count | Should -Be 1
       $s.hooks.Stop.Count             | Should -Be 1
+      $s.hooks.SessionStart.Count     | Should -Be 1
+      $s.hooks.SessionStart[0].hooks[0].command | Should -Match 'adapters/claude/hooks/session-start\.ps1$'
+    }
+
+    It 'creates the T11 main-thread permission lockdown (permissions.deny)' {
+      Invoke-Sync -Target $script:tgt | Should -Be 0
+      $s = Read-SettingsJson $script:tgt
+      $s.permissions.deny | Should -Not -BeNullOrEmpty
+      $s.permissions.deny | Should -Contain 'Edit(.agents/ginee/core/**)'
+      $s.permissions.deny | Should -Contain 'Write(.agents/ginee/core/**)'
+      $s.permissions.deny | Should -Contain 'MultiEdit(.agents/ginee/core/**)'
+      $s.permissions.deny | Should -Contain 'Bash(rm -rf:*)'
+      $s.permissions.deny | Should -Contain 'Bash(git push --force:*)'
+      $s.permissions.deny | Should -Contain 'Bash(git reset --hard:*)'
+    }
+
+    It 'honours compliance.disabled: [main-thread-permissions] opt-out (T11)' {
+      $localDir = Join-Path $script:tgt 'local'
+      New-Item -ItemType Directory -Force -Path $localDir | Out-Null
+      Set-Content -LiteralPath (Join-Path $localDir 'framework.config.yaml') -Value @"
+compliance:
+  disabled:
+    - main-thread-permissions
+"@ -NoNewline
+      Invoke-Sync -Target $script:tgt | Should -Be 0
+      $s = Read-SettingsJson $script:tgt
+      # Hooks still wired (T11 only skipped).
+      $s.hooks.PreToolUse.Count | Should -Be 3
+      # No permissions.deny additions.
+      ($s.permissions -and $s.permissions.deny -and ($s.permissions.deny | Where-Object { $_ -like 'Edit(*core/**)' }).Count) `
+        | Should -Not -BeTrue
     }
 
     It 'is idempotent on re-run' {

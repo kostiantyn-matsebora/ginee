@@ -65,6 +65,7 @@ Even within the same task + within the role's `phase-participation:` window, tea
 | `local/bindings.md` / `local/project-profile.md` / `local/index/manifest.yaml` rewritten materially since the warm agent last interacted | Specialist's setup context is stale; safer to reload. |
 | User explicitly requests fresh-spawn (`fresh:` per-task prefix) | Authority override. |
 | Adapter cannot deliver a `SendMessage` to the recorded agent-id (agent died · session restart · adapter bug) | Resume is impossible; spawn fresh transparently. |
+| Dispatch count for the warm agent exceeds the soft cap (`local/framework.config.yaml § warm-reuse.dispatch-cap`; default 15) | Drift accumulates over many dispatches in one task; per `migrations/warm-cardinal-default.md` (T11 / #147) team-lead force-fresh + emits a summary-handoff so the new agent inherits prior decisions. |
 
 Forced-fresh is not a regression — it's the safety carve-out. Team-lead never silently warm-resumes through one of these.
 

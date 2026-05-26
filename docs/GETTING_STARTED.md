@@ -172,6 +172,17 @@ Four more hooks complete the playbook's enforcement surface:
 
 All four wire automatically via `/ginee-update`. Bypass per call: `SKIP_GINEE_COMPLIANCE=1`. Per-tactic opt-out IDs: `user-prompt-submit-hook`, `posttooluse-edit-hook`, `stop-hook`, `pretooluse-send-message-hook`. Full specs per [adapters/claude/install.md § Compliance hooks + statusline](https://github.com/kostiantyn-matsebora/ginee/blob/main/adapters/claude/install.md#compliance-hooks--statusline-per-playbook-135).
 
+### Compliance — Tier 3 closeout (T9 / T10 / T11 / T12, opt-in)
+
+The last batch of the playbook closes out the recency-optimisation pass + slash command suite + main-thread permission lockdown + session-resume hook:
+
+- **T9 — CLAUDE.md bookending** — 5 hard constraints (self-lint marker · SA never edits · context-economy trailer · D-free runtime · `local/**` only via discovery) appear at the top AND bottom of `CLAUDE.md` so they survive recency drift. Adopters who re-paste the pointer block (or run `/ginee-update`) inherit both ends automatically.
+- **T10 — slash command suite** — six deterministic-template commands ship under `.claude/commands/ginee-*.md` (`/ginee-dispatch <role> <task>` · `/ginee-phase-report` · `/ginee-self-lint` · `/ginee-commit` · `/ginee-pr` · `/ginee-issue-pickup #N`). Replaces LLM free-form composition with schema-bound prompts at the moment of composition.
+- **T11 — main-thread permission lockdown + dispatch-cap** — `.claude/settings.json § permissions.deny` blocks `Edit` / `Write` / `MultiEdit` on `.agents/ginee/{core,adapters,extras}/**` + destructive Bash from the main thread; real work routes through cardinals. Adopter project code untouched. Optional `local/framework.config.yaml § warm-reuse.dispatch-cap: 15` triggers forced-fresh + `## Carry-forward summary` payload when a warm cardinal accumulates too many dispatches.
+- **T12 — SessionStart resume hook** — scans `issue/<N>-…` branch state + open `ginee:in-progress` GitHub issues at session boundary; injects `[ginee:resume]` block via `hookSpecificOutput.additionalContext`. Quiet on empty; offline-safe.
+
+All four wire automatically via `/ginee-update`. New per-tactic opt-out IDs: `slash-commands`, `main-thread-permissions`, `session-start-hook`. Full specs per [adapters/claude/install.md § Compliance hooks + statusline](https://github.com/kostiantyn-matsebora/ginee/blob/main/adapters/claude/install.md#compliance-hooks--statusline-per-playbook-135).
+
 ## 4. Update later
 
 **Preferred — `/ginee-update` skill** (tier-1; works once you have ginee 0.8.0+ installed):

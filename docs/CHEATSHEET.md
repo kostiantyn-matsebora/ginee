@@ -159,6 +159,31 @@ Four further hooks layer prompt-time / action-time / turn-time enforcement (pare
 
 Opt-out tactic-ids: `user-prompt-submit-hook` · `posttooluse-edit-hook` · `stop-hook` · `pretooluse-send-message-hook`. Full specs: [`migrations/user-prompt-submit-hook.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/migrations/user-prompt-submit-hook.md) · [`migrations/posttooluse-edit-hook.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/migrations/posttooluse-edit-hook.md) · [`migrations/stop-hook.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/migrations/stop-hook.md) · [`migrations/carry-forward-injection.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/migrations/carry-forward-injection.md).
 
+## Compliance — Tier 3 closeout (T9 / T10 / T11 / T12)
+
+Last batch of the maximum-force Claude playbook (parent: [#135](https://github.com/kostiantyn-matsebora/ginee/issues/135)).
+
+| Tactic | What lands | Where |
+|---|---|---|
+| **T9 — bookending** | 5 hard constraints at the top AND bottom of `CLAUDE.md` + adapter pointer | `adapters/claude/CLAUDE-pointer.md`; framework-self `CLAUDE.md` |
+| **T10 — slash commands** | `/ginee-dispatch` · `/ginee-phase-report` · `/ginee-self-lint` · `/ginee-commit` · `/ginee-pr` · `/ginee-issue-pickup` | `.claude/commands/ginee-*.md` |
+| **T11 — main-thread lockdown + dispatch-cap** | `permissions.deny` blocks framework-side `Edit` / `Write` / destructive Bash; `warm-reuse.dispatch-cap: 15` triggers forced-fresh + `## Carry-forward summary` | `.claude/settings.json`; `local/framework.config.yaml` |
+| **T12 — SessionStart resume** | `[ginee:resume]` block with branch + open `ginee:in-progress` issues | `.claude/settings.json § hooks.SessionStart` |
+
+```yaml
+# local/framework.config.yaml — Tier 3 per-tactic opt-outs
+compliance:
+  disabled:
+    - slash-commands
+    - main-thread-permissions
+    - session-start-hook
+# Warm registry soft cap — over-cap forces fresh + summary handoff per warm-cardinal-default.md
+warm-reuse:
+  dispatch-cap: 15
+```
+
+Slash commands install via `install.{ps1,sh}` (re-run via `/ginee-update`). All four tactics fail-open on error. Full specs: [`migrations/claude-md-bookending.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/migrations/claude-md-bookending.md) · [`migrations/slash-commands-suite.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/migrations/slash-commands-suite.md) · [`migrations/warm-cardinal-default.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/migrations/warm-cardinal-default.md) · [`migrations/session-start-hook.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/migrations/session-start-hook.md).
+
 ## Sub-issue dispatch (D39)
 
 On issue-sourced tasks, team-lead creates one GitHub sub-issue per cardinal dispatch under the parent — labelled by role + phase, threading progress comments + cumulative time, closed on phase-report return. Cross-session resume reads parent + open sub-issues; no transcript replay.

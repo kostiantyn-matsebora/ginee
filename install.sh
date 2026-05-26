@@ -393,6 +393,14 @@ case "$ADAPTER" in
     cp -r "$FRAMEWORK_DIR"/core/skills/ginee-* "$TARGET/.claude/skills/"
     echo "Copied 10 ginee-* skills to .claude/skills/"
 
+    # T10 / #146 — slash command suite. Six ginee-*.md files sync to .claude/commands/.
+    mkdir -p "$TARGET/.claude/commands"
+    rm -f "$TARGET"/.claude/commands/ginee-*.md
+    if compgen -G "$FRAMEWORK_DIR/adapters/claude/commands/ginee-*.md" >/dev/null; then
+      cp "$FRAMEWORK_DIR"/adapters/claude/commands/ginee-*.md "$TARGET/.claude/commands/"
+      echo "Copied 6 ginee-* slash commands to .claude/commands/"
+    fi
+
     # Sync CLAUDE-pointer.md block into project's CLAUDE.md.
     #  - Existing block (sentinel present): refresh body in place — pointer blocks
     #    evolve across releases (D11 rename being the most extreme case).

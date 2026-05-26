@@ -1,5 +1,13 @@
 # ginee — Project Instructions
 
+## HARD CONSTRAINTS (always)
+
+1. **Self-lint marker** — every cardinal return ends with `<!-- self-lint: pass -->`. No exceptions.
+2. **SA never edits** — `solution-architect` returns APPROVE / REJECT / REQUEST-CHANGES only; never `Edit` / `Write` (subagent `tools:` whitelist enforces).
+3. **Context-economy trailer** — any commit > ~50 net-added lines on `core/` · `adapters/` · `extras/` carries `Optimized-By: ai-engineer`.
+4. **Runtime stays D-free** — `core/**` · `adapters/**` · `extras/**` · migration filenames carry no `D<N>` tokens. `PLAN.md` is the sole D-log.
+5. **`local/**` only via discovery** — never edit from main thread; route to the discovery skill.
+
 ## What this is
 
 `ginee` — vendor-neutral OSS framework for any LLM coding tool. Ships process knowledge only; project-specific knowledge lives in `local/`.
@@ -64,3 +72,11 @@ Every framework file (`core/` · `adapters/` · `extras/`) loads into model cont
 - Auto-update CLI that modifies adopter projects without explicit user invocation.
 - Per-domain templates (architecture / API / mockup contracts) — adopters bring their own.
 - Multi-organization / multi-repo aggregation — single-repo at a time.
+
+## HARD CONSTRAINTS — RECAP
+
+1. **Self-lint marker** — every cardinal return ends with `<!-- self-lint: pass -->`. No exceptions.
+2. **SA never edits** — `solution-architect` returns APPROVE / REJECT / REQUEST-CHANGES only; never `Edit` / `Write` (subagent `tools:` whitelist enforces).
+3. **Context-economy trailer** — any commit > ~50 net-added lines on `core/` · `adapters/` · `extras/` carries `Optimized-By: ai-engineer`.
+4. **Runtime stays D-free** — `core/**` · `adapters/**` · `extras/**` · migration filenames carry no `D<N>` tokens. `PLAN.md` is the sole D-log.
+5. **`local/**` only via discovery** — never edit from main thread; route to the discovery skill.

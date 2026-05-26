@@ -10,6 +10,15 @@ All notable changes to ginee. The format follows [Keep a Changelog](https://keep
 
 ## Unreleased
 
+### Added
+
+- **Tier 3 compliance — T9 / T10 / T11 / T12** ([#175](https://github.com/kostiantyn-matsebora/ginee/pull/175), parent: [#135](https://github.com/kostiantyn-matsebora/ginee/issues/135)). The last batch of the maximum-force Claude playbook ships the recency-optimisation pass + slash command suite + main-thread permission lockdown + session-resume hook.
+  - **T9** ([#145](https://github.com/kostiantyn-matsebora/ginee/issues/145)) — CLAUDE.md hard-constraints **bookending**. Both the framework's own `CLAUDE.md` and `adapters/claude/CLAUDE-pointer.md` carry the 5 hard constraints (self-lint marker · SA never edits · context-economy trailer · D-free runtime · `local/**` only via discovery) at the top AND the bottom. Class H (always-loaded text), recency-optimised. Spec: [`migrations/claude-md-bookending.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/migrations/claude-md-bookending.md).
+  - **T10** ([#146](https://github.com/kostiantyn-matsebora/ginee/issues/146)) — **slash command suite** under `adapters/claude/commands/ginee-*.md`. Six deterministic-template commands replace LLM free-form composition for drift-prone surfaces: `/ginee-dispatch <role> <task>` · `/ginee-phase-report` · `/ginee-self-lint` · `/ginee-commit` · `/ginee-pr` · `/ginee-issue-pickup #N`. Installer syncs to `.claude/commands/`. Spec: [`migrations/slash-commands-suite.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/migrations/slash-commands-suite.md).
+  - **T11** ([#147](https://github.com/kostiantyn-matsebora/ginee/issues/147)) — **main-thread permission lockdown + warm-registry dispatch-cap**. `.claude/settings.json § permissions.deny` blocks framework-side `Edit` / `Write` / `MultiEdit` + destructive Bash from the main thread; real work routes through cardinals via `Agent` / `SendMessage`. Adopter project code untouched. Per-issue warm registry honours D43 plumbing + new `local/framework.config.yaml § warm-reuse.dispatch-cap` soft cap (default 15) — over-cap → forced-fresh + `## Carry-forward summary` payload preserves prior decisions. Spec: [`migrations/warm-cardinal-default.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/migrations/warm-cardinal-default.md).
+  - **T12** ([#148](https://github.com/kostiantyn-matsebora/ginee/issues/148)) — **SessionStart resume hook**. Scans `issue/<N>-…` branch state + open `ginee:in-progress` GitHub issues at session boundary; injects `[ginee:resume]` block via `hookSpecificOutput.additionalContext`. Quiet on empty; offline-safe. Spec: [`migrations/session-start-hook.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/migrations/session-start-hook.md).
+  - All four wire automatically via `/ginee-update` (extended `core/scripts/sync-claude-settings.{ps1,sh}` + `install.{ps1,sh}` slash-commands copy step). Bypass per call: `SKIP_GINEE_COMPLIANCE=1`. New opt-out tactic-ids: `slash-commands` · `main-thread-permissions` · `session-start-hook`.
+
 ## 0.23.0 — 2026-05-26
 
 ### Added
