@@ -29,3 +29,4 @@ local/**
 # Test artefacts (Pester coverage + nunit output)
 coverage.xml
 pester-results.xml
+testResults.xml

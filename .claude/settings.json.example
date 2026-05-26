@@ -1,5 +1,5 @@
 {
-  "_comment": "ginee compliance — Copy this file to .claude/settings.json in your local checkout to activate. T2/T3/T4 entries (Edit|Write|MultiEdit / Bash PreToolUse + statusLine + PostToolUse context-economy) remain as before. T5–T8 (playbook #135) added: UserPromptSubmit (T5) injects task-keyword spec excerpts; PostToolUse on core/** (T6) injects a self-check reminder; Stop (T7) refuses turn-end on incomplete work; PreToolUse SendMessage (T8) blocks warm-cardinal continuations missing the [carry-forward] anchor. Each requires pwsh 7+ on PATH. Bypass per invocation: SKIP_GINEE_COMPLIANCE=1; opt out repo-wide: local/framework.config.yaml § compliance.disabled.",
+  "_comment": "ginee compliance — Copy this file to .claude/settings.json in your local checkout to activate. T2/T3/T4 entries (Edit|Write|MultiEdit / Bash PreToolUse + statusLine + PostToolUse context-economy) remain as before. T5–T8 (playbook #135) added: UserPromptSubmit (T5) injects task-keyword spec excerpts; PostToolUse on core/** (T6) injects a self-check reminder; Stop (T7) refuses turn-end on incomplete work; PreToolUse SendMessage (T8) blocks warm-cardinal continuations missing the [carry-forward] anchor. T9–T12 added: T9 (bookended CLAUDE.md), T10 (.claude/commands/ginee-*.md), T11 (main-thread permission lockdown — sync-claude-settings populates permissions.deny on the adopter side; not applied here for framework-self-dev), T12 (SessionStart hook injects branch + open-issue resume state). T13 added (ask-mode, push-time): PreToolUse Bash hook attest-optimized-by surfaces Claude Code's permission prompt when a `git push` would push a range carrying Optimized-By: ai-engineer trailer in any commit AND no verifiable Agent(subagent_type=ai-engineer) dispatch in the session transcript. Path-agnostic. Each requires pwsh 7+ on PATH. Bypass per invocation: SKIP_GINEE_COMPLIANCE=1; opt out repo-wide: local/framework.config.yaml § compliance.disabled.",
   "statusLine": {
     "type": "command",
     "command": "pwsh -NoProfile -File adapters/claude/statusline.ps1"
@@ -32,6 +32,16 @@
           {
             "type": "command",
             "command": "pwsh -NoProfile -File adapters/claude/hooks/pre-tool-use-send-message.ps1",
+            "timeout": 10
+          }
+        ]
+      },
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "pwsh -NoProfile -File adapters/claude/hooks/attest-optimized-by.ps1",
             "timeout": 10
           }
         ]
@@ -71,6 +81,17 @@
           {
             "type": "command",
             "command": "pwsh -NoProfile -File adapters/claude/hooks/stop.ps1",
+            "timeout": 10
+          }
+        ]
+      }
+    ],
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "pwsh -NoProfile -File adapters/claude/hooks/session-start.ps1",
             "timeout": 10
           }
         ]

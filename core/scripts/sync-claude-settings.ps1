@@ -63,6 +63,8 @@ $sendMsgHookCmd    = "pwsh -NoProfile -File $FrameworkRel/adapters/claude/hooks/
 $postEditHookCmd   = "pwsh -NoProfile -File $FrameworkRel/adapters/claude/hooks/post-tool-use-edit.ps1"
 $upshHookCmd       = "pwsh -NoProfile -File $FrameworkRel/adapters/claude/hooks/user-prompt-submit.ps1"
 $stopHookCmd       = "pwsh -NoProfile -File $FrameworkRel/adapters/claude/hooks/stop.ps1"
+$sessionStartCmd   = "pwsh -NoProfile -File $FrameworkRel/adapters/claude/hooks/session-start.ps1"
+$attestObCmd       = "pwsh -NoProfile -File $FrameworkRel/adapters/claude/hooks/attest-optimized-by.ps1"
 $statuslineCmd     = "pwsh -NoProfile -File $FrameworkRel/adapters/claude/statusline.ps1"
 
 # Marker substrings used for idempotence — anything matching is considered
@@ -73,7 +75,27 @@ $sendMsgHookMarker    = "adapters/claude/hooks/pre-tool-use-send-message"
 $postEditHookMarker   = "adapters/claude/hooks/post-tool-use-edit"
 $upshHookMarker       = "adapters/claude/hooks/user-prompt-submit"
 $stopHookMarker       = "adapters/claude/hooks/stop"
+$sessionStartMarker   = "adapters/claude/hooks/session-start"
+$attestObMarker       = "adapters/claude/hooks/attest-optimized-by"
 $statuslineMarker     = "adapters/claude/statusline"
+
+# T11 / #147 — main-thread permission lockdown. Framework-scoped deny rules
+# only; adopter project code untouched.
+$ginreeDenyRules = @(
+  "Edit($FrameworkRel/core/**)"
+  "Edit($FrameworkRel/adapters/**)"
+  "Edit($FrameworkRel/extras/**)"
+  "Write($FrameworkRel/core/**)"
+  "Write($FrameworkRel/adapters/**)"
+  "Write($FrameworkRel/extras/**)"
+  "MultiEdit($FrameworkRel/core/**)"
+  "MultiEdit($FrameworkRel/adapters/**)"
+  "MultiEdit($FrameworkRel/extras/**)"
+  "Bash(rm -rf:*)"
+  "Bash(git push --force:*)"
+  "Bash(git push -f:*)"
+  "Bash(git reset --hard:*)"
+)
 
 New-Item -ItemType Directory -Force -Path $claudeDir | Out-Null
 
@@ -115,7 +137,7 @@ if (-not $settings.ContainsKey('statusLine')) {
 
 # --- hooks scaffolding ---
 if (-not $settings.ContainsKey('hooks')) { $settings['hooks'] = @{} }
-foreach ($eventKey in @('PreToolUse','PostToolUse','UserPromptSubmit','Stop')) {
+foreach ($eventKey in @('PreToolUse','PostToolUse','UserPromptSubmit','Stop','SessionStart')) {
   if (-not $settings['hooks'].ContainsKey($eventKey)) {
     $settings['hooks'][$eventKey] = @()
   }
@@ -154,10 +176,11 @@ function Add-EventEntry {
 # Append a hook command to an existing PostToolUse entry that matches a sister
 # marker. Used to land T6's post-edit hook inside the same entry as the
 # existing context-economy-check (both target Edit|Write|MultiEdit).
-# --- PreToolUse entries (T2 / T3 / T8) ---
+# --- PreToolUse entries (T2 / T3 / T8 / T13) ---
 if (Add-EventEntry -EventKey 'PreToolUse' -Marker $editHookMarker    -Matcher 'Edit|Write|MultiEdit' -Cmd $editHookCmd)    { $anyChange = $true }
 if (Add-EventEntry -EventKey 'PreToolUse' -Marker $bashHookMarker    -Matcher 'Bash'                  -Cmd $bashHookCmd)    { $anyChange = $true }
 if (Add-EventEntry -EventKey 'PreToolUse' -Marker $sendMsgHookMarker -Matcher 'SendMessage'           -Cmd $sendMsgHookCmd) { $anyChange = $true }
+if (Add-EventEntry -EventKey 'PreToolUse' -Marker $attestObMarker    -Matcher 'Bash'                  -Cmd $attestObCmd)    { $anyChange = $true }
 
 # --- PostToolUse entries (T6 — adopter-side self-check reminder) ---
 # Framework-self-dev context-economy-check.ps1 is NOT wired here; it lives in
@@ -170,6 +193,34 @@ if (Add-EventEntry -EventKey 'UserPromptSubmit' -Marker $upshHookMarker -Matcher
 
 # --- Stop (T7) ---
 if (Add-EventEntry -EventKey 'Stop' -Marker $stopHookMarker -Matcher $null -Cmd $stopHookCmd) { $anyChange = $true }
+
+# --- SessionStart (T12 / #148) ---
+if (Add-EventEntry -EventKey 'SessionStart' -Marker $sessionStartMarker -Matcher $null -Cmd $sessionStartCmd) { $anyChange = $true }
+
+# --- Main-thread permission lockdown (T11 / #147) ---
+# Honours per-tactic opt-out: local/framework.config.yaml § compliance.disabled: [main-thread-permissions]
+$mainThreadOptOut = $false
+$cfgPath = Join-Path $Target 'local/framework.config.yaml'
+if (Test-Path -LiteralPath $cfgPath) {
+  $cfgBody = Get-Content -Raw -LiteralPath $cfgPath
+  if ($cfgBody -and $cfgBody -match '(?m)^compliance:\s*$' -and $cfgBody -match '(?m)^\s+-\s+main-thread-permissions\s*$') {
+    $mainThreadOptOut = $true
+  }
+}
+if (-not $mainThreadOptOut) {
+  if (-not $settings.ContainsKey('permissions')) { $settings['permissions'] = @{} }
+  if ($settings['permissions'] -isnot [hashtable]) { $settings['permissions'] = @{} }
+  if (-not $settings['permissions'].ContainsKey('deny')) { $settings['permissions']['deny'] = @() }
+  $existingDeny = @($settings['permissions']['deny'])
+  $merged = @($existingDeny)
+  foreach ($rule in $ginreeDenyRules) {
+    if ($existingDeny -notcontains $rule) {
+      $merged = @($merged + $rule)
+      $anyChange = $true
+    }
+  }
+  $settings['permissions']['deny'] = $merged
+}
 
 # --- Persist if changed ---
 if ($anyChange) {

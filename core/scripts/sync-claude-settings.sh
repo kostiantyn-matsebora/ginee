@@ -46,6 +46,8 @@ SENDMSG_HOOK_CMD="pwsh -NoProfile -File $FRAMEWORK_REL/adapters/claude/hooks/pre
 POSTEDIT_HOOK_CMD="pwsh -NoProfile -File $FRAMEWORK_REL/adapters/claude/hooks/post-tool-use-edit.ps1"
 UPSH_HOOK_CMD="pwsh -NoProfile -File $FRAMEWORK_REL/adapters/claude/hooks/user-prompt-submit.ps1"
 STOP_HOOK_CMD="pwsh -NoProfile -File $FRAMEWORK_REL/adapters/claude/hooks/stop.ps1"
+SESSION_START_CMD="pwsh -NoProfile -File $FRAMEWORK_REL/adapters/claude/hooks/session-start.ps1"
+ATTEST_OB_CMD="pwsh -NoProfile -File $FRAMEWORK_REL/adapters/claude/hooks/attest-optimized-by.ps1"
 STATUSLINE_CMD="pwsh -NoProfile -File $FRAMEWORK_REL/adapters/claude/statusline.ps1"
 
 EDIT_HOOK_MARKER="adapters/claude/hooks/pre-tool-use-edit"
@@ -54,6 +56,8 @@ SENDMSG_HOOK_MARKER="adapters/claude/hooks/pre-tool-use-send-message"
 POSTEDIT_HOOK_MARKER="adapters/claude/hooks/post-tool-use-edit"
 UPSH_HOOK_MARKER="adapters/claude/hooks/user-prompt-submit"
 STOP_HOOK_MARKER="adapters/claude/hooks/stop"
+SESSION_START_MARKER="adapters/claude/hooks/session-start"
+ATTEST_OB_MARKER="adapters/claude/hooks/attest-optimized-by"
 STATUSLINE_MARKER="adapters/claude/statusline"
 
 mkdir -p "$CLAUDE_DIR"
@@ -94,6 +98,7 @@ CURRENT="$(printf '%s' "$CURRENT" | jq '
   | if .hooks | has("PostToolUse")       | not then .hooks.PostToolUse = []       else . end
   | if .hooks | has("UserPromptSubmit")  | not then .hooks.UserPromptSubmit = []  else . end
   | if .hooks | has("Stop")              | not then .hooks.Stop = []              else . end
+  | if .hooks | has("SessionStart")      | not then .hooks.SessionStart = []      else . end
 ')"
 
 # Add a top-level entry under .hooks[event] (matcher optional).
@@ -120,10 +125,11 @@ add_entry() {
   fi
 }
 
-# PreToolUse — T2, T3, T8.
+# PreToolUse — T2, T3, T8, T13.
 add_entry "PreToolUse" "$EDIT_HOOK_MARKER"    "Edit|Write|MultiEdit" "$EDIT_HOOK_CMD"
 add_entry "PreToolUse" "$BASH_HOOK_MARKER"    "Bash"                  "$BASH_HOOK_CMD"
 add_entry "PreToolUse" "$SENDMSG_HOOK_MARKER" "SendMessage"           "$SENDMSG_HOOK_CMD"
+add_entry "PreToolUse" "$ATTEST_OB_MARKER"    "Bash"                  "$ATTEST_OB_CMD"
 
 # PostToolUse — T6 only (framework-self-dev context-economy-check.ps1 is not
 # wired in adopter installs: scripts/ is pruned + the gate is framework-only).
@@ -134,6 +140,49 @@ add_entry "UserPromptSubmit" "$UPSH_HOOK_MARKER" "" "$UPSH_HOOK_CMD"
 
 # Stop — T7.
 add_entry "Stop" "$STOP_HOOK_MARKER" "" "$STOP_HOOK_CMD"
+
+# SessionStart — T12 / #148.
+add_entry "SessionStart" "$SESSION_START_MARKER" "" "$SESSION_START_CMD"
+
+# --- Main-thread permission lockdown (T11 / #147) ---
+# Honours per-tactic opt-out: local/framework.config.yaml § compliance.disabled: [main-thread-permissions]
+MAIN_THREAD_OPTOUT=0
+CFG="$TARGET/local/framework.config.yaml"
+if [ -f "$CFG" ]; then
+  if grep -q '^compliance:[[:space:]]*$' "$CFG" && \
+     grep -qE '^[[:space:]]+-[[:space:]]+main-thread-permissions[[:space:]]*$' "$CFG"; then
+    MAIN_THREAD_OPTOUT=1
+  fi
+fi
+
+if [ "$MAIN_THREAD_OPTOUT" = "0" ]; then
+  CURRENT="$(printf '%s' "$CURRENT" | jq '
+    if has("permissions") | not then .permissions = {} else . end
+    | if .permissions | type != "object" then .permissions = {} else . end
+    | if .permissions | has("deny") | not then .permissions.deny = [] else . end
+  ')"
+  # Idempotent merge — only append rules not already present.
+  GINEE_DENY_RULES=(
+    "Edit($FRAMEWORK_REL/core/**)"
+    "Edit($FRAMEWORK_REL/adapters/**)"
+    "Edit($FRAMEWORK_REL/extras/**)"
+    "Write($FRAMEWORK_REL/core/**)"
+    "Write($FRAMEWORK_REL/adapters/**)"
+    "Write($FRAMEWORK_REL/extras/**)"
+    "MultiEdit($FRAMEWORK_REL/core/**)"
+    "MultiEdit($FRAMEWORK_REL/adapters/**)"
+    "MultiEdit($FRAMEWORK_REL/extras/**)"
+    "Bash(rm -rf:*)"
+    "Bash(git push --force:*)"
+    "Bash(git push -f:*)"
+    "Bash(git reset --hard:*)"
+  )
+  for rule in "${GINEE_DENY_RULES[@]}"; do
+    CURRENT="$(printf '%s' "$CURRENT" | jq --arg r "$rule" '
+      if .permissions.deny | index($r) then . else .permissions.deny += [$r] end
+    ')"
+  done
+fi
 
 # --- Persist if changed ---
 if [ "$CURRENT" = "$ORIGINAL" ]; then

@@ -35,11 +35,25 @@ Shared sections (skill cheat sheet · phase-file loading · model tier · update
 
    POSIX symlinks preferred — `ln -s .agents/ginee/core/skills/ginee-* .claude/skills/` (auto-update; copies need re-running on upgrade).
 
-3. **Update `CLAUDE.md`.** Append the block from `.agents/ginee/adapters/claude/CLAUDE-pointer.md` to the project's `CLAUDE.md` (create the file if absent).
+3. **Bridge framework slash commands (T10 / #146)** — `.agents/ginee/adapters/claude/commands/ginee-*.md` → `.claude/commands/`:
 
-4. **Run discovery.** Open the project in Claude Code; prompt `Run initial discovery.` (Claude auto-routes to `team-lead` via subagent description match).
+   ```powershell
+   New-Item -ItemType Directory -Force .claude\commands | Out-Null
+   Copy-Item .agents\ginee\adapters\claude\commands\ginee-*.md .claude\commands\
+   ```
 
-5. **Verify.** Ask Claude for the status of each cardinal — each should report its charter (from `.agents/ginee/core/roles/<role>.md`) + confirm bindings + surface any `.agents/ginee/local/roles/<role>.md` extension.
+   ```bash
+   mkdir -p .claude/commands
+   cp .agents/ginee/adapters/claude/commands/ginee-*.md .claude/commands/
+   ```
+
+   Six commands ship — `/ginee-dispatch` · `/ginee-phase-report` · `/ginee-self-lint` · `/ginee-commit` · `/ginee-pr` · `/ginee-issue-pickup`. Replace LLM free-form composition with deterministic schema skeletons. POSIX symlinks preferred — `ln -s .agents/ginee/adapters/claude/commands/ginee-*.md .claude/commands/`.
+
+4. **Update `CLAUDE.md`.** Append the block from `.agents/ginee/adapters/claude/CLAUDE-pointer.md` to the project's `CLAUDE.md` (create the file if absent).
+
+5. **Run discovery.** Open the project in Claude Code; prompt `Run initial discovery.` (Claude auto-routes to `team-lead` via subagent description match).
+
+6. **Verify.** Ask Claude for the status of each cardinal — each should report its charter (from `.agents/ginee/core/roles/<role>.md`) + confirm bindings + surface any `.agents/ginee/local/roles/<role>.md` extension.
 
 ## How to invoke
 
@@ -146,7 +160,8 @@ Hooks under `adapters/claude/hooks/` + statusline at `adapters/claude/statusline
     "PreToolUse": [
       { "matcher": "Edit|Write|MultiEdit", "hooks": [{ "type": "command", "command": "pwsh -NoProfile -File .agents/ginee/adapters/claude/hooks/pre-tool-use-edit.ps1", "timeout": 10 }] },
       { "matcher": "Bash",                 "hooks": [{ "type": "command", "command": "pwsh -NoProfile -File .agents/ginee/adapters/claude/hooks/pre-tool-use-bash.ps1", "timeout": 10 }] },
-      { "matcher": "SendMessage",          "hooks": [{ "type": "command", "command": "pwsh -NoProfile -File .agents/ginee/adapters/claude/hooks/pre-tool-use-send-message.ps1", "timeout": 10 }] }
+      { "matcher": "SendMessage",          "hooks": [{ "type": "command", "command": "pwsh -NoProfile -File .agents/ginee/adapters/claude/hooks/pre-tool-use-send-message.ps1", "timeout": 10 }] },
+      { "matcher": "Bash",                 "hooks": [{ "type": "command", "command": "pwsh -NoProfile -File .agents/ginee/adapters/claude/hooks/attest-optimized-by.ps1", "timeout": 10 }] }
     ],
     "PostToolUse": [
       { "matcher": "Edit|Write|MultiEdit", "hooks": [
@@ -159,9 +174,29 @@ Hooks under `adapters/claude/hooks/` + statusline at `adapters/claude/statusline
     ],
     "Stop": [
       { "hooks": [{ "type": "command", "command": "pwsh -NoProfile -File .agents/ginee/adapters/claude/hooks/stop.ps1", "timeout": 10 }] }
+    ],
+    "SessionStart": [
+      { "hooks": [{ "type": "command", "command": "pwsh -NoProfile -File .agents/ginee/adapters/claude/hooks/session-start.ps1", "timeout": 10 }] }
     ]
   },
-  "statusLine": { "type": "command", "command": "pwsh -NoProfile -File .agents/ginee/adapters/claude/statusline.ps1" }
+  "statusLine": { "type": "command", "command": "pwsh -NoProfile -File .agents/ginee/adapters/claude/statusline.ps1" },
+  "permissions": {
+    "deny": [
+      "Edit(.agents/ginee/core/**)",
+      "Edit(.agents/ginee/adapters/**)",
+      "Edit(.agents/ginee/extras/**)",
+      "Write(.agents/ginee/core/**)",
+      "Write(.agents/ginee/adapters/**)",
+      "Write(.agents/ginee/extras/**)",
+      "MultiEdit(.agents/ginee/core/**)",
+      "MultiEdit(.agents/ginee/adapters/**)",
+      "MultiEdit(.agents/ginee/extras/**)",
+      "Bash(rm -rf:*)",
+      "Bash(git push --force:*)",
+      "Bash(git push -f:*)",
+      "Bash(git reset --hard:*)"
+    ]
+  }
 }
 ```
 
@@ -211,10 +246,20 @@ Bash equivalents — substitute `bash .agents/ginee/adapters/claude/hooks/<name>
 
 **SendMessage (T8 — PreToolUse, blocks)** — warm-cardinal continuations missing the `[carry-forward] Remember: <rule>` leading anchor. Rules per cardinal live in `adapters/claude/hooks/carry-forward-rules.yaml`. Out of scope: `Agent` (first dispatch). When the target cardinal is unknown, the hook falls back to a generic rule (`stay within your role's surface; never edit outside owned paths.`).
 
-**Bypass per invocation:** `SKIP_GINEE_COMPLIANCE=1`.  
-**Opt out per tactic:** `local/framework.config.yaml § compliance.disabled: [pretooluse-edit-hook | pretooluse-bash-hook | pretooluse-send-message-hook | posttooluse-edit-hook | user-prompt-submit-hook | stop-hook | compliance-statusline | subagent-tools-whitelist]`.
+**Tier 3 — recency / structural shifts (T9 / T10 / T11 / T12 / T13):**
 
-Full specs: [`migrations/pretooluse-edit-hook.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/migrations/pretooluse-edit-hook.md) · [`migrations/pretooluse-bash-hook.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/migrations/pretooluse-bash-hook.md) · [`migrations/compliance-statusline.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/migrations/compliance-statusline.md) · [`migrations/user-prompt-submit-hook.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/migrations/user-prompt-submit-hook.md) · [`migrations/posttooluse-edit-hook.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/migrations/posttooluse-edit-hook.md) · [`migrations/stop-hook.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/migrations/stop-hook.md) · [`migrations/carry-forward-injection.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/migrations/carry-forward-injection.md). Statusline never blocks host; T5 / T6 inject context but never block; T7 / T8 block (exit 2) — all hooks fail-open on uncaught errors.
+| # | Tactic | Force | What lands | Spec |
+|---|---|---|---|---|
+| T9 | CLAUDE.md bookending | H (recency-opt.) | 5 hard constraints verbatim at top + bottom of `CLAUDE-pointer.md` block | `migrations/claude-md-bookending.md` |
+| T10 | Slash command suite | A indirect | 6 schema-bound templates at `.claude/commands/ginee-*.md` (`dispatch` · `phase-report` · `self-lint` · `commit` · `pr` · `issue-pickup`) | `migrations/slash-commands-suite.md` |
+| T11 | Main-thread permission lockdown + dispatch-cap | A + F | `permissions.deny` blocks framework-side edits + destructive Bash; `warm-reuse.dispatch-cap: 15` triggers forced-fresh + `## Carry-forward summary` | `migrations/warm-cardinal-default.md` |
+| T12 | SessionStart resume | D (boundary) | Scans `issue/<N>-…` branch + open `ginee:in-progress` issues → `[ginee:resume]` block via `hookSpecificOutput.additionalContext`; quiet on empty | `migrations/session-start-hook.md` |
+| T13 | Optimized-By attestation gate (ask-mode, push-time) | A *consent-required* | PreToolUse Bash hook surfaces Claude Code's permission prompt when `git push` would push a range containing `Optimized-By: ai-engineer` trailer without an `Agent(subagent_type=ai-engineer)` dispatch in the session transcript. Path-agnostic — the trailer's presence in any commit in the range is the sole signal. | `migrations/optimized-by-attestation.md` |
+
+**Bypass per invocation:** `SKIP_GINEE_COMPLIANCE=1`.  
+**Opt out per tactic:** `local/framework.config.yaml § compliance.disabled: [pretooluse-edit-hook | pretooluse-bash-hook | pretooluse-send-message-hook | posttooluse-edit-hook | user-prompt-submit-hook | stop-hook | compliance-statusline | subagent-tools-whitelist | slash-commands | main-thread-permissions | session-start-hook | optimized-by-attestation]`.
+
+Full specs: [`migrations/pretooluse-edit-hook.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/migrations/pretooluse-edit-hook.md) · [`migrations/pretooluse-bash-hook.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/migrations/pretooluse-bash-hook.md) · [`migrations/compliance-statusline.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/migrations/compliance-statusline.md) · [`migrations/user-prompt-submit-hook.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/migrations/user-prompt-submit-hook.md) · [`migrations/posttooluse-edit-hook.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/migrations/posttooluse-edit-hook.md) · [`migrations/stop-hook.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/migrations/stop-hook.md) · [`migrations/carry-forward-injection.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/migrations/carry-forward-injection.md) · [`migrations/claude-md-bookending.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/migrations/claude-md-bookending.md) · [`migrations/slash-commands-suite.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/migrations/slash-commands-suite.md) · [`migrations/warm-cardinal-default.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/migrations/warm-cardinal-default.md) · [`migrations/session-start-hook.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/migrations/session-start-hook.md) · [`migrations/optimized-by-attestation.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/migrations/optimized-by-attestation.md). Statusline never blocks host; T5 / T6 / T12 inject context but never block; T7 / T8 block (exit 2); T11 deny rules block via Claude Code permissions; T13 asks via Claude Code's permission prompt (user decides); all hooks fail-open on uncaught errors.
 
 ## Updates
 
