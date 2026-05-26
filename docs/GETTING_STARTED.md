@@ -75,9 +75,11 @@ $env:GINEE_REF='v0.1.0'; $env:GINEE_ADAPTER='claude'; iwr ... | iex
 
 `.agents/ginee/local/` is the only adopter-owned directory. Everything else is framework state.
 
-### Compliance hook (Claude adapter, opt-in)
+### Compliance enforcement (Claude adapter, opt-in)
 
-The Claude adapter ships a PreToolUse hook at `.agents/ginee/adapters/claude/hooks/pre-tool-use-edit.{ps1,sh}` that blocks edits violating 5 charter rules (hot-spec frontmatter · `cap-bytes` · D-token introduction · RFC 2119 modifier · always-loaded bloat). Wire into your project's `.claude/settings.json § hooks.PreToolUse` per [adapters/claude/install.md § Compliance hooks](https://github.com/kostiantyn-matsebora/ginee/blob/main/adapters/claude/install.md#compliance-hooks). Bypass per call: `SKIP_GINEE_COMPLIANCE=1`. Opt out: `local/framework.config.yaml § compliance.disabled: [pretooluse-edit-hook]`.
+The shipped `.claude/agents/<role>.md` pointer files carry a scoped `tools:` whitelist per cardinal (T1) — `solution-architect` cannot `Edit` / `Write`, `ai-engineer` cannot `Bash`. Spec: [`migrations/cardinal-tools-whitelist.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/migrations/cardinal-tools-whitelist.md).
+
+A PreToolUse hook at `.agents/ginee/adapters/claude/hooks/pre-tool-use-edit.{ps1,sh}` (T2) blocks edits violating 5 charter rules (hot-spec frontmatter · `cap-bytes` · D-token introduction · RFC 2119 modifier · always-loaded bloat). Wire into your project's `.claude/settings.json § hooks.PreToolUse` per [adapters/claude/install.md § Compliance hooks](https://github.com/kostiantyn-matsebora/ginee/blob/main/adapters/claude/install.md#compliance-hooks). Bypass per call: `SKIP_GINEE_COMPLIANCE=1`. Opt out per-tactic: `local/framework.config.yaml § compliance.disabled: [<tactic-id>]`.
 
 ## 2. Run discovery
 
