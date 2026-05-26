@@ -54,7 +54,7 @@ if ($env:SKIP_GINEE_COMPLIANCE -eq '1') { exit 0 }
 function Read-Payload {
   param([string]$TestInput)
   if ($TestInput) { return $TestInput }
-  return [Console]::In.ReadToEnd()
+  try { return [Console]::In.ReadToEnd() } catch { return '' }
 }
 
 function Get-RepoRoot {
@@ -149,6 +149,12 @@ function Write-Block {
 }
 
 # --- Main ---
+# Wrap the entire main block in try/catch — any uncaught error fails open
+# (returns exit 0). The hook MUST NOT block a legitimate edit because of a
+# bug in the hook itself; per parent #135's anti-patterns, hooks blocking
+# forgivable infractions are explicitly out of bounds.
+
+try {
 
 $raw = Read-Payload -TestInput $TestInput
 if (-not $raw) { exit 0 }
@@ -287,3 +293,9 @@ if ((Test-LoadAlwaysFrontmatter -Content $newContent) -and $oldContent) {
 }
 
 exit 0
+
+} catch {
+  # Fail open on any uncaught error inside the main block.
+  $null = $_
+  exit 0
+}

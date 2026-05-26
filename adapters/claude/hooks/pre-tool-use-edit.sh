@@ -140,8 +140,7 @@ case "$FILE_PATH" in
     ;;
   *) REL="$FILE_PATH" ;;
 esac
-backslash='\'
-REL="$(printf '%s' "$REL" | tr "$backslash" '/')"
+REL="$(printf '%s' "$REL" | sed 's|\\|/|g')"
 
 # Compose proposed post-edit content.
 OLD_CONTENT=""
