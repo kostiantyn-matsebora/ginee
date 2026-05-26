@@ -9,6 +9,7 @@
 
 set -u
 
+# shellcheck disable=SC2317
 emit_bare() {
   printf '%s' '[ginee]'
   exit 0
@@ -74,7 +75,7 @@ min_cap_headroom_percent() {
         exit
       }
     ' "$root/$file")"
-    [ -n "$cap" ] && [ "$cap" -gt 0 ] || continue
+    if [ -z "$cap" ] || [ "$cap" -le 0 ]; then continue; fi
     local size
     size="$(wc -c < "$root/$file" | awk '{print $1}')"
     local headroom=$(( (cap - size) * 100 / cap ))
