@@ -75,6 +75,12 @@ $env:GINEE_REF='v0.1.0'; $env:GINEE_ADAPTER='claude'; iwr ... | iex
 
 `.agents/ginee/local/` is the only adopter-owned directory. Everything else is framework state.
 
+### Compliance enforcement (Claude adapter, opt-in)
+
+The shipped `.claude/agents/<role>.md` pointer files carry a scoped `tools:` whitelist per cardinal (T1) — `solution-architect` cannot `Edit` / `Write`, `ai-engineer` cannot `Bash`. Spec: [`migrations/cardinal-tools-whitelist.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/migrations/cardinal-tools-whitelist.md).
+
+A PreToolUse hook at `.agents/ginee/adapters/claude/hooks/pre-tool-use-edit.{ps1,sh}` (T2) blocks edits violating 5 charter rules (hot-spec frontmatter · `cap-bytes` · D-token introduction · RFC 2119 modifier · always-loaded bloat). Wire into your project's `.claude/settings.json § hooks.PreToolUse` per [adapters/claude/install.md § Compliance hooks](https://github.com/kostiantyn-matsebora/ginee/blob/main/adapters/claude/install.md#compliance-hooks). Bypass per call: `SKIP_GINEE_COMPLIANCE=1`. Opt out per-tactic: `local/framework.config.yaml § compliance.disabled: [<tactic-id>]`.
+
 ## 2. Run discovery
 
 Open your client in the project. Type:
@@ -100,6 +106,10 @@ What happens (a few minutes, fully visible):
 **On rediscover post-D25** — `@team-lead rediscover` runs Step 8c re-attribution sweep: existing adopter docs migrate to the new D25 ownership map (CRs · project-instruction · work-breakdown → `team-lead`; CI/CD guide · runbooks → `devops-engineer`; per-tier READMEs → tier engineers). Full migration spec: [`migrations/classical-architect.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/migrations/classical-architect.md).
 
 You'll see proposed changes before any file is written — approve or redirect each step.
+
+### Compliance hook — Bash (T3, opt-in)
+
+A second PreToolUse hook at `.agents/ginee/adapters/claude/hooks/pre-tool-use-bash.{ps1,sh}` blocks 4 destructive shell-command patterns (`git commit --no-verify`, `git push --force` on trunk, `git reset --hard`, `gh pr create` without body). Wire per [adapters/claude/install.md § Compliance hooks — Bash](https://github.com/kostiantyn-matsebora/ginee/blob/main/adapters/claude/install.md#compliance-hooks--bash-t3). Opt out: `local/framework.config.yaml § compliance.disabled: [pretooluse-bash-hook]`.
 
 ## 3. Give it work
 

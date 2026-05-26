@@ -65,8 +65,16 @@ the same governance every single time.
     <p>Project docs (architecture, mockups, diagrams) stay where they are. Doc changes propagate instantly — the framework never duplicates content.</p>
   </article>
   <article class="why-card">
+    <h3><span class="why-emoji">🛡️</span> Compliance hooks</h3>
+    <p>Cross-platform PreToolUse hooks on the Claude adapter block 5 charter-violating edit patterns at the tool-call layer (frontmatter omission, cap-bytes overrun, D-token reintroduction, RFC 2119 voluntarism, always-loaded bloat). Per-tactic opt-out via <code>local/framework.config.yaml § compliance.disabled</code>.</p>
+  </article>
+  <article class="why-card">
     <h3><span class="why-emoji">⏱️</span> Iteration protocol</h3>
     <p>Work &gt; 15 min runs in 3–5 min stoppable batches with visible intermediate results. Interrupt anytime; resume next day with zero rework.</p>
+  </article>
+  <article class="why-card">
+    <h3><span class="why-emoji">🚧</span> Shell-command guardrails</h3>
+    <p>The Bash PreToolUse hook on Claude blocks 4 destructive shell patterns at the tool-call layer: <code>--no-verify</code> commits, force-pushes to trunk, hard resets, and PRs without a body. Per-tactic opt-out via <code>local/framework.config.yaml § compliance.disabled</code>.</p>
   </article>
   <article class="why-card">
     <h3><span class="why-emoji">🧱</span> Extensible</h3>
@@ -75,6 +83,10 @@ the same governance every single time.
   <article class="why-card">
     <h3><span class="why-emoji">🔄</span> Update-safe</h3>
     <p><code>core/</code>, <code>adapters/</code>, <code>extras/</code> replaced on update. <code>local/</code> (your bindings, custom roles) survives every upgrade.</p>
+  </article>
+  <article class="why-card">
+    <h3><span class="why-emoji">🛡️</span> Compliance by construction</h3>
+    <p>Per-cardinal <code>tools:</code> whitelists on the Claude adapter convert charter rules into hard gates — <code>solution-architect</code> cannot edit code; <code>ai-engineer</code> cannot run shells. Opt out per tactic via <code>local/framework.config.yaml § compliance.disabled</code>.</p>
   </article>
 </div>
 

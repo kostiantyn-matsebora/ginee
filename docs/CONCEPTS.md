@@ -28,6 +28,15 @@ ginee ships exactly **7 cardinal roles** — every adopter project has the same 
 
 **Custom roles** live under `local/roles/` and register under `team-lead`. Use the `core/templates/role-authoring-template.md` shape.
 
+## Compliance enforcement (Claude adapter)
+
+Class A action-time gates layer onto charter rules so they're enforced at the tool-call layer, not via always-loaded text alone. Two pieces ship in the parent playbook ([#135](https://github.com/kostiantyn-matsebora/ginee/issues/135)):
+
+- **Per-cardinal `tools:` whitelist** ([T1](https://github.com/kostiantyn-matsebora/ginee/issues/137)) — `solution-architect` cannot `Edit` / `Write`; `ai-engineer` cannot `Bash`. Binary tool gate at the subagent level. Spec: [`migrations/cardinal-tools-whitelist.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/migrations/cardinal-tools-whitelist.md).
+- **PreToolUse hook on `Edit` / `Write` / `MultiEdit`** ([T2](https://github.com/kostiantyn-matsebora/ginee/issues/138)) — exits 2 on hot-spec frontmatter omitted (D47) · `cap-bytes` exceeded without `Optimized-By` trailer · bare `D<N>` token introduced on `core/**` (D42) · `always` / `never` / `binding` / `mandatory` slipped past D48 · always-loaded surface bloat without trailer. Five charter rules graduate from advisory to blocking. Spec: [`migrations/pretooluse-edit-hook.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/migrations/pretooluse-edit-hook.md).
+
+Opt out per-tactic via `local/framework.config.yaml § compliance.disabled: [<tactic-id>]`. Bypass per invocation via `SKIP_GINEE_COMPLIANCE=1` (emergency only).
+
 ## Phased task lifecycle
 
 Every non-trivial task runs through **Phases 1–8**. Specialists within a phase run in parallel where independent; phases overlap wherever a contract surface decouples them.
@@ -44,6 +53,12 @@ Every non-trivial task runs through **Phases 1–8**. Specialists within a phase
 | **8. User approval** | User confirms delivered work | TODO ☐ → ☒; issue closed; delivery finalize per mode |
 
 **Auto mode (D12)** — prefix a task with `auto:` to elide intermediate gates (Phase 3 design review, iteration check-ins, engineer "stop and confirm"). Phase 8 becomes a single **delivery handoff** with Accept / Feedback / Reject. Forced back to interactive on UX changes, repeated defects, cross-domain cycles, or destructive actions.
+
+## Compliance — Bash hook (T3)
+
+A second PreToolUse hook ([#139](https://github.com/kostiantyn-matsebora/ginee/issues/139)) matches the `Bash` tool and blocks four destructive shell-command patterns: `git commit --no-verify`, `git push --force` on `main` / `master`, `git reset --hard` (with `SKIP_GINEE_COMPLIANCE` bypass), and `gh pr create` without `--body` / `--draft`. Allowlist preserves common legitimate workflows (force-with-lease on feature branches, soft reset, draft PRs).
+
+Opt out per-tactic: `local/framework.config.yaml § compliance.disabled: [pretooluse-bash-hook]`. Full spec: [`migrations/pretooluse-bash-hook.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/migrations/pretooluse-bash-hook.md).
 
 ## Dispatch rules
 
