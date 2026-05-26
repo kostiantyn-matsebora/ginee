@@ -262,7 +262,7 @@ skill-runner (Claude main thread)
 
 ## Compliance hooks
 
-The Claude adapter ships PreToolUse hooks under `adapters/claude/hooks/` that gate adopter edits at the tool-call layer (Class A force per #135). Tactic 2 (#138) — `Edit` / `Write` / `MultiEdit` — ships now; tactics 3 (Bash) + 4 (statusline) land separately.
+The Claude adapter ships PreToolUse hooks under `adapters/claude/hooks/` that gate adopter edits at the tool-call layer (Class A force per #135). Tactic 2 (#138) — `Edit` / `Write` / `MultiEdit` — and tactic 3 (#139) — `Bash` — ship now; tactic 4 (statusline) lands separately.
 
 **Adopter wiring** — append to `.claude/settings.json` in your project root:
 
@@ -279,21 +279,27 @@ The Claude adapter ships PreToolUse hooks under `adapters/claude/hooks/` that ga
             "timeout": 10
           }
         ]
+      },
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "pwsh -NoProfile -File .agents/ginee/adapters/claude/hooks/pre-tool-use-bash.ps1",
+            "timeout": 10
+          }
+        ]
       }
     ]
   }
 }
 ```
 
-Bash equivalent for adopters who prefer not to install pwsh:
+Bash equivalents for adopters who prefer not to install pwsh: `bash .agents/ginee/adapters/claude/hooks/pre-tool-use-edit.sh` and `bash .agents/ginee/adapters/claude/hooks/pre-tool-use-bash.sh`.
 
-```json
-{
-  "command": "bash .agents/ginee/adapters/claude/hooks/pre-tool-use-edit.sh"
-}
-```
+Each hook reads Claude Code's PreToolUse JSON from stdin and exits 2 (with stderr remediation) on a hard-gate violation.
 
-The hook reads Claude Code's PreToolUse JSON from stdin, classifies the edit against `core/**` / hot-spec / always-loaded categories, and exits 2 (with stderr remediation) on a hard-gate violation. Five violation classes block:
+**Edit / Write / MultiEdit hook (T2)** — 5 violation classes block:
 
 | # | Block condition | Source rule |
 |---|---|---|
@@ -303,10 +309,19 @@ The hook reads Claude Code's PreToolUse JSON from stdin, classifies the edit aga
 | 4 | New content using `always` / `never` / `binding` / `mandatory` as rule modifier | `core/protocols/rfc2119-keywords.md` |
 | 5 | Always-loaded surface bloat (> 50 lines) without `Optimized-By` trailer | context-economy gate |
 
-**Bypass per invocation** (emergency only): `SKIP_GINEE_COMPLIANCE=1` in environment.
-**Opt out repo-wide**: `local/framework.config.yaml § compliance.disabled: [pretooluse-edit-hook]`.
+**Bash hook (T3)** — 4 destructive shell-command patterns block:
 
-Full spec — [`migrations/pretooluse-edit-hook.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/migrations/pretooluse-edit-hook.md).
+| # | Block | Source rule |
+|---|---|---|
+| 1 | `git commit --no-verify` (or `-n`) | Bypassing pre-commit defeats the context-economy gate |
+| 2 | `git push --force` (or `-f` / `--force-with-lease`) targeting `main` / `master` | Always block trunk history rewrites |
+| 3 | `git reset --hard` | Block unless `SKIP_GINEE_COMPLIANCE=1` |
+| 4 | `gh pr create` without `--body` / `--body-file` / `--draft` | Per ginee PR conventions |
+
+**Bypass per invocation** (emergency only): `SKIP_GINEE_COMPLIANCE=1` in environment.
+**Opt out repo-wide, per tactic**: `local/framework.config.yaml § compliance.disabled: [pretooluse-edit-hook]` and / or `[pretooluse-bash-hook]`.
+
+Full specs — [`migrations/pretooluse-edit-hook.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/migrations/pretooluse-edit-hook.md) · [`migrations/pretooluse-bash-hook.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/migrations/pretooluse-bash-hook.md).
 
 ## Updates
 

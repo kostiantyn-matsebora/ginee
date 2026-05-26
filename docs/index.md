@@ -69,6 +69,10 @@ the same governance every single time.
     <p>Work &gt; 15 min runs in 3–5 min stoppable batches with visible intermediate results. Interrupt anytime; resume next day with zero rework.</p>
   </article>
   <article class="why-card">
+    <h3><span class="why-emoji">🚧</span> Shell-command guardrails</h3>
+    <p>The Bash PreToolUse hook on Claude blocks 4 destructive shell patterns at the tool-call layer: <code>--no-verify</code> commits, force-pushes to trunk, hard resets, and PRs without a body. Per-tactic opt-out via <code>local/framework.config.yaml § compliance.disabled</code>.</p>
+  </article>
+  <article class="why-card">
     <h3><span class="why-emoji">🧱</span> Extensible</h3>
     <p>5 pre-built specialists (security · ml · mobile · sre · data). Plus author your own under <code>local/roles/</code>.</p>
   </article>

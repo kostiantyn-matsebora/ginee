@@ -107,6 +107,10 @@ What happens (a few minutes, fully visible):
 
 You'll see proposed changes before any file is written — approve or redirect each step.
 
+### Compliance hook — Bash (T3, opt-in)
+
+A second PreToolUse hook at `.agents/ginee/adapters/claude/hooks/pre-tool-use-bash.{ps1,sh}` blocks 4 destructive shell-command patterns (`git commit --no-verify`, `git push --force` on trunk, `git reset --hard`, `gh pr create` without body). Wire per [adapters/claude/install.md § Compliance hooks — Bash](https://github.com/kostiantyn-matsebora/ginee/blob/main/adapters/claude/install.md#compliance-hooks--bash-t3). Opt out: `local/framework.config.yaml § compliance.disabled: [pretooluse-bash-hook]`.
+
 ## 3. Give it work
 
 Ginee is a team — talk to *ginee*, not to a specific role. The team routes work internally per `local/bindings.md`. Two invocation paths:

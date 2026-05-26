@@ -54,6 +54,12 @@ Every non-trivial task runs through **Phases 1–8**. Specialists within a phase
 
 **Auto mode (D12)** — prefix a task with `auto:` to elide intermediate gates (Phase 3 design review, iteration check-ins, engineer "stop and confirm"). Phase 8 becomes a single **delivery handoff** with Accept / Feedback / Reject. Forced back to interactive on UX changes, repeated defects, cross-domain cycles, or destructive actions.
 
+## Compliance — Bash hook (T3)
+
+A second PreToolUse hook ([#139](https://github.com/kostiantyn-matsebora/ginee/issues/139)) matches the `Bash` tool and blocks four destructive shell-command patterns: `git commit --no-verify`, `git push --force` on `main` / `master`, `git reset --hard` (with `SKIP_GINEE_COMPLIANCE` bypass), and `gh pr create` without `--body` / `--draft`. Allowlist preserves common legitimate workflows (force-with-lease on feature branches, soft reset, draft PRs).
+
+Opt out per-tactic: `local/framework.config.yaml § compliance.disabled: [pretooluse-bash-hook]`. Full spec: [`migrations/pretooluse-bash-hook.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/migrations/pretooluse-bash-hook.md).
+
 ## Dispatch rules
 
 | Rule | Action |
