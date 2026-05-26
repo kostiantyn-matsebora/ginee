@@ -25,8 +25,8 @@ teardown() {
   # 2 PreToolUse entries
   count="$(jq -r '.hooks.PreToolUse | length' "$TGT/.claude/settings.json")"
   [ "$count" = "2" ]
-  jq -e '.hooks.PreToolUse[] | .matcher == "Edit|Write|MultiEdit"' "$TGT/.claude/settings.json" >/dev/null
-  jq -e '.hooks.PreToolUse[] | .matcher == "Bash"' "$TGT/.claude/settings.json" >/dev/null
+  jq -e 'any(.hooks.PreToolUse[]; .matcher == "Edit|Write|MultiEdit")' "$TGT/.claude/settings.json" >/dev/null
+  jq -e 'any(.hooks.PreToolUse[]; .matcher == "Bash")' "$TGT/.claude/settings.json" >/dev/null
 }
 
 @test "is idempotent on re-run" {
