@@ -62,6 +62,8 @@ compliance:
     - compliance-statusline   # statusline emits no output; T1 / T2 / T3 unaffected
 ```
 
+**Adopter `.claude/settings.json` wiring is automatic.** `/ginee-update` invokes `core/scripts/sync-claude-settings.{ps1,sh}` which inserts the `statusLine` entry idempotently. If the adopter already set a non-ginee `statusLine.command`, it is preserved (no overwrite); only ginee-owned commands are refreshed when the path changes across releases.
+
 ## Verification
 
 | Step | Expected |

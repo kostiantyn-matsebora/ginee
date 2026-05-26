@@ -446,6 +446,16 @@ switch ($Adapter) {
       Set-Content -Path $claudeMd -Value $tmplBlock -NoNewline
       Write-Host "Created CLAUDE.md from pointer template" -ForegroundColor Green
     }
+
+    # Sync .claude/settings.json — idempotently wires T2 PreToolUse Edit/Write
+    # hook, T3 PreToolUse Bash hook, T4 statusLine. Adopter customisations are
+    # preserved. See migrations/{pretooluse-edit-hook,pretooluse-bash-hook,
+    # compliance-statusline}.md.
+    $syncScript = Join-Path $frameworkDir 'core\scripts\sync-claude-settings.ps1'
+    if (Test-Path $syncScript) {
+      $frameworkRel = $frameworkDir.Substring($Target.Length).TrimStart('\','/') -replace '\\','/'
+      & pwsh -NoProfile -File $syncScript -Target $Target -FrameworkRel $frameworkRel
+    }
   }
   'copilot-cli' {
     Step "Installing copilot-cli adapter to .github\agents\ + .agents\skills\"
