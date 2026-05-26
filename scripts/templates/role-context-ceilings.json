@@ -1,12 +1,12 @@
 {
-  "_comment": "Per-role byte ceilings — single source of truth. Consumed by scripts/measure-role-context.ps1 (doc generation) and tests/measure-role-context.Tests.ps1 (CI gate). Tighten over time as measurements stabilise.",
+  "_comment": "Per-role byte ceilings — single source of truth. Consumed by scripts/measure-role-context.ps1 (doc generation) and tests/measure-role-context.Tests.ps1 (CI gate). Tighten over time as measurements stabilise. 0.22.0 — tightened post-dedup pass to ~30% headroom; loosening any ceiling requires ai-engineer review.",
   "ceilings": {
-    "ai-engineer": 40000,
-    "qa-engineer": 55000,
-    "frontend-engineer": 55000,
-    "backend-engineer": 55000,
-    "devops-engineer": 65000,
-    "solution-architect": 65000,
-    "team-lead": 90000
+    "ai-engineer": 26000,
+    "qa-engineer": 38000,
+    "frontend-engineer": 40000,
+    "backend-engineer": 40000,
+    "devops-engineer": 46000,
+    "solution-architect": 53000,
+    "team-lead": 82000
   }
 }
