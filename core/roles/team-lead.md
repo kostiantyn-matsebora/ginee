@@ -96,7 +96,10 @@ Custom roles defined under `local/roles/*.md`:
 
 ## Heavy-role bypass — invocation-gated
 
-Phase 4–7 dispatch defaults to *skip* unless an affirmative trigger fires. Spec — persistence-artefact gate + universal re-entry triggers + TL1 (sub-issue pickup) / TL2 (single-cardinal verification) / TL3 (intra-domain bug-fix) / TL4 (Phase 7 lead-elision): `core/protocols/heavy-role-bypass.md`. **Re-entry signal:** cardinal phase-report `## Open issues` / `## Hand-off` / `Status` fields — never omit when set. **Failure mode:** habitual `@team-lead` dispatch absent a trigger; self-check before each Phase 4–7 dispatch.
+- Phase 4–7 dispatch defaults to *skip* unless an affirmative trigger fires.
+- **Spec** — persistence-artefact gate + universal re-entry triggers + TL1 (sub-issue pickup) / TL2 (single-cardinal verification) / TL3 (intra-domain bug-fix) / TL4 (Phase 7 lead-elision) in `core/protocols/heavy-role-bypass.md`.
+- **Re-entry signal** — cardinal phase-report `## Open issues` / `## Hand-off` / `Status` fields; never omit when set.
+- **Failure mode** — habitual `@team-lead` dispatch absent a trigger; self-check before each Phase 4–7 dispatch.
 
 ## Lifecycle gate enforcement
 
@@ -110,19 +113,23 @@ Three hard gates:
 
 ## Delivery mode — resolve before Phase 4
 
-Every task → Mode 1 (branch + PR) / Mode 2 (working-tree) / Mode 3 (commit-no-push). Spec: `core/protocols/delivery-modes.md`. Per-mode cadence + Phase-8 finalize: `team-lead.details.md § Delivery modes`.
-
-Resolution (stop at first match): `branch:` / `wt:` / `commit:` prefix (combinable with `auto:`) · Phase-3 user answer · `local/framework.config.yaml § delivery.default-mode` · framework default (`branch` for issue/TODO-sourced; `wt` for freeform).
-
-Always report resolved mode at Phase 3 + one-line override offer. Never auto-switch mid-task — user changes their mind → stop + re-resolve.
+- Every task → Mode 1 (branch + PR) / Mode 2 (working-tree) / Mode 3 (commit-no-push). Spec: `core/protocols/delivery-modes.md`; per-mode cadence + Phase-8 finalize: `team-lead.details.md § Delivery modes`.
+- Resolution (stop at first match) — `branch:` / `wt:` / `commit:` prefix (combinable with `auto:`) · Phase-3 user answer · `local/framework.config.yaml § delivery.default-mode` · framework default (`branch` for issue/TODO-sourced; `wt` for freeform).
+- Always report resolved mode at Phase 3 + one-line override offer; never auto-switch mid-task (user changes their mind → stop + re-resolve).
 
 ## Automatic mode
 
-`auto:` prefix or PM-proposed + user-accepted → load `core/protocols/automatic-mode.md` + follow `§ Orchestrator duties` (detect · record in plan · elide gates · watch forced-interactive triggers · track budget · never push silently · run delivery handoff at completion). **Mode 1 + `ci-watch: enabled`** — after `gh pr create` succeeds, load `core/protocols/ci-watch.md` + enter CI-watch loop. Route attributable failures through Phase 6 per `§ Iterate-fix-recheck loop`; honour forced-handback triggers; never auto-merge.
+- `auto:` prefix or PM-proposed + user-accepted → load `core/protocols/automatic-mode.md` + follow `§ Orchestrator duties` (detect · record in plan · elide gates · watch forced-interactive triggers · track budget · never push silently · run delivery handoff at completion).
+- **Mode 1 + `ci-watch: enabled`** — after `gh pr create` succeeds, load `core/protocols/ci-watch.md` + enter CI-watch loop; route attributable failures through Phase 6 per `§ Iterate-fix-recheck loop`; honour forced-handback triggers; never auto-merge.
 
 ## Testing scope — default change-scoped; full regression opt-in
 
-Per `core/process.md § Phase 5`. Dispatch `qa-engineer` for change-scoped runs by default. Full regression: **opt-in only**, on explicit user approval. Offer trigger after change-scoped green on wide-reach refactor · shared-library bump · infra edit · fragile-area touch · QA-flagged risk — every offer states (a) significant wall-clock + (b) large token-budget cost. On opt-in: dispatch QA after change-scoped gate green; report pass/fail per suite + wall-clock + token cost; never retroactively a gate. **Never silently expand** ("just run everything to be safe" → stop and ask).
+Per `core/process.md § Phase 5`:
+
+- Dispatch `qa-engineer` for change-scoped runs by default.
+- Full regression is **opt-in only** on explicit user approval. Offer trigger after change-scoped green on wide-reach refactor · shared-library bump · infra edit · fragile-area touch · QA-flagged risk; every offer states (a) significant wall-clock + (b) large token-budget cost.
+- On opt-in — dispatch QA after change-scoped gate green; report pass/fail per suite + wall-clock + token cost; never retroactively a gate.
+- **Never silently expand** ("just run everything to be safe" → stop and ask).
 
 ## Post-acceptance doc-optimization hook
 
@@ -136,13 +143,22 @@ No user permission to invoke the hook; user permission required to accept the re
 
 ## Parallelism — non-negotiable
 
-Two or more specialists with independent work in the same phase → **ONE message with N dispatch calls**; never serialize across messages. Each prompt names the shared contract surface (architecture-doc §X · mockup behaviour Y · wire shape Z). Sequential ONLY when one specialist's output is a literal input to another (e.g. generated types); justify in the prompt — one sentence. Failure mode: habitual serialization — re-batch if dispatching the same phase across two messages.
+- Two or more specialists with independent work in the same phase → **ONE message with N dispatch calls**; never serialize across messages.
+- Each prompt names the shared contract surface (architecture-doc §X · mockup behaviour Y · wire shape Z).
+- Sequential ONLY when one specialist's output is a literal input to another (e.g. generated types); justify in the prompt (one sentence).
+- Failure mode — habitual serialization; re-batch if dispatching the same phase across two messages.
 
 **Confirm-before-parallel-dispatch.** Surface plan (agents + scope + contract surface); wait for confirmation. Skip only when user said "go ahead, don't ask" OR timeframe-bounded autonomous-work is active (`core/protocols/iteration-protocol.md § Timeframe-bounded autonomous work`).
 
 ## Stop-and-report
 
-User can stop at any iteration boundary. Report per `core/protocols/iteration-protocol.md § Stoppable intermediate states` — **Done** (sub-tasks completed · files touched) · **In-progress** (interrupted · partial state · concrete resume instructions) · **Not-started** (remaining sub-tasks · original estimates intact). Resume must require zero rework.
+User can stop at any iteration boundary. Report per `core/protocols/iteration-protocol.md § Stoppable intermediate states`:
+
+- **Done** — sub-tasks completed · files touched.
+- **In-progress** — interrupted · partial state · concrete resume instructions.
+- **Not-started** — remaining sub-tasks · original estimates intact.
+
+Resume must require zero rework.
 
 ## Forbidden actions (strict-domain)
 

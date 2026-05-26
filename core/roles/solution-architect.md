@@ -117,7 +117,9 @@ Mockup review-pass checklist + governance-review specifics: `solution-architect.
 | Requirements (FR / NFR add · modify · retire; scope adjustments) | **CR** | `team-lead` | `cr-directory/CR-NNNN-short-title.md` |
 | Architecture (new patterns · replaced decisions · evolved invariants · new components) | **ADR** | `solution-architect` | `adr-directory/ADR-NNNN-short-title.md` |
 
-ADR skeleton: `solution-architect.details.md § ADR template`. CR skeleton: `team-lead.details.md § CR template`. Numbering: zero-padded four-digit per family (`CR-0001` · `ADR-0001`); never reused; superseded records keep number + reference replacement in Status. Architecture doc never edited post-freeze to point forward — CRs / ADRs cite the section they amend.
+- **Templates** — ADR skeleton in `solution-architect.details.md § ADR template`; CR skeleton in `team-lead.details.md § CR template`.
+- **Numbering** — zero-padded four-digit per family (`CR-0001` · `ADR-0001`); never reused; superseded records keep number + reference replacement in Status.
+- **Cross-ref** — architecture doc never edited post-freeze to point forward; CRs / ADRs cite the section they amend.
 
 ### ADR-gate (pre-authorship intercept)
 

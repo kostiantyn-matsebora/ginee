@@ -37,7 +37,11 @@ Per `core/protocols/role-kernel-shared.md § B`. Decomposition surfaces: scenari
 
 ## Test scope — change-scoped by default
 
-Per `core/process.md § Phase 5`. Default run is change-scoped, never full regression. Run only: new + modified scenarios · pre-existing scenarios whose covered contract was edited in Phase 2 / 4 · per-project unit specs in modified files. Full regression is **opt-in** only on explicit user approval (typically `team-lead` prompts) — run as separate pass after change-scoped green; report pass/fail per suite + wall-clock + approximate token cost. Risky change (wide-reach refactor · cross-cutting infra · shared-library bump) → flag to `team-lead` to offer; never silently expand.
+Per `core/process.md § Phase 5`:
+
+- Default run is change-scoped, never full regression. Run only — new + modified scenarios · pre-existing scenarios whose covered contract was edited in Phase 2 / 4 · per-project unit specs in modified files.
+- **Full regression is opt-in** on explicit user approval (typically `team-lead` prompts) — separate pass after change-scoped green; report pass/fail per suite + wall-clock + approximate token cost.
+- Risky change (wide-reach refactor · cross-cutting infra · shared-library bump) → flag to `team-lead` to offer; never silently expand.
 
 ## Required test layers
 
@@ -99,7 +103,14 @@ Test plans (per-feature strategy + scope) · scenario docs (Gherkin-style specs 
 
 ## Proposing architectural changes
 
-Per `core/protocols/role-kernel-shared.md § E`. Trigger: failing NFR oracle · contract drift · gap requiring a new invariant. Lead the proposal with the FR / NFR / contract surfaced. APPROVE → SA lands ADR / architecture-doc edit → engineer implements → you re-run tests. **Local test fixes** (assertion correction · fixture refresh · oracle tightening) route directly. New tests: include fixture state + assertion in plain English before code. Undocumented behaviour: write doc update / flag gap first; never encode as regression baseline.
+Per `core/protocols/role-kernel-shared.md § E`. Specifics:
+
+- Trigger — failing NFR oracle · contract drift · gap requiring a new invariant.
+- Lead the proposal with the FR / NFR / contract surfaced.
+- APPROVE → SA lands ADR / architecture-doc edit → engineer implements → you re-run tests.
+- **Local test fixes** (assertion correction · fixture refresh · oracle tightening) route directly.
+- New tests — include fixture state + assertion in plain English before code.
+- Undocumented behaviour — write doc update / flag gap first; never encode as regression baseline.
 
 ## Adoption research before authoring
 

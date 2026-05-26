@@ -37,23 +37,36 @@ Per `core/protocols/role-kernel-shared.md § B`. Decomposition surfaces: handler
 
 ## Wire contract — obey the architecture doc exactly
 
-Match architecture doc's API-contract section for endpoints · status codes · payload shapes. Wire-format naming convention (`snake_case` / `camelCase` / `kebab-case`) per architecture doc — configure framework/serializer options so defaults do not silently diverge. Every documented status code is a test case (handed to `qa-engineer`). Flag wire-compatibility breaks so client + downstream consumers update together.
+- Match the architecture doc's API-contract section — endpoints · status codes · payload shapes.
+- Wire-format naming (`snake_case` / `camelCase` / `kebab-case`) per architecture doc; configure framework / serializer options so defaults don't silently diverge.
+- Every documented status code is a test case (handed to `qa-engineer`).
+- Flag wire-compatibility breaks so client + downstream update together.
 
 ## Statelessness invariant (when architecture doc declares it)
 
-No in-memory cache of business state between requests — every read hits source of truth. No in-process realtime fan-out across instances — each replica subscribes to broker + forwards to its own connected clients only. No sticky sessions — realtime reconnects use resume tokens (`Last-Event-ID` · sequence offsets · change-stream tokens).
+- No in-memory cache of business state between requests — every read hits source of truth.
+- No in-process realtime fan-out across instances — each replica subscribes to broker + forwards to its own connected clients only.
+- No sticky sessions — realtime reconnects use resume tokens (`Last-Event-ID` · sequence offsets · change-stream tokens).
 
 ## Server-side derivation rules
 
-When architecture doc describes derived views (computed columns · aggregates · latest-per-key · joined snapshots): single pass where practical, not N+1 · cite the decision section in nearest comment · honour "computed null when X" rules exactly (null vs absent vs zero are semantically distinct).
+When architecture doc describes derived views (computed columns · aggregates · latest-per-key · joined snapshots):
+
+- Single pass where practical, not N+1.
+- Cite the decision section in nearest comment.
+- Honour "computed null when X" rules exactly (null vs absent vs zero are semantically distinct).
 
 ## Pruning / retention (when project requires it)
 
-Periodic job removes data older than documented retention window. Window from configuration — single explicit default at binding site. No external cron sidecars when host can run hosted services itself.
+- Periodic job removes data older than documented retention window.
+- Window from configuration — single explicit default at binding site.
+- No external cron sidecars when host can run hosted services itself.
 
 ## Testing
 
-Unit tests alongside source projects per project runner/storage. Cover every documented UI state + every documented status code. Functional / API tests against real database owned by `qa-engineer` — you provide deterministic logic.
+- Unit tests alongside source projects per project runner / storage.
+- Cover every documented UI state + every documented status code.
+- Functional / API tests against real database owned by `qa-engineer` — you provide deterministic logic.
 
 ## Coverage obligation — every change you ship
 
@@ -70,7 +83,11 @@ Backend READMEs (per service / package) · API docs (request / response shapes �
 
 ## Proposing architectural changes
 
-Per `core/protocols/role-kernel-shared.md § E`. Lead the proposal with impact on wire contract / DB schema / NFR; if neither changes, say so explicitly. Migrations: one per logical change · idempotent · named per project convention. Flag wire-compatibility breaks so client + downstream update together.
+Per `core/protocols/role-kernel-shared.md § E`. Specifics:
+
+- Lead the proposal with impact on wire contract / DB schema / NFR; if neither changes, say so explicitly.
+- Migrations — one per logical change · idempotent · named per project convention.
+- Flag wire-compatibility breaks so client + downstream update together.
 
 ## Adoption research before authoring
 

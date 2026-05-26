@@ -10,7 +10,9 @@ reads-before-applying: []
 
 ## Purpose
 
-Generic, project-agnostic process model for a small multi-agent engineering team. Authoritative spec for every role. **Project-specific knowledge lives in `local/bindings.md` + `local/project-profile.md`** — never in this file (stack · repo layout · role roster · forbidden role-crossings · owned-paths bindings).
+- Generic, project-agnostic process model for a small multi-agent engineering team.
+- Authoritative spec for every role.
+- **Project-specific knowledge lives in `local/bindings.md` + `local/project-profile.md`** — never in this file (stack · repo layout · role roster · forbidden role-crossings · owned-paths bindings).
 
 ## Reading order
 
@@ -30,7 +32,10 @@ Generic, project-agnostic process model for a small multi-agent engineering team
 
 ## Lifecycle — load topology
 
-8 phases, one file each (`core/process/phase-<N>-<name>.md`) declaring Goal + Acceptance. Specialists within a phase run in parallel; phases overlap wherever a contract surface decouples them. Per-role loading via `phase-participation:` frontmatter: `team-lead [1-8]` · `solution-architect [1, 2, 4, 5, 6, 7]` · backend / frontend / devops [2, 4, 5, 6] · `qa-engineer [5, 6]` · `ai-engineer []` (between-phase). Orchestration (`core/process/dispatch.md`) — loaded by `team-lead` always + skill-runner main thread on `ginee-*` skill entry; other cardinals do NOT load.
+- 8 phases, one file each (`core/process/phase-<N>-<name>.md`) declaring Goal + Acceptance.
+- Specialists within a phase run in parallel; phases overlap wherever a contract surface decouples them.
+- Per-role loading via `phase-participation:` frontmatter — `team-lead [1-8]` · `solution-architect [1, 2, 4, 5, 6, 7]` · backend / frontend / devops [2, 4, 5, 6] · `qa-engineer [5, 6]` · `ai-engineer []` (between-phase).
+- Orchestration (`core/process/dispatch.md`) loaded by `team-lead` always + skill-runner main thread on `ginee-*` skill entry; other cardinals do NOT load.
 
 ## Engineering principles — apply across all roles
 
@@ -49,11 +54,14 @@ Binds every role. Signal a value belongs in a declarative file: "hard to change 
   | Scripting / tooling | `*.json` / `*.yaml` config files |
 
 - **Data** (fixtures · seed sets · snapshot baselines · expected payloads · scenarios) lives in dedicated declarative files; never inline literals in test code.
-- **Imperative code stays thin** — scripts / runners / wrappers read declarative files + call the underlying tool. Exceptions require a doc update before they land.
+- **Imperative code stays thin** — scripts / runners / wrappers read declarative files + call the underlying tool; exceptions require a doc update before they land.
 
 ### Test oracles can be wrong
 
-A passing test against broken software is a defect in the oracle, not a green light. Test results contradicting observed behaviour → trust observed behaviour; route to the test owner to tighten the assertion. Weak-oracle examples: harness anchored to wrapper not inner element · POST asserting status without response shape · UI element opened without exercising its action. Tightening is `qa-engineer`'s job; respecting the signal is everyone's.
+- A passing test against broken software is a defect in the oracle, not a green light.
+- Test results contradicting observed behaviour → trust observed behaviour; route to the test owner to tighten the assertion.
+- Weak-oracle examples — harness anchored to wrapper not inner element · POST asserting status without response shape · UI element opened without exercising its action.
+- Tightening is `qa-engineer`'s job; respecting the signal is everyone's.
 
 ## Documentation style — structure over prose
 

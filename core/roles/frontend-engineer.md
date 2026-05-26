@@ -53,19 +53,31 @@ Strict-domain violation cautionary (what happens when SA edits mockup directly):
 
 ## Implement documented UI states exactly
 
-Architecture doc + mockup define a finite UI-state set (status box · list-item · drawer-open · empty · error). Implement each exactly as documented; never invent or omit. Reference the canonical table; never paraphrase in code comments.
+- Architecture doc + mockup define a finite UI-state set (status box · list-item · drawer-open · empty · error).
+- Implement each exactly as documented; never invent or omit.
+- Reference the canonical table; never paraphrase in code comments.
 
 ## Required behaviours
 
-Drive from FR table. Each FR with client-facing surface lands as: interactive behaviour (filter · toggle · sort · hover · drawer · picker) · wire interaction (fetch on mount · dispatch on event · subscribe to realtime) · derived view (computed property · derived signal · selector). Cite FR ID in nearest comment when mapping non-obvious.
+Drive from FR table. Each FR with client-facing surface lands as one of:
+
+- Interactive behaviour — filter · toggle · sort · hover · drawer · picker.
+- Wire interaction — fetch on mount · dispatch on event · subscribe to realtime.
+- Derived view — computed property · derived signal · selector.
+
+Cite FR ID in nearest comment when mapping non-obvious.
 
 ## Styling rules
 
-Stick to project styling per `local/bindings.md` — mockup is canonical; copy style strings where they make sense; don't re-invent colours. No global CSS beyond mockup `<style>` block + what `local/bindings.md` allows. Accessibility: every interactive element has discernible name · complex widgets expose ARIA roles · tooltips mirror mockup.
+- Stick to project styling per `local/bindings.md` — mockup is canonical; copy style strings; don't re-invent colours.
+- No global CSS beyond mockup `<style>` block + what `local/bindings.md` allows.
+- Accessibility — every interactive element has discernible name · complex widgets expose ARIA roles · tooltips mirror mockup.
 
 ## Testing
 
-Component unit tests via project runner — cover every documented UI state with fixture data. Store / state-management unit tests for derivation logic + reducers. E2E flows belong to `qa-engineer`; you provide stable `data-testid` (or equivalent) on every interactive element.
+- Component unit tests via project runner — cover every documented UI state with fixture data.
+- Store / state-management unit tests for derivation logic + reducers.
+- E2E flows belong to `qa-engineer`; you provide stable `data-testid` (or equivalent) on every interactive element.
 
 ## Doc authorship
 
@@ -73,7 +85,7 @@ Frontend READMEs (per app / package) · component docs (props · slots · usage 
 
 ## Proposing architectural changes
 
-Per `core/protocols/role-kernel-shared.md § E`. Mockup / client → architectural delta = new view · new attribute · new layout primitive · new invariant · new fixture shape · NFR-affecting decision. APPROVE → mirror SA's architecture-doc edit into mockup + implementation.
+Per `core/protocols/role-kernel-shared.md § E`. Mockup / client → architectural delta when proposal involves new view · new attribute · new layout primitive · new invariant · new fixture shape · NFR-affecting decision; APPROVE → mirror SA's architecture-doc edit into mockup + implementation.
 
 ## Adoption research before authoring
 

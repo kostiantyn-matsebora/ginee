@@ -50,17 +50,23 @@ When architecture doc states "local stack must come up from a single command":
 - **Stable fake values** — `local-dev-password` · `local-dev-token-not-for-production`. Stable so QA's test scripts default to the same. No random generation.
 - **Naming convention** for orchestration files documented in `local/bindings.md`.
 
-After any local-dev change: fresh clone with no env files / pre-set vars → startup MUST succeed. If not, change is incomplete. Projects without the mandate: still aim for low-friction startup; document what's required.
+**Verify after any local-dev change** — fresh clone with no env files / pre-set vars → startup MUST succeed; otherwise change is incomplete. Projects without the mandate: still aim for low-friction startup + document what's required.
 
 ## Gateway-as-sole-public-surface invariant (when project uses it)
 
-Local + cloud follow same shape — gateway publishes host port locally + public ingress in cloud; all other containers network-isolated locally + internal-only in cloud. Browser + every CI/CD caller + downstream consumer hit gateway URL exclusively. No CORS — single origin guarantees it. Reverse-proxy config is the only place routing rules live; backend/frontend code is upstream-agnostic. **Realtime pass-through** — disable proxy buffering + caching · raise read timeouts to event-stream durations · forward resume-token headers (`Last-Event-ID` · etc.).
+- Local + cloud follow same shape — gateway publishes host port locally + public ingress in cloud; all other containers network-isolated locally + internal-only in cloud.
+- Browser + every CI/CD caller + downstream consumer hit gateway URL exclusively.
+- No CORS — single origin guarantees it.
+- Reverse-proxy config is the only place routing rules live; backend / frontend code is upstream-agnostic.
+- **Realtime pass-through** — disable proxy buffering + caching · raise read timeouts to event-stream durations · forward resume-token headers (`Last-Event-ID` · etc.).
 
 Different topology (separate ingresses · mesh) → follow `local/bindings.md`.
 
 ## Cost cap enforcement (when project declares one)
 
-Track every resource's projected cost vs cap; PRs risking the cap call it out with fresh estimate. Tag every resource for cost attribution: `Environment` · `CostCenter` · `Component` (or project equivalent). No declared cap → still tag; track without alarming.
+- Track every resource's projected cost vs cap; PRs risking the cap call it out with fresh estimate.
+- Tag every resource for cost attribution — `Environment` · `CostCenter` · `Component` (or project equivalent).
+- No declared cap → still tag; track without alarming.
 
 ## Post-step health verification — every step you touch
 
@@ -75,7 +81,12 @@ Verify every service in scope is in healthy steady state before claiming step do
 
 **Cloud deploy** — mirror per-service checks against deployed endpoints; never declare success on IaC-apply exit 0 alone.
 
-**Rules.** Never claim complete with any container in a failing state. Check is part of the deliverable, not a follow-up — "build succeeded; `/health` returns 200" without sibling-container confirmation is incomplete. Sibling broken by your config → fix in same change, not follow-up ticket. Failure outside your competence (e.g. app-level crash in backend code) → cross-agent handoff per `core/protocols/cross-agent-handoff.md` (diagnose with evidence · hand off · keep local workaround labelled).
+**Rules:**
+
+- Never claim complete with any container in a failing state.
+- Check is part of the deliverable, not a follow-up — "build succeeded; `/health` returns 200" without sibling-container confirmation is incomplete.
+- Sibling broken by your config → fix in same change, not follow-up ticket.
+- Failure outside your competence (e.g. app-level crash in backend code) → cross-agent handoff per `core/protocols/cross-agent-handoff.md` (diagnose with evidence · hand off · keep local workaround labelled).
 
 ## Script-quality obligation — every script you touch
 
@@ -103,7 +114,12 @@ CI/CD guide (operational companion to architecture doc's CI/CD section) · infra
 
 ## Proposing architectural changes
 
-Per `core/protocols/role-kernel-shared.md § E`. Lead with cost delta + NFR impact. Hard-constraint crossing → state explicitly + propose doc update first. IaC: attach `plan` summary in PR descriptions; never apply from a developer machine to production. Tag every resource for cost attribution.
+Per `core/protocols/role-kernel-shared.md § E`. Specifics:
+
+- Lead with cost delta + NFR impact.
+- Hard-constraint crossing → state explicitly + propose doc update first.
+- IaC — attach `plan` summary in PR descriptions; never apply from a developer machine to production.
+- Tag every resource for cost attribution.
 
 ## Adoption research before authoring
 
