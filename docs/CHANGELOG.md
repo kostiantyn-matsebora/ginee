@@ -10,6 +10,26 @@ All notable changes to ginee. The format follows [Keep a Changelog](https://keep
 
 ## Unreleased
 
+## 0.20.0 — 2026-05-26
+
+### Added
+
+- **Compliance playbook — Tier 1 tactics 1 through 4** ([#135](https://github.com/kostiantyn-matsebora/ginee/issues/135)). Promotes the four most-violated charter rules from Class H (always-loaded text, LLM voluntary compliance) to Class A (action-time enforcement) and Class G (visible state) on the Claude adapter. Per-tactic opt-out via `local/framework.config.yaml § compliance.disabled: [<tactic-id>]`; per-invocation bypass via `SKIP_GINEE_COMPLIANCE=1`.
+
+  - **T1 — Subagent `tools:` whitelist per cardinal** ([#137](https://github.com/kostiantyn-matsebora/ginee/issues/137)). Each pointer subagent at `adapters/_shared/agents/*.md` carries a tightly-scoped `tools:` field. `solution-architect` ships without `Edit` / `Write` — the "SA never edits code" charter rule is enforced at the tool-call layer, not via always-loaded text alone. `ai-engineer` ships without `Bash`. The 5 implementer cardinals retain full read/write/Bash; their path + command scopes are layered by T2 / T3. `Agent` deliberately omitted from team-lead's whitelist — Claude Code's `Agent` is top-level-only and subagents do not inherit it. Migration: `migrations/cardinal-tools-whitelist.md`.
+
+  - **T2 — PreToolUse hook on `Edit` / `Write` / `MultiEdit`** ([#138](https://github.com/kostiantyn-matsebora/ginee/issues/138)). Cross-platform hook at `adapters/claude/hooks/pre-tool-use-edit.{ps1,sh}` exits 2 + stderr remediation on 5 violation classes — hot-spec frontmatter omission (D47) · `cap-bytes` overrun without `Optimized-By: ai-engineer` trailer queued (D44 + D47) · bare `D<N>` token introduction on `core/**` (D42) · `always` / `never` / `binding` / `mandatory` as rule modifier (D48) · always-loaded surface line-count bloat without trailer (D21). Pester (12 cases) + bats (11 cases) coverage; PSScriptAnalyzer + shellcheck clean. Migration: `migrations/pretooluse-edit-hook.md`.
+
+  - **T3 — PreToolUse hook on `Bash`** ([#139](https://github.com/kostiantyn-matsebora/ginee/issues/139)). Cross-platform hook at `adapters/claude/hooks/pre-tool-use-bash.{ps1,sh}` blocks 4 destructive shell patterns — `git commit --no-verify` (or `-n`) · `git push --force` / `--force-with-lease` targeting `main` / `master` · `git reset --hard` · `gh pr create` without `--body` / `--body-file` / `--draft`. Allowlist preserves common legitimate workflows (force-with-lease on feature branches, soft reset, draft PRs). Pester (18 cases) + bats (17 cases) coverage. Migration: `migrations/pretooluse-bash-hook.md`.
+
+  - **T4 — Compliance statusline** ([#140](https://github.com/kostiantyn-matsebora/ginee/issues/140)). Cross-platform single-line statusline at `adapters/claude/statusline.{ps1,sh}` surfaces compliance state in Claude Code's persistent status row — Class G (visible state, no enforcement). Format: `[ginee] #<N> · phase: ? · warm: ? · trailer: <ok|needed> · cap: <N>%`. Locally-derived fields ship now (issue # from branch · trailer status from `origin/main..HEAD` log · cap-bytes headroom on hot specs in diff); phase / warm / dispatches / self-lint print `?` placeholders until skill-runner-side warm-registry plumbing (D43) lands. Statusline MUST NOT crash the host — all paths wrapped in try/catch with bare `[ginee]` fallback. Migration: `migrations/compliance-statusline.md`.
+
+  - **`.claude/settings.json` auto-merge on `/ginee-update`** ([#160](https://github.com/kostiantyn-matsebora/ginee/pull/160)). Closes the cross-tactic follow-up flagged in T2 / T3 / T4. Two new scripts — `core/scripts/sync-claude-settings.{ps1,sh}` — invoked from `install.ps1` / `install.sh` (claude branch) idempotently merge the `statusLine` block + 2 `PreToolUse` entries into the adopter's `.claude/settings.json`. Adopter customisations preserved — non-ginee `statusLine.command` is never replaced, existing PreToolUse entries with matching command paths are not duplicated, all other top-level keys (`env`, `theme`, `permissions`, ...) round-trip unchanged. Malformed JSON → warn + skip; bash adopters without `jq` → warn + skip + fall back to the manual snippet. Pester (9 cases) + bats (10 cases) coverage. Migration: `migrations/claude-settings-auto-merge.md`.
+
+### Per-role context
+
+No change vs 0.19.0. T1-T4 ship new files under `adapters/claude/hooks/` + `adapters/claude/statusline.{ps1,sh}` + `core/scripts/sync-claude-settings.{ps1,sh}` — none are role-kernel-loaded. `docs/reference/CONTEXT_COSTS.md` snapshot unchanged; team-lead headroom stays at ~23%; no role crossed the +10% material-shift threshold.
+
 ## 0.19.0 — 2026-05-25
 
 ### Added
