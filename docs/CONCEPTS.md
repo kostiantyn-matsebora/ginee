@@ -28,6 +28,15 @@ ginee ships exactly **7 cardinal roles** — every adopter project has the same 
 
 **Custom roles** live under `local/roles/` and register under `team-lead`. Use the `core/templates/role-authoring-template.md` shape.
 
+## Compliance enforcement (Claude adapter)
+
+Class A action-time gates layer onto charter rules so they're enforced at the tool-call layer, not via always-loaded text alone. Two pieces ship in the parent playbook ([#135](https://github.com/kostiantyn-matsebora/ginee/issues/135)):
+
+- **Per-cardinal `tools:` whitelist** — `solution-architect` cannot `Edit` / `Write`; `ai-engineer` cannot `Bash`. Binary tool gate at the subagent level.
+- **PreToolUse hook on `Edit` / `Write` / `MultiEdit`** ([T2](https://github.com/kostiantyn-matsebora/ginee/issues/138)) — exits 2 on hot-spec frontmatter omitted (D47) · `cap-bytes` exceeded without `Optimized-By` trailer · bare `D<N>` token introduced on `core/**` (D42) · `always` / `never` / `binding` / `mandatory` slipped past D48 · always-loaded surface bloat without trailer. Five charter rules graduate from advisory to blocking.
+
+Opt out per-tactic via `local/framework.config.yaml § compliance.disabled: [<tactic-id>]`. Bypass per invocation via `SKIP_GINEE_COMPLIANCE=1` (emergency only). Full spec — [`migrations/pretooluse-edit-hook.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/migrations/pretooluse-edit-hook.md).
+
 ## Phased task lifecycle
 
 Every non-trivial task runs through **Phases 1–8**. Specialists within a phase run in parallel where independent; phases overlap wherever a contract surface decouples them.
