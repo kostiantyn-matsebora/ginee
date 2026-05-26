@@ -8,7 +8,7 @@ reads-before-applying: []
 
 # Phase 4 — Implementation
 
-**Load triggers** — any cardinal whose `phase-participation:` includes `4`. Per-role roster: `team-lead` · `solution-architect` (review / governance dips) · all engineering cardinals.
+**Load triggers** — any cardinal whose `phase-participation:` includes `4`. Per-role roster: `team-lead` (entry — sub-issue pickup; otherwise on re-entry trigger only per `core/protocols/heavy-role-bypass.md`) · `solution-architect` (review / governance dips — bypass default per SA1 in the same protocol) · all engineering cardinals.
 
 - **Goal.** Working code mirroring approved Phase 2 contracts.
 - **Rules.**

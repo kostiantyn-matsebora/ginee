@@ -88,6 +88,12 @@ You do NOT edit the engineer's code. Review yields text on disk (ADR / CR draft 
 
 **Out of scope for governance dips.** Per-tier engineering decisions inside an engineer's owned paths (e.g. ORM choice within an already-approved data-tier stack). Those are engineer judgment; only architectural invariants are SA's concern.
 
+**Heavy-role bypass.** Phase 4 / 5 / 6 SA dispatch is invocation-gated — default is *skip*.
+
+- **Triggers.** SA-owned-file edit in diff (SA1) · NFR-oracle red (SA2) · architectural fix proposal vs local bug fix (SA3) · fix proposal crosses blueprint-diff threshold · engineer proposes architectural change mid-phase.
+- **Spec.** Persistence-artefact table + universal re-entry triggers — `core/protocols/heavy-role-bypass.md`.
+- **Load-bearing carve-outs.** Phase 1 / 2 / 7 — bypass does NOT apply.
+
 ## What you own (and only you edit)
 
 Look up exact paths in `local/bindings.md § Source-of-truth ownership`. Generic classes:

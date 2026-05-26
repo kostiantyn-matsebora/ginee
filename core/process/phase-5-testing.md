@@ -8,7 +8,7 @@ reads-before-applying: []
 
 # Phase 5 — Testing
 
-**Load triggers** — any cardinal whose `phase-participation:` includes `5`. Per-role roster: `team-lead` · `solution-architect` (NFR-oracle dip) · `qa-engineer` · engineering cardinals touched by the change.
+**Load triggers** — any cardinal whose `phase-participation:` includes `5`. Per-role roster: `qa-engineer` · engineering cardinals touched by the change · `solution-architect` (NFR-oracle dip — bypass default per SA2 in `core/protocols/heavy-role-bypass.md`) · `team-lead` (TL2 single-cardinal verification bypasses — re-entry only on cross-domain bug · `## Open issues` non-empty · `## Hand-off` set · `Status: In-progress`).
 
 - **Goal.** Verify implementation against contracts: executable suites + manual smoke against the running solution.
 - **Scope — change-scoped by default.** Run only:

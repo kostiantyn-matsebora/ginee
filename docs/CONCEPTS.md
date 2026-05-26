@@ -56,6 +56,8 @@ Every non-trivial task runs through **Phases 1–8**. Specialists within a phase
 
 **Lite mode** — prefix a task with `lite:` (alias `direct:`) to skip Phase 1–3 entirely for trivial scope (typo · single-label tweak · single-doc-bullet change). Phase 4 dispatches one named cardinal directly; Phases 5–8 run normally. CR / ADR / Phase 7 / Phase 8 gates remain. Composes with every other prefix — e.g. `auto: lite: fix typo in CONCEPTS.md`. Full spec — [`migrations/lite-mode.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/migrations/lite-mode.md).
 
+**Heavy-role bypass.** `team-lead` + `solution-architect` are invocation-gated across Phase 4–7, not phase-gated — default is *skip*; presence requires an affirmative trigger (sub-issue routing artefact · SA-owned-file edit · NFR-oracle red · `## Open issues` / `## Hand-off` / `Status: In-progress` on cardinal return · cross-domain bug · multi-cardinal PR). Phases 1 / 2 / 3 / 8 (team-lead) + Phases 1 / 2 / 7 (SA) remain load-bearing. Full spec — [`core/protocols/heavy-role-bypass.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/core/protocols/heavy-role-bypass.md) · migration — [`migrations/heavy-role-bypass.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/migrations/heavy-role-bypass.md).
+
 ## Compliance — Bash hook (T3)
 
 A second PreToolUse hook ([#139](https://github.com/kostiantyn-matsebora/ginee/issues/139)) matches the `Bash` tool and blocks four destructive shell-command patterns: `git commit --no-verify`, `git push --force` on `main` / `master`, `git reset --hard` (with `SKIP_GINEE_COMPLIANCE` bypass), and `gh pr create` without `--body` / `--draft`. Allowlist preserves common legitimate workflows (force-with-lease on feature branches, soft reset, draft PRs).

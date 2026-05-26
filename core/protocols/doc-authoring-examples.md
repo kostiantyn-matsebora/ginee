@@ -407,3 +407,46 @@ Inbound payload — parsed body + scoring labels + label-swap result + branch.
 ```
 
 Skill-runner records the gate outcome, not narrative. Every failure path routes through `@team-lead`: parent unresolved · no role label · dispatch contract incomplete · multiple role labels.
+
+---
+
+## 16. Heavy-role bypass — TL fast-path vs SA dip decision
+
+Mid-Phase-6 bug fix; orchestrator decides whether to dispatch `@team-lead` + `@solution-architect` before merge.
+
+**Bad** — defensive ceremony, narrative justification:
+
+> Engineer fixed the bug. I'll dispatch team-lead to confirm routing, then solution-architect to spot-check governance just to be safe. Better to over-include than miss something.
+
+Tripped: heavy-role-bypass forbiddens — habitual dispatch absent a trigger; no persistence-artefact / re-entry trigger cited.
+
+**Good** — schema-bound gate decision:
+
+```
+TL3 gate (intra-domain bug-fix, Phase 6):
+  - Owning cardinal: backend-engineer
+  - Cardinal return — `## Open issues`: (none) · `## Hand-off`: (none) · Status: Done
+  - Cross-domain bug surfaced: no
+  → No re-entry trigger fired → @team-lead skipped.
+
+SA3 gate (Phase 6 SA-default-skip on local fix):
+  - Patch touches local/bindings.md SA-owned path: no
+  - Fix proposal crosses blueprint-diff threshold: no
+  - Engineer proposed architectural change: no
+  → No SA trigger fired → @solution-architect skipped.
+
+Decision — proceed to Phase 7 SA review; no Phase 6 heavy-role dispatch.
+```
+
+**SA dip case — trigger present:**
+
+```
+SA1 gate (Phase 4 governance dip):
+  - PR diff: backend/api/users.cs + local/bindings.md (SA-owned per `Source-of-truth ownership`)
+  → SA-owned-file edit in diff → @solution-architect dispatched.
+
+Inbound payload: PR diff + SA-owned file list + invariant-cite request.
+Return shape: spot-check verdict + drift-flag (if any) — no code edits.
+```
+
+Orchestrator records the gate outcome, not narrative. Every trigger binding, every absence the default skip. Same shape across TL1–TL4 / SA1–SA3.

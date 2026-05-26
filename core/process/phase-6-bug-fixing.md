@@ -8,7 +8,7 @@ reads-before-applying: []
 
 # Phase 6 — Bug fixing
 
-**Load triggers** — any cardinal whose `phase-participation:` includes `6`. Per-role roster: `team-lead` · `solution-architect` (review on architectural fix) · `qa-engineer` (parallel exercises) · owning engineering cardinal.
+**Load triggers** — any cardinal whose `phase-participation:` includes `6`. Per-role roster: owning engineering cardinal · `qa-engineer` (parallel exercises) · `solution-architect` (review on architectural fix — bypass default per SA3 in `core/protocols/heavy-role-bypass.md`) · `team-lead` (TL3 intra-domain bug-fix bypasses — re-entry only on cross-domain bug per `core/protocols/cross-domain-bugs.md`).
 
 - **Goal.** Resolve defects from Phase 5 (or manual smoke) until all change-scoped oracles are green.
 - **Rules.**
