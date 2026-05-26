@@ -82,7 +82,7 @@ SKIP_GINEE_COMPLIANCE=1 git reset --hard <ref>
 
 ## Forward-only
 
-Purely additive: two hook scripts, two test files, one `.claude/settings.json.example` entry, one `install.md` section. Adopters with customised `.claude/settings.json` add the snippet manually per `adapters/claude/install.md § Compliance hooks — Bash (T3)`.
+Purely additive: two hook scripts, two test files, one `.claude/settings.json.example` entry, one `install.md` section. Adopter `.claude/settings.json` auto-merge piggybacks on the shared `core/scripts/sync-claude-settings.{ps1,sh}` (landed with T2 / T4): `/ginee-update` adds the Bash matcher automatically, preserving any prior PreToolUse entries.
 
 ## Out of scope
 

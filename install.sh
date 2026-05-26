@@ -438,6 +438,17 @@ case "$ADAPTER" in
       echo "Created CLAUDE.md from pointer template"
     fi
     rm -f "$TMPL_BLOCK_FILE"
+
+    # Sync .claude/settings.json — idempotently wires T2 PreToolUse Edit/Write
+    # hook, T3 PreToolUse Bash hook, T4 statusLine. Adopter customisations are
+    # preserved. See migrations/{pretooluse-edit-hook,pretooluse-bash-hook,
+    # compliance-statusline}.md.
+    SYNC_SCRIPT="$FRAMEWORK_DIR/core/scripts/sync-claude-settings.sh"
+    if [ -x "$SYNC_SCRIPT" ] || [ -f "$SYNC_SCRIPT" ]; then
+      # Compute framework-relative path from project root.
+      FRAMEWORK_REL="${FRAMEWORK_DIR#"$TARGET/"}"
+      bash "$SYNC_SCRIPT" --target "$TARGET" --framework-rel "$FRAMEWORK_REL"
+    fi
     ;;
   copilot-cli)
     step "Installing copilot-cli adapter to .github/agents/ + .agents/skills/"

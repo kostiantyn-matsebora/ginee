@@ -264,7 +264,9 @@ skill-runner (Claude main thread)
 
 The Claude adapter ships PreToolUse hooks under `adapters/claude/hooks/` that gate adopter edits at the tool-call layer (Class A force per #135). Tactic 2 (#138) — `Edit` / `Write` / `MultiEdit` — and tactic 3 (#139) — `Bash` — ship now; tactic 4 (statusline) is documented in the next section.
 
-**Adopter wiring** — append to `.claude/settings.json` in your project root:
+**Wiring is automatic.** Running `/ginee-update` (or the install bootstrap) invokes `core/scripts/sync-claude-settings.{ps1,sh}` which idempotently merges the entries below into the adopter's `.claude/settings.json`. Adopter customisations (other top-level keys, non-ginee `statusLine`, existing hook entries with matching commands) are preserved. Re-runs are no-ops. The bash branch requires `jq` on PATH; without it, the sync step warns and skips so adopters can apply the snippet manually.
+
+**Manual snippet** (for adopters who skip the installer or are on an older release):
 
 ```json
 {
@@ -326,6 +328,8 @@ Full specs — [`migrations/pretooluse-edit-hook.md`](https://github.com/kostian
 ## Compliance statusline (T4)
 
 Cross-platform single-line statusline at `adapters/claude/statusline.{ps1,sh}` surfaces compliance state in Claude Code's persistent status row (per parent playbook #135 tactic 4, Class G — visible state, no enforcement).
+
+**Wiring is automatic** via the same `core/scripts/sync-claude-settings.{ps1,sh}` invocation as the hooks above. The snippet below is for manual adopter use.
 
 **Format** (≤ 100 chars):
 

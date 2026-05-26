@@ -87,11 +87,11 @@ The hook reads this file each invocation; listing the tactic exits 0 immediately
 
 ## Forward-only
 
-Purely additive — adds 2 hook scripts under `adapters/claude/hooks/`, 2 test files under `tests/`, one `PreToolUse` entry in `.claude/settings.json.example`, an install.md section. Adopters who already customise `.claude/settings.json` add the hook block manually per the install.md template; auto-merge into custom adopter settings is a follow-up (tracked separately).
+Purely additive — adds 2 hook scripts under `adapters/claude/hooks/`, 2 test files under `tests/`, one `PreToolUse` entry in `.claude/settings.json.example`, an install.md section. Adopter `.claude/settings.json` auto-merge is wired via `core/scripts/sync-claude-settings.{ps1,sh}` (invoked from `install.ps1` / `install.sh` claude branches) — `/ginee-update` lands the hook without any manual settings edit; re-runs are idempotent. The bash branch needs `jq` on PATH; without it the sync step warns + skips, falling back to the manual snippet in `adapters/claude/install.md § Compliance hooks`.
 
 ## Out of scope
 
-- **Auto-merge into adopter `.claude/settings.json`.** Today's installer copies the `.example` only when no settings.json exists; adopters with customisations follow the manual snippet in `adapters/claude/install.md § Compliance hooks`. Idempotent JSON-merge in `install.ps1` / `install.sh` is a follow-up.
+- ~~**Auto-merge into adopter `.claude/settings.json`.**~~ — landed via `core/scripts/sync-claude-settings.{ps1,sh}` invoked from `install.{ps1,sh}` (claude branch). Idempotent; preserves adopter customisations.
 - **Per-violation opt-out.** All five violations share the single tactic-id `pretooluse-edit-hook`. Splitting (e.g., disable D-token check only) is deferred; the typical scenario is "all or nothing" while the LLM gets accustomed to the gate.
 - **Cross-adapter parity.** Cursor / Codex / generic adapters have no PreToolUse hook surface; the equivalent enforcement there is the existing CI gate at PR-time. Cross-adapter playbooks ship as their tooling matures.
 - **Bash hook without `jq`.** Fails open (warning to stderr) when `jq` is absent on PATH. Adopters who rely on the bash hook should install jq; the pwsh hook avoids this dependency entirely.
