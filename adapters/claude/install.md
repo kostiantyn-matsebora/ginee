@@ -260,6 +260,38 @@ skill-runner (Claude main thread)
 
 `local/framework.config.yaml § warm-reuse.enabled: false`. Default on Claude is `true` (capability present when the env-var prerequisite is set). With `enabled: false`, every dispatch fresh-spawns — identical to capability-less-adapter behaviour.
 
+## Compliance statusline (T4)
+
+Cross-platform single-line statusline at `adapters/claude/statusline.{ps1,sh}` surfaces compliance state in Claude Code's persistent status row (per parent playbook #135 tactic 4, Class G — visible state, no enforcement).
+
+**Format** (≤ 100 chars):
+
+```
+[ginee] #<N> · phase: ? · warm: ? · trailer: <ok|needed> · cap: <N>%
+```
+
+| Field | Source |
+|---|---|
+| `#<N>` | Parsed from current branch (`#<N>` token or `/t<N>` convention) |
+| `phase: ?` · `warm: ?` | Placeholders until skill-runner-side warm-registry plumbing (D43) writes state to a file the statusline can read |
+| `trailer: <ok\|needed>` | `ok` when a commit in `origin/main..HEAD` carries `Optimized-By: ai-engineer`; else `needed` |
+| `cap: <N>%` | Tightest cap-bytes headroom across hot-spec files in the branch diff |
+
+**Adopter wiring** — append to `.claude/settings.json`:
+
+```json
+{
+  "statusLine": {
+    "type": "command",
+    "command": "pwsh -NoProfile -File .agents/ginee/adapters/claude/statusline.ps1"
+  }
+}
+```
+
+Bash equivalent: `"command": "bash .agents/ginee/adapters/claude/statusline.sh"`.
+
+**Opt out**: `local/framework.config.yaml § compliance.disabled: [compliance-statusline]`. The statusline never blocks the host — every uncaught error path falls back to a bare `[ginee]` print or no output. Full spec: [`migrations/compliance-statusline.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/migrations/compliance-statusline.md).
+
 ## Updates
 
 **Recommended — `/ginee-update`** (or "update ginee" / "upgrade the framework"). The skill fetches the installer from upstream at the target ref and drives `--update-only` for you — no local installer needed. Performs all steps below automatically, including the pointer-block sync in step 5.

@@ -1,5 +1,9 @@
 {
-  "_comment": "ginee context-economy gate — Layer 1 (Claude Code PostToolUse hook). Copy this file to .claude/settings.json in your local checkout to activate. The hook runs scripts/context-economy-check.ps1 after each Edit/Write/MultiEdit and surfaces a JSON summary as additional context. Requires pwsh 7+ on PATH.",
+  "_comment": "ginee compliance — Copy this file to .claude/settings.json to activate. PostToolUse hook surfaces context-economy summary; statusLine surfaces compliance state per the playbook tactic 4 (#140). Requires pwsh 7+ on PATH. Opt out: local/framework.config.yaml § compliance.disabled: [compliance-statusline].",
+  "statusLine": {
+    "type": "command",
+    "command": "pwsh -NoProfile -File adapters/claude/statusline.ps1"
+  },
   "hooks": {
     "PostToolUse": [
       {

@@ -147,6 +147,10 @@ PRs auto-close issues via `Closes #N`. For tasks &gt; 15 minutes of estimated wo
 
 When ginee authors adopter markdown (architecture doc, ADRs, CRs, READMEs, runbooks, scenarios, API docs), the [doc-authoring protocol](https://github.com/kostiantyn-matsebora/ginee/blob/main/core/protocols/doc-authoring-protocol.md) is **binding**: structure over prose (tables / bullets / definitions), 5 mandatory checks, and the discovered markdown / prose linter (`markdownlint` / `vale` / `proselint` / `prettier-md`) runs at Phase 5. No linter configured → discovery report recommends a baseline; you decide — never auto-installed.
 
+### Compliance statusline — T4 (opt-in, visible-state)
+
+`.agents/ginee/adapters/claude/statusline.{ps1,sh}` surfaces compliance state in Claude Code's status row (issue # · trailer · cap headroom). Wire per [adapters/claude/install.md § Compliance statusline](https://github.com/kostiantyn-matsebora/ginee/blob/main/adapters/claude/install.md#compliance-statusline-t4). Opt out: `local/framework.config.yaml § compliance.disabled: [compliance-statusline]`.
+
 ## 4. Update later
 
 **Preferred — `/ginee-update` skill** (tier-1; works once you have ginee 0.8.0+ installed):

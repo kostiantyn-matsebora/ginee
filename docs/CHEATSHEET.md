@@ -73,6 +73,12 @@ Slash commands `/ginee-<skill> [args]`. Natural-language phrasings also match. T
 Use ginee to <task description>           # team self-dispatches; no skill needed
 ```
 
+## Compliance statusline (T4)
+
+`adapters/claude/statusline.{ps1,sh}` emits a single line (≤ 100 chars) to Claude Code's status row showing `[ginee] #<N> · phase: ? · warm: ? · trailer: <ok|needed> · cap: <N>%`. Trailer / cap fields are locally-derived; phase + warm are placeholders pending D43 plumbing.
+
+Wire via `.claude/settings.json § statusLine`. Opt out: `local/framework.config.yaml § compliance.disabled: [compliance-statusline]`. Full spec: [`migrations/compliance-statusline.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/migrations/compliance-statusline.md).
+
 ## Phase lifecycle
 
 | Phase | Goal | Gate |

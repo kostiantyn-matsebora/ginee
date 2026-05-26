@@ -53,6 +53,10 @@ the same governance every single time.
     <p>Zero stack/domain opinions baked in. <code>team-lead</code> learns your project on first run — tech stack, architecture, SDLC artefacts, TODO conventions, doc layout.</p>
   </article>
   <article class="why-card">
+    <h3><span class="why-emoji">📊</span> Compliance at a glance</h3>
+    <p>A single-line statusline on the Claude adapter surfaces compliance state in real time: current issue, trailer status, and cap-bytes headroom on the tightest hot-spec file. Class G — visible state, never blocking. Opt out per-tactic.</p>
+  </article>
+  <article class="why-card">
     <h3><span class="why-emoji">📥</span> Three task sources</h3>
     <p>Freeform requests, TODO files (root + nested per-component), and GitHub issues (file / pick up / triage / promote). TODOs flip ☐ → ☒ only on user approval; PRs auto-close issues via <code>Closes #N</code>.</p>
   </article>
