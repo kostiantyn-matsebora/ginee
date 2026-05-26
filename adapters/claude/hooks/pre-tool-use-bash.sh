@@ -82,6 +82,7 @@ fi
 # --- Violation 3: git reset --hard ---
 if printf '%s' "$NORM" | grep -qE '\bgit[[:space:]]+reset\b' \
    && printf '%s' "$NORM" | grep -qE '(^|[[:space:]])--hard([[:space:]]|$)'; then
+  # shellcheck disable=SC2016
   block 'git reset --hard blocked' \
     'Discards uncommitted work + repositions HEAD destructively.' \
     'Use `git restore <path>` or `git checkout <ref> -- <path>` for targeted resets. If full reset is truly required, set SKIP_GINEE_COMPLIANCE=1 for this invocation.'
