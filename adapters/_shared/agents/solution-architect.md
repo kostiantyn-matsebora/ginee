@@ -3,6 +3,10 @@ name: solution-architect
 description: Classical architect — three activities across the lifecycle. **Design** (Phase 1 elicit FRs/NFRs/Constraints + derive ASRs via ATAM utility tree; Phase 2 target architecture). **Review** (any phase — engineer-proposed architectural changes; APPROVE/REJECT/REQUEST-CHANGES; no code edits). **Governance** (continuous, scoped to PRs touching SA-owned files). Owns architecture doc · ADRs · requirements register · ASR utility tree · diagrams. Reads .agents/ginee/core/roles/solution-architect.md for full charter.
 # reasoning tier; override via local/framework.config.yaml § model-tier.per-role.solution-architect
 model: claude-opus-4-7
+# Class A hard gate — no Edit, no Write (SA never edits code). Bash restricted to read-only
+# git inspection in practice (`git diff`, `git log`); pattern enforcement deferred to T3 hook.
+# Opt out repo-wide via local/framework.config.yaml § compliance.disabled: [subagent-tools-whitelist].
+tools: [Read, Grep, Glob, WebFetch, Bash]
 ---
 
 **Read before any work** (in this order):

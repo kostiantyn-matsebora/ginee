@@ -99,6 +99,19 @@ Use ginee to <task description>           # team self-dispatches; no skill neede
 | 7. SA review | Architecture compliance | APPROVE or RETURN-TO-engineer |
 | 8. User approval | Delivery accept | TODO ☐ → ☒; issue closed; PR per mode |
 
+## Compliance — cardinal tools whitelist
+
+Each pointer subagent ships with a scoped `tools:` list — `solution-architect` has no `Edit` / `Write` (Class A hard gate); `ai-engineer` has no `Bash`. Other cardinals retain full tool sets; path / command scope enforced by T2 / T3 PreToolUse hooks (parent: [#135](https://github.com/kostiantyn-matsebora/ginee/issues/135)).
+
+```yaml
+# local/framework.config.yaml — opt out per tactic
+compliance:
+  disabled:
+    - subagent-tools-whitelist   # restore unscoped tools on all cardinals
+```
+
+Full spec: [`migrations/cardinal-tools-whitelist.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/migrations/cardinal-tools-whitelist.md).
+
 ## GitHub label scheme
 
 | Label | Meaning |
@@ -112,6 +125,20 @@ Use ginee to <task description>           # team self-dispatches; no skill neede
 | `ginee:phase:<N>` | **D39** — sub-issue dispatch — current lifecycle phase (1–8) |
 | `ginee:track:off` | **D39** — set on parent to opt out of sub-issue tracking for that issue |
 | (closed issue) | Done — implicit, no label change needed |
+
+## Compliance — PreToolUse Edit/Write hook (T2)
+
+Cross-platform hook at `adapters/claude/hooks/pre-tool-use-edit.{ps1,sh}` blocks Edit / Write / MultiEdit on:
+
+| Violation | Source |
+|---|---|
+| Hot-spec frontmatter missing post-edit | D47 |
+| `cap-bytes` exceeded without `Optimized-By: ai-engineer` trailer | D44 + D47 |
+| Bare `D<N>` token introduced on `core/**` | D42 |
+| `always` / `never` / `binding` / `mandatory` as rule modifier | D48 |
+| Always-loaded surface bloat (> 50 lines) without trailer | D21 |
+
+Wire into `.claude/settings.json` per [adapters/claude/install.md § Compliance hooks](https://github.com/kostiantyn-matsebora/ginee/blob/main/adapters/claude/install.md#compliance-hooks). Bypass per call: `SKIP_GINEE_COMPLIANCE=1`. Opt out: `local/framework.config.yaml § compliance.disabled: [pretooluse-edit-hook]`. Full spec: [`migrations/pretooluse-edit-hook.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/migrations/pretooluse-edit-hook.md).
 
 ## Sub-issue dispatch (D39)
 

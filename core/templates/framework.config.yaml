@@ -302,6 +302,22 @@ triage:
 #     agents-md:   {}
 #     generic:     {}
 
+# --- Compliance playbook opt-outs ---
+# Per-tactic opt-out for the Claude adapter's compliance playbook (#135) —
+# subagent tools whitelist · PreToolUse hooks · statusline · etc. Absent →
+# all enabled. Listing a tactic-id disables that tactic only.
+#
+# Tactic ids:
+#   subagent-tools-whitelist   — T1: cardinal `tools:` lists in .claude/agents/*.md
+#   pretooluse-edit-hook       — T2: Edit/Write violation hook
+#   pretooluse-bash-hook       — T3: Bash violation hook
+#   compliance-statusline      — T4: statusline showing compliance state
+# Tactics 5–12 land their ids alongside.
+#
+# compliance:
+#   disabled:
+#     - subagent-tools-whitelist     # restore unscoped tool access for all subagents
+
 # --- Host capability tools ---
 # Team-lead surfaces matching tools from the active adapter's
 # install.md § Specialist-tool affinity table as dispatch hints. Specialist
