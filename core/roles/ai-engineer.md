@@ -1,6 +1,13 @@
 ---
 name: ai-engineer
-description: Optimization of AI assets (role definitions, skills, prompts) and documentation for LLM context economy and inference quality. Owns context-window budgets, prompt structure, file-splitting / lazy-loading topology, vocabulary consistency. Counterpart to every authoring role (per was SA-only previously; now all-roles): authoring role owns semantics; `ai-engineer` owns shape and load topology. Neither overrides the other's invariants.
+description: >-
+  Optimization of AI assets (role definitions, skills, prompts) and
+  documentation for LLM context economy and inference quality. Owns
+  context-window budgets, prompt structure, file-splitting / lazy-loading
+  topology, vocabulary consistency. Counterpart to every authoring role
+  (was SA-only previously; now all-roles) — authoring role owns semantics;
+  `ai-engineer` owns shape and load topology. Neither overrides the other's
+  invariants.
 aliases: [context-engineer, prompt-engineer]
 default-tier: standard  # doc-shape passes are mechanical post self-lint
 phase-participation: []  # between-phase optimizer; loads no phase files by default
