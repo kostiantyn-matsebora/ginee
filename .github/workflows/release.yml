@@ -130,13 +130,42 @@ jobs:
           STAGE="_stage/ginee-${{ steps.version.outputs.tag }}"
           # Adopter-side hook files MUST ship — regression guard for the
           # rsync --exclude basename-match bug that stripped them in 0.20–0.22.
+          # Updated for v0.24.0: extended with Tier 2 (T5/T6/T7/T8) + Tier 3
+          # (T10 commands · T12 session-start · T13 attest-optimized-by) +
+          # hook data YAMLs that ship under adapters/claude/hooks/.
           required=(
+            # Tier 1 — PreToolUse hooks + statusline
             adapters/claude/hooks/pre-tool-use-edit.ps1
             adapters/claude/hooks/pre-tool-use-edit.sh
             adapters/claude/hooks/pre-tool-use-bash.ps1
             adapters/claude/hooks/pre-tool-use-bash.sh
             adapters/claude/statusline.ps1
             adapters/claude/statusline.sh
+            # Tier 2 — T5 UserPromptSubmit · T6 PostToolUse · T7 Stop · T8 SendMessage
+            adapters/claude/hooks/user-prompt-submit.ps1
+            adapters/claude/hooks/user-prompt-submit.sh
+            adapters/claude/hooks/post-tool-use-edit.ps1
+            adapters/claude/hooks/post-tool-use-edit.sh
+            adapters/claude/hooks/stop.ps1
+            adapters/claude/hooks/stop.sh
+            adapters/claude/hooks/pre-tool-use-send-message.ps1
+            adapters/claude/hooks/pre-tool-use-send-message.sh
+            # Tier 2/3 — hook data YAMLs
+            adapters/claude/hooks/keyword-triggers.yaml
+            adapters/claude/hooks/carry-forward-rules.yaml
+            # Tier 3 — T10 slash commands (six deterministic templates)
+            adapters/claude/commands/ginee-dispatch.md
+            adapters/claude/commands/ginee-phase-report.md
+            adapters/claude/commands/ginee-self-lint.md
+            adapters/claude/commands/ginee-commit.md
+            adapters/claude/commands/ginee-pr.md
+            adapters/claude/commands/ginee-issue-pickup.md
+            # Tier 3 — T12 SessionStart · T13 Optimized-By attestation
+            adapters/claude/hooks/session-start.ps1
+            adapters/claude/hooks/session-start.sh
+            adapters/claude/hooks/attest-optimized-by.ps1
+            adapters/claude/hooks/attest-optimized-by.sh
+            # Installer + framework-self-dev gate
             core/scripts/sync-claude-settings.ps1
             core/scripts/sync-claude-settings.sh
             scripts/context-economy-check.ps1
