@@ -67,6 +67,19 @@ Slash commands `/ginee-<skill> [args]`. Natural-language phrasings also match. T
 /ginee-address-review #<PR>               # ingest review comments on an open PR (D24)
 ```
 
+## Compliance — Bash hook (T3)
+
+`adapters/claude/hooks/pre-tool-use-bash.{ps1,sh}` blocks 4 shell-command patterns at the tool-call layer:
+
+| Pattern | Block |
+|---|---|
+| `git commit --no-verify` / `-n` | Bypasses pre-commit gate |
+| `git push --force` on `main` / `master` | Always (rewrites trunk history) |
+| `git reset --hard` | Unless `SKIP_GINEE_COMPLIANCE=1` |
+| `gh pr create` without `--body` / `--draft` | Per ginee PR conventions |
+
+Opt out: `local/framework.config.yaml § compliance.disabled: [pretooluse-bash-hook]`. Full spec: [`migrations/pretooluse-bash-hook.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/migrations/pretooluse-bash-hook.md).
+
 ## Freeform requests (any tier)
 
 ```

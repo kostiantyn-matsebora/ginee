@@ -1,6 +1,18 @@
 {
-  "_comment": "ginee context-economy gate — Layer 1 (Claude Code PostToolUse hook). Copy this file to .claude/settings.json in your local checkout to activate. The hook runs scripts/context-economy-check.ps1 after each Edit/Write/MultiEdit and surfaces a JSON summary as additional context. Requires pwsh 7+ on PATH.",
+  "_comment": "ginee compliance hooks — Copy this file to .claude/settings.json in your local checkout to activate. (1) PreToolUse on Bash: blocks 4 destructive shell-command violations per the compliance playbook (#135 tactic 3). (2) PostToolUse: context-economy gate surfaces a JSON summary after each Edit/Write/MultiEdit. Both require pwsh 7+ on PATH. Bypass per invocation: SKIP_GINEE_COMPLIANCE=1; opt out repo-wide: local/framework.config.yaml § compliance.disabled.",
   "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "pwsh -NoProfile -File adapters/claude/hooks/pre-tool-use-bash.ps1",
+            "timeout": 10
+          }
+        ]
+      }
+    ],
     "PostToolUse": [
       {
         "matcher": "Edit|Write|MultiEdit",

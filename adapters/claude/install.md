@@ -260,6 +260,36 @@ skill-runner (Claude main thread)
 
 `local/framework.config.yaml § warm-reuse.enabled: false`. Default on Claude is `true` (capability present when the env-var prerequisite is set). With `enabled: false`, every dispatch fresh-spawns — identical to capability-less-adapter behaviour.
 
+## Compliance hooks — Bash (T3)
+
+The `Bash` tool PreToolUse hook lives at `adapters/claude/hooks/pre-tool-use-bash.{ps1,sh}` and blocks four destructive shell-command patterns at the tool-call layer (per parent playbook #135 tactic 3):
+
+| # | Block | Source rule |
+|---|---|---|
+| 1 | `git commit --no-verify` (or `-n`) | Bypassing pre-commit defeats the context-economy gate |
+| 2 | `git push --force` (or `-f` / `--force-with-lease`) targeting `main` / `master` | Always block trunk history rewrites |
+| 3 | `git reset --hard` | Block unless `SKIP_GINEE_COMPLIANCE=1` |
+| 4 | `gh pr create` without `--body` / `--body-file` / `--draft` | Per ginee PR conventions |
+
+**Adopter wiring** — add to your `.claude/settings.json § hooks.PreToolUse`:
+
+```json
+{
+  "matcher": "Bash",
+  "hooks": [
+    {
+      "type": "command",
+      "command": "pwsh -NoProfile -File .agents/ginee/adapters/claude/hooks/pre-tool-use-bash.ps1",
+      "timeout": 10
+    }
+  ]
+}
+```
+
+Bash equivalent: `bash .agents/ginee/adapters/claude/hooks/pre-tool-use-bash.sh`.
+
+**Opt out repo-wide**: `local/framework.config.yaml § compliance.disabled: [pretooluse-bash-hook]`. **Bypass per invocation**: `SKIP_GINEE_COMPLIANCE=1`. Full spec: [`migrations/pretooluse-bash-hook.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/migrations/pretooluse-bash-hook.md).
+
 ## Updates
 
 **Recommended — `/ginee-update`** (or "update ginee" / "upgrade the framework"). The skill fetches the installer from upstream at the target ref and drives `--update-only` for you — no local installer needed. Performs all steps below automatically, including the pointer-block sync in step 5.
