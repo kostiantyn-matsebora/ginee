@@ -1,20 +1,9 @@
 #!/usr/bin/env pwsh
 <#
-.SYNOPSIS
-  ginee compliance — UserPromptSubmit hook (playbook #135 T5 / #141).
-.DESCRIPTION
-  Reads UserPromptSubmit JSON from stdin; detects ginee task-keywords;
-  emits stdout JSON whose `hookSpecificOutput.additionalContext` prepends
-  a `[ginee:context:<label>]` block per matched trigger to the user prompt.
-
-  Triggers + injection bodies are data-config: `adapters/claude/hooks/keyword-triggers.yaml`.
-  Per-trigger body cap is enforced at write-time (≤ 28 body lines per block;
-  see playbook anti-pattern "recency dilution").
-
-  Hook never blocks (exit 0). Fail-open on every error path.
-
+.SYNOPSIS  ginee compliance — UserPromptSubmit hook (playbook #135 T5 / #141).
+.DESCRIPTION  Triggers + bodies + acceptance gates: migrations/user-prompt-submit-hook.md.
 .PARAMETER TestInput  Test-only: pass JSON instead of reading stdin.
-.PARAMETER TriggersFile  Test-only: override the path to the YAML triggers file.
+.PARAMETER TriggersFile  Test-only: override path to the YAML triggers file.
 .PARAMETER RepoRoot   Test-only: override repo root detection.
 #>
 [CmdletBinding()]
@@ -54,10 +43,8 @@ function Test-OptOut {
   return ($body -match $pattern)
 }
 
-# Parse the simple block format defined in keyword-triggers.yaml — blocks
-# separated by blank line; each block carries `pattern:` `label:` `context: |`
-# lines and the indented heredoc that follows. Returns an array of
-# @{ Pattern; Label; Context } hashtables.
+# Parse the block format in keyword-triggers.yaml (pattern / label / context-heredoc;
+# blank-line separated). Returns an array of @{ Pattern; Label; Context }.
 function Get-TriggerList { # PSAnalyzer: aggregate-return; plural by design.
   param([string]$Path)
   if (-not (Test-Path -LiteralPath $Path)) { return @() }
@@ -140,24 +127,16 @@ foreach ($t in $triggers) {
     if ([regex]::IsMatch($prompt, $t.Pattern, 'IgnoreCase')) {
       $injections += "[ginee:context:$($t.Label)]`n$($t.Context)"
     }
-  } catch {
-    # Bad regex in YAML — skip this trigger, never break the prompt.
-    $null = $_
-  }
+  } catch { $null = $_ }  # Bad regex in YAML — skip; never break the prompt.
 }
-
 if ($injections.Count -eq 0) { exit 0 }
 
-$body = ($injections -join "`n`n")
-
-$output = @{
+[Console]::Out.WriteLine((@{
   hookSpecificOutput = @{
     hookEventName     = 'UserPromptSubmit'
-    additionalContext = $body
+    additionalContext = ($injections -join "`n`n")
   }
-} | ConvertTo-Json -Depth 5 -Compress
-
-[Console]::Out.WriteLine($output)
+} | ConvertTo-Json -Depth 5 -Compress))
 exit 0
 
 } catch {

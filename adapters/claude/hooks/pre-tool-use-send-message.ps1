@@ -1,23 +1,10 @@
 #!/usr/bin/env pwsh
 <#
-.SYNOPSIS
-  ginee compliance — PreToolUse hook on SendMessage (playbook #135 T8 / #144).
-.DESCRIPTION
-  Reads PreToolUse JSON from stdin; blocks (exit 2 + stderr) when a SendMessage
-  continuation to a warm cardinal omits the leading `[carry-forward] Remember:`
-  anchor required by the warm-reuse plumbing (D43 layer).
-
-  Force class D (prompt-time anchor) — applied per-SendMessage, not per-user-
-  prompt. Defeats warm-cardinal drift across multi-dispatch spans.
-
-  Scope:
-    - Tool: SendMessage (and case-insensitive aliases). PreToolUse on Agent
-      (first dispatch) is NOT in scope — T8 by acceptance criterion fires
-      only on continuation messages.
-    - Per-role rules live in adapters/claude/hooks/carry-forward-rules.yaml.
-
+.SYNOPSIS  ginee compliance — PreToolUse hook on SendMessage (playbook #135 T8 / #144).
+.DESCRIPTION  Anchor gate + per-cardinal rules: migrations/carry-forward-injection.md.
+              In scope: SendMessage. Out of scope: Agent (first dispatch).
 .PARAMETER TestInput  Test-only: pass JSON instead of reading stdin.
-.PARAMETER RulesFile  Test-only: override the path to the carry-forward rules YAML.
+.PARAMETER RulesFile  Test-only: override path to the rules YAML.
 .PARAMETER RepoRoot   Test-only: override repo root detection.
 #>
 [CmdletBinding()]
@@ -103,46 +90,33 @@ try {
   exit 0
 }
 
-$toolName = [string]$payload.tool_name
-# Match SendMessage (any case). Not Agent — Agent = first dispatch, no anchor required.
-if ($toolName -ne 'SendMessage') { exit 0 }
+# Only SendMessage (continuations). Not Agent (first dispatch — no anchor required).
+if ([string]$payload.tool_name -ne 'SendMessage') { exit 0 }
 
 $root = Get-RepoRoot -Override $RepoRoot
 if (-not $root) { exit 0 }
-
 if (Test-OptOut -Root $root -TacticId 'pretooluse-send-message-hook') { exit 0 }
 
 $ti = $payload.tool_input
 if (-not $ti) { exit 0 }
 
-# Extract target (recipient agent name) — accept any of: to, target, recipient,
-# agent — Claude Code names the SendMessage recipient field `to`.
+# Target (recipient) — try common field names. Claude Code uses `to`.
 $target = ''
 foreach ($k in @('to','target','recipient','agent','agent_name')) {
-  if ($ti.PSObject.Properties.Name -contains $k -and $ti.$k) {
-    $target = [string]$ti.$k
-    break
-  }
+  if ($ti.PSObject.Properties.Name -contains $k -and $ti.$k) { $target = [string]$ti.$k; break }
 }
 if (-not $target) { exit 0 }
 
-# Extract message body — accept any of: message, prompt, body, content.
+# Message body — try common field names.
 $message = ''
 foreach ($k in @('message','prompt','body','content')) {
-  if ($ti.PSObject.Properties.Name -contains $k -and $ti.$k) {
-    $message = [string]$ti.$k
-    break
-  }
+  if ($ti.PSObject.Properties.Name -contains $k -and $ti.$k) { $message = [string]$ti.$k; break }
 }
 if (-not $message) { exit 0 }
 
-# Anchor check — the first non-blank line must lead with `[carry-forward]`.
-$leading = ($message -split "`r?`n") |
-  Where-Object { $_.Trim() -ne '' } |
-  Select-Object -First 1
-$hasAnchor = ($leading -and ($leading -match '^\[carry-forward\]'))
-
-if ($hasAnchor) { exit 0 }
+# Anchor check — first non-blank line must lead with `[carry-forward]`.
+$leading = ($message -split "`r?`n") | Where-Object { $_.Trim() -ne '' } | Select-Object -First 1
+if ($leading -and ($leading -match '^\[carry-forward\]')) { exit 0 }
 
 $rulesPath = $RulesFile
 if (-not $rulesPath) {

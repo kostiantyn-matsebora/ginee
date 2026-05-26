@@ -1,10 +1,6 @@
 #!/usr/bin/env bash
-# ginee compliance — PreToolUse hook on SendMessage (T8 / #144, bash port).
-# Mirrors adapters/claude/hooks/pre-tool-use-send-message.ps1; see header.
-#
-# Requires: bash 4+, jq.
-# Bypass: SKIP_GINEE_COMPLIANCE=1.
-# Opt out: local/framework.config.yaml § compliance.disabled: [pretooluse-send-message-hook].
+# ginee — PreToolUse SendMessage hook (T8 / #144, bash port). Mirrors .ps1 sibling.
+# Spec: migrations/carry-forward-injection.md. Requires: bash 4+, jq.
 
 set -u
 

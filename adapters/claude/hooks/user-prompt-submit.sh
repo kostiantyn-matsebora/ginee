@@ -1,11 +1,6 @@
 #!/usr/bin/env bash
-# ginee compliance — UserPromptSubmit hook (T5 / #141, bash port).
-# Mirrors adapters/claude/hooks/user-prompt-submit.ps1; see that file's
-# header for the full contract.
-#
-# Requires: bash 4+, jq.
-# Bypass: SKIP_GINEE_COMPLIANCE=1.
-# Opt out: local/framework.config.yaml § compliance.disabled: [user-prompt-submit-hook].
+# ginee — UserPromptSubmit hook (T5 / #141, bash port). Mirrors .ps1 sibling.
+# Spec: migrations/user-prompt-submit-hook.md. Requires: bash 4+, jq.
 
 set -u
 
@@ -23,8 +18,7 @@ is_opt_out() {
   grep -qE '^[[:space:]]+-[[:space:]]+user-prompt-submit-hook[[:space:]]*$' "$config"
 }
 
-# Parse keyword-triggers.yaml. Emits one record per trigger to stdout in the
-# form: <label>\t<pattern>\t<context-base64>. Blocks separated by blank lines.
+# Parse keyword-triggers.yaml; emit one <label>\x1f<pattern>\x1f<context>\x1e per trigger.
 parse_triggers() {
   local path="$1"
   [ -f "$path" ] || return 0
@@ -32,13 +26,7 @@ parse_triggers() {
     BEGIN { in_ctx = 0; pat = ""; lbl = ""; ctx = "" }
     /^[[:space:]]*#/ { next }
     /^[[:space:]]*$/ {
-      if (pat != "" && lbl != "") {
-        # base64-encode context to safely carry newlines through the pipeline.
-        cmd = "printf %s \"" ctx "\" | base64 -w0 2>/dev/null || printf %s \"" ctx "\" | base64"
-        # NOTE: not portable for arbitrary content — we instead emit a sentinel and
-        # let bash-side handle. Simpler: switch separator and embed raw.
-        printf "%s\x1f%s\x1f%s\x1e", lbl, pat, ctx
-      }
+      if (pat != "" && lbl != "") { printf "%s\x1f%s\x1f%s\x1e", lbl, pat, ctx }
       in_ctx = 0; pat = ""; lbl = ""; ctx = ""
       next
     }

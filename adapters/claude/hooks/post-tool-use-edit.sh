@@ -1,11 +1,6 @@
 #!/usr/bin/env bash
-# ginee compliance — PostToolUse self-check reminder (T6 / #142, bash port).
-# Mirrors adapters/claude/hooks/post-tool-use-edit.ps1; see that file's
-# header for the full contract.
-#
-# Requires: bash 4+, jq.
-# Bypass: SKIP_GINEE_COMPLIANCE=1.
-# Opt out: local/framework.config.yaml § compliance.disabled: [posttooluse-edit-hook].
+# ginee — PostToolUse self-check reminder (T6 / #142, bash port). Mirrors .ps1 sibling.
+# Spec: migrations/posttooluse-edit-hook.md. Requires: bash 4+, jq.
 
 set -u
 

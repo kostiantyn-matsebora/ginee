@@ -1,21 +1,8 @@
 #!/usr/bin/env pwsh
 <#
-.SYNOPSIS
-  ginee compliance — PostToolUse self-check reminder (playbook #135 T6 / #142).
-.DESCRIPTION
-  Reads PostToolUse JSON from stdin; on Edit / Write / MultiEdit success
-  targeting `core/**`, emits a ≤ 6-line `[ginee:self-check]` reminder via
-  hookSpecificOutput.additionalContext.
-
-  Coexists with `scripts/context-economy-check.ps1` (same matcher) — both
-  attach to the same PostToolUse list; the structural gate fires first
-  (structural-lint output), the self-check follows (LLM-facing reminder).
-
-  Path-aware: only fires on edits whose resolved file path begins with `core/`.
-  Skips `tests/**`, `local/**`, `adapters/**`, `extras/**`, `migrations/**`.
-
-  Hook never blocks. Fail-open on every error path.
-
+.SYNOPSIS  ginee compliance — PostToolUse self-check reminder (playbook #135 T6 / #142).
+.DESCRIPTION  Path-gated to core/**; coexists with the structural context-economy gate.
+              Full spec: migrations/posttooluse-edit-hook.md.
 .PARAMETER TestInput  Test-only: pass JSON instead of reading stdin.
 .PARAMETER RepoRoot   Test-only: override repo root detection.
 #>
@@ -106,9 +93,8 @@ if (-not $rel) { exit 0 }
 # Path gate — only fires on core/** edits.
 if ($rel -notmatch '^core/') { exit 0 }
 
-# Compose a ≤ 6-line self-check reminder. The set was chosen so the reminder
-# stays useful even when the structural gate (context-economy-check.ps1) and
-# the action-time gate (pre-tool-use-edit.ps1) have already passed.
+# 5- or 6-line reminder — chosen to stay useful even when the structural +
+# action-time gates already passed.
 $lines = @(
   "[ginee:self-check] You just edited $rel. Verify before continuing:",
   "- frontmatter present + valid (hot-spec contract: core/protocols/hot-spec-format.md)",
@@ -120,16 +106,12 @@ if (Test-IsAlwaysLoaded -RelPath $rel) {
   $lines += "- always-loaded surface: consider whether an ai-engineer optimization pass is needed before merge"
 }
 
-$body = $lines -join "`n"
-
-$output = @{
+[Console]::Out.WriteLine((@{
   hookSpecificOutput = @{
     hookEventName     = 'PostToolUse'
-    additionalContext = $body
+    additionalContext = ($lines -join "`n")
   }
-} | ConvertTo-Json -Depth 5 -Compress
-
-[Console]::Out.WriteLine($output)
+} | ConvertTo-Json -Depth 5 -Compress))
 exit 0
 
 } catch {

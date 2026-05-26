@@ -1,11 +1,6 @@
 #!/usr/bin/env bash
-# ginee compliance — Stop hook (T7 / #143, bash port).
-# Mirrors adapters/claude/hooks/stop.ps1; see that file's header for the full
-# contract — same 4 block conditions and the anti-loop guard on stop_hook_active.
-#
-# Requires: bash 4+, jq.
-# Bypass: SKIP_GINEE_COMPLIANCE=1.
-# Opt out: local/framework.config.yaml § compliance.disabled: [stop-hook].
+# ginee — Stop hook (T7 / #143, bash port). Mirrors .ps1 sibling.
+# Spec: migrations/stop-hook.md. Requires: bash 4+, jq.
 
 set -u
 
