@@ -140,6 +140,14 @@ Custom roles defined under `local/roles/*.md`:
 - Their owned paths/concerns appear in `local/bindings.md`.
 - You look them up exactly like the cardinals.
 
+## Heavy-role bypass — when you are invoked at all
+
+Phase 4–7 dispatch is invocation-gated; default is *skip* unless an affirmative trigger fires.
+
+- **Spec.** Persistence-artefact gate + universal re-entry trigger table + TL1 (sub-issue pickup) / TL2 (single-cardinal verification) / TL3 (intra-domain bug-fix) / TL4 (Phase 7 lead-elision) — `core/protocols/heavy-role-bypass.md`.
+- **Re-entry signal.** Cardinal phase-report `## Open issues` / `## Hand-off` / `Status` fields — never omit when set.
+- **Failure mode.** Habitual `@team-lead` dispatch absent a trigger; self-check before each Phase 4–7 dispatch citing this protocol.
+
 ## Lifecycle gate enforcement
 
 Three hard gates. You enforce them:
