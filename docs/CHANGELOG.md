@@ -10,6 +10,30 @@ All notable changes to ginee. The format follows [Keep a Changelog](https://keep
 
 ## Unreleased
 
+## 0.21.0 — 2026-05-26
+
+### Added
+
+- **Sub-issue pickup fast-path** ([#152](https://github.com/kostiantyn-matsebora/ginee/issues/152)). `ginee-pick-up` against a sub-issue with single `ginee:role:<cardinal>` label + populated dispatch-contract body (`core/templates/sub-issue-dispatch.md` shape) hands off to `@<cardinal>` directly, skipping the `@team-lead` re-route. Routing artefact already exists; re-deriving it cost one full ~15–40k token dispatch for zero new information. Re-entry through `@team-lead` mandatory on five trigger conditions — role-label gap · `## Open issues` non-empty · `## Hand-off` set · `Status: In-progress` · cross-domain bug. Parent issues + TODO + freeform sources unchanged. Migration: `migrations/sub-issue-fast-path.md`.
+
+- **Lite-mode lifecycle prefix** ([#153](https://github.com/kostiantyn-matsebora/ginee/issues/153)). New `lite:` (alias `direct:`) prefix elides Phase 1–3 for trivial scope — typo / single-label tweak / single-doc-bullet — and dispatches one named cardinal directly into Phase 4. Phases 5–8 run normally. Resolution chain (stop at first match) — per-task prefix → issue-sourced `complexity:low` + single `ginee:role:<cardinal>` + `lifecycle.lite-mode.label-trigger: true` → `lifecycle.lite-mode.default: true` → framework default Phase 1–8. CR / ADR / Phase 7 / Phase 8 gates remain in effect — lite is orchestration cost reduction, not governance bypass. Composes freely with `auto:` · `branch:` / `wt:` / `commit:` · `model:<tier>` · `notrack:` · `cr:` / `nocr:` · `adr:` / `noadr:` · `fresh:`. Migration: `migrations/lite-mode.md`.
+
+- **Heavy-role bypass — codify `team-lead` + SA invocation gates across Phase 4–7** ([#162](https://github.com/kostiantyn-matsebora/ginee/issues/162)). Generalizes #152's persistence-artefact-based bypass + explicit re-entry triggers into a shared protocol covering both heavy roles across Phase 4 / 5 / 6 / 7. Heavy roles are now invocation-gated, not phase-gated — default is *skip*; presence requires an affirmative trigger.
+
+  - **Shared protocol** `core/protocols/heavy-role-bypass.md` consolidates the persistence-artefact table (sub-issue body for TL; blueprint+ADRs+AC for SA), the universal re-entry trigger table (10 rows across both roles), per-phase tracks TL1/TL2/TL3/TL4 + SA1/SA2/SA3, Phase 7 lead-elision detail, and transcript-grep recipes for spotting defensive dispatch in past tasks.
+
+  - **Phase 4–7 rosters qualified** to cite the protocol. `team-lead.md` + `solution-architect.md` kernels cite the shared protocol instead of restating triggers.
+
+  - **TL1 = #152** already shipped; TL2 (single-cardinal verification), TL3 (intra-domain bug-fix), TL4 (Phase 7 lead-elision on single-cardinal PR) land here. SA1 / SA2 / SA3 codify rules already half-present (the leak was orchestrators dispatching SA defensively despite the trigger not firing).
+
+  - **Out of scope (heavy role stays mandatory):** Phase 1 / 2 / 3 / 8 for team-lead; Phase 1 / 2 / 7 for SA. Bypasses in these phases would corrupt the artefact chain downstream. Migration: `migrations/heavy-role-bypass.md`.
+
+- **QA pixel-check — optional Phase 5 visual oracle** ([#163](https://github.com/kostiantyn-matsebora/ginee/issues/163)). Mockup graduates from design reference to runtime oracle. Optional Phase 5 stage diffs the rendered app against the mockup at a shared seed-state; catches CSS / layout / icon / copy / responsive-breakpoint regressions that survive behaviour green. Pairs with `core/protocols/blueprint-diff-protocol.md` — blueprint-diff catches mockup self-drift, pixel-check catches app-vs-mockup drift. Off by default (`qa.pixel-check.enabled: false`). Adopter picks alignment direction (`mockup-follows-seed` — seed is stable, re-snapshot mockup; or `seed-follows-mockup` — mockup is stable, author seed to match). Drift routes per source — app wrong → front-end engineer / Phase 6 · mockup outdated → mockup owner / Phase 2 · seed wrong → seed-script owner · tolerance too tight → `team-lead`. Oracle discipline — every mask justified with `# why: <reason>`, every tolerance bump cites the diff it would have caught at the prior threshold. Migration: `migrations/qa-pixel-check.md`.
+
+### Per-role context
+
+Team-lead loaded bytes grow 5.3% (69,402 → 73,060) driven by lite-mode prefix grammar in `core/process/dispatch.md` + heavy-role-bypass citation block in the kernel. Headroom drops from ~23% to ~19% against the 90,000-byte ceiling. Solution-architect grows 4.1% (44,025 → 45,808); engineers grow ~3% each from the phase-4/5/6 roster qualifiers. `docs/reference/CONTEXT_COSTS.md` snapshot regenerated; no ceiling breach; next dispatch.md-touching change may warrant an `ai-engineer` optimization pass.
+
 ## 0.20.0 — 2026-05-26
 
 ### Added
