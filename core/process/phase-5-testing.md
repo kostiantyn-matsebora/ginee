@@ -31,6 +31,7 @@ reads-before-applying: []
   - Manual smoke against the running solution (project's local-dev startup command), NOT design artefacts.
   - Runs under `core/protocols/iteration-protocol.md`.
 - **`solution-architect` governance dip.** Triggered when an NFR-oracle fails or a test surfaces an architectural concern (e.g. latency NFR breached, contract drift visible in failed assertion). SA reviews per `§ Governance`; never edits test code; routes the architectural finding back through Phase 6 or as a new ADR.
+- **`qa-engineer` pixel-check (optional, off by default).** Fires when `local/framework.config.yaml § qa.pixel-check.enabled: true` AND the change diff touches the visual surface AND seed-script + mockup-snapshot + app-render are configured. Inserts between change-scoped e2e and manual smoke; routes per drift source (front-end engineer · mockup-owning role · seed-script owner · team-lead for tolerance). Full spec: `core/protocols/pixel-check-protocol.md`.
 - **Acceptance.**
   - Change-scoped suite green.
   - Oracles reflect correctness for touched surfaces.
