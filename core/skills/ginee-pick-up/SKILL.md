@@ -50,11 +50,42 @@ User asks "pick up X" / "work on X" / "start on X" / "begin X" where X is one of
 1. Treat the prompt as the task description.
 2. Run Phase 1–8. No per-source artefact to update.
 
-### Step 3 — hand to `team-lead`
+### Step 2.5 — sub-issue fast-path (GitHub issue only)
 
-After the mechanical ops in Step 2 (label swap · sticky post · branch resolution) and **before any Phase 1 plan drafting**, the skill-runner dispatches `@team-lead` per `.agents/ginee/core/process.md § Skill-runner — surface boundary`. Inbound payload to team-lead: parsed task body + scoring labels + label-swap result + (issue-sourced) branch.
+Sub-issues carry the dispatch decision in labels + body per `core/protocols/github-integration.md § Sub-issue dispatch`; skill-runner dispatches the labelled cardinal, skipping `@team-lead` — routing artefact exists.
 
-From here on every orchestration decision — Phase 1–8 plan drafting · specialist routing · synthesis of parallel returns · lifecycle gate text · re-dispatch · routing reconciliation · default selection — flows through team-lead. The skill-runner never:
+**Detect parentage.** `gh api repos/{owner}/{repo}/issues/{N}` exposes the `parent_issue` field; confirm via `gh api repos/{owner}/{repo}/issues/{parent}/sub_issues`.
+
+**Fast-path applies when ALL hold.**
+
+- Parent resolves (issue is a sub-issue).
+- Exactly one `ginee:role:<cardinal>` label.
+- Body carries the dispatch contract per `core/templates/sub-issue-dispatch.md` (`## Scope` · `## Acceptance` · `## Spec links` · `## Phase` · `## Estimate`).
+
+Parent issues are unchanged — Step 3 routes them to `@team-lead`.
+
+**Re-entry — `@team-lead` re-loaded when ANY trigger fires.**
+
+| Trigger | Source |
+|---|---|
+| Role label missing or conflicting | pre-dispatch check |
+| Cardinal return — `## Open issues` non-empty | cross-cardinal synthesis needed |
+| Cardinal return — `## Hand-off` set | routing change — re-plan |
+| Cardinal return — `Status: In-progress` | stop-state re-decision |
+| Cross-domain bug surfaced | `core/protocols/cross-domain-bugs.md` |
+
+Skill-runner never synthesizes a cardinal return — on trigger, dispatch `@team-lead` with the return as inbound payload. Same forbiddens as `core/process/dispatch.md § Skill-runner — surface boundary`.
+
+### Step 3 — hand off
+
+After Step 2 mechanical ops (label swap · sticky post · branch resolution) and **before any Phase 1 plan drafting**, skill-runner dispatches the resolved target per `core/process.md § Skill-runner — surface boundary`:
+
+| Source shape | Target | Inbound payload |
+|---|---|---|
+| Parent issue · TODO · freeform | `@team-lead` | parsed task body + scoring labels + label-swap result + (issue-sourced) branch |
+| Sub-issue · fast-path gate pass (Step 2.5) | `@<cardinal>` (from role label) | parsed dispatch body + scoring labels + label-swap result + branch |
+
+From here on every orchestration decision — Phase 1–8 plan drafting · specialist routing · synthesis of parallel returns · lifecycle gate text · re-dispatch · routing reconciliation · default selection — flows through team-lead (or, under the Step 2.5 fast-path, through the dispatched cardinal until any re-entry trigger fires). The skill-runner never:
 
 - Drafts a Phase 1–8 plan in the main thread.
 - Reads `local/bindings.md` to settle a routing question — it dispatches team-lead instead.
