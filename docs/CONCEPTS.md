@@ -28,6 +28,8 @@ ginee ships exactly **7 cardinal roles** — every adopter project has the same 
 
 **Custom roles** live under `local/roles/` and register under `team-lead`. Use the `core/templates/role-authoring-template.md` shape.
 
+**Compliance — cardinal tools whitelist.** Each pointer subagent at `.claude/agents/<role>.md` declares a tightly-scoped `tools:` list. `solution-architect` ships without `Edit` / `Write` — the "SA never edits code" rule is enforced at the tool-call layer (Class A hard gate), not via charter text alone. `ai-engineer` ships without `Bash`. The 5 implementer roles retain full read / write / `Bash`; their path + command scopes are enforced by the T2 / T3 PreToolUse hooks (per the parent compliance playbook, [#135](https://github.com/kostiantyn-matsebora/ginee/issues/135)). Opt out repo-wide via `local/framework.config.yaml § compliance.disabled: [subagent-tools-whitelist]`. Full spec: [`migrations/cardinal-tools-whitelist.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/migrations/cardinal-tools-whitelist.md).
+
 ## Phased task lifecycle
 
 Every non-trivial task runs through **Phases 1–8**. Specialists within a phase run in parallel where independent; phases overlap wherever a contract surface decouples them.

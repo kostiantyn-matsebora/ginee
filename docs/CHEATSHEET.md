@@ -86,6 +86,19 @@ Use ginee to <task description>           # team self-dispatches; no skill neede
 | 7. SA review | Architecture compliance | APPROVE or RETURN-TO-engineer |
 | 8. User approval | Delivery accept | TODO ☐ → ☒; issue closed; PR per mode |
 
+## Compliance — cardinal tools whitelist
+
+Each pointer subagent ships with a scoped `tools:` list — `solution-architect` has no `Edit` / `Write` (Class A hard gate); `ai-engineer` has no `Bash`. Other cardinals retain full tool sets; path / command scope enforced by T2 / T3 PreToolUse hooks (parent: [#135](https://github.com/kostiantyn-matsebora/ginee/issues/135)).
+
+```yaml
+# local/framework.config.yaml — opt out per tactic
+compliance:
+  disabled:
+    - subagent-tools-whitelist   # restore unscoped tools on all cardinals
+```
+
+Full spec: [`migrations/cardinal-tools-whitelist.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/migrations/cardinal-tools-whitelist.md).
+
 ## GitHub label scheme
 
 | Label | Meaning |

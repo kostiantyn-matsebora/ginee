@@ -75,6 +75,8 @@ $env:GINEE_REF='v0.1.0'; $env:GINEE_ADAPTER='claude'; iwr ... | iex
 
 `.agents/ginee/local/` is the only adopter-owned directory. Everything else is framework state.
 
+**Compliance enforcement (Claude adapter).** The shipped `.claude/agents/<role>.md` pointer files carry a scoped `tools:` whitelist per cardinal — `solution-architect` cannot `Edit` / `Write`, `ai-engineer` cannot `Bash`. Opt out via `local/framework.config.yaml § compliance.disabled: [subagent-tools-whitelist]`. Detail: [`migrations/cardinal-tools-whitelist.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/migrations/cardinal-tools-whitelist.md).
+
 ## 2. Run discovery
 
 Open your client in the project. Type:
