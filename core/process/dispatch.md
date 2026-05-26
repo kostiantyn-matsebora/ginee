@@ -121,9 +121,39 @@ CR / ADR authorship can be forced or suppressed at dispatch time via per-task pr
 | `adr:` | Force ADR authorship (overrides `adr.enabled: false` / `require-architectural-delta` / `prompt-before-create`). |
 | `noadr:` | Skip ADR authorship (overrides `adr.enabled: true`); logs `skip-reason: prefix-override`. |
 
-**Combinability.** Combine freely with `auto:` · `branch:` / `wt:` / `commit:` · `model:<tier>` · `notrack:` · `fresh:`. Example: `auto: branch: nocr: bump dotnet runtime` — auto-mode, Mode 1 delivery, skip CR.
+**Combinability.** Combine freely with `auto:` · `branch:` / `wt:` / `commit:` · `model:<tier>` · `notrack:` · `fresh:` · `lite:` / `direct:`. Example: `auto: branch: nocr: bump dotnet runtime` — auto-mode, Mode 1 delivery, skip CR.
 
 Full gate-branch tables: `core/roles/team-lead.md § CR-gate` (CRs) · `core/roles/solution-architect.md § ADR-gate` (ADRs).
+
+### Per-task prefix grammar — lifecycle mode
+
+| Prefix | Effect |
+|---|---|
+| `lite:` / `direct:` | Skip Phase 1–3; direct dispatch from pickup to one named cardinal in Phase 4; Phases 5–8 run normally. |
+
+**Phase elision under lite mode.** Phases 1 (Analysis) · 2 (Design) · 3 (Design review) — skipped. Phase 4 (Implementation) — runs, single cardinal. Phases 5–8 — run normally (6 only if applicable).
+
+**Resolution (stop at first match):**
+
+1. Per-task prefix `lite:` / `direct:` on the dispatch line.
+2. Issue-sourced — `complexity:low` AND exactly one `ginee:role:<cardinal>` (`local/framework.config.yaml § lifecycle.lite-mode.label-trigger: true`).
+3. `local/framework.config.yaml § lifecycle.lite-mode.default: true` (adopter-wide; off by default).
+4. Framework default — interactive Phase 1–8.
+
+**Forbidden — lite mode does NOT elide governance.** CR-gate (`core/roles/team-lead.md § CR-gate`) · ADR-gate (`core/roles/solution-architect.md § ADR-gate`) · Phase 7 SA review · Phase 8 user-approval — all run as normal. (`auto:` may collapse Phase 8 to delivery handoff per `core/protocols/automatic-mode.md`.)
+
+**Combinability.** Combine freely with `auto:` · `branch:` / `wt:` / `commit:` · `model:<tier>` · `notrack:` · `cr:` / `nocr:` / `adr:` / `noadr:` · `fresh:`. Example: `auto: lite: fix typo in CONCEPTS.md § Triage scoring`.
+
+**When to use:**
+
+| Scope | Lite? |
+|---|---|
+| Typo fix in a single file | yes |
+| Single-label tweak (`ginee:ready` → `ginee:in-progress`) | yes |
+| Single-doc-bullet change (added / removed / rephrased) | yes |
+| Touches 2+ files | no |
+| Introduces a new concept / contract / mockup section | no |
+| Spans 2+ cardinals | no |
 
 ## Team-lead-only load-on-demand specs
 
