@@ -8,16 +8,9 @@ reads-before-applying: []
 
 # Doc roles — all-roles authorship + ai-engineer shape
 
-**Load-on-demand.**
+Loaded when a new role-owned doc lands · a doc grows past size threshold / exhibits duplication · cross-reference repair needed across multiple docs · structure dispute surfaces between authoring role and `ai-engineer`. Default tasks do not load.
 
-- Fetched when:
-  - A new role-owned doc lands.
-  - A doc grows past size threshold or exhibits duplication.
-  - A cross-reference repair is needed across multiple docs.
-  - A structure dispute surfaces between authoring role and `ai-engineer`.
-- Default tasks do not load this file.
-
-**Renamed from `core/doc-co-ownership.md`.** Originally an SA ↔ ai-engineer two-role co-ownership model; now generalized — every role authors content in its domain; `ai-engineer` owns shape + load topology across the whole set.
+Generalised from earlier SA ↔ ai-engineer two-role co-ownership: every role authors content in its domain; `ai-engineer` owns shape + load topology across the whole set.
 
 ## Authorship — per role, per doc class
 
@@ -30,49 +23,38 @@ reads-before-applying: []
 | Frontend READMEs · component docs · style guides | `frontend-engineer` |
 | Test plans · scenario docs · QA reports | `qa-engineer` |
 | Mockup | mockup-owning role (default `frontend-engineer`) |
-| Role definitions (`core/roles/*.md`) · process spec (`core/process.md`) · skills (`core/skills/`) | upstream framework (this repo); adopter authors `local/roles/` only |
+| Role definitions (`core/roles/*.md`) · process spec (`core/process.md`) · skills (`core/skills/`) | framework upstream (adopter authors `local/roles/` only) |
 
 ## Ownership split — semantics vs shape
 
-- **Author owns semantics** — the rules, invariants, requirements, routing entries, gates the doc carries. Adding / removing / rewording any is the author's call.
-- **`ai-engineer` owns shape + load topology** — structure (tables vs prose), file splits, cross-reference integrity, byte / line discipline. Never changes semantics.
-- Neither overrides the other's invariants.
+- **Author owns semantics** — rules · invariants · requirements · routing entries · gates. Adding / removing / rewording is author's call.
+- **`ai-engineer` owns shape + load topology** — structure (tables vs prose) · file splits · cross-reference integrity · byte / line discipline. Never changes semantics.
+- Neither overrides the other's invariants. Runs under `core/protocols/iteration-protocol.md`.
 
-Runs under `core/protocols/iteration-protocol.md`.
-
-## Routing — who edits when
+## Routing
 
 | Scenario | Routing |
 |---|---|
-| New rule / invariant / routing entry / governance decision → write content | **Owning role** (per the table above). `ai-engineer` may run a structural pass after. |
-| Existing doc grows past size threshold OR exhibits duplication | `ai-engineer` compacts / splits. Author post-reviews to verify no rule lost. |
-| Cross-references break from a split or move | `ai-engineer` updates references. Author verifies semantic continuity. |
-| Doc edit needed AND scope is unclear (which role owns?) | `team-lead` resolves via `local/bindings.md § Source-of-truth ownership`. |
-| Doc edit needed AND scope is clear, but spans semantics + shape | Pair-dispatch in one phase — author edits content; `ai-engineer` edits shape. Author first. |
-| Author wants prose for clarity; `ai-engineer` wants table for compactness | Author wins on semantics. `ai-engineer` may propose alternative structure that preserves clarity. |
-| Architectural coherence concern raised on a non-SA-owned doc | `solution-architect` reviews per `core/roles/solution-architect.md § Review`. APPROVE / REJECT / REQUEST-CHANGES; never edits the doc. |
+| New rule / invariant / routing entry / governance decision | **Owning role** per § Authorship. `ai-engineer` may run structural pass after. |
+| Doc grows past size threshold OR has duplication | `ai-engineer` compacts / splits. Author post-reviews — no rule lost. |
+| Cross-refs break from split / move | `ai-engineer` updates refs. Author verifies semantic continuity. |
+| Scope unclear (which role owns?) | `team-lead` resolves via `local/bindings.md § Source-of-truth ownership`. |
+| Spans semantics + shape | Pair-dispatch — author edits content; `ai-engineer` edits shape. Author first. |
+| Author wants prose; `ai-engineer` wants table | Author wins on semantics; `ai-engineer` may propose alt structure preserving clarity. |
+| Architectural-coherence concern on non-SA doc | `solution-architect` reviews per `core/roles/solution-architect.md § Review`. APPROVE / REJECT / REQUEST-CHANGES; never edits. |
 
 ## SA architectural-coherence review
 
-Every non-SA-owned doc edit is **SA-reviewed for architectural coherence** before merge. This folds into the SA Review activity (`core/roles/solution-architect.md § Review`):
+Every non-SA-owned doc edit is SA-reviewed before merge (folds into `core/roles/solution-architect.md § Review`):
 
-- **Trigger.** Engineer / team-lead / mockup-owning role proposes a doc edit that touches an architectural concern (component name · contract · stack reference · NFR-bearing claim · invariant).
-- **Outcome.** APPROVE / REJECT / REQUEST-CHANGES. No edits to the engineer's doc.
-- **Out of scope for review.** Pure-engineering wording inside a doc that does not touch architectural concerns (e.g. a code snippet's example value, a phrasing nuance in a README). Author judgment.
+- **Trigger.** Engineer / team-lead / mockup-owner proposes doc edit touching architectural concern (component name · contract · stack reference · NFR-bearing claim · invariant).
+- **Outcome.** APPROVE / REJECT / REQUEST-CHANGES; no edits to engineer's doc.
+- **Out of scope.** Pure-engineering wording not touching architectural concerns (code example values · README phrasing nuance). Author judgment.
 
-## Hard rule — `ai-engineer`'s edits are lossless
+## Lossless rule
 
-- Before completing any optimization pass, `ai-engineer` must spot-check every rule, invariant, routing entry, and gate in the diff.
-- Each must appear (verbatim or semantically identical) in the new structure.
-- Any miss → revert and re-plan.
-
-Same rule as previously. Applies across the whole doc set now, not just SA-owned docs.
+Before completing any optimization pass, `ai-engineer` spot-checks every rule · invariant · routing entry · gate in the diff. Each MUST appear (verbatim or semantically identical) in the new structure. Any miss → revert + re-plan. Applies across the whole doc set.
 
 ## Dispatch trigger
 
-`ai-engineer` is not part of the standard Phase 1–8 lifecycle. Invoked between phases when:
-
-- User explicitly targets AI-asset or doc optimization.
-- An authoring role flags *"this doc is getting unwieldy"* in their final report.
-- Periodic maintenance (release cadence, post-large-feature cleanup).
-- Phase 8 post-acceptance doc-optimization hook fires (see `core/process.md § Phase 8`).
+Not part of standard Phase 1–8. Invoked between phases on: user-explicit AI-asset / doc optimization · authoring-role flag (*"this doc is getting unwieldy"*) · periodic maintenance (release · post-large-feature cleanup) · Phase 8 post-acceptance doc-optimization hook.

@@ -8,26 +8,24 @@ reads-before-applying: [core/protocols/triage-scoring.md]
 
 # Score-comment schema
 
-**Load-on-demand.** Loaded when `team-lead` posts / refreshes the sticky `ginee:score` comment — initial pickup · `@team-lead recompute score #<N>` · any ginee-driven label change.
+Loaded when team-lead posts / refreshes the sticky `ginee:score` comment — pickup · `recompute score #<N>` · any ginee-driven label change.
 
-Rules (axes · formula · trigger list · forbidden) live in `core/protocols/triage-scoring.md § Score comment + audit trail`. This file binds the **shape**.
+Rules (axes · formula · triggers · forbidden): `core/protocols/triage-scoring.md § Score comment + audit trail`. This file binds **shape**.
 
 ## Schema
 
-One sticky per issue. Idempotent via header marker. Refresh in place; never duplicate.
+One sticky per issue. Idempotent via marker. **Refresh in place; never duplicate.**
 
 | Element | Required | Source |
 |---|---|---|
-| Header marker `<!-- ginee:score v=1 -->` | yes | Fixed string; first line; case-sensitive |
-| `## Triage score: <combo> = <number>` heading | yes | `<combo>` = `<value-letter><complexity-letter>` (unscored → `—`); `<number>` per resolved formula |
+| Header marker `<!-- ginee:score v=1 -->` | yes | Fixed; first line; case-sensitive |
+| `## Triage score: <combo> = <number>` | yes | `<combo>` = `<value-letter><complexity-letter>` (unscored → `—`); `<number>` per formula |
 | Axes table — 5 columns | yes | `Axis · Label · Numeric · Set by · Reasoning` |
 | Formula line | yes | `Formula: <formula> (<scoring-formula key>)` |
 | Last-updated line | yes | `Last updated: <ISO 8601 UTC> by ginee team-lead` |
 | Recompute note | yes | One line citing `ginee-triage` re-derivation from labels |
 
-## Section templates
-
-### Sticky body
+## Template
 
 ```
 <!-- ginee:score v=1 -->
@@ -43,30 +41,17 @@ One sticky per issue. Idempotent via header marker. Refresh in place; never dupl
 - Recomputed live by `ginee-triage` from labels — see audit trail below.
 ```
 
-### `Reasoning` column policy
+**`Reasoning` column** — most-recent change ginee auto-estimate → one-line digest (`1 file · 1 role · pattern reuse → L`); user-set (reporter / manual edit) → `—`; axis not set → `unscored`.
 
-| Row state | `Reasoning` content |
-|---|---|
-| Most-recent change was a ginee auto-estimate | One-line digest (e.g. `1 file · 1 role · pattern reuse → L`) |
-| Most-recent change was reporter / user `gh issue edit` | `—` |
-| Axis not yet set | `unscored` |
-
-### `Set by` column values
-
-| Source | Rendered as |
-|---|---|
-| User-set (reporter / manual edit) | `@<handle> (reporter)` OR `@<handle> (manual edit)` |
-| SA auto-estimate of complexity | `@solution-architect (auto-estimate)` |
-| `team-lead` imputed `c=L` | `@team-lead (imputed c=L)` |
-| User reply to ginee value-prompt at pickup | `@<handle> (user reply to ginee prompt)` |
+**`Set by` values** — user-set: `@<handle> (reporter | manual edit)`; SA complexity: `@solution-architect (auto-estimate)`; team-lead imputed c=L: `@team-lead (imputed c=L)`; user reply to ginee prompt: `@<handle> (user reply to ginee prompt)`.
 
 ## Forbidden patterns
 
-1. **Multiple sticky comments per issue.** Always update via the marker; never post a second `ginee:score` body.
-2. **Editing or deleting an immutable audit comment.** Schema in `core/protocols/audit-comment-schema.md`.
-3. **Auto-detecting manual `gh issue edit` changes between sessions.** User invokes `recompute score #N` to refresh.
-4. **Adopter-secret data** — issue body / labels only; never local repo paths · SHA-256 fingerprints · PII.
-5. **Numeric out of bounds.** `<number>` follows `core/protocols/triage-scoring.md § Score formula`; unscored → `0`.
+1. **Multiple stickies per issue** — always update via marker.
+2. **Editing / deleting an immutable audit comment** per `audit-comment-schema.md`.
+3. **Auto-detecting manual `gh issue edit` between sessions** — user invokes `recompute score #N`.
+4. **Adopter-secret data** — issue body / labels only; no local paths · SHA fingerprints · PII.
+5. **Numeric out of bounds** per `triage-scoring.md § Score formula`; unscored → `0`.
 
 ## Worked example
 
@@ -84,16 +69,14 @@ One sticky per issue. Idempotent via header marker. Refresh in place; never dupl
 - Recomputed live by `ginee-triage` from labels — see audit trail below.
 ```
 
-## Self-lint checks
+## Self-lint — before posting / updating
 
-Run all 5 against the drafted sticky **before** posting / updating:
+1. Marker = literal `<!-- ginee:score v=1 -->` on line 1.
+2. `<combo>` letters match label letters (`H` / `M` / `L` / `—`); `<number>` matches resolved formula.
+3. Axes table — exactly 2 data rows (`value` · `complexity`) · 5 columns.
+4. `Reasoning` populated per row-state policy; empty cells use `—`, not blank.
+5. No adopter-secret data.
 
-1. Header marker is the literal string `<!-- ginee:score v=1 -->` on line 1.
-2. `<combo>` letters match label letters (`H`/`M`/`L`/`—`); `<number>` matches the resolved formula.
-3. Axes table has exactly 2 data rows (`value` · `complexity`); 5 columns; no extras.
-4. `Reasoning` column populated per the row-state table; empty cells use `—` not blank.
-5. No adopter-secret data — no local paths · SHA fingerprints · PII.
-
-Append, as the **last line**, the literal attestation marker `<!-- self-lint: pass -->`.
+Last line: `<!-- self-lint: pass -->`.
 
 <!-- self-lint: pass -->

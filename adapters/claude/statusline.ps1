@@ -1,36 +1,12 @@
 #!/usr/bin/env pwsh
 <#
 .SYNOPSIS
-  ginee compliance — Claude Code statusline (T4 / playbook tactic 4).
-
+  ginee compliance — Claude Code statusline (playbook #135 T4).
 .DESCRIPTION
-  Reads Claude Code's statusline JSON payload from stdin; writes a single
-  line (≤ 100 chars) to stdout summarising compliance state for the current
-  repo and branch.
-
-  Format (issue body of #135 / #140):
-    [ginee] #<N> · phase: <P> · warm: <roles> · dispatches: <n/cap> ·
-            trailer: <needed|ok> · self-lint: <pass|miss|n/a> · cap: <N%>
-
-  This implementation surfaces locally-derivable fields:
-    - Issue number (parsed from current branch name).
-    - Branch name (short).
-    - Trailer status — `ok` if a commit in `origin/main..HEAD` carries
-      `Optimized-By: ai-engineer`; `needed` otherwise when at least one
-      hot-spec file in the diff exceeds its `cap-bytes`.
-    - Cap headroom — smallest remaining `cap-bytes` headroom across hot
-      specs in the diff (as a percentage of cap).
-
-  Fields requiring the in-process warm registry (phase · warm · dispatches ·
-  self-lint) print `?` placeholders until the skill-runner-side plumbing
-  (per D43) writes registry state to a file the statusline can read.
-
-  Opt out repo-wide: local/framework.config.yaml § compliance.disabled:
-  [compliance-statusline]. Falls back to a bare `[ginee]` print on errors —
-  the statusline MUST NOT crash the host.
-
-.PARAMETER RepoRoot
-  Override repo root detection (used by tests).
+  Reads statusline JSON from stdin; writes ≤ 100-char line summarising compliance state.
+  Format · fields · opt-out · tests: adapters/claude/install.md § Compliance hooks + statusline.
+  MUST NOT crash host — uncaught errors fall back to bare `[ginee]` or no output.
+.PARAMETER RepoRoot  Test-only: override repo root detection.
 #>
 [CmdletBinding()]
 param(

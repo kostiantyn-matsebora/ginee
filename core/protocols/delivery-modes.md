@@ -8,49 +8,28 @@ reads-before-applying: []
 
 # Delivery modes
 
-**Load-on-demand.** Fetched when:
-
-- `team-lead` is about to dispatch a task and needs to resolve or propose the delivery mode.
-- A specialist enters Phase 4 (implementation) and needs to know which mode applies to its commit cadence.
-- `team-lead` is at Phase 8 finalize and runs the per-mode finalize procedure.
-- `team-lead` is in auto-mode delivery-handoff and runs the Accept action.
-
-Default short tasks load this file on first use; the resolved mode is then carried through the session in the task's working state.
-
-## Why
-
-`core/process.md § Phase 8` says "commit only when the user explicitly asks." That leaves three concrete answers to *what happens to the work* — committed where, pushed when, surfaced how. The framework formalizes them as three named **delivery modes** with explicit Phase 4 + Phase 8 behaviour.
+Loaded when team-lead resolves / proposes delivery mode · specialist enters Phase 4 + needs commit cadence · Phase 8 finalize · auto-mode handoff Accept. Resolved mode carried through session in task working state.
 
 ## The three modes
 
 | Mode | Phase 4 commits | Phase 8 finalize | When to default |
 |---|---|---|---|
-| **1. Feature branch + PR** | `git checkout -b <slug>` once at task start; commits per batch on the branch | `git push -u origin <branch>`; `gh pr create` per `core/templates/pr-description.md`; PR description includes `Closes #<N>` for issue-sourced tasks | Multi-developer projects; framework upstream; issue-sourced or TODO-sourced tasks |
-| **2. Working-tree only** | No `git add` / `git commit` ever | PM surfaces `git diff` + `git status`; user picks: keep / discard / escalate to Mode 1 or 3 | Exploratory tasks; "show me what would change"; freeform without a clear scope; auto-mode default |
-| **3. Commit-no-push** | Commits per batch on the current branch (no branch switch) | PM surfaces `git log --oneline -<N>`; user pushes manually | Solo-dev private repos; rapid iteration where the user controls all pushes |
+| **1. Branch + PR** | `gh issue develop <N> --name <slug> --checkout` (issue-sourced) / `git checkout -b <slug>` (TODO/freeform) at task start; standard commits on branch | `git push -u origin <branch>` → `gh pr create` body from `core/templates/pr-description.md` + `Closes #<N>` (issue-sourced) | Multi-developer · framework upstream · issue/TODO-sourced |
+| **2. Working-tree** | No `git add` / `commit` ever | Surface `git diff` + `git status`; user picks keep / discard / escalate | Exploratory · "show me what would change" · freeform · auto-mode default |
+| **3. Commit-no-push** | Standard commits on current branch (no switch) | Surface `git log --oneline -<N>`; user pushes manually | Solo private repos · rapid iteration · user controls all pushes |
 
-## Mode resolution (Approach C — precedence order)
+## Mode resolution (stop at first match)
 
-PM resolves the mode in this order, stopping at the first match:
+1. **Per-task prefix** `branch:` / `wt:` / `commit:`.
+2. **Phase-3 user answer** (see § Phase 3 prompt).
+3. **Adopter default** — `local/framework.config.yaml § delivery.default-mode` (`branch` / `wt` / `commit`).
+4. **Framework default** — `branch` for issue/TODO-sourced; `wt` for freeform.
 
-1. **Per-task prefix** in the task description: `branch:` / `wt:` / `commit:`. Wins outright.
-2. **Per-task Phase-3 answer** when PM asks (see § Phase 3 mode prompt below).
-3. **Adopter default** from `local/framework.config.yaml § delivery.default-mode`. Values: `branch` / `wt` / `commit`.
-4. **Framework default** — `branch` for issue-sourced or TODO-sourced tasks; `wt` for freeform / direct-instruction tasks.
-
-PM always reports the resolved mode at Phase 3 design review and offers the user a one-line override.
+PM always reports resolved mode at Phase 3 + offers one-line override.
 
 ## Prefix syntax
 
-Drop the prefix at the start of the task description:
-
-| Prefix | Mode |
-|---|---|
-| `branch:` | 1 |
-| `wt:` | 2 |
-| `commit:` | 3 |
-
-Combinable with the `auto:` precedent in either order:
+Drop at start of task description: `branch:` (Mode 1) · `wt:` (Mode 2) · `commit:` (Mode 3). Combinable with `auto:` in either order:
 
 ```
 auto: branch: fix the deployment-failure log spam
@@ -59,128 +38,75 @@ branch: auto: fix the deployment-failure log spam   # equivalent
 
 ## Phase 3 — mode prompt
 
-If the mode is unresolved (no prefix, no config) when PM completes the Phase 2 design and enters Phase 3 review, PM surfaces the design + the three modes + a recommended default and asks the user to pick.
-
-Example PM prompt at Phase 3:
+**Unresolved** (no prefix, no config) — PM surfaces design + three modes + recommended default; user picks:
 
 ```
 Phase 2 design ready (see above). Pick delivery mode:
-  1. Feature branch + PR — branch `issue-42-fix-deploy`; commits land there; PR opens at Phase 8. (Recommended — task is issue-sourced)
+  1. Branch + PR — branch `issue-42-fix-deploy`; PR at Phase 8. (Recommended — issue-sourced)
   2. Working-tree only — no commits; you commit / discard at Phase 8.
   3. Commit-no-push — commits on current branch; push at Phase 8.
 ```
 
-If the mode IS resolved (prefix or config), PM reports it in the Phase 3 summary and offers a one-line override:
+**Resolved** — PM reports + offers one-line override:
 
 ```
-Phase 2 design ready. Delivery mode: branch+PR (per `delivery.default-mode` in framework.config.yaml). Override? Reply `branch: ` / `wt: ` / `commit: ` to change.
+Phase 2 design ready. Delivery mode: branch+PR (per delivery.default-mode). Override? Reply branch: / wt: / commit:.
 ```
 
 ## Per-mode procedure
 
-### Mode 1 — feature branch + PR
+### Mode 1 — branch + PR
 
-**Phase 4 start:**
+**Phase 4 start.** Compute slug: issue-sourced → `issue-<N>-<short-slug-from-title>` · TODO-sourced → `todo-<short-slug>` · freeform → `task-<short-slug>`. Create branch:
 
-1. Compute branch slug:
-   - Issue-sourced → `issue-<N>-<short-slug-from-title>`.
-   - TODO-sourced → `todo-<short-slug>`.
-   - Freeform → `task-<short-slug>`.
-2. Create the branch — tool priority depends on task source:
+| Source | Command | Why |
+|---|---|---|
+| GitHub issue | `gh issue develop <N> --name <slug> --checkout` (or GraphQL `createLinkedBranch`) | Creates branch on origin + establishes GitHub `linkedBranch` relationship visible in issue's Development sidebar. Plain `git checkout -b` skips the linkage. |
+| TODO / freeform | `git checkout -b <slug>` (or `git switch -c <slug>`) | No issue to link; local branch sufficient. |
 
-   | Source | Command | Why |
-   |---|---|---|
-   | GitHub issue | `gh issue develop <N> --name <slug> --checkout` (or GraphQL `createLinkedBranch` mutation) | Creates the branch on origin AND establishes the GitHub *linkedBranch* relationship visible in the issue's Development sidebar. Pure `git checkout -b` skips the linkage. |
-   | TODO / freeform | `git checkout -b <slug>` (or `git switch -c <slug>`) | No issue to link; local branch is sufficient. |
+Confirm to user: *"Working on branch `<slug>` (linked to issue #<N>)"* / *"Working on branch `<slug>` (local)"*.
 
-3. Confirm to user: "Working on branch `<slug>` (linked to issue #<N>)" / "Working on branch `<slug>` (local)."
+**Phase 4 per batch.** Standard commits on branch; commit messages per adopter convention (or framework default: conventional commit if declared).
 
-**Phase 4 per batch:**
+**Phase 8 finalize.** `git push -u origin <branch>` → `gh pr create` (or MCP / HTTPS) body from `core/templates/pr-description.md` + `Closes #<N>` / `Fixes #<N>` for issue-sourced → report PR URL. **Auto-mode + `ci-watch: enabled`** → enter CI-watch per `core/protocols/ci-watch.md`; interactive / `ci-watch: disabled` → exit here.
 
-- Standard commits on the branch.
-- Commit messages follow adopter convention (or framework default: conventional commit style if adopter declares).
+**Forbidden:** push to branch user didn't approve at Phase 3 · force-push · open PR without Phase 8 acceptance · plain `git checkout -b` for issue-sourced (always `gh issue develop` for linkage).
 
-**Phase 8 finalize:**
+### Mode 2 — working-tree
 
-1. `git push -u origin <branch>`.
-2. `gh pr create` (or GitHub MCP / HTTPS) with body from `core/templates/pr-description.md`.
-3. For issue-sourced tasks, PR description includes `Closes #<N>` (or `Fixes #<N>` for bugs).
-4. Report PR URL.
-5. **Automatic mode + `ci-watch: enabled`**: enter the CI-watch state per `core/protocols/ci-watch.md`. Interactive mode and `ci-watch: disabled` exit here.
+**Phase 4 start.** No branch switch · no `git add`.
 
-**Forbidden:**
+**Phase 4 per batch.** All edits stay in working tree. PM may surface progress via `git status` / `git diff` at iteration boundaries per `core/protocols/iteration-protocol.md § Stoppable intermediate states`.
 
-- Never push to a branch the user didn't approve at Phase 3.
-- Never force-push.
-- Never open a PR without the user's Phase 8 acceptance.
-- For issue-sourced tasks, never use plain `git checkout -b` — always go through `gh issue develop` (or the GraphQL `createLinkedBranch` mutation) so the branch is linked to the issue in GitHub's Development panel.
+**Phase 8 finalize.** Run `git status` + `git diff --stat` → surface diff with: *"Working-tree changes ready. Pick: keep + commit manually / discard (`git checkout -- .`) / escalate to Mode 1 or 3."* PM does not commit / stash / push.
 
-### Mode 2 — working-tree only
-
-**Phase 4 start:**
-
-- No branch switch. No `git add`.
-
-**Phase 4 per batch:**
-
-- All edits stay in the working tree.
-- PM may surface progress with `git status` / `git diff` at iteration boundaries (per `core/protocols/iteration-protocol.md § Stoppable intermediate states`).
-
-**Phase 8 finalize:**
-
-1. Run `git status` + `git diff --stat`.
-2. Surface the diff to the user with: "Working-tree changes ready. Pick: keep + commit manually / discard (`git checkout -- .`) / escalate to Mode 1 or Mode 3."
-3. PM does not commit, stash, or push.
-
-**Forbidden:**
-
-- Never `git add` / `git commit` / `git stash` / `git push` in this mode.
+**Forbidden:** `git add` / `git commit` / `git stash` / `git push` in this mode.
 
 ### Mode 3 — commit-no-push
 
-**Phase 4 start:**
+**Phase 4 start.** No branch switch — current branch.
 
-- No branch switch (use current branch).
+**Phase 4 per batch.** Standard commits on current branch (matches framework's previously de-facto behaviour); same commit-message conventions as Mode 1.
 
-**Phase 4 per batch:**
+**Phase 8 finalize.** `git log --oneline -<N>` → surface commit list: *"Commits land on `<branch>`. You push manually when ready."* PM does not push.
 
-- Standard commits on the current branch (matches the framework's previously de-facto behaviour).
-- Same commit-message conventions as Mode 1.
-
-**Phase 8 finalize:**
-
-1. Run `git log --oneline -<N>` where `N` = commits this task.
-2. Surface the commit list to the user with: "Commits land on `<branch>`. You push manually when ready."
-3. PM does not push.
-
-**Forbidden:**
-
-- Never push.
-- Never auto-pick this mode when target branch is `main` / `master` / `trunk` on a multi-developer repo — recommend Mode 1 instead (PM should flag at Phase 3).
+**Forbidden:** push · auto-pick this mode on `main` / `master` / `trunk` of multi-developer repo (recommend Mode 1; PM flags at Phase 3).
 
 ## Auto-mode integration
 
-When auto mode is active, the resolved delivery mode determines what the delivery-handoff Accept does:
+Resolved mode determines delivery-handoff Accept:
 
-| Mode | Delivery-handoff Accept action |
+| Mode | Accept action |
 |---|---|
-| 1 (branch + PR) | Push branch; open PR per `core/templates/pr-description.md`; **enter CI-watch per `core/protocols/ci-watch.md`** when `automatic-mode.ci-watch: enabled`. |
-| 2 (wt) | No-op — changes already in working tree; user commits + pushes. |
-| 3 (commit-no-push) | No-op — commits already on current branch; user pushes. |
+| 1 | Push branch + open PR per `core/templates/pr-description.md`; **enter CI-watch per `core/protocols/ci-watch.md`** when `ci-watch: enabled`. |
+| 2 | No-op — changes in working tree; user commits + pushes. |
+| 3 | No-op — commits on branch; user pushes. |
 
-Auto-mode framework default = **Mode 2 (wt)** — working-tree changes prepared but not committed. Adopter can override via config or per-task prefix.
+Auto-mode framework default = **Mode 2** (working-tree, not committed). Adopter override via config or prefix.
 
-## Forbidden actions (all modes)
+## Forbidden (all modes)
 
-- Never commit or push outside the resolved mode.
-- Never silently switch modes mid-task. If the user changes their mind, PM stops, asks, and either re-resolves or escalates per the user's choice.
-- Never auto-pick `commit` mode for first-time users. Default to `branch` (safer; reviewable). Adopters opt into `commit` explicitly.
-- Never delete or force-update an existing branch named the same as the computed slug — PM asks before reusing.
-
-## Out of scope
-
-- Multi-branch / stacked-PR workflows. One feature branch per task.
-- Auto-rebasing / squash-merge policy. Adopter-owned via PR-merge settings on the git host.
-- Branch cleanup post-merge. Git host / adopter handles.
-- Cross-repo PRs. Mode 1 always targets the same repo the task came from.
-- Custom branch-naming conventions beyond the three patterns. Adopters can wrap PM's slug with a prefix via future config; not in scope here.
+- Commit / push outside resolved mode.
+- Silently switch modes mid-task — stop · ask · re-resolve or escalate.
+- Auto-pick `commit` for first-time users — default `branch` (safer; reviewable); adopters opt into `commit` explicitly.
+- Delete / force-update existing branch named same as computed slug — PM asks before reusing.

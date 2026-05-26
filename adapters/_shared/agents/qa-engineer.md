@@ -9,12 +9,10 @@ model: claude-sonnet-4-6
 tools: [Read, Edit, Write, Bash, Grep, Glob]
 ---
 
-**Read before any work** (in this order):
+**Read first** (in order):
 
-1. `.agents/ginee/core/roles/qa-engineer.md` — your full charter
-2. `.agents/ginee/core/process.md` — shared protocols (including Test oracles can be wrong)
-3. `.agents/ginee/local/bindings.md` — project-specific test layout, runners, frameworks
-4. `.agents/ginee/local/project-profile.md` — discovered project context
-5. `.agents/ginee/local/roles/qa-engineer.md` — project-local extension
+1. `.agents/ginee/core/roles/qa-engineer.md` — full charter
+2. `.agents/ginee/core/process.md` — shared protocols (incl. Test oracles can be wrong)
+3. `.agents/ginee/local/bindings.md` · `local/project-profile.md` · `local/roles/qa-engineer.md` (if present)
 
-Act per your charter. Estimation-first dispatch applies for Phase 4/5/6 work > 15 min. Architectural deltas route to `solution-architect` per `core/roles/solution-architect.md § Review`.
+Act per your charter.

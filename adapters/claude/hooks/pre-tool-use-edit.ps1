@@ -2,43 +2,11 @@
 <#
 .SYNOPSIS
   ginee compliance — PreToolUse hook on Edit / Write / MultiEdit.
-
 .DESCRIPTION
-  Reads Claude Code's PreToolUse JSON payload from stdin; classifies the
-  proposed edit; blocks (exit 2 + stderr) when a hard-gate violation fires.
-
-  Five violation classes (per parent issue #135 tactic 2):
-
-    1. Hot-spec edit lacking frontmatter post-edit (D47) —
-       core/process.md · core/process/*.md · core/protocols/*.md ·
-       core/roles/*.md · core/roles/*.details.md MUST carry the 5-key YAML
-       frontmatter block. Edits that strip the block or land on a hot-spec
-       path without one are blocked.
-
-    2. File size > cap-bytes without Optimized-By trailer queued (D44+D47) —
-       when the post-edit byte count exceeds the frontmatter cap-bytes value
-       AND no commit on the current branch carries
-       Optimized-By: ai-engineer, the edit is blocked.
-
-    3. Edit on core/** introducing a D<N> token (D42) — bare D-IDs are
-       owner-private (PLAN.md). Runtime surface (core/**) MUST stay D-free.
-
-    4. New-content edit using always / never / binding / mandatory as a
-       rule modifier (D48) — RFC 2119 keywords are the binding vocabulary.
-
-    5. Always-loaded surface line-count bloat without trailer (D21) — files
-       with `load: always` in frontmatter that grow > 50 net-added lines on
-       the current branch require Optimized-By: ai-engineer.
-
-  Opt out repo-wide via local/framework.config.yaml § compliance.disabled
-  with tactic-id `pretooluse-edit-hook`. Bypass per invocation via
-  SKIP_GINEE_COMPLIANCE=1 (emergency only; not for routine use).
-
-.PARAMETER TestInput
-  For testing only — pass a JSON string directly instead of reading stdin.
-
-.PARAMETER RepoRoot
-  Override repo root detection (used by tests).
+  Reads PreToolUse JSON from stdin; blocks (exit 2 + stderr) on a hard-gate violation.
+  Violation classes (5 per playbook #135 T2) + opt-out + tests: adapters/claude/install.md § Compliance hooks.
+.PARAMETER TestInput  Test-only: pass JSON instead of reading stdin.
+.PARAMETER RepoRoot   Test-only: override repo root detection.
 #>
 [CmdletBinding()]
 param(

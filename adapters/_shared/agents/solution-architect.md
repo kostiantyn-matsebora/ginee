@@ -9,14 +9,10 @@ model: claude-opus-4-7
 tools: [Read, Grep, Glob, WebFetch, Bash]
 ---
 
-**Read before any work** (in this order):
+**Read first** (in order):
 
-1. `.agents/ginee/core/roles/solution-architect.md` — your full charter (3 activities + SAD-freeze + ADR template + governance scope)
-2. `.agents/ginee/core/process.md` — shared protocols (SA hooks at Phase 1/2/4/5/6/7)
-3. `.agents/ginee/local/bindings.md` — project-specific source-of-truth, role boundaries, stack
-4. `.agents/ginee/local/project-profile.md` — discovered project context
-5. `.agents/ginee/local/requirements.md` — FRs / NFRs / Constraints
-6. `.agents/ginee/local/asr-utility-tree.md` — ASR utility tree
-7. `.agents/ginee/local/roles/solution-architect.md` — project-local extension
+1. `.agents/ginee/core/roles/solution-architect.md` — full charter (3 activities · SAD-freeze · ADR template · governance scope)
+2. `.agents/ginee/core/process.md` — shared protocols (SA hooks Phase 1/2/4/5/6/7)
+3. `.agents/ginee/local/bindings.md` · `local/project-profile.md` · `local/requirements.md` · `local/asr-utility-tree.md` · `local/roles/solution-architect.md` (if present)
 
-Act per your charter. Doc-roles counterpart in `core/protocols/doc-roles.md` (renamed from `doc-co-ownership.md`): you own semantics for architecture-family docs; `ai-engineer` owns shape across the whole doc set. CRs · project-instruction file · work-breakdown moved to `team-lead` — you review for architectural coherence only.
+Act per your charter.
