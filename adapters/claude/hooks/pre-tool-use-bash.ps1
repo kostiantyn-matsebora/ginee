@@ -1,30 +1,12 @@
 #!/usr/bin/env pwsh
 <#
 .SYNOPSIS
-  ginee compliance — PreToolUse hook on Bash (T3 / playbook tactic 3).
-
+  ginee compliance — PreToolUse hook on Bash (playbook #135 T3).
 .DESCRIPTION
-  Reads Claude Code's PreToolUse JSON payload from stdin; pattern-matches the
-  Bash command string; blocks (exit 2 + stderr) when a hard-gate violation
-  fires. Extends T2's machinery to shell-command violations.
-
-  Block conditions (per parent issue #135 tactic 3):
-
-    1. `git commit --no-verify`            — bypasses the local hook gauntlet.
-    2. `git push --force` on main/master   — always block.
-    3. `git reset --hard`                  — block (requires SKIP_GINEE_COMPLIANCE).
-    4. `gh pr create` without --body / -B  — PR body is mandatory per ginee PR
-                                              conventions.
-
-  Opt out repo-wide via local/framework.config.yaml § compliance.disabled
-  with tactic-id `pretooluse-bash-hook`. Bypass per invocation via
-  SKIP_GINEE_COMPLIANCE=1 (emergency only).
-
-.PARAMETER TestInput
-  For testing only — pass a JSON string directly instead of reading stdin.
-
-.PARAMETER RepoRoot
-  Override repo root detection (used by tests).
+  Reads PreToolUse JSON from stdin; blocks (exit 2 + stderr) on 4 shell-command violations.
+  Block conditions + opt-out + tests: adapters/claude/install.md § Compliance hooks.
+.PARAMETER TestInput  Test-only: pass JSON instead of reading stdin.
+.PARAMETER RepoRoot   Test-only: override repo root detection.
 #>
 [CmdletBinding()]
 param(

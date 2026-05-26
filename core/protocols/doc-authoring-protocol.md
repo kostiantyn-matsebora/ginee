@@ -38,14 +38,6 @@ Authored markdown signals binding strength via RFC 2119 keywords:
 
 Single binding-strength convention removes the ambiguity from prior mixed signalling (bold-italic-caps for emphasis, `always` for MUST, `binding` for MUST NOT-bypass). The 6 standing checks (per `core/process.md § Documentation style § Mandatory checks before report-as-done`) gain this as check #6; the subagent-return surface's *no narrative preamble* becomes check #7.
 
-### Out of scope
-
-- **Reporter-authored issue bodies / comments.** Per `core/protocols/github-integration.md § Forbidden actions` — *"Never edit an issue body authored by another reporter."* `ginee-pick-up` MAY surface a polite restructure advisory on pickup, but never auto-rewrites and never edits reporter content.
-- **Existing adopter docs.** Forward-only — new + edited content follows the protocol; mass-restructure of legacy docs is a separate user-initiated task.
-- **Discussion bodies.** Read-only context; promote-to-issue first.
-- **Style / tone / branding.** This protocol governs **structure**, not voice. Adopter style guides own those.
-- **Framework-self-dev hygiene gates**. Separate enforcement layer; cross-references the same Mandatory checks but runs via the gate script.
-
 ## Enforcement via discovered stack
 
 ginee does **not** ship a doc linter. Adopter projects already configure markdown / prose tooling — ginee discovers it and triggers it.

@@ -18,177 +18,111 @@ reads-before-applying: []
 
 Default short tasks (TODO / direct instruction sources) do not load this file.
 
-## Why
-
-Two-way bridge between an adopter's GitHub repo and the framework's task model:
-
-- Adopters file work in the platform they already use (issues, discussions).
-- Framework picks issues up, runs them through the standard Phase 1–8 lifecycle, and closes the loop with issue comments + PR linkage.
-- TODO files remain a valid task source — both coexist.
-
 ## Tool surface
 
-Framework spec is tool-agnostic. Roles use whichever GitHub access is available in the current session, in this priority:
-
-1. **`gh` CLI** — baseline; expected on most adopter dev environments.
-2. **GitHub MCP server** — when connected; better tool-use ergonomics in supporting clients.
-3. **Generic HTTPS + token** — fallback for environments lacking either.
-
-Commands referenced below use `gh` syntax. Substitute equivalents as needed; never invent a third mechanism.
+Tool-agnostic. Priority order — `gh` CLI (baseline) > GitHub MCP server (when connected) > generic HTTPS + token (fallback). Commands below use `gh` syntax; substitute equivalents. Never invent a third mechanism.
 
 ## Repo discovery — two repos
 
-Framework tracks two repo handles:
-
 | Handle | Purpose | Source |
 |---|---|---|
-| **primary** (`github.repo`) | Adopter's own project. Default target for issue ops. | Inferred from `git remote get-url origin`; override in `local/framework.config.yaml § github.repo`. |
-| **framework** (`github.framework-repo`) | Upstream ginee framework. Lets adopters file feedback against the framework. | Set at install time by the curl/tarball script (or hand-set after copy-paste install). Leave unset to disable framework-targeted ops. |
+| **primary** (`github.repo`) | Adopter's own project. Default target. | Inferred from `git remote get-url origin`; override in `local/framework.config.yaml § github.repo`. |
+| **framework** (`github.framework-repo`) | Upstream ginee. Lets adopters file framework feedback. | Set at install (curl/tarball script populates from install source). Leave unset to disable framework-targeted ops. |
 
-Resolution rules:
-
-1. **Primary repo.** `github.repo` override wins; else infer from `git remote get-url origin` (strip `.git`); multi-remote: use `origin` unless overridden; no remote / detached: PM surfaces the gap + offers to add the override key.
-2. **Framework repo.** `github.framework-repo` value wins if set; absent → framework-targeted operations disabled (PM surfaces + offers to populate the key).
-3. **Same-repo case.** When working IN the framework repo (rare for framework self-dev), primary == framework. Target-based template selection naturally picks framework templates. Explicit `framework-` prefix is accepted but redundant.
+**Resolution.** Primary — `github.repo` override > infer from origin (strip `.git`; `origin` for multi-remote; no remote → PM surfaces gap). Framework — value when set; absent → framework-targeted ops disabled (PM surfaces). Same-repo (working IN framework repo) → primary == framework; template selection picks framework templates naturally; `framework-` prefix redundant but accepted.
 
 ## Command targeting — primary vs framework
 
-Default target is the primary repo. The `framework-` prefix routes **metadata-only** operations (file / triage / promote) to the framework repo:
+Default target = primary. `framework-` prefix routes metadata-only ops (file / triage / promote) to framework upstream:
 
-| Default (primary) | Framework-targeted variant |
+| Default (primary) | Framework variant |
 |---|---|
-| `@team-lead file bug <title>` | `@team-lead file framework-bug <title>` |
-| `@team-lead file feature <title>` | `@team-lead file framework-feature <title>` |
-| `@team-lead triage` | `@team-lead triage framework` |
-| `@team-lead promote discussion #<N>` | `@team-lead promote discussion framework#<N>` |
+| `file bug <title>` | `file framework-bug <title>` |
+| `file feature <title>` | `file framework-feature <title>` |
+| `triage` | `triage framework` |
+| `promote discussion #<N>` | `promote discussion framework#<N>` |
 
-`pick up` has **no `framework-` variant.** Addressing an issue requires the source — work in the framework repo (target = origin = framework, standard `@team-lead pick up #<N>` applies). From an adopter project (no framework source), PM rejects framework-issue pickup with: *"Clone `<framework-repo>` separately, cd into it, then `@team-lead pick up #<N>`."*
-
-If `github.framework-repo` is unset, framework-targeted commands fail fast with a one-line "framework-repo not configured" message + offer to populate the key. No silent fallback to primary.
+`pick up` has **no `framework-` variant** — addressing requires the source. Work in the framework repo (target = origin = framework, plain `pick up #<N>`). From an adopter project: PM rejects with *"Clone `<framework-repo>` separately, cd into it, then pick up."* Framework-targeted commands with unset `framework-repo` → fail fast + offer to populate; no silent fallback.
 
 ## Template selection
 
 Driven by **target repo**, not command shape:
 
-| Target | Bug template | Feature template |
+| Target | Bug | Feature |
 |---|---|---|
-| primary repo | `core/templates/issues/bug-report.md` | `core/templates/issues/feature-request.md` |
-| framework repo | `core/templates/issues/framework-bug-report.md` | `core/templates/issues/framework-feature-request.md` |
+| primary | `core/templates/issues/bug-report.md` | `core/templates/issues/feature-request.md` |
+| framework | `core/templates/issues/framework-bug-report.md` | `core/templates/issues/framework-feature-request.md` |
 
-When working IN the framework repo (primary == framework), framework-* templates apply for every file/pick-up — no special command needed.
+In framework repo (primary == framework), framework-* templates apply automatically.
 
-## Label scheme (configurable)
+## Labels (configurable) + state mapping
 
-Defaults declared under `local/framework.config.yaml § github`:
+Defaults under `local/framework.config.yaml § github`. PM creates missing labels on first use via `gh label create <name>` (default color).
 
-| Config key | Default | Meaning |
-|---|---|---|
-| `ready-label` | `ginee:ready` | Pickup candidate (`☐` equivalent). |
-| `in-progress-label` | `ginee:in-progress` | PM has dispatched; phases 1–7 in flight. |
-| `blocked-label` | `ginee:blocked` | Stoppable intermediate state; waiting on user / external. |
-| `value:high|medium|low` | n/a (fixed namespace) | Triage scoring — user/business impact (ATAM importance). Reporter-defined. Per `core/protocols/triage-scoring.md`. |
-| `complexity:high|medium|low` | n/a (fixed namespace) | Triage scoring — implementation cost (ATAM difficulty). Reporter or `solution-architect` (auto-estimate on pickup). |
+| Label | Default | Meaning | State |
+|---|---|---|---|
+| `ready-label` | `ginee:ready` | Pickup candidate (`☐`) | Phase 1 candidate |
+| `in-progress-label` | `ginee:in-progress` | PM dispatched | Phase 1–7 in flight |
+| `blocked-label` | `ginee:blocked` | Stoppable intermediate | mid-task paused |
+| `value:high|medium|low` | (fixed namespace) | Triage — user/business impact (ATAM importance); reporter-defined | per `core/protocols/triage-scoring.md` |
+| `complexity:high|medium|low` | (fixed namespace) | Triage — implementation cost (ATAM difficulty); reporter or SA auto-estimate | per `triage-scoring.md` |
 
-PM creates any missing label on first use via `gh label create <name>` (default color). "Done" is implicit — issue closed.
-
-## State mapping
-
-| GitHub state | Framework phase | TODO equivalent |
-|---|---|---|
-| Open, no framework labels | Unpicked-up — sits in adopter's idea/triage queue | n/a |
-| Open + `ready-label` | Phase 1 pickup candidate | `☐` |
-| Open + `in-progress-label` | Phase 1–7 in flight | mid-task |
-| Open + `blocked-label` | Stoppable intermediate; awaiting user/external | mid-task, paused |
-| Closed | Phase 8 accepted | `☒` |
+"Done" implicit — issue closed = `☒` (Phase 8 accepted). Open with no framework labels → unpicked-up in adopter's triage queue.
 
 ## Outbound — file an issue
 
-Trigger: `@team-lead file bug <title>` / `file feature <title>` (→ primary) or `file framework-bug <title>` / `file framework-feature <title>` (→ framework upstream).
+Trigger: `file bug <title>` / `file feature <title>` (primary) · `file framework-bug` / `file framework-feature` (upstream).
 
-1. PM resolves target repo (primary unless `framework-` prefix) and picks the template per § Template selection.
-2. PM drafts the body — populates the template's structured sections from user input + project context.
-3. **PM surfaces the draft to the user for approval.** Issue creation is externally visible — per `core/process.md § Executing actions with care`, always confirm before publishing.
-4. On approval, PM runs:
-   ```
-   gh issue create --repo <repo> --title <T> --body <B> --label <ready-label>
-   ```
-   (or MCP equivalent).
-5. PM reports the issue URL + number in the final response.
+1. Resolve target (primary unless `framework-` prefix); pick template per § Template selection.
+2. PM drafts body from template + user input + project context.
+3. **Surface draft for user approval** — issue creation is externally visible per `core/process.md § Executing actions with care`.
+4. On approval: `gh issue create --repo <repo> --title <T> --body <B> --label <ready-label>` (or MCP equivalent).
+5. Report issue URL + number in final response.
 
 ## Inbound — pick up an issue
 
-Trigger: `@team-lead pick up #<N>` — always targets the primary repo (= the working tree's origin). **Never auto-picks.** **No `framework-` variant** — see § Command targeting.
+Trigger: `@team-lead pick up #<N>` — always primary repo. **Never auto-picks.** **No `framework-` variant.**
 
-**Skill-runner vs team-lead split.** Steps 1–5 below are **mechanical ops** the skill-runner (`ginee-pick-up`) runs directly. After Step 5 the skill-runner dispatches `@team-lead` and team-lead owns every subsequent decision — Phase 1 analysis, plan drafting, specialist routing, comment cadence, gate enforcement, close-out. Full boundary: `core/process.md § Skill-runner — surface boundary`.
+Skill-runner runs Steps 1–5 mechanically; after Step 5 dispatches `@team-lead` who owns every subsequent decision. Full boundary: `core/process/dispatch.md § Skill-runner — surface boundary`.
 
-1. **Mechanical (skill-runner).** Fetch:
-   ```
-   gh issue view <N> --repo <primary-repo> --json title,body,labels,state,comments
-   ```
-2. **Mechanical (skill-runner).** Validate:
-   - State must be `OPEN`.
-   - Labels include `ready-label` — if absent, skill-runner offers to add it before pickup; on user approval, mechanical label-add.
-3. **Mechanical (skill-runner).** Parse the structured body per the template sections. Forward `affected area` to team-lead in the hand-off payload; skill-runner never resolves routing itself.
-4. **Mixed — mechanical ops + first dispatch.** Scoring labels per `core/protocols/triage-scoring.md`:
-   - Missing `value:*` → skill-runner asks user (H / M / L) per the skill text; mechanical label-add + audit comment post.
-   - Missing `complexity:*` → skill-runner's **one allowed first-batch dispatch** is `@solution-architect` for H / M / L estimate per the skill text; mechanical audit-comment post + label-add on SA return.
-   - Mechanical sticky post — find via marker; update in place; never duplicate.
-5. **Mechanical (skill-runner).** Swap labels:
-   ```
-   gh issue edit <N> --remove-label <ready-label> --add-label <in-progress-label>
-   ```
-6. **Hand to `team-lead`.** Skill-runner dispatches `@team-lead` with the parsed issue body + scoring labels + label-swap result + (Mode 1) branch handle. team-lead runs Phase 1 analysis treating the parsed issue body as the task description. Standard Phase 1–8 dispatch from here.
-7. **Comment cadence** — PM posts a structured comment at each major transition:
+1. **Fetch** — `gh issue view <N> --repo <primary> --json title,body,labels,state,comments`.
+2. **Validate** — state `OPEN` + labels include `ready-label`. Absent → skill-runner offers to add; on approval mechanical label-add.
+3. **Parse** structured body per template; forward `affected area` to team-lead in hand-off (skill-runner never resolves routing).
+4. **Scoring labels** per `core/protocols/triage-scoring.md` — missing `value:*` → ask user H/M/L + label-add + audit comment; missing `complexity:*` → skill-runner's one allowed first-batch dispatch is `@solution-architect` for estimate + audit + label-add on return; mechanical sticky post via marker (never duplicate).
+5. **Swap labels** — `gh issue edit <N> --remove-label <ready-label> --add-label <in-progress-label>`.
+6. **Hand to team-lead** — dispatch `@team-lead` with parsed body + scoring labels + label-swap + (Mode 1) branch. team-lead runs Phase 1 analysis treating parsed body as task description.
+7. **Comment cadence** — structured comment per transition, one per transition; every comment passes mandatory checks per `core/process.md § Mandatory checks` (tables · numbered lists · parent + sub-bullets · no parenthetical comma-lists):
 
    | Trigger | Comment shape |
    |---|---|
-   | Phase 3 design review surfaced | Architecture-doc diff link + mockup link + work-breakdown + "awaiting approval" |
+   | Phase 3 design review | Architecture-doc diff link + mockup link + work-breakdown + "awaiting approval" |
    | Phase 7 SA review outcome | APPROVE / RETURN-TO-engineer + findings list |
    | Phase 8 acceptance | Summary + PR/commit links + "closing on accept" |
-   | Stoppable intermediate state (user paused) | Current phase + done/in-progress/not-started lists |
+   | Stoppable intermediate | Current phase + done/in-progress/not-started lists |
 
-   Comments are structured summaries, not chatty. One per transition. Every framework-authored comment passes the mandatory checks per `core/process.md § Mandatory checks before report-as-done` (tables for inventories · numbered lists for steps · parent + sub-bullets for multi-rule statements · no parenthetical comma-lists in sentences). Enforcement: `core/protocols/doc-authoring-protocol.md § Enforcement for ginee-authored GitHub artefacts`.
-8. On Phase 8 acceptance, PM closes the issue:
-   ```
-   gh issue close <N> --repo <repo> --comment "<final summary + PR links>"
-   ```
+8. **Phase 8 acceptance** — `gh issue close <N> --comment "<final summary + PR links>"`.
 
 ## Triage — list ready issues
 
-Trigger: `@team-lead triage` (→ primary) or `@team-lead triage framework` (→ framework upstream).
+Trigger: `triage` (primary) / `triage framework` (upstream).
 
-1. Resolve target repo. List:
-   ```
-   gh issue list --repo <target-repo> --label <ready-label> --state open --json number,title,labels,createdAt
-   ```
-2. Parse `value:high|medium|low` / `complexity:high|medium|low` labels per `core/protocols/triage-scoring.md`; compute score (default `value / complexity` with `H=3, M=2, L=1`).
-3. Surface as a table — number / title / `v` / `c` / score / age / labels.
-4. Sort by `Score DESC, Age DESC`. Unscored items grouped at the bottom.
-5. User picks one (or several). PM runs the pickup flow for each.
+1. `gh issue list --repo <target> --label <ready-label> --state open --json number,title,labels,createdAt`.
+2. Parse `value:*` / `complexity:*` labels per `core/protocols/triage-scoring.md`; compute score (default `value / complexity` with `H=3 · M=2 · L=1`).
+3. Surface as table — number · title · `v` · `c` · score · age · labels.
+4. Sort `Score DESC, Age DESC`; unscored grouped at bottom.
+5. User picks; PM runs pickup flow per choice.
 
-Triage **never picks**. It only enumerates and proposes.
+**Triage never picks** — only enumerates + proposes.
 
 ## Promote — discussion → issue
 
-Trigger: `@team-lead promote discussion #<N>` (→ primary) or `@team-lead promote discussion framework#<N>` (→ framework upstream).
+Trigger: `promote discussion #<N>` (primary) / `promote discussion framework#<N>` (upstream).
 
-1. Resolve target repo. Fetch the discussion:
-   ```
-   gh api repos/<target-repo>/discussions/<N>
-   ```
-   (or MCP Discussions API equivalent).
-2. Read body + top comments — extract:
-   - The proposed change.
-   - Open questions raised in comments.
-   - Any rough acceptance criteria mentioned.
-3. Draft an issue using the appropriate template. Title links to the discussion: `Promoted from discussion #<N>: <title>`. Body includes a `## Source` section: `Discussion: https://github.com/<owner>/<repo>/discussions/<N>`.
-4. Surface the draft for user approval.
-5. On approval, create the issue **and** comment on the discussion linking to the new issue:
-   ```
-   gh issue create ...                        # → issue #M
-   gh api repos/<owner>/<repo>/discussions/<N>/comments \
-      --field body="Promoted to issue #<M>"
-   ```
+1. Fetch — `gh api repos/<target>/discussions/<N>` (or MCP equivalent).
+2. Extract proposed change · open questions · rough acceptance criteria.
+3. Draft issue per template; title `Promoted from discussion #<N>: <title>`; body includes `## Source` linking back to the discussion.
+4. Surface for approval.
+5. On approval: create issue + comment on discussion `Promoted to issue #<M>`.
 
 ## PR linkage
 
@@ -200,34 +134,24 @@ Template carries this: `core/templates/pr-description.md § Issue linkage`.
 
 ## Review-comment ingestion
 
-Address external code-review feedback on an open PR. Sits between Phase 7 (internal SA review) and Phase 8 (user acceptance) for PRs exposed to peer maintainers / OSS contributors / the user wearing a reviewer hat. Explicit invocation only — no extension of the CI-watch loop (`core/protocols/ci-watch.md`).
-
-**Output shapes** — per-thread reply + sticky cycle summary per `core/protocols/review-cycle-schema.md`. Procedure + plan-table contract + lossless coverage stay below; the sidecar schema carries the shape contracts + self-lint markers.
+Address external code-review feedback on an open PR. Sits between Phase 7 (SA review) + Phase 8 (user acceptance). Explicit invocation only — no CI-watch extension. Output shapes: per-thread reply + sticky cycle summary per `core/protocols/review-cycle-schema.md`.
 
 | Path | Form |
 |---|---|
 | Skill (AgentSkills clients) | `/ginee-address-review #<N>` |
 | Command (every adapter) | `@team-lead address-review #<N>` |
 
-Both run the same procedure under the same governance — **skill / command parity is mandatory**. Target = primary repo. No `framework-` variant; checked-out branch must be the PR's head ref.
+Same procedure under same governance — **skill / command parity is mandatory**. Target = primary repo. No `framework-` variant; checked-out branch MUST be PR head ref.
 
 ### Procedure
 
-1. **Resolve `<PR>`** per § Repo discovery. Abort if checked-out branch ≠ PR head (*"check out the PR branch first"*). Fetch:
-   ```
-   gh api repos/{o}/{r}/pulls/{N}/comments      # line-anchored
-   gh api repos/{o}/{r}/pulls/{N}/reviews       # approved / changes_requested / commented
-   ```
-2. **Deduplicate + filter** by `thread-id`:
-   - Skip threads marked `resolved`.
-   - Skip threads whose last reply is `<!-- ginee:review-reply r=<thread-id> -->` AND no newer reviewer comment after it (idempotency).
-3. **Build routing records** `{thread-id, file, line, body, hunk, role}`. Route per `local/bindings.md § Source-of-truth ownership`; fallback `team-lead`. Ambiguous match → pick the surface-closest role (visual ↔ frontend; data ↔ backend; IaC ↔ devops); record rationale on the row.
-4. **Surface consolidated plan table** for approval (forced-interactive gate — see below).
-5. **On approval** dispatch specialists in parallel. Each returns one of:
-   - **fix-track:** Phase-6-shaped patch (diff + test impact + verification note per `core/process.md § Phase 6`). May bundle ≥ 1 remark per patch when same file/area.
-   - **reply-track:** structured reply text + `<!-- ginee:review-reply r=<thread-id> -->` marker. Specialist owns the wording (rationale, declined-with-cite, deferred-to-#N); team-lead never paraphrases.
-6. **Reconcile + post.** Team-lead: squash fix-track patches into one cycle commit on the PR branch + push; post reply-track texts via `gh api .../comments/{thread-id}/replies` (or PR-review-comment-reply equivalent); verify lossless coverage before step 7.
-7. **Post sticky cycle summary** per `core/templates/pr-comment-cadence.md` — one per cycle. Marker `<!-- ginee:review-cycle n=<N> -->`. Full dispatch contract: `core/roles/team-lead.details.md § Review-comment dispatch`.
+1. **Resolve `<PR>`.** Abort if checked-out branch ≠ PR head (*"check out the PR branch first"*). Fetch `gh api repos/{o}/{r}/pulls/{N}/comments` (line-anchored) + `.../pulls/{N}/reviews` (approved · changes_requested · commented).
+2. **Deduplicate + filter** by `thread-id` — skip `resolved` · skip threads whose last reply is `<!-- ginee:review-reply r=<thread-id> -->` with no newer reviewer comment after (idempotency).
+3. **Build routing records** `{thread-id, file, line, body, hunk, role}` per `local/bindings.md § Source-of-truth ownership`; fallback `team-lead`. Ambiguous → surface-closest (visual ↔ frontend · data ↔ backend · IaC ↔ devops); record rationale.
+4. **Surface consolidated plan table** for approval (forced-interactive gate).
+5. **On approval** parallel dispatch. Each returns: **fix-track** (Phase-6 patch — diff + test impact + verification per `core/process.md § Phase 6`; may bundle ≥ 1 remark in same file/area) OR **reply-track** (text + `<!-- ginee:review-reply r=<thread-id> -->`; specialist owns wording — rationale / declined-with-cite / deferred-to-#N; team-lead never paraphrases).
+6. **Reconcile + post.** Team-lead squashes fix-track into one cycle commit + push · posts reply-track via `gh api .../comments/{thread-id}/replies` · verifies lossless coverage.
+7. **Sticky cycle summary** per `core/templates/pr-comment-cadence.md` — one per cycle, marker `<!-- ginee:review-cycle n=<N> -->`. Full dispatch contract: `team-lead.details.md § Review-comment dispatch`.
 
 ### Plan table — surface contract
 
@@ -274,74 +198,37 @@ No fix committed, no reply posted, no commit pushed without plan-table approval 
 
 Every framework-authored reply + cycle-summary passes the mandatory checks per `core/process.md § Mandatory checks before report-as-done`. Specialist authoring a reply-track text runs the self-lint before returning to team-lead. Enforcement: `core/protocols/doc-authoring-protocol.md § Enforcement for ginee-authored GitHub artefacts`.
 
-### Example — worked cycle
-
-PR #42 has 3 unresolved remarks. Approved plan:
-
-| # | thread | file:line | role | proposed action | action-type |
-|---|---|---|---|---|---|
-| 1 | T#abc | backend/api/users.cs:42 | backend-engineer | "Switch to async overload" | fix |
-| 2 | T#def | docs/architecture.md:88 | solution-architect | "Decline — cite ADR-0006" | reply |
-| 3 | T#ghi | frontend/src/login.tsx:17 | frontend-engineer | "Add loading state per mockup Y" | fix |
-
-Parallel dispatch → cycle commit `abc1234` (squashes #1 + #3) pushed; replies posted on #1/#2/#3 with `ginee:review-reply` markers; sticky `Review cycle 1: 3 remarks addressed (2 code, 1 reply). HEAD: abc1234.` + `<!-- ginee:review-cycle n=1 -->`.
-
-Re-invocation later (new reviewer comment on `T#abc` + new `T#jkl`):
-
-- `T#abc` re-enters (newer comment after marker).
-- `T#def` + `T#ghi` skipped (markers; no newer comment).
-- `T#jkl` enters (net-new).
-- Cycle ordinal → 2; new sticky; prior preserved.
-
-### Out of scope
-
-- Drafting reviews on other people's PRs (reviewer role, not author).
-- Auto-resolving threads — reviewer / PR author owns.
-- Cross-repo coordinated reviews.
-- Auto-detecting new review comments — explicit invocation only; CI-watch loop (`core/protocols/ci-watch.md`) unaffected.
-- Sentiment / tone analysis.
-- Bypassing the user-confirmation gate for "trivial" remarks.
-- Skill-only or command-only delivery — parity mandatory.
 
 ## Sub-issue dispatch
 
-One sub-issue per `team-lead` → cardinal dispatch under the parent task issue (issue-sourced tasks only; TODO / freeform → in-context). Authoring procedure: `core/roles/team-lead.details.md § Sub-issue dispatch`. Body shape: `core/templates/sub-issue-dispatch.md`. Rules + self-lint across body / progress / closing surfaces: `core/protocols/sub-issue-dispatch-schema.md`.
+One sub-issue per team-lead → cardinal dispatch under the parent task issue (issue-sourced only; TODO / freeform → in-context). Authoring: `team-lead.details.md § Sub-issue dispatch`. Body: `core/templates/sub-issue-dispatch.md`. Rules + self-lint across surfaces: `core/protocols/sub-issue-dispatch-schema.md`.
 
 | Step | Op |
 |---|---|
-| Plan | team-lead drafts contract — scope · acceptance · spec links · phase · estimate |
-| Create | `gh issue create` titled `[<phase>:<cardinal>] <task>` + body per template + labels `ginee:role:<cardinal>` · `ginee:phase:<N>` · inherited `value:*`/`complexity:*`; attach via `gh api .../issues/<parent>/sub_issues` |
-| Execute | Cardinal posts progress comments per `core/templates/pr-comment-cadence.md` shape — each carries `time: <N>m` (since last comment) + `cumulative: <N>m` (since dispatch start); doc-authoring self-lint applies |
-| Close | Phase-report return = closing comment with mandatory `## Time spent`; `gh issue close <M> --reason completed`. Stop-state (`Status: In-progress`) posts as progress comment — sub-issue stays open |
-| Parent sync | Edit sticky `<!-- ginee:dispatch-map -->` on parent in place — one per parent; table of dispatches + per-cardinal time rollup |
+| Plan | team-lead drafts contract — scope · acceptance · spec links · phase · estimate. |
+| Create | `gh issue create` titled `[<phase>:<cardinal>] <task>` + body per template + labels (`ginee:role:<cardinal>` · `ginee:phase:<N>` · inherited `value:*`/`complexity:*`); attach via `gh api .../sub_issues`. |
+| Execute | Cardinal posts progress comments per `core/templates/pr-comment-cadence.md` — each carries `time: <N>m` (since last) + `cumulative: <N>m` (since start); doc-authoring self-lint. |
+| Close | Phase-report return = closing comment with mandatory `## Time spent`; `gh issue close <M> --reason completed`. Stop-state (`Status: In-progress`) → progress comment only; stays open. |
+| Parent sync | Edit sticky `<!-- ginee:dispatch-map -->` in place — table of dispatches + per-cardinal time rollup. |
 
-**Resolution (stop at first match):** `notrack:` task prefix → `ginee:track:off` parent label → `local/framework.config.yaml § dispatch.tracking` (`sub-issues` | `in-context`) → default `sub-issues` on `github.repo`.
+**Resolution (stop at first match):** `notrack:` prefix → `ginee:track:off` label → `dispatch.tracking` config → default (`sub-issues` on `github.repo`).
 
-**Chain is closed — team-lead re-derives on every parent dispatch.** No fifth tier exists or may be inserted at runtime — no `skill-runner / runtime-condition / de-facto / commits-deferred / worktree-mode / no-PR` tier. The skill-runner per `core/process/dispatch.md § Skill-runner — surface boundary` never sets, recommends, or carries a tracking-mode posture in the hand-off payload — tracking-mode resolution is orchestration, not a mechanical op. Team-lead re-derives via the chain on every parent dispatch (initial pickup + every cross-session resume); any posture asserted upstream (in the skill-runner hand-off brief, in a prior session's transcript, in a paraphrased hand-off note) is **discarded without inheritance**. Runtime conditions (deferred commits · worktree mode · no-PR linkage) are **orthogonal** to the chain; only adapter degradation (no `gh` / no GH MCP) demotes tier 4 to `in-context`, and that demotion happens inside team-lead's resolution — never upstream.
+**Closed chain** — team-lead re-derives every parent dispatch. No fifth tier exists or may be inserted at runtime. Skill-runner per `core/process/dispatch.md § Skill-runner — surface boundary` never sets / recommends / carries a tracking-mode posture in hand-off payload — tracking-mode resolution is orchestration, not mechanical. Any posture asserted upstream (in skill-runner brief · prior transcript · paraphrased hand-off) is **discarded without inheritance**. Runtime conditions (deferred commits · worktree mode · no-PR linkage) are **orthogonal**; only adapter degradation (no `gh` / GH MCP) demotes tier 4 to `in-context` — and that demotion happens inside team-lead's resolution.
 
-**Assignee precedence.** Empty → role label drives cardinal execution. Non-empty human → cardinal suspended; team-lead surfaces *"Sub-issue #M has human assignee @user; cardinal dispatch suspended. Reassign to clear."* once per session.
+**Assignee precedence.** Empty → role label drives execution. Non-empty human → cardinal suspended + team-lead surfaces once-per-session advisory.
 
-**Labels.** `ginee:role:<cardinal>` (one of 7 cardinals · per sub-issue) · `ginee:phase:<N>` (updated on transition) · inherited `value:*`/`complexity:*` (per sub-issue) · `ginee:blocked` (optional) · `ginee:track:off` (parent-only · opts out for that issue's lifetime).
+**Labels.** `ginee:role:<cardinal>` · `ginee:phase:<N>` · inherited `value:*`/`complexity:*` · `ginee:blocked` (optional) · `ginee:track:off` (parent-only, opts out for issue lifetime).
 
-**Sticky shape** — `<!-- ginee:dispatch-map -->` headline + table `Sub-issue · Role · Phase · Status · Time` + per-cardinal totals line. Doc-authoring rules apply.
+**Sticky shape** — `<!-- ginee:dispatch-map -->` headline + table `Sub-issue · Role · Phase · Status · Time` + per-cardinal totals.
 
-**Forbidden** — edit sub-issue body after create (scope change = close + new sub-issue) · reuse across dispatches (1 dispatch = 1 sub-issue) · federate cross-repo · auto-file umbrellas for TODO / freeform · close on PR merge (PR closes parent; sub-issues close on phase-report return).
+**Forbidden** — edit body after create (scope change = close + new) · reuse across dispatches · federate cross-repo · auto-file umbrellas for TODO / freeform · close on PR merge (sub-issues close on phase-report return).
 
 ## Forbidden actions
 
-- **Never silently create / close / re-open an issue.** Each requires explicit user approval per `core/process.md § Executing actions with care` — issues are externally visible.
-- **Never bulk-close stale issues.** Stale-issue cleanup is an adopter-owned policy, not framework work.
-- **Never assign issues to GitHub users.** Specialists aren't GitHub users; assignment stays manual.
-- **Never edit another author's issue body.** PM may add comments and labels; the body is reporter-owned.
-- **Never auto-pick up issues on session start.** Pickup is always explicit (`pick up #<N>` or `triage` → user selects).
-- **Never federate across repos.** One repo per `github.repo` config; cross-repo coordination is out of scope.
+- **Never silently create / close / re-open an issue** — explicit user approval each time (externally visible).
+- **Never bulk-close stale issues** — adopter-owned policy.
+- **Never assign issues to GitHub users** — specialists aren't GitHub users.
+- **Never edit another author's issue body** — comments + labels only; body is reporter-owned.
+- **Never auto-pickup on session start** — always explicit (`pick up #<N>` / `triage`).
+- **Never federate across repos** — one repo per `github.repo`; cross-repo out of scope.
 
-## Out of scope
-
-- Pull requests as a task source (PRs are work output, not work input).
-- Webhook / event-driven pickup. Pickup is explicit on user invocation.
-- Issue auto-labelling on body keywords. Adopters use GitHub's own automation for that.
-- Auto-creating custom-coloured labels. Framework creates labels with default color when absent; recolouring is an adopter task.
-- Cross-repo issue federation.
-- Issue assignment to specialists (specialists aren't GitHub users).
-- Discussions as a direct task source. They must be promoted to an issue first.

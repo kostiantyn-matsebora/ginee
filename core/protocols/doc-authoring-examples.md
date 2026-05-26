@@ -8,15 +8,9 @@ reads-before-applying: [core/protocols/doc-authoring-protocol.md]
 
 # Doc-authoring examples — paired bad / good
 
-**Load-on-demand.** Fetched when:
+Loaded when a role authors a doc class for the first time, user requests examples, or SA cites a Review-activity regression. Default tasks do not load — shape rules + mandatory checks in `core/process.md § Documentation style` (always-loaded) suffice once internalized.
 
-- Role is authoring a doc class for the first time and unfamiliar with the default shape.
-- User explicitly requests examples (`@<role> show doc-style examples`).
-- `solution-architect` references during Review activity to point out a regression.
-
-Default tasks do not load this file. The shape rules + mandatory checks (always-loaded in `core/process.md § Documentation style`) are sufficient once internalized.
-
-Six paired examples cover the most common adopter doc classes: **component inventory · design properties · ADR rationale · runbook procedure · API endpoint table · scenario doc**.
+Adopter doc classes: component inventory · design properties · ADR rationale · runbook · API table · scenario. Plus subagent-return (§ 10) · marker enforcement (§ 12) · release-notes sidecar (§ 13) · RFC 2119 (§ 14) · sub-issue fast-path (§ 15) · heavy-role bypass (§ 16, cite-only) · pixel-check (§ 17, cite-only).
 
 ---
 
@@ -129,52 +123,50 @@ Negative paths:
 
 ## 7. Issue Summary
 
-**Bad** — parenthetical-soup sentence:
+**Bad** (parenthetical-soup):
 
 > GitHub issue bodies authored via ginee's `ginee-file-*` skills AND framework-authored comments (Phase-3/7/8 transitions · sticky `ginee:score` · `ginee:review-cycle` summary · audit comments · review-reply texts) bypass the structure-over-prose discipline that the doc-authoring protocol binds for adopter markdown.
 
-**Good** — bulleted scope statement + tight intro sentence:
+**Good** (bulleted scope + tight intro):
 
 **Apply the doc-authoring protocol to two surfaces it doesn't cover today:**
 
 - Issue bodies authored via `ginee-file-*` skills.
-- Framework-authored comments — Phase transitions · sticky scores · review-cycle summaries · audit comments · review-reply texts.
+- Framework-authored comments — Phase transitions · sticky scores · review-cycle summaries · audit comments · review-replies.
 
-Both are markdown + load-bearing LLM context + human-read. Without the protocol, they end up as walls of path-soup.
+Both markdown + load-bearing LLM context + human-read; without protocol they become walls of path-soup.
 
 ---
 
 ## 8. Issue body section
 
-**Bad** — semicolon-chained file inventory:
+**Bad** (semicolon-chain):
 
 > testing/integration/Dashboard.Integration.Tests/ (18 src files: TestEnvironment / MockGhaClient / ScenarioFixture / BoxStateOracle / SseListener / 6 box-state tests + 4 cross-cutting tests); testing/fixtures/gha/{mappings,scenarios/_cross-cutting,scenarios/<state-id>,demo}/ (26 WireMock JSON mappings); testing/config/integration.json; testing/integration/{run-tests.ps1,README.md}.
 
-**Good** — table:
+**Good** (table — scannable · one row per concept · zero connectives):
 
 | Path | What |
 |---|---|
 | `testing/integration/Dashboard.Integration.Tests/` | 18 src files: TestEnvironment · MockGhaClient · ScenarioFixture · BoxStateOracle · SseListener + 6 box-state tests + 4 cross-cutting tests |
-| `testing/fixtures/gha/{mappings,scenarios/_cross-cutting,scenarios/<state-id>,demo}/` | 26 WireMock JSON mappings |
+| `testing/fixtures/gha/{mappings,scenarios/…,demo}/` | 26 WireMock JSON mappings |
 | `testing/config/integration.json` | Integration test config |
 | `testing/integration/{run-tests.ps1,README.md}` | Runner + docs |
-
-Scannable; one row per concept; zero connectives to parse.
 
 ---
 
 ## 9. Phase-transition comment
 
-**Bad** — single dense paragraph:
+**Bad** (single dense paragraph):
 
-> Phase 8 acceptance gate. Work is surfaced for user accept / feedback / reject. The PR is #61 on the `ginee/issue-37-classical-architect` branch (Mode 1 delivery). 29 files changed with +741 / -271. There are 3 new files and 1 rename and 25 edits. New classical-architect SA model. The new doc-ownership map is in PLAN.md and CLAUDE.md. All 7 open questions in the issue are resolved (4 user-decided, 3 reasonable-defaulted). Migration: adopters run `@team-lead rediscover` on next upgrade.
+> Phase 8 acceptance gate. Work is surfaced for user accept / feedback / reject. The PR is #61 on the `ginee/issue-37-classical-architect` branch (Mode 1 delivery). 29 files changed with +741 / -271. New classical-architect SA model. Doc-ownership map in PLAN.md and CLAUDE.md. All 7 open questions resolved (4 user-decided, 3 reasonable-defaulted). Migration: adopters run rediscover on next upgrade.
 
-**Good** — structured Phase 8 transition:
+**Good** (structured):
 
 **Phase 8 — acceptance gate.** Work surfaced for accept / feedback / reject.
 
 - **PR:** #61 — `ginee/issue-37-classical-architect` branch (Mode 1).
-- **Files:** 29 (+741 / -271). 1 rename + 3 new + 25 edits.
+- **Files:** 29 (+741 / -271) · 1 rename · 3 new · 25 edits.
 - **New:** Classical-architect SA model. Logged in `PLAN.md` + `CLAUDE.md`.
 - **Open questions:** 7/7 resolved (4 user-decided · 3 reasonable-defaulted).
 - **Migration:** Adopters run `@team-lead rediscover` on next upgrade.
@@ -185,17 +177,7 @@ Issue auto-closes on PR merge via `Closes #37`.
 
 ## 10. Subagent return — Phase-4 cardinal dispatch
 
-**Bad** — narrative-padded return with restated dispatch context, verbose rationale, embedded code dump (3,603 chars — typical complex Phase-4 cardinal return):
-
-> The orchestrator dispatched me to add a `## Reporting` schema-bound pointer section to every cardinal role kernel that currently lacks one, while amending the two kernels that already have a `## Reporting` section so they cite the new schema instead of re-stating the template. I started by carefully reading `core/process.md § Reporting` (the new always-loaded section that landed in this same PR) to make sure I understood the binding rule — schema-bound per `core/templates/phase-report.md`, self-lint against the 7 mandatory checks before report-as-done. I then re-read `core/templates/phase-report.md` end-to-end to internalize the cardinality table (Files touched / Decisions made / Verification log / Open issues / Next dispatch needed are mandatory; Hand-off + Stop-state are conditional; Notes is the optional escape hatch with a 200-word cap). With that grounding in place, I opened `core/roles/team-lead.md` first because it already had a structured `## Reporting` block with five bullets restating the template's section list — those five bullets are now redundant because the schema lives in `core/templates/phase-report.md`. I replaced the block with a one-line pointer that cites the schema + the 6 mandatory checks + the hand-off cross-reference, which removes 10 lines from an always-loaded kernel (good for context economy). Next I opened `core/roles/solution-architect.md` and applied the same treatment to its existing `## Reporting` block, but I kept the three Phase-1 design-mode bullets (resolved mode + ASR utility-tree summary + requirements register diff) because those are SA-specific obligations not captured by the generic schema — they now live under "Phase 1 design-mode report adds three rows to `## Decisions made`" as a single bullet with nested specifics. After that I turned to the five kernels that have no `## Reporting` section: `ai-engineer.md`, `frontend-engineer.md`, `backend-engineer.md`, `devops-engineer.md`, `qa-engineer.md`. For each of those I appended a new `## Reporting` section after `## Forbidden actions`. I kept every new section deliberately short — one to two lines — because the just-completed context-economy optimization pass left the kernels lean and I did not want to re-inflate them. The ai-engineer kernel section additionally calls out that the lossless-self-check sample goes in the Verification log as a row; the backend kernel section references coverage attestation; the devops kernel section references both script-quality and the post-step health check; the qa kernel section references test-run + manual-smoke outcomes. Frontend kernel only got the bare one-liner since it has no extra attestation obligation. Here's the exact text I added to backend-engineer.md so you can verify the shape:
->
-> ```
-> ## Reporting
->
-> Schema-bound per `core/templates/phase-report.md`; self-lint against the 7 mandatory checks before report-as-done. Coverage attestation — threshold + runner outcome — lands as a `## Verification log` row.
-> ```
->
-> All seven edits passed the lossless self-check — every prior Reporting-related rule in the two amended kernels (team-lead, SA) survives in the new structure, and the five new sections add zero new normative rules (they cite, not introduce). I then ran `git diff --stat core/roles/` and confirmed the net line change across the seven kernels is +20 / -17. No other files touched in this dispatch. The orchestrator should now be able to dispatch the doc-authoring-protocol § Scope extension + the doc-authoring-examples bad/good pair as the next batch.
+**Bad** — 3,603-char return opening *"The orchestrator dispatched me to add… I started by reading… I then re-read… With that grounding I opened… Here's the exact text I added so you can verify…"* — preamble · restated dispatch · verbose per-decision rationale · embedded code · trailing summary.
 
 **Good** — schema-bound return (1,136 chars, **68.5% reduction**):
 
@@ -206,17 +188,12 @@ Status: Done
 
 | Path | Δ lines | Purpose |
 |---|---|---|
-| `core/roles/team-lead.md` | +1 / -10 | Replace verbose 5-bullet Reporting block with schema pointer |
+| `core/roles/team-lead.md` | +1 / -10 | Replace verbose Reporting block with schema pointer |
 | `core/roles/solution-architect.md` | +4 / -7 | Same — keep Phase-1 design-mode bullets |
-| `core/roles/ai-engineer.md` | +3 / -0 | New Reporting section (1-line) |
-| `core/roles/frontend-engineer.md` | +3 / -0 | New Reporting section (1-line) |
-| `core/roles/backend-engineer.md` | +3 / -0 | New Reporting section — coverage row noted |
-| `core/roles/devops-engineer.md` | +3 / -0 | New Reporting section — script-quality + health-check rows noted |
-| `core/roles/qa-engineer.md` | +3 / -0 | New Reporting section — test + smoke rows noted |
+| `core/roles/{ai,frontend,backend,devops,qa}-engineer.md` | +3 / -0 each | New Reporting section (1-line per kernel) |
 
 ## Decisions made
-
-- Kernels with existing Reporting sections: amend in place — schema pointer
+- Kernels with existing Reporting: amend in place — schema pointer
 - Kernels without: insert one-line section after `## Forbidden actions`
 
 ## Verification log
@@ -227,270 +204,92 @@ Status: Done
 | Lossless self-check | 6 prior rules sampled, all present |
 
 ## Open issues
-
 (none)
 
 ## Next dispatch needed
-
 (none)
 ```
 
-**Measurement (honest).** Bad return = 3,603 chars (narrative preamble + restated dispatch context + verbose per-file rationale + embedded code snippet). Good return = 1,136 chars (Status + 4 tables + 2 bullet sections + 2 empty-case markers). **Reduction: (3603 − 1136) / 3603 = 68.5%** — within rounding of the issue's ~70% target.
-
-**Why the ratio holds.** Bloat scales with task scope (narrative restatement + per-decision rationale paragraphs + code-snippet quotes); schema-bound size scales with file count + decision count. Simple cardinal dispatches reduce by similar ratios (1,500–3,000 char prose → 400–800 char schema). Sub-1,000-char dispatches don't reduce as far because the schema's table headers carry a fixed overhead — and that's fine: at those sizes the absolute saving is small either way and the parseability gain dominates.
+Bloat scales with task scope (narrative restatement + per-decision rationale + code-snippet quotes); schema-bound size scales with file + decision counts. Simple cardinal dispatches reduce by similar ratios (1,500–3,000 char prose → 400–800 char schema). Sub-1,000-char dispatches reduce less — schema table headers carry fixed overhead, but parseability gain dominates.
 
 ---
 
 ## 11. Option list — adopt-vs-build
 
-**Context.** Sub-task: add a content-compression layer for context payloads. Proposing role surfaces the option list as part of the iteration-protocol Propose step (or Phase 2 design output).
-
-**Bad** — build-only, no adoption research surfaced:
-
-> Options:
-> - Build a custom dictionary-based compressor tuned to markdown.
-> - Build a simple LZ-style compressor inline.
-
-Tripped checks: **#1** (no adopt candidate, no `(none viable)` cite) · **#3** (candidates untagged).
-
-**Bad** — adoption hand-waved:
-
-> Options:
-> - Use a charting library (it's mature).
-> - Build our own.
-
-Tripped checks: **#2** (no name · version · source link · license) · **#5** (`"mature"` isn't a concrete fit rationale) · **#3** (untagged).
-
-**Good** — adopt candidates fully cited, build alternative explicit:
-
-```
-Options:
-- adopt — zstd via `python-zstandard` v0.22 — BSD-3 — https://pypi.org/project/zstandard/
-  — fit: streaming API; 4 ms/kB on <1 kB payloads (cite `runtime-facts.yaml`).
-- adopt — brotli v1.1 — MIT — https://pypi.org/project/Brotli/
-  — fit: better text ratios; +30 ms latency cost on small payloads.
-- build — minimal in-house — rationale: surveyed adopt candidates above; both exceed
-  the latency NFR on the <1 kB hot path. ADR draft below.
-```
-
-**Good** — empty research, explicit `(none viable)`:
-
-```
-Options:
-- (none viable — surveyed 3 token-aware compressors; all require tokenizer-specific
-  dictionaries the framework does not ship).
-- build — minimal in-house — see ADR draft.
-```
-
-Passes all 5 checks: floor present · citations complete · tagging explicit · empty research documented · fit rationale concrete.
+See `core/protocols/options-protocol.md § Worked example` (canonical bad/good pair + the 5-check pass rationale).
 
 ---
 
 ## 12. Phase-1 dispatch return — self-lint marker enforcement
 
-`team-lead` returns a Phase-1 grounding plan after `/ginee-pick-up`. Without a marker the 6 checks are aspirational — non-compliant returns slip through silently. The literal `<!-- self-lint: pass -->` marker is the attestation line.
+Without `<!-- self-lint: pass -->` marker the 6 checks are aspirational — non-compliant returns slip through silently.
 
-**Bad** — narrative preamble, no schema sections, no marker:
+**Bad** — preamble + file inventory as prose, no marker:
 
-> I have full grounding now. Pre-dispatch staleness check before drafting the Phase 2 plan:
->
-> - Read `core/process.md` end-to-end.
-> - Read `core/roles/team-lead.md` + `core/roles/team-lead.details.md`.
-> - SHA-256 cross-checked manifest entries — no drift.
->
-> Files I'll touch: `core/templates/phase-report.md`, all 7 cardinal kernels, `core/process.md § Skill-runner`, plus `CLAUDE.md`/`PLAN.md` cross-refs.
->
-> Marker is `<!-- self-lint: pass -->` literal; orchestrator surfaces advisory; skill-runner forbidden from cleaning up.
+> I have full grounding now. Pre-dispatch staleness check before drafting the Phase 2 plan… Files I'll touch: `core/templates/phase-report.md`, all 7 cardinal kernels, `core/process.md § Skill-runner`, plus `CLAUDE.md`/`PLAN.md` cross-refs.
 
-Tripped: **#1** (paragraph > 2 terminators) · **#4** (file inventory as prose) · **#6** (narrative preamble) · **marker absent**.
-
-**Good** — schema-bound + marker:
-
-```
-Status: Done
-
-## Files touched
-
-| Path | Δ lines | Purpose |
-|---|---|---|
-| `core/templates/phase-report.md` | +37 / -2 | Marker spec + advisory + carry-forward |
-| `core/roles/{7 kernels}.md` | (×7) | One-liner marker addendum |
-| `core/process.md § Skill-runner` | +2 / -0 | Schema / enforcement interaction |
-
-## Decisions made
-
-- Marker `<!-- self-lint: pass -->` — last line of every return
-- Orchestrator advisory on absence; no re-dispatch for format
-- Skill-runner forbidden from cleanup
-
-## Verification log
-
-| Check | Outcome |
-|---|---|
-| Pre-dispatch staleness | no drift |
-| 6 mandatory checks against draft | pass |
-
-## Open issues
-
-(none)
-
-## Next dispatch needed
-
-(none)
-
-<!-- self-lint: pass -->
-```
+**Good** — schema-bound + marker. Same structure as §10's good case, ending with literal `<!-- self-lint: pass -->` as the last line.
 
 ---
 
 ## 13. Release-notes sidecar bullet
 
-Sidecar bullets (`.github/release-notes/v*.md`) lead with adopter-visible benefit and stay ≤ 20 words. Implementation jargon belongs in the verbose CHANGELOG entry, not the marketing layer.
+Sidecar bullets (`.github/release-notes/v*.md`) lead with adopter-visible benefit; ≤ 20 words. Implementation jargon belongs in CHANGELOG, not sidecar.
 
-**Bad** — dense framework-dev paragraph masquerading as a bullet:
+**Bad:**
 
-> - Introduces three vendor-neutral tiers (reasoning · standard · fast) declared as role-kernel `default-tier:` with per-adapter `<tier> → <id>` map. Resolution: per-task prefix `model:<tier>` → Phase-3 answer → `local/framework.config.yaml § model-tier.per-role.<role>` → kernel `default-tier:`. Claude adapter writes `model: <id>` into `.claude/agents/<role>.md` frontmatter; non-Claude adapters emit install warning. Purely additive — absent `model-tier:` → defaults apply.
+> - Introduces three vendor-neutral tiers (reasoning · standard · fast) declared as role-kernel `default-tier:` with per-adapter `<tier> → <id>` map. Resolution: per-task prefix → Phase-3 answer → `local/framework.config.yaml § model-tier.per-role.<role>` → kernel `default-tier:`. Claude writes `model: <id>` into frontmatter; non-Claude adapters emit warning. Purely additive…
 
-Trips checks 1 (75+ words), 2 (no adopter-visible benefit at line start; `default-tier:` jargon), 3 (resolution chain + adapter writeback are CHANGELOG-spec content).
+Trips checks 1 (75+ words) · 2 (no adopter benefit at line start; `default-tier:` jargon) · 3 (resolution + adapter writeback are CHANGELOG content).
 
-**Good** — concise sidecar shape:
+**Good:**
 
-> - **Lower LLM bills** — cheaper models on execution work, capable ones stay on orchestration + architecture. Out of the box.
+> - **Lower LLM bills** — cheaper models on execution work; capable ones stay on orchestration + architecture. Out of the box.
 > - **Per-task model override** — prefix any dispatch with `model:reasoning` / `model:standard` / `model:fast`.
 
-Each bullet: adopter-visible verb / outcome at start · concrete user benefit · ≤ 20 words. The verbose CHANGELOG entry carries the resolution chain + adapter writeback; sidecar carries only what an adopter needs to decide whether to bump.
-
-Full surface topology + self-lint checks: `core/protocols/changelog-protocol.md`.
+Adopter-visible verb at line start · concrete benefit · ≤ 20 words. Full topology + self-lint: `core/protocols/changelog-protocol.md`.
 
 ---
 
 ## 14. Binding-strength signal — RFC 2119 keywords
 
-**Bad** — mixed signalling (`always` for MUST, `never` for MUST NOT, no precision):
+**Bad** (mixed signalling):
 
-> Cardinals **always** include the `## Source reads` section when raw sources were read. The orchestrator **never** re-dispatches purely for format.
+> Cardinals **always** include the `## Source reads` section when raw sources were read.
 
-**Good** — RFC 2119 keywords carry the binding axis:
+**Good** (RFC 2119):
 
-> Cardinals MUST include the `## Source reads` section when raw sources were read. The orchestrator MUST NOT re-dispatch purely for format.
+> Cardinals MUST include the `## Source reads` section when raw sources were read.
 
-LLM interpretation cycles drop — the keyword IS the binding signal; no disambiguation between emphasis (`**bold**`) and normative weight.
+Keyword IS the binding signal; LLM no longer disambiguates emphasis (`**bold**`) from normative weight.
 
 ---
 
 ## 15. Sub-issue pickup — fast-path vs re-route decision
 
-Dispatch target per `core/skills/ginee-pick-up/SKILL.md § Step 2.5`.
+**Bad** — narrative reasoning with soft "if … we'd":
 
-**Bad** — narrative reasoning, decision buried in prose:
-
-> Issue #M is a sub-issue of #K because the API showed parent_issue set. It has `ginee:role:backend-engineer` and the body has a Dispatch contract with Scope and Acceptance, so I think we can skip team-lead and dispatch backend-engineer. If backend-engineer comes back blocked or needs cross-domain help we'd dispatch team-lead, but for now let's go direct.
-
-Tripped: **#1** (paragraph > 2 terminators) · **#6** (narrative preamble) · re-entry triggers stated as soft "if … we'd" instead of binding conditions.
+> Issue #M is a sub-issue of #K because parent_issue is set, and it has `ginee:role:backend-engineer` with a dispatch contract, so I think we can skip team-lead. If backend-engineer comes back blocked we'd dispatch team-lead…
 
 **Good** — schema-bound gate decision:
 
 ```
-Sub-issue check (gh api .../issues/M) — parent_issue = #K · ginee:role:backend-engineer · body has `## Scope` / `## Acceptance` / `## Spec links` / `## Phase` / `## Estimate`.
+Sub-issue check (gh api .../issues/M) — parent_issue = #K · ginee:role:backend-engineer · body has Scope/Acceptance/Spec/Phase/Estimate.
 Fast-path gate — 4 of 4 pass → dispatch @backend-engineer.
-Inbound payload — parsed dispatch body + scoring labels (value:M, complexity:L) + label-swap result + branch (issue-M-<slug>).
+Inbound payload — parsed body + scoring labels + label-swap + branch (issue-M-<slug>).
 Re-entry — re-load @team-lead if `## Open issues` non-empty OR `## Hand-off` set OR `Status: In-progress` OR cross-domain bug surfaced.
 ```
 
-**Re-route case** — sub-issue #N, routing ambiguous:
-
-```
-Sub-issue check (gh api .../issues/N) — parent_issue = #K · ginee:role:backend-engineer · ginee:role:frontend-engineer · body has `## Scope` / `## Acceptance`.
-Fast-path gate — exactly-one-role-label FAIL (2 role labels).
-Hand-off — @team-lead (routing ambiguous).
-Inbound payload — parsed body + scoring labels + label-swap result + branch.
-```
-
-Skill-runner records the gate outcome, not narrative. Every failure path routes through `@team-lead`: parent unresolved · no role label · dispatch contract incomplete · multiple role labels.
+Re-route case — multiple role labels → `Hand-off — @team-lead (routing ambiguous)`. Every failure path routes through `@team-lead`: parent unresolved · no role label · dispatch contract incomplete · multiple role labels.
 
 ---
 
 ## 16. Heavy-role bypass — TL fast-path vs SA dip decision
 
-Mid-Phase-6 bug fix; orchestrator decides whether to dispatch `@team-lead` + `@solution-architect` before merge.
-
-**Bad** — defensive ceremony, narrative justification:
-
-> Engineer fixed the bug. I'll dispatch team-lead to confirm routing, then solution-architect to spot-check governance just to be safe. Better to over-include than miss something.
-
-Tripped: heavy-role-bypass forbiddens — habitual dispatch absent a trigger; no persistence-artefact / re-entry trigger cited.
-
-**Good** — schema-bound gate decision:
-
-```
-TL3 gate (intra-domain bug-fix, Phase 6):
-  - Owning cardinal: backend-engineer
-  - Cardinal return — `## Open issues`: (none) · `## Hand-off`: (none) · Status: Done
-  - Cross-domain bug surfaced: no
-  → No re-entry trigger fired → @team-lead skipped.
-
-SA3 gate (Phase 6 SA-default-skip on local fix):
-  - Patch touches local/bindings.md SA-owned path: no
-  - Fix proposal crosses blueprint-diff threshold: no
-  - Engineer proposed architectural change: no
-  → No SA trigger fired → @solution-architect skipped.
-
-Decision — proceed to Phase 7 SA review; no Phase 6 heavy-role dispatch.
-```
-
-**SA dip case — trigger present:**
-
-```
-SA1 gate (Phase 4 governance dip):
-  - PR diff: backend/api/users.cs + local/bindings.md (SA-owned per `Source-of-truth ownership`)
-  → SA-owned-file edit in diff → @solution-architect dispatched.
-
-Inbound payload: PR diff + SA-owned file list + invariant-cite request.
-Return shape: spot-check verdict + drift-flag (if any) — no code edits.
-```
-
-Orchestrator records the gate outcome, not narrative. Every trigger binding, every absence the default skip. Same shape across TL1–TL4 / SA1–SA3.
+See `core/protocols/heavy-role-bypass.md § Transcript-grep recipes` + § Per-phase track tables — schema-bound gate decision shape (TL1–TL4 / SA1–SA3) + transcript-grep advisories. Pattern: cite the matching row from the persistence-artefact table OR re-entry trigger table; never narrate.
 
 ---
 
 ## 17. Pixel-check outcome — true-positive routing vs false-positive mask
 
-Phase 5 pixel-check run; `qa.pixel-check.enabled: true`; desktop + mobile viewports.
-
-**Bad** — narrative outcome, no routing, tolerance creep:
-
-> Desktop clean, mobile had 380 pixel deltas over the 100 tolerance. Looks like anti-aliasing. I'll bump max-diff-pixels to 500 to make it pass, then move on to manual smoke.
-
-Tripped — oracle-discipline forbidden: tolerance bump without citing the specific diff it would have caught at the prior threshold (creep); no drift-source classification; no routing.
-
-**Good** — schema-bound outcome, true-positive caught:
-
-```
-| Viewport | Max-diff | Result   | Diff source                            |
-|----------|----------|----------|----------------------------------------|
-| desktop  |   12px   | within   | —                                      |
-| mobile   | 1,847px  | exceeded | app — button overlaps tagline at 390px |
-
-Drift classification — app rendered wrong (mockup correct; breakpoint regression).
-Route — @frontend-engineer (owns frontend/src/components/Cta.tsx) → Phase 6.
-Mask — none (diff is real). Tolerance — unchanged (bumping would mask the regression).
-```
-
-**Good** — false-positive masked with justification:
-
-```
-| Viewport | Max-diff | Result | Diff source |
-|----------|----------|--------|-------------|
-| desktop  |   47px   | within | —           |
-| mobile   |    0px   | within | —           |
-
-Tolerance-bootstrap addendum — new selector .event-timestamp masked.
-
-| Selector         | Why                                                |
-|------------------|----------------------------------------------------|
-| .event-timestamp | relative time ("2m ago"); non-deterministic       |
-
-Tolerance — unchanged. Route — none; continuing to manual smoke.
-```
-
-Schema enforces — drift source · route · mask justification — every diff is fixed, masked with reason, or escalated.
+See `core/protocols/pixel-check-protocol.md § Drift routing` (4-row routing table) + § Tolerance + masks (oracle discipline: every tolerance bump cites the specific diff it would have masked; every mask carries `# why:`). Pattern: viewport table → drift classification → route OR mask-with-justification. Never narrative.

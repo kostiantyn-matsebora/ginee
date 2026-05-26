@@ -8,7 +8,7 @@ reads-before-applying: []
 
 # Phase 8 — User approval
 
-**Load triggers** — any cardinal whose `phase-participation:` includes `8`. Per-role roster: `team-lead` only (gate surface + delivery finalize).
+**Load triggers** — `team-lead` only (gate surface + delivery finalize).
 
 - **Goal.** User confirms delivered work satisfies the TODO line.
 - **Action.** Orchestrator surfaces per the Task model. If manual smoke wasn't run (e.g. headless), asks the user to run it.

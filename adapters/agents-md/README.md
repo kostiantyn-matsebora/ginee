@@ -23,18 +23,11 @@ Single-file adapter — one pointer file covers them all.
 - AGENTS.md stewarded by the Agentic AI Foundation (Linux Foundation).
 - Re-check per release.
 
-## Capability tier — **2** (instructions-only, single-agent persona model)
+## Capability tier — 2 (instructions-only, persona model)
 
-- `AGENTS.md` — single instructions file.
-- 7 cardinals — PERSONAS the single LLM impersonates when mentioned by name in chat.
-- No native subagent isolation.
-- Sequential execution.
+Single `AGENTS.md` file · 7 cardinals as personas the LLM impersonates by name · no native subagent isolation · sequential execution.
 
-For tier-1 (native subagents + parallel dispatch), use:
-- `claude` adapter (Claude Code)
-- `copilot-cli` adapter (Copilot CLI)
-
-These install ON TOP OF this adapter, not instead of it.
+Tier-1 (native subagents + parallel dispatch): `claude` (Claude Code) · `copilot-cli` (Copilot CLI). These install on top of this adapter, not instead.
 
 ## What this adapter ships
 

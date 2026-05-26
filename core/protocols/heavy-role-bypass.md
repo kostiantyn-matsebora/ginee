@@ -96,17 +96,3 @@ Single-cardinal PR (exactly one owned-path set per `local/bindings.md`) — Phas
 
 Advisories surface one-line; never auto-rewrite. Aim is to retrain orchestrators, not to gate post-hoc.
 
-## Out of scope
-
-- Other cardinals (engineers / QA / ai-engineer) — footprints don't justify bypass overhead.
-- MCP-server context-routing — deferred to v2.0 per `CLAUDE.md § Out of scope`.
-- Renaming / restructuring heavy roles — bypass only; role definitions unchanged.
-- Compliance / force-class machinery (`#135` cohort) — separate.
-
-## References
-
-- `core/skills/ginee-pick-up/SKILL.md § Step 2.5` — TL1 first instance
-- `core/process/phase-4-implementation.md` · `phase-5-testing.md` · `phase-6-bug-fixing.md` · `phase-7-sa-review.md` — qualified rosters cite this protocol
-- `core/protocols/cross-domain-bugs.md` — cross-domain re-entry trigger
-- `core/protocols/blueprint-diff-protocol.md` — SA fix-proposal re-entry trigger
-- `migrations/heavy-role-bypass.md` — cutover spec + transcript-grep recipes

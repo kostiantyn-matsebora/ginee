@@ -1,72 +1,72 @@
 # Phase Report — Schema
 
-**Binding schema for every cardinal-dispatch return.** Same machinery as the doc-authoring protocol (`core/protocols/doc-authoring-protocol.md`), scoped to the subagent-return surface. Self-lint at report-as-done; orchestrator surfaces violations as a one-line advisory and consumes anyway.
+Binding schema for every cardinal-dispatch return. Same machinery as `core/protocols/doc-authoring-protocol.md`, scoped to subagent-return surface. Self-lint at report-as-done; orchestrator surfaces violations as one-line advisory + consumes anyway.
 
 ## Section cardinality
 
 | Section | Cardinality | Default shape | Cap |
 |---|---|---|---|
-| `## Files touched` | **required** (else `(none)`) | Table — `path` · `Δ lines` · `purpose` | 1 row per file |
-| `## Decisions made` | **required** (else `(none)`) | Bullets — `<short imperative> — cite` | ≤ 80 chars / bullet |
-| `## Verification log` | **required** | Table — `command / check` · `outcome` | 1 row per check |
-| `## Open issues` | **required** (else `(none)`) | Bullets — `<issue> — <owner / blocker>` | ≤ 80 chars / bullet |
-| `## Next dispatch needed` | **required** (else `(none)`) | One-liner — `<role> · <surface> · <reason>` | 1 line |
-| `## Source reads (this dispatch)` | **required** (else `(none)`) | Table — `Path` · `Justification` · `Index entry consulted` | 1 row per source read |
-| `## Hand-off` | required **if failed dispatch / cross-domain root cause outside domain** (per `core/protocols/cross-agent-handoff.md`) | Embed `core/templates/hand-off-note.md` shape | per template |
-| `## Stop-state` | required **if `Status: In-progress`** (iteration-protocol stop boundary) | Three-bucket bullets — Done / In-progress / Not-started | per `core/protocols/iteration-protocol.md § Stoppable intermediate states` |
-| `## Time spent` | required **if sub-issue mode is active** — return doubles as sub-issue closing comment | One-liner — `<H>h <M>m perceived effort; <N> progress comments on sub-issue #<M>.` | 1 line |
-| `## Notes` | **optional** — narrative-rationale escape hatch only | Free-form prose | ≤ 200 words |
+| `## Files touched` | required (else `(none)`) | Table — path · Δ lines · purpose | 1 row per file |
+| `## Decisions made` | required (else `(none)`) | Bullets — `<short imperative> — cite` | ≤ 80 chars / bullet |
+| `## Verification log` | required | Table — command / check · outcome | 1 row per check |
+| `## Open issues` | required (else `(none)`) | Bullets — `<issue> — <owner / blocker>` | ≤ 80 chars / bullet |
+| `## Next dispatch needed` | required (else `(none)`) | One-liner — `<role> · <surface> · <reason>` | 1 line |
+| `## Source reads (this dispatch)` | required (else `(none)`) | Table — Path · Justification · Index entry consulted | 1 row per source read |
+| `## Hand-off` | required **on failed dispatch / cross-domain root cause outside domain** per `core/protocols/cross-agent-handoff.md` | Embed `core/templates/hand-off-note.md` shape | per template |
+| `## Stop-state` | required **when `Status: In-progress`** | Three-bucket bullets — Done / In-progress / Not-started | per `core/protocols/iteration-protocol.md § Stoppable intermediate states` |
+| `## Time spent` | required **when sub-issue mode active** | One-liner — `<H>h <M>m perceived effort; <N> progress comments on sub-issue #<M>.` | 1 line |
+| `## Notes` | optional — narrative escape hatch | Free-form prose | ≤ 200 words |
 
-**Status header** (single line at top): `Status: Done | In-progress | Blocked | Hand-off`. For iteration-protocol intermediate returns: same schema, sections marked `(in-progress)` where partial, plus the required `## Stop-state`.
+**Status header** (single line at top): `Status: Done | In-progress | Blocked | Hand-off`. Iteration-protocol intermediate: same schema · sections marked `(in-progress)` where partial · `## Stop-state` required.
 
 ## Forbidden patterns (self-lint catches)
 
-1. **Narrative preamble.** *"I started by reading X, then I edited Y…"* → `## Files touched` table directly.
-2. **Restated dispatch context.** Repeating what the orchestrator already dispatched → cite the dispatch prompt; don't restate.
-3. **Code snippets in the schema body.** Diff stats + path cite only. Carve-out: ≤ 5-line literal inside `## Notes` when the orchestrator needs verbatim text (e.g. a malformed config) — not the default path.
-4. **Verbose rationale outside `## Notes`.** One-line decision + cite in `## Decisions made`; deeper rationale → `## Notes` (capped).
-5. **Parenthetical comma-soup.** Same doc-authoring rule — inventories belong in tables, not parentheses.
+1. **Narrative preamble** ("I started by reading…") → `## Files touched` table directly.
+2. **Restated dispatch context** → cite the dispatch prompt; don't restate.
+3. **Code snippets in schema body** → diff stats + path cite. Carve-out: ≤ 5-line literal in `## Notes` when orchestrator needs verbatim.
+4. **Verbose rationale outside `## Notes`** → one-line decision + cite in `## Decisions made`; deeper in capped `## Notes`.
+5. **Parenthetical comma-soup** → inventories in tables, not parentheses.
 
 ## Mandatory checks before report-as-done
 
-Same 6 as `core/process.md § Documentation style § Mandatory checks` **plus**:
+Same 6 as `core/process.md § Documentation style § Mandatory checks` PLUS:
 
-7. **No narrative preamble.** First non-Status line is a `##` section header — never a sentence describing what the subagent did.
+7. **No narrative preamble** — first non-Status line is a `##` section header.
 
-Run all 7 against the drafted report **before** returning. Violations → restructure; if a violation genuinely can't be restructured, lift the offending content into `## Notes` (still capped at 200 words).
+Run all 7 against draft before returning. Violations → restructure; un-restructurable content lifted to `## Notes` (still ≤ 200 words).
 
-## Before-return checklist + mandatory marker
+## Marker
 
-Run the 7 checks above against the drafted report. Append, as the **last line**, the literal attestation marker `<!-- self-lint: pass -->`. Form is fixed; case-sensitive; placement after every section + `(none)` placeholder + `## Notes` if present. Write the marker **after** running the checks — never blindly. Honest-fail: un-restructurable content lifted to `## Notes` still writes the marker (the cap is the legal escape hatch). Marker is not a pass/fail gate (orchestrator consumes on absence) and not a re-dispatch trigger.
+Append literal `<!-- self-lint: pass -->` as the LAST line (fixed form · case-sensitive · after every section + `(none)` + `## Notes`). Write after running checks, never blindly. Honest-fail: un-restructurable content in `## Notes` still writes marker (cap is the legal escape hatch). Not a pass/fail gate; not a re-dispatch trigger.
 
-**Why a marker.** Without a marker the 7 checks are aspirational — agents can skip them silently and the orchestrator has no structural detection. Marker absence is a single-line detectable signal; same mechanism as the doc-authoring attestation lines in `## Verification log`, scoped to the return envelope.
+Without marker the 7 checks are aspirational + the orchestrator has no structural signal. Same attestation mechanism as doc-authoring `## Verification log` lines, scoped to the return envelope.
 
 ## Orchestrator behaviour on non-compliant returns
 
-- Surface a one-line advisory before consuming (`"Return missed self-lint: <violation>; consuming anyway."`).
-- **Never re-dispatch purely for format.** Absorb the verbose return once; carry the rule forward to the subagent's next dispatch.
-- Never auto-rewrite the subagent's content (analogous to the reporter-content forbidden rule in `core/protocols/github-integration.md § Forbidden actions`).
-- **Skill-runner forbidden** from "cleaning up" non-compliant returns before passing to team-lead.
+- Surface one-line advisory before consuming (`"Return missed self-lint: <violation>; consuming anyway."`).
+- **Never re-dispatch purely for format.** Absorb the verbose return once; carry rule forward to next dispatch.
+- Never auto-rewrite content (same forbidden as reporter-content rule in `github-integration.md § Forbidden actions`).
+- **Skill-runner forbidden** from cleanup before passing to team-lead.
 
 ### Format-only re-dispatch — single carve-out
 
-Narrow exception to "never re-dispatch purely for format": when raw source paths appear in `## Files touched` (paths **outside** `local/index/`) AND `## Source reads (this dispatch)` is missing or `(none)`, re-dispatch for the justification cycle. Rationale — a missing `## Source reads` block when source was touched is a substantive audit-trail omission (missing decision data), not a format wrinkle, so the carve-out is consistent with the standing rule. Fires only for this content-substantive omission; never for pure format issues (preamble, marker absence, table shape, etc.).
+Re-dispatch fires ONLY when raw source paths appear in `## Files touched` (paths outside `local/index/`) AND `## Source reads (this dispatch)` is missing or `(none)`. Rationale: missing audit trail is substantive omission (missing decision data), not format. Never re-dispatch for pure format issues (preamble · marker absence · table shape).
 
-### Worked advisory examples
+### Worked advisories
 
-| Detected violation | Advisory text (exact) |
+| Violation | Advisory text |
 |---|---|
 | Missing marker | `"Return missed self-lint: marker absent; consuming anyway."` |
 | Narrative preamble | `"Return missed self-lint: narrative preamble; consuming anyway."` |
-| Inventory rendered as prose / comma-soup | `"Return missed self-lint: inventory not in table form; consuming anyway."` |
-| Code snippet outside `## Notes` carve-out | `"Return missed self-lint: code outside Notes carve-out; consuming anyway."` |
+| Inventory as prose / comma-soup | `"Return missed self-lint: inventory not in table form; consuming anyway."` |
+| Code snippet outside `## Notes` | `"Return missed self-lint: code outside Notes carve-out; consuming anyway."` |
 | Bullet > 25 words without sub-bullets | `"Return missed self-lint: bullet over-length; consuming anyway."` |
-| Source touched without `## Source reads` block | `"Re-dispatching: source files touched without justification; cite consulted index entries."` |
-| Multiple violations | Cite the first; one line; do not enumerate. |
+| Source touched without `## Source reads` | `"Re-dispatching: source files touched without justification; cite consulted index entries."` |
+| Multiple violations | Cite the first; one line; never enumerate. |
 
-### Carry-forward rephrasing for the next dispatch
+### Carry-forward rephrasing for next dispatch
 
-Append a **single-line** reminder at the end of the next dispatch prompt to the same subagent — cite the *specific* violation; never reopen the prior return; never re-dispatch for format:
+Append single-line reminder at end of next dispatch prompt to same subagent — cite specific violation; never reopen prior return; never re-dispatch for format:
 
 ```
 <original dispatch text>
@@ -167,12 +167,6 @@ Narrative rationale that genuinely won't fit on a `## Decisions made` bullet. �
 |---|---:|---:|---:|
 | Simple cardinal | 1,500–3,000 chars | 400–800 chars | ~70% |
 | Complex Phase-4 | 5,000–15,000 chars | 1,500–3,000 chars | ~70% |
-| Full Phase 1–8 cycle (5+ dispatches) | 30,000–80,000 chars | 8,000–20,000 chars | ~70% |
+| Full Phase 1–8 | 30,000–80,000 chars | 8,000–20,000 chars | ~70% |
 
-A return materially above these targets is a self-lint failure; restructure before reporting.
-
-## Orchestrator behaviour on non-compliant returns
-
-- Surface a one-line advisory before consuming (`"Return missed self-lint: <violation>; consuming anyway."`).
-- **Never re-dispatch purely for format.** The orchestrator absorbs the verbose return once; the subagent's next dispatch carries the rule forward.
-- Never auto-rewrite the subagent's content (analogous to the reporter-content forbidden rule in `core/protocols/github-integration.md § Forbidden actions`).
+Material excess = self-lint failure; restructure before reporting.

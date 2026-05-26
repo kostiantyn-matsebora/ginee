@@ -8,7 +8,7 @@ reads-before-applying: []
 
 # Phase 3 — Design review
 
-**Load triggers** — any cardinal whose `phase-participation:` includes `3`. Per-role roster: `team-lead` only (gate surface).
+**Load triggers** — `team-lead` only (synchronous gate surface).
 
 - **Goal.** Synchronous gate — explicit user approval of Phase 2 before implementation.
 - **Action.** Orchestrator MUST present: architecture-doc diff + mockup link + API contract + work-breakdown.
