@@ -83,6 +83,19 @@ Tactic 4 of the parent playbook ships a single-line statusline ([#140](https://g
 
 Wire via `.claude/settings.json § statusLine`; opt out per-tactic: `local/framework.config.yaml § compliance.disabled: [compliance-statusline]`. Full spec: [`migrations/compliance-statusline.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/migrations/compliance-statusline.md).
 
+## Compliance — Tier 2 hooks (T5 / T6 / T7 / T8)
+
+Four cross-platform hooks complete the playbook's prompt-time / action-time / turn-time enforcement layers. All exit 0 on uncaught errors (fail-open); each carries a single `compliance.disabled: [<tactic-id>]` opt-out.
+
+| Tactic | Event | Force class | What it does |
+|---|---|---|---|
+| **T5 — UserPromptSubmit** ([#141](https://github.com/kostiantyn-matsebora/ginee/issues/141)) | UserPromptSubmit | D (prompt-time anchor) | Scans the user prompt for ginee task keywords (`pick up #N` · `auto:` · `branch:` / `wt:` / `commit:` · `/ginee-update` · `triage` · `address review` · `@<role>` / `dispatch`); prepends a `[ginee:context:<label>]` spec excerpt via `hookSpecificOutput.additionalContext`. Patterns + bodies in [`adapters/claude/hooks/keyword-triggers.yaml`](https://github.com/kostiantyn-matsebora/ginee/blob/main/adapters/claude/hooks/keyword-triggers.yaml). |
+| **T6 — PostToolUse self-check** ([#142](https://github.com/kostiantyn-matsebora/ginee/issues/142)) | PostToolUse on `Edit\|Write\|MultiEdit` | B (action-time injection) | After every successful edit on `core/**`, injects a ≤ 6-line reminder (frontmatter · cap-bytes · D-free · lossless · always-loaded surface) for the next LLM action. Coexists with the structural context-economy gate in the same matcher entry. Skips `tests/**` · `local/**` · `adapters/**` · `extras/**`. |
+| **T7 — Stop** ([#143](https://github.com/kostiantyn-matsebora/ginee/issues/143)) | Stop | C (turn-time gate) | Refuses turn-end (exit 2) on incomplete-work signals — cardinal return missing `<!-- self-lint: pass -->` · `gh pr create` issued without acceptance under `ci-watch-policy: poll` · open `ginee:in-progress` issue on the current `<N>-` branch with no Phase-8 close. Anti-loop guard on `stop_hook_active` (never traps). |
+| **T8 — PreToolUse SendMessage** ([#144](https://github.com/kostiantyn-matsebora/ginee/issues/144)) | PreToolUse on `SendMessage` | D (prompt-time anchor, per-continuation) | Blocks (exit 2) warm-cardinal continuations whose first non-blank line does not lead with `[carry-forward] Remember: <rule>`. Rule per target cardinal in [`adapters/claude/hooks/carry-forward-rules.yaml`](https://github.com/kostiantyn-matsebora/ginee/blob/main/adapters/claude/hooks/carry-forward-rules.yaml). Out of scope: `Agent` (first dispatch). Defeats warm-cardinal drift over multi-dispatch spans. |
+
+Wire via `.claude/settings.json`; auto-merged by `/ginee-update`. Bypass per call: `SKIP_GINEE_COMPLIANCE=1`. Opt-out tactic-ids: `user-prompt-submit-hook` · `posttooluse-edit-hook` · `stop-hook` · `pretooluse-send-message-hook`. Full specs: [`migrations/user-prompt-submit-hook.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/migrations/user-prompt-submit-hook.md) · [`migrations/posttooluse-edit-hook.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/migrations/posttooluse-edit-hook.md) · [`migrations/stop-hook.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/migrations/stop-hook.md) · [`migrations/carry-forward-injection.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/migrations/carry-forward-injection.md).
+
 ## Iteration protocol
 
 For Phase 4 / 5 / 6 / 7 work above 15 min OR any timeframe-bounded task:

@@ -30,15 +30,25 @@ Describe 'sync-claude-settings.ps1' {
     BeforeEach { $script:tgt = Get-FreshTarget }
     AfterEach { Remove-Item -Recurse -Force -ErrorAction SilentlyContinue $script:tgt }
 
-    It 'creates settings.json with statusLine + 2 PreToolUse entries' {
+    It 'creates settings.json with statusLine + Tier1/Tier2 hook entries' {
       Invoke-Sync -Target $script:tgt | Should -Be 0
       $s = Read-SettingsJson $script:tgt
       $s | Should -Not -BeNullOrEmpty
       $s.statusLine.command | Should -Match 'adapters/claude/statusline\.ps1$'
-      $s.hooks.PreToolUse.Count | Should -Be 2
+      # T2 + T3 + T8 → 3 PreToolUse matcher entries.
+      $s.hooks.PreToolUse.Count | Should -Be 3
       $matchers = @($s.hooks.PreToolUse | ForEach-Object { $_.matcher })
       $matchers | Should -Contain 'Edit|Write|MultiEdit'
       $matchers | Should -Contain 'Bash'
+      $matchers | Should -Contain 'SendMessage'
+      # PostToolUse — single entry, two co-tenant commands (context-economy + T6).
+      $s.hooks.PostToolUse.Count | Should -Be 1
+      $postCmds = @($s.hooks.PostToolUse[0].hooks | ForEach-Object { $_.command })
+      ($postCmds -match 'context-economy-check').Count | Should -Be 1
+      ($postCmds -match 'post-tool-use-edit').Count       | Should -Be 1
+      # T5 + T7 land their own event keys.
+      $s.hooks.UserPromptSubmit.Count | Should -Be 1
+      $s.hooks.Stop.Count             | Should -Be 1
     }
 
     It 'is idempotent on re-run' {
@@ -80,8 +90,8 @@ Describe 'sync-claude-settings.ps1' {
       Invoke-Sync -Target $script:tgt | Should -Be 0
       $s = Read-SettingsJson $script:tgt
       $s.statusLine.command | Should -Be $custom
-      # But PreToolUse hooks still added
-      $s.hooks.PreToolUse.Count | Should -Be 2
+      # But T2/T3/T8 PreToolUse hooks still added
+      $s.hooks.PreToolUse.Count | Should -Be 3
     }
 
     It 'refreshes a ginee-owned statusLine command if the path changed' {

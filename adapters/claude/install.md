@@ -134,7 +134,7 @@ Carve-out is mechanical — skill-runner never reads `mode:` to second-guess · 
 
 ## Compliance hooks + statusline (per playbook #135)
 
-PreToolUse hooks under `adapters/claude/hooks/` + statusline at `adapters/claude/statusline.{ps1,sh}` gate adopter edits at the tool-call layer.
+Hooks under `adapters/claude/hooks/` + statusline at `adapters/claude/statusline.{ps1,sh}` gate adopter behaviour at the tool-call / prompt / turn-end layers.
 
 **Wiring is automatic.** `/ginee-update` invokes `core/scripts/sync-claude-settings.{ps1,sh}` to idempotently merge entries into `.claude/settings.json`. Adopter customisations preserved; re-runs no-op. Bash branch needs `jq` on PATH (warns + skips if absent).
 
@@ -145,16 +145,31 @@ PreToolUse hooks under `adapters/claude/hooks/` + statusline at `adapters/claude
   "hooks": {
     "PreToolUse": [
       { "matcher": "Edit|Write|MultiEdit", "hooks": [{ "type": "command", "command": "pwsh -NoProfile -File .agents/ginee/adapters/claude/hooks/pre-tool-use-edit.ps1", "timeout": 10 }] },
-      { "matcher": "Bash", "hooks": [{ "type": "command", "command": "pwsh -NoProfile -File .agents/ginee/adapters/claude/hooks/pre-tool-use-bash.ps1", "timeout": 10 }] }
+      { "matcher": "Bash",                 "hooks": [{ "type": "command", "command": "pwsh -NoProfile -File .agents/ginee/adapters/claude/hooks/pre-tool-use-bash.ps1", "timeout": 10 }] },
+      { "matcher": "SendMessage",          "hooks": [{ "type": "command", "command": "pwsh -NoProfile -File .agents/ginee/adapters/claude/hooks/pre-tool-use-send-message.ps1", "timeout": 10 }] }
+    ],
+    "PostToolUse": [
+      { "matcher": "Edit|Write|MultiEdit", "hooks": [
+        { "type": "command", "command": "pwsh -NoProfile -File .agents/ginee/scripts/context-economy-check.ps1 -ClaudeHook -Json", "timeout": 15 },
+        { "type": "command", "command": "pwsh -NoProfile -File .agents/ginee/adapters/claude/hooks/post-tool-use-edit.ps1", "timeout": 10 }
+      ] }
+    ],
+    "UserPromptSubmit": [
+      { "hooks": [{ "type": "command", "command": "pwsh -NoProfile -File .agents/ginee/adapters/claude/hooks/user-prompt-submit.ps1", "timeout": 10 }] }
+    ],
+    "Stop": [
+      { "hooks": [{ "type": "command", "command": "pwsh -NoProfile -File .agents/ginee/adapters/claude/hooks/stop.ps1", "timeout": 10 }] }
     ]
   },
   "statusLine": { "type": "command", "command": "pwsh -NoProfile -File .agents/ginee/adapters/claude/statusline.ps1" }
 }
 ```
 
-Bash equivalents — substitute `bash .agents/ginee/adapters/claude/hooks/pre-tool-use-{edit,bash}.sh` + `bash .agents/ginee/adapters/claude/statusline.sh`.
+Bash equivalents — substitute `bash .agents/ginee/adapters/claude/hooks/<name>.sh` + `bash .agents/ginee/adapters/claude/statusline.sh`.
 
-**Edit / Write / MultiEdit (T2)** — 5 block conditions:
+### Per-tactic block / inject conditions
+
+**Edit / Write / MultiEdit (T2 — PreToolUse, blocks)** — 5 violation classes:
 
 | # | Block | Source |
 |---|---|---|
@@ -164,7 +179,7 @@ Bash equivalents — substitute `bash .agents/ginee/adapters/claude/hooks/pre-to
 | 4 | New content using `always` / `never` / `binding` / `mandatory` as rule modifier | `core/protocols/rfc2119-keywords.md` |
 | 5 | Always-loaded surface bloat (> 50 lines) without `Optimized-By` trailer | context-economy gate |
 
-**Bash (T3)** — 4 block conditions:
+**Bash (T3 — PreToolUse, blocks)** — 4 destructive-shell patterns:
 
 | # | Block | Why |
 |---|---|---|
@@ -182,9 +197,24 @@ Bash equivalents — substitute `bash .agents/ginee/adapters/claude/hooks/pre-to
 | `trailer:` | `ok` when commit in `origin/main..HEAD` carries `Optimized-By: ai-engineer`; else `needed` |
 | `cap:` | Tightest cap-bytes headroom across hot-spec files in branch diff |
 
-**Bypass per invocation:** `SKIP_GINEE_COMPLIANCE=1`. **Opt out per tactic:** `local/framework.config.yaml § compliance.disabled: [pretooluse-edit-hook | pretooluse-bash-hook | compliance-statusline | subagent-tools-whitelist]`.
+**UserPromptSubmit (T5 — injects)** — task-keyword detection + spec excerpt prepended to the user prompt via `hookSpecificOutput.additionalContext`. Patterns + injection bodies live in `adapters/claude/hooks/keyword-triggers.yaml`. Triggers: `pick up #N` · `auto:` · `branch:` / `wt:` / `commit:` · `/ginee-update` · `triage` · `address review` / `review #N` · `@<role>` / `dispatch`. Injection ≤ 28 body lines per trigger (recency-dilution ceiling). Multiple matches concatenate in pattern order.
 
-Full specs: [`migrations/pretooluse-edit-hook.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/migrations/pretooluse-edit-hook.md) · [`migrations/pretooluse-bash-hook.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/migrations/pretooluse-bash-hook.md) · [`migrations/compliance-statusline.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/migrations/compliance-statusline.md). Statusline never blocks host — uncaught errors fall back to bare `[ginee]` or no output.
+**PostToolUse on core/** (T6 — injects)** — self-check reminder prepended to subsequent LLM context after every `Edit` / `Write` / `MultiEdit` on `core/**`. ≤ 6 lines. Skips `tests/**` · `local/**` · `adapters/**` · `extras/**`. Adds a 6th `always-loaded surface` line on `core/process.md` and `core/roles/*.md` (excluding `*.details.md` siblings).
+
+**Stop (T7 — blocks)** — refuses turn-end on incomplete-work signals. Anti-loop guard on `stop_hook_active`. 3 block conditions:
+
+| # | Block | Resolution |
+|---|---|---|
+| 1 | Last cardinal return missing `<!-- self-lint: pass -->` marker | Acknowledge as advisory in main thread; re-running passes the gate (never re-dispatch for format) |
+| 2 | `gh pr create` issued without acceptance signal AND `ci-watch-policy: poll` (default) | Enter CI-watch per `core/protocols/ci-watch.md`, OR switch to `async` / `hybrid` / `disabled` |
+| 3 | Open `ginee:in-progress` issue on the current `<N>-` branch with no Phase-8 close | Post `gh issue close <N> -c ...`, OR hand back with stop-state |
+
+**SendMessage (T8 — PreToolUse, blocks)** — warm-cardinal continuations missing the `[carry-forward] Remember: <rule>` leading anchor. Rules per cardinal live in `adapters/claude/hooks/carry-forward-rules.yaml`. Out of scope: `Agent` (first dispatch). When the target cardinal is unknown, the hook falls back to a generic rule (`stay within your role's surface; never edit outside owned paths.`).
+
+**Bypass per invocation:** `SKIP_GINEE_COMPLIANCE=1`.  
+**Opt out per tactic:** `local/framework.config.yaml § compliance.disabled: [pretooluse-edit-hook | pretooluse-bash-hook | pretooluse-send-message-hook | posttooluse-edit-hook | user-prompt-submit-hook | stop-hook | compliance-statusline | subagent-tools-whitelist]`.
+
+Full specs: [`migrations/pretooluse-edit-hook.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/migrations/pretooluse-edit-hook.md) · [`migrations/pretooluse-bash-hook.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/migrations/pretooluse-bash-hook.md) · [`migrations/compliance-statusline.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/migrations/compliance-statusline.md) · [`migrations/user-prompt-submit-hook.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/migrations/user-prompt-submit-hook.md) · [`migrations/posttooluse-edit-hook.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/migrations/posttooluse-edit-hook.md) · [`migrations/stop-hook.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/migrations/stop-hook.md) · [`migrations/carry-forward-injection.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/migrations/carry-forward-injection.md). Statusline never blocks host; T5 / T6 inject context but never block; T7 / T8 block (exit 2) — all hooks fail-open on uncaught errors.
 
 ## Updates
 
