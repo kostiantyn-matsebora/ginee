@@ -94,7 +94,7 @@ add_pretooluse_entry() {
   local marker="$1"; local matcher="$2"; local cmd="$3"
   local found
   found="$(printf '%s' "$CURRENT" | jq --arg m "$marker" '
-    [.hooks.PreToolUse[]? | .hooks[]? | .command // "" | select(test($m; "F"))] | length > 0
+    [.hooks.PreToolUse[]? | .hooks[]? | .command // "" | select(contains($m))] | length > 0
   ')"
   if [ "$found" = "false" ]; then
     CURRENT="$(printf '%s' "$CURRENT" | jq \
