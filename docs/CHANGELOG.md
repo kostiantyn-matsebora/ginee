@@ -10,6 +10,8 @@ All notable changes to ginee. The format follows [Keep a Changelog](https://keep
 
 ## Unreleased
 
+## 0.24.0 — 2026-05-27
+
 ### Added
 
 - **Tier 3 compliance — T9 / T10 / T11 / T12 / T13** ([#176](https://github.com/kostiantyn-matsebora/ginee/pull/176), parent: [#135](https://github.com/kostiantyn-matsebora/ginee/issues/135)). The last batch of the maximum-force Claude playbook ships the recency-optimisation pass + slash command suite + main-thread permission lockdown + session-resume hook + Optimized-By attestation gate (ask-mode).
