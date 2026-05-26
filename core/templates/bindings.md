@@ -146,6 +146,22 @@ Task spans two roles → dispatch in parallel per `core/process.md` § Dispatch 
 | `ai-engineer` | Rules / invariants / routing / requirements (semantics → `solution-architect`); production code; test code; IaC; CI workflows. |
 | `team-lead` | Everything except `local/*` written during discovery. Never edits production surfaces. |
 
+## Visual oracle fields (optional — pixel-check)
+
+<!--
+  Required when `local/framework.config.yaml § qa.pixel-check.enabled: true`.
+  Pixel-check renders app + mockup at the same seed-state and diffs.
+  Full spec: core/protocols/pixel-check-protocol.md.
+  Omit / comment out the table when pixel-check is disabled.
+-->
+
+| Field | Required | Purpose |
+|---|---|---|
+| `seed-script.path` | yes (when pixel-check enabled) | Command / script bringing the app to the canonical state |
+| `mockup-snapshot.path` | yes | Path / pattern for per-viewport mockup renders (e.g. `docs/mockup-snapshots/<viewport>.png`) |
+| `app-render.command` | yes | Project's deterministic screenshot command (e.g. `npm run snapshot`) |
+| `visual-source-of-truth.path` | already required by `blueprint-diff-protocol.md` | Mockup source — unchanged |
+
 ## Project-specific index citations
 
 <!--

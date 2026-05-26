@@ -450,3 +450,47 @@ Return shape: spot-check verdict + drift-flag (if any) — no code edits.
 ```
 
 Orchestrator records the gate outcome, not narrative. Every trigger binding, every absence the default skip. Same shape across TL1–TL4 / SA1–SA3.
+
+---
+
+## 17. Pixel-check outcome — true-positive routing vs false-positive mask
+
+Phase 5 pixel-check run; `qa.pixel-check.enabled: true`; desktop + mobile viewports.
+
+**Bad** — narrative outcome, no routing, tolerance creep:
+
+> Desktop clean, mobile had 380 pixel deltas over the 100 tolerance. Looks like anti-aliasing. I'll bump max-diff-pixels to 500 to make it pass, then move on to manual smoke.
+
+Tripped — oracle-discipline forbidden: tolerance bump without citing the specific diff it would have caught at the prior threshold (creep); no drift-source classification; no routing.
+
+**Good** — schema-bound outcome, true-positive caught:
+
+```
+| Viewport | Max-diff | Result   | Diff source                            |
+|----------|----------|----------|----------------------------------------|
+| desktop  |   12px   | within   | —                                      |
+| mobile   | 1,847px  | exceeded | app — button overlaps tagline at 390px |
+
+Drift classification — app rendered wrong (mockup correct; breakpoint regression).
+Route — @frontend-engineer (owns frontend/src/components/Cta.tsx) → Phase 6.
+Mask — none (diff is real). Tolerance — unchanged (bumping would mask the regression).
+```
+
+**Good** — false-positive masked with justification:
+
+```
+| Viewport | Max-diff | Result | Diff source |
+|----------|----------|--------|-------------|
+| desktop  |   47px   | within | —           |
+| mobile   |    0px   | within | —           |
+
+Tolerance-bootstrap addendum — new selector .event-timestamp masked.
+
+| Selector         | Why                                                |
+|------------------|----------------------------------------------------|
+| .event-timestamp | relative time ("2m ago"); non-deterministic       |
+
+Tolerance — unchanged. Route — none; continuing to manual smoke.
+```
+
+Schema enforces — drift source · route · mask justification — every diff is fixed, masked with reason, or escalated.

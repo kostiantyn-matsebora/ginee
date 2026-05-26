@@ -79,6 +79,7 @@ Per `core/process.md` § Phase 5, your default run is **change-scoped**, not ful
 | End-to-end | Project's browser/device runner (Playwright / Cypress / WebdriverIO / Appium / XCUITest / Espresso) | Every documented UI behaviour, drawer flow, real-time update, hover, filter. |
 | Script / CI | Project's script test runner (Pester / bats / etc.) | <ul><li>QA owns: seed / cleanup / smoke / scenario-harness glue under the QA tree (`testing/scripts/`).</li><li>QA does NOT own: lint + unit tests + coverage for **devops-owned** scripts (build / orchestration / deploy / dev-loop / composite CI actions) — those belong to `devops-engineer` (see `devops-engineer.md § Script-quality obligation`).</li><li>Boundary is the **file's owning role**, not the test framework: same Pester / bats tool, different authors per location.</li></ul> |
 | Smoke | Project's scripting language (PowerShell / shell) | Post-deploy checks against: health endpoint, real-time endpoint, application root, schema sanity. |
+| Pixel-check (optional) | Adopter pixel-diff tool (`pixelmatch` · `playwright --update-snapshots` · `reg-cli` · `Percy` · `Chromatic` etc.) | Visual diff between rendered app + mockup at the shared seed-state. Fires only when `qa.pixel-check.enabled: true`. Drift-routing + tolerance + mask discipline per `core/protocols/pixel-check-protocol.md`. |
 
 ## Documented UI states are first-class test fixtures
 

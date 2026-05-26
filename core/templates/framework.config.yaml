@@ -280,6 +280,30 @@ automatic-mode:
 # delivery:
 #   default-mode: branch
 
+# --- QA pixel-check (optional Phase 5 visual oracle) ---
+# Visual diff between the mockup and the running app at a shared seed-state.
+# Mockup graduates from design reference to runtime oracle. Pairs with
+# blueprint-diff-protocol.md (mockup-vs-blueprint-ref drift); this catches
+# app-vs-mockup drift. Off by default. Full spec:
+# core/protocols/pixel-check-protocol.md.
+#
+# Requires seed-script.path · mockup-snapshot.path · app-render.command in
+# local/bindings.md when enabled.
+#
+# qa:
+#   pixel-check:
+#     enabled: false                  # default false; set true to opt in
+#     alignment: mockup-follows-seed  # mockup-follows-seed | seed-follows-mockup
+#     tolerance:
+#       max-diff-pixels: 100          # absolute pixel-count ceiling per viewport
+#       max-diff-ratio: 0.001         # fraction of total pixels
+#       mask-regions:                 # ignored areas — selector + `# why: <reason>` per entry
+#         - selector: ".timestamp"    # why: renders current wall-clock; not deterministic
+#         - selector: "[data-pixel-ignore]"  # why: adopter-supplied opt-out marker
+#     viewports:
+#       - { name: desktop, width: 1440, height: 900 }
+#       - { name: mobile,  width: 390,  height: 844 }
+
 # --- Triage scoring ---
 # Ranks ready work in `ginee-triage` by a derived score from
 # `value:high|medium|low` + `complexity:high|medium|low` labels (issues) /
