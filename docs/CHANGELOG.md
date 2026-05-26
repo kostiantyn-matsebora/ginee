@@ -10,6 +10,42 @@ All notable changes to ginee. The format follows [Keep a Changelog](https://keep
 
 ## Unreleased
 
+## 0.22.0 — 2026-05-26
+
+### Changed
+
+- **`ai-engineer` cross-iteration dedup pass** ([#171](https://github.com/kostiantyn-matsebora/ginee/pull/171)). Six structural optimisation passes against the shipped framework (`core/` · `adapters/` · `extras/`) after hundreds of feature iterations introduced cross-file overlap without dedup checks. Findings via prompt-chaining — five parallel research agents audited disjoint file clusters (schemas+templates · skills · phase+protocols · doc-family · extras+adapters); merge plan synthesised from their reports.
+
+  - **New shared blocks.** `core/protocols/role-kernel-shared.md` absorbs seven role-kernel boilerplate sections (Source-of-truth · Estimation-first · Adoption research · Reporting · Proposing-architectural-changes · Forbidden lead-in · Doc-authorship) cited by all 7 role kernels. `adapters/_shared/install-common.md` absorbs four adapter-install sections (Skill cheat sheet · Phase-file loading · Model tier · Updates) cited by all 4 adapter `install.md` files.
+
+  - **Template ↔ schema merges.** `sub-issue-dispatch.md` absorbs `sub-issue-dispatch-schema.md`; `pr-comment-cadence.md` absorbs `review-cycle-schema.md`. Schema sidecars retained as thin pointers so existing cross-references resolve unchanged.
+
+  - **Phase files** — derivable rosters dropped (read from `phase-participation:` frontmatter); heavy-role-bypass cites replace prose restatements in phases 5/6; iteration-protocol citation phrasing unified across phases 4/5/6.
+
+  - **Doc-size-caps** — `Optimized-By: ai-engineer` trailer rule collapsed from 4 restatements to 1 canonical statement.
+
+  - **Doc-authoring-examples** §11/§16/§17 collapsed to citations (canonical content already lived in `options-protocol.md` · `heavy-role-bypass.md` · `pixel-check-protocol.md`).
+
+  - **Out-of-scope + Why sections** dropped from 13 protocols (user-approved as aggressive option; rationale lives in `PLAN.md`; runtime surface is rule-only).
+
+  - **`phase-report.md`** — duplicate `## Orchestrator behaviour on non-compliant returns` section removed (orphan from a prior iteration).
+
+  - **Hook + statusline script headers** tightened; functional code untouched (gated by Pester + PSScriptAnalyzer).
+
+  - **Per-role context — measured impact.** Every cardinal's per-dispatch load dropped 19–28% (see `docs/reference/CONTEXT_COSTS.md`); shipped framework `core/` + `adapters/` + `extras/` 758 KB → 597 KB (−21.3%).
+
+  - **Tightened per-role ceilings** in `scripts/templates/role-context-ceilings.json` to ~30% headroom on the post-dedup baseline (was 36–55% headroom under 0.21.0 ceilings). Future ordinary edits can grow per-role context by ~30% before tripping the `ai-engineer` dispatch gate; further growth requires an optimisation pass. Loosening any ceiling continues to require ai-engineer review per `docs/RELEASE.md` checklist step 3.
+
+  - **No `local/*` surface affected; all `@<role>` + skill phrasings unchanged.** Old schema-sidecar paths still resolve via thin-pointer redirects.
+
+  - **Optimized-By: ai-engineer** trailer present on every commit in the PR per `core/protocols/doc-size-caps.md § Enforcement`.
+
+  Migration: none — purely additive on the adopter side. Re-run `/ginee-update` (or the bootstrap one-liner) to pick up the new shared files; `local/*` untouched.
+
+### Fixed
+
+- **YAML frontmatter parse failure on strict parsers.** Four files had `description:` values containing `: ` (literal colon + space) which strict YAML 1.1/1.2 parsers reject as compact-mapping syntax violations (`Nested mappings are not allowed in compact mappings`). Converted offending descriptions to folded-block scalar (`>-`) for `adapters/_shared/agents/ai-engineer.md` · `core/roles/ai-engineer.md` · `core/roles/solution-architect.md` · `core/skills/ginee-update/SKILL.md`. All four issues pre-existed on `main`; surfaced by the dedup-pass push and fixed forward. Full frontmatter audit (80 files) verified with `powershell-yaml` parser as part of the fix.
+
 ## 0.21.0 — 2026-05-26
 
 ### Added
