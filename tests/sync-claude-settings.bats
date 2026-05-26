@@ -28,11 +28,12 @@ teardown() {
   jq -e 'any(.hooks.PreToolUse[]; .matcher == "Edit|Write|MultiEdit")' "$TGT/.claude/settings.json" >/dev/null
   jq -e 'any(.hooks.PreToolUse[]; .matcher == "Bash")' "$TGT/.claude/settings.json" >/dev/null
   jq -e 'any(.hooks.PreToolUse[]; .matcher == "SendMessage")' "$TGT/.claude/settings.json" >/dev/null
-  # PostToolUse — single entry, two co-tenant commands (context-economy + T6).
+  # PostToolUse — T6 only (context-economy-check is framework-self-dev).
   count="$(jq -r '.hooks.PostToolUse | length' "$TGT/.claude/settings.json")"
   [ "$count" = "1" ]
   pc="$(jq -r '[.hooks.PostToolUse[0].hooks[].command] | length' "$TGT/.claude/settings.json")"
-  [ "$pc" = "2" ]
+  [ "$pc" = "1" ]
+  jq -e '.hooks.PostToolUse[0].hooks[0].command | test("post-tool-use-edit")' "$TGT/.claude/settings.json" >/dev/null
   # T5 + T7 land their own event keys.
   [ "$(jq -r '.hooks.UserPromptSubmit | length' "$TGT/.claude/settings.json")" = "1" ]
   [ "$(jq -r '.hooks.Stop | length'             "$TGT/.claude/settings.json")" = "1" ]

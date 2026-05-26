@@ -10,9 +10,11 @@ All notable changes to ginee. The format follows [Keep a Changelog](https://keep
 
 ## Unreleased
 
+## 0.23.0 — 2026-05-26
+
 ### Added
 
-- **Tier 2 compliance hooks — T5 / T6 / T7 / T8** (parent: [#135](https://github.com/kostiantyn-matsebora/ginee/issues/135)). Four new cross-platform hooks complete the playbook's prompt-time / action-time / turn-time enforcement surface on the Claude Code adapter.
+- **Tier 2 compliance hooks — T5 / T6 / T7 / T8** ([#173](https://github.com/kostiantyn-matsebora/ginee/pull/173), parent: [#135](https://github.com/kostiantyn-matsebora/ginee/issues/135)). Four new cross-platform hooks complete the playbook's prompt-time / action-time / turn-time enforcement surface on the Claude Code adapter.
   - **T5** ([#141](https://github.com/kostiantyn-matsebora/ginee/issues/141)) — UserPromptSubmit hook detects ginee task keywords (`pick up #N` · `auto:` · `branch:` / `wt:` / `commit:` · `/ginee-update` · `triage` · `address review` · `@<role>` / `dispatch`) and prepends a `[ginee:context:<label>]` spec excerpt via `hookSpecificOutput.additionalContext`. Patterns + bodies in `adapters/claude/hooks/keyword-triggers.yaml`. Spec: [`migrations/user-prompt-submit-hook.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/migrations/user-prompt-submit-hook.md).
   - **T6** ([#142](https://github.com/kostiantyn-matsebora/ginee/issues/142)) — PostToolUse self-check reminder fires after `Edit` / `Write` / `MultiEdit` on `core/**`. ≤ 6 lines (frontmatter · cap-bytes · D-free · lossless · always-loaded surface). Coexists with the existing context-economy gate. Spec: [`migrations/posttooluse-edit-hook.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/migrations/posttooluse-edit-hook.md).
   - **T7** ([#143](https://github.com/kostiantyn-matsebora/ginee/issues/143)) — Stop hook refuses turn-end on missing `<!-- self-lint: pass -->` marker, `gh pr create` without acceptance under `ci-watch-policy: poll`, or open `ginee:in-progress` issue on the `<N>-` branch without Phase-8 close. Anti-loop guard on `stop_hook_active`. Spec: [`migrations/stop-hook.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/migrations/stop-hook.md).

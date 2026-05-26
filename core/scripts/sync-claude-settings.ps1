@@ -17,12 +17,17 @@
     Tier 2 (this sync — playbook batch #141–#144)
       - UserPromptSubmit  (T5 / #141) — task-keyword → spec injection
       - PostToolUse       (T6 / #142) — `Edit|Write|MultiEdit`; self-check
-                                       reminder on core/** edits (added as a
-                                       second command in the existing entry,
-                                       not as a new matcher)
+                                       reminder on core/** edits
       - Stop              (T7 / #143) — block turn-end on incomplete work
       - PreToolUse        (T8 / #144) — `SendMessage` matcher; carry-forward
                                        anchor gate for warm cardinals
+
+  NOT wired by this script: `scripts/context-economy-check.ps1`. That gate is
+  framework-self-dev — it greps for `Optimized-By: ai-engineer` trailers and
+  fires on `core/**` cap-bytes breaches, none of which adopter projects ever
+  produce. The framework's own .claude/settings.json.example wires it for
+  framework-self-dev use; adopter installs prune top-level `scripts/` so the
+  file isn't present on the adopter side anyway.
 
   Adopter customisations are preserved:
     - `statusLine.command` already set to a non-ginee value → left alone.
@@ -55,7 +60,6 @@ $settingsPath = Join-Path $claudeDir 'settings.json'
 $editHookCmd       = "pwsh -NoProfile -File $FrameworkRel/adapters/claude/hooks/pre-tool-use-edit.ps1"
 $bashHookCmd       = "pwsh -NoProfile -File $FrameworkRel/adapters/claude/hooks/pre-tool-use-bash.ps1"
 $sendMsgHookCmd    = "pwsh -NoProfile -File $FrameworkRel/adapters/claude/hooks/pre-tool-use-send-message.ps1"
-$ceCheckCmd        = "pwsh -NoProfile -File $FrameworkRel/scripts/context-economy-check.ps1 -ClaudeHook -Json"
 $postEditHookCmd   = "pwsh -NoProfile -File $FrameworkRel/adapters/claude/hooks/post-tool-use-edit.ps1"
 $upshHookCmd       = "pwsh -NoProfile -File $FrameworkRel/adapters/claude/hooks/user-prompt-submit.ps1"
 $stopHookCmd       = "pwsh -NoProfile -File $FrameworkRel/adapters/claude/hooks/stop.ps1"
@@ -66,7 +70,6 @@ $statuslineCmd     = "pwsh -NoProfile -File $FrameworkRel/adapters/claude/status
 $editHookMarker       = "adapters/claude/hooks/pre-tool-use-edit"
 $bashHookMarker       = "adapters/claude/hooks/pre-tool-use-bash"
 $sendMsgHookMarker    = "adapters/claude/hooks/pre-tool-use-send-message"
-$ceCheckMarker        = "scripts/context-economy-check.ps1"
 $postEditHookMarker   = "adapters/claude/hooks/post-tool-use-edit"
 $upshHookMarker       = "adapters/claude/hooks/user-prompt-submit"
 $stopHookMarker       = "adapters/claude/hooks/stop"
@@ -151,41 +154,16 @@ function Add-EventEntry {
 # Append a hook command to an existing PostToolUse entry that matches a sister
 # marker. Used to land T6's post-edit hook inside the same entry as the
 # existing context-economy-check (both target Edit|Write|MultiEdit).
-function Add-CommandToEntryWithSibling {
-  param([string]$EventKey, [string]$SiblingMarker, [string]$NewMarker, [string]$Cmd, [int]$Timeout = 10)
-  $entries = @($settings['hooks'][$EventKey])
-  if (Test-EntryPresent -Entries $entries -Marker $NewMarker) { return $false }
-  for ($i = 0; $i -lt $entries.Count; $i++) {
-    $entry = $entries[$i]
-    if ($entry -isnot [hashtable] -or -not $entry.ContainsKey('hooks')) { continue }
-    $matchedSibling = $false
-    foreach ($hook in $entry['hooks']) {
-      if ($hook -is [hashtable] -and $hook.ContainsKey('command') -and
-          ([string]$hook['command'] -match [regex]::Escape($SiblingMarker))) {
-        $matchedSibling = $true; break
-      }
-    }
-    if ($matchedSibling) {
-      $newHooks = @($entry['hooks'])
-      $newHooks += @{ type = 'command'; command = $Cmd; timeout = $Timeout }
-      $entry['hooks'] = $newHooks
-      $entries[$i] = $entry
-      $settings['hooks'][$EventKey] = $entries
-      return $true
-    }
-  }
-  # Sibling not found — fall back to a fresh entry with the standard matcher.
-  return (Add-EventEntry -EventKey $EventKey -Marker $NewMarker -Matcher 'Edit|Write|MultiEdit' -Cmd $Cmd -Timeout $Timeout)
-}
-
 # --- PreToolUse entries (T2 / T3 / T8) ---
 if (Add-EventEntry -EventKey 'PreToolUse' -Marker $editHookMarker    -Matcher 'Edit|Write|MultiEdit' -Cmd $editHookCmd)    { $anyChange = $true }
 if (Add-EventEntry -EventKey 'PreToolUse' -Marker $bashHookMarker    -Matcher 'Bash'                  -Cmd $bashHookCmd)    { $anyChange = $true }
 if (Add-EventEntry -EventKey 'PreToolUse' -Marker $sendMsgHookMarker -Matcher 'SendMessage'           -Cmd $sendMsgHookCmd) { $anyChange = $true }
 
-# --- PostToolUse entries (existing context-economy + T6) ---
-if (Add-EventEntry -EventKey 'PostToolUse' -Marker $ceCheckMarker -Matcher 'Edit|Write|MultiEdit' -Cmd $ceCheckCmd -Timeout 15) { $anyChange = $true }
-if (Add-CommandToEntryWithSibling -EventKey 'PostToolUse' -SiblingMarker $ceCheckMarker -NewMarker $postEditHookMarker -Cmd $postEditHookCmd) { $anyChange = $true }
+# --- PostToolUse entries (T6 — adopter-side self-check reminder) ---
+# Framework-self-dev context-economy-check.ps1 is NOT wired here; it lives in
+# the framework's own .claude/settings.json.example only (adopter installs
+# prune top-level scripts/ — that file is not present on the adopter side).
+if (Add-EventEntry -EventKey 'PostToolUse' -Marker $postEditHookMarker -Matcher 'Edit|Write|MultiEdit' -Cmd $postEditHookCmd) { $anyChange = $true }
 
 # --- UserPromptSubmit (T5) ---
 if (Add-EventEntry -EventKey 'UserPromptSubmit' -Marker $upshHookMarker -Matcher $null -Cmd $upshHookCmd) { $anyChange = $true }
