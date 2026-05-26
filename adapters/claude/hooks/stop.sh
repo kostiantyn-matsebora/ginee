@@ -104,6 +104,7 @@ if [ -n "$TRANSCRIPT" ] && printf '%s' "$TRANSCRIPT" | grep -qE '\bgh[[:space:]]
       fi
     fi
     if [ "$CI_WATCHED" = "1" ] && [ "$ACCEPTED" = "0" ]; then
+      # shellcheck disable=SC2016 # backticks are literal here, not command substitution
       block 'PR opened without CI-watch sign-off' \
         'A gh pr create was issued earlier this turn; default ci-watch policy is `poll` but no CI-green signal is recorded.' \
         'Enter CI-watch per core/protocols/ci-watch.md OR explicitly hand back. Switch posture via ci-watch-policy: async|hybrid|disabled.'
@@ -126,6 +127,7 @@ if [ -n "$BRANCH" ]; then
         if printf '%s' "$TRANSCRIPT" | grep -qE "gh[[:space:]]+issue[[:space:]]+close[[:space:]]+$ISSUE_N\\b"; then CLOSED=1; fi
       fi
       if [ "$STATE" = "OPEN" ] && [ -n "$HAS_INPROGRESS" ] && [ "$CLOSED" = "0" ]; then
+        # shellcheck disable=SC2016 # backticks are literal here, not command substitution
         block 'open ginee:in-progress issue without Phase-8 close' \
           "Issue #$ISSUE_N remains OPEN with the ginee:in-progress label and no Phase-8 close comment in this turn." \
           'Either post the Phase-8 close (`gh issue close <N> -c ...`) before ending the turn, OR explicitly hand back with a stop-state note.'

@@ -138,7 +138,7 @@ Describe 'user-prompt-submit.ps1' {
 
   Context 'opt-out via framework.config.yaml' {
     It 'exits 0 with empty stdout when tactic listed under compliance.disabled' {
-      $tmp = New-Item -ItemType Directory -Path (Join-Path $env:TEMP "ginee-upshook-$(Get-Random)")
+      $tmp = New-Item -ItemType Directory -Path (Join-Path ([System.IO.Path]::GetTempPath()) "ginee-upshook-$([guid]::NewGuid().Guid)")
       try {
         # Seed a fake repo root with framework.config.yaml opting this hook out.
         $local = Join-Path $tmp.FullName 'local'

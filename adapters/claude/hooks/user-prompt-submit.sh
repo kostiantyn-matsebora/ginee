@@ -99,9 +99,15 @@ for rec in $RECORDS; do
 $rec
 EOF
   IFS="$OLD_IFS"
-  [ -n "$LBL" ] && [ -n "$PAT" ] || continue
-  # Case-insensitive match using grep -iE.
-  if printf '%s' "$PROMPT" | grep -qiE "$PAT" 2>/dev/null; then
+  if [ -z "$LBL" ] || [ -z "$PAT" ]; then continue; fi
+  # PCRE → POSIX-ERE for grep -E. YAML keeps .NET-compatible PCRE; translate here.
+  EPAT="$PAT"
+  EPAT="${EPAT//\\s/[[:space:]]}"
+  EPAT="${EPAT//\\S/[^[:space:]]}"
+  EPAT="${EPAT//\\d/[0-9]}"
+  EPAT="${EPAT//\\D/[^0-9]}"
+  EPAT="${EPAT//\\b/}"
+  if printf '%s' "$PROMPT" | grep -qiE "$EPAT" 2>/dev/null; then
     if [ -z "$INJECTIONS" ]; then
       INJECTIONS="[ginee:context:$LBL]"$'\n'"$CTX"
     else

@@ -119,7 +119,7 @@ Describe 'pre-tool-use-send-message.ps1' {
     }
 
     It 'exits 0 when tactic listed under compliance.disabled' {
-      $tmp = New-Item -ItemType Directory -Path (Join-Path $env:TEMP "ginee-smsg-$(Get-Random)")
+      $tmp = New-Item -ItemType Directory -Path (Join-Path ([System.IO.Path]::GetTempPath()) "ginee-smsg-$([guid]::NewGuid().Guid)")
       try {
         $local = Join-Path $tmp.FullName 'local'
         New-Item -ItemType Directory -Path $local | Out-Null

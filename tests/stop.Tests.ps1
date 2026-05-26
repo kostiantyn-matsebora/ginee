@@ -169,7 +169,7 @@ core/process.md
 
   Context 'opt-out via framework.config.yaml' {
     It 'exits 0 when stop-hook listed under compliance.disabled' {
-      $tmp = New-Item -ItemType Directory -Path (Join-Path $env:TEMP "ginee-stop-$(Get-Random)")
+      $tmp = New-Item -ItemType Directory -Path (Join-Path ([System.IO.Path]::GetTempPath()) "ginee-stop-$([guid]::NewGuid().Guid)")
       try {
         $local = Join-Path $tmp.FullName 'local'
         New-Item -ItemType Directory -Path $local | Out-Null
