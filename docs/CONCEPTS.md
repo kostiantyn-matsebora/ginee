@@ -71,6 +71,12 @@ Opt out per-tactic: `local/framework.config.yaml § compliance.disabled: [pretoo
 
 **Strict-domain rule.** A bug in domain X is fixed by the engineer who owns X — never by an adjacent specialist "while they're in the area." Cross-domain bugs require collaboration, not single-specialist heroics.
 
+## Compliance statusline (T4)
+
+Tactic 4 of the parent playbook ships a single-line statusline ([#140](https://github.com/kostiantyn-matsebora/ginee/issues/140)) that surfaces compliance state in Claude Code's persistent status row — issue number · trailer status · cap-bytes headroom on the tightest hot-spec file. Class G (visible state, no enforcement) — partner to the action-time gates from T2 / T3.
+
+Wire via `.claude/settings.json § statusLine`; opt out per-tactic: `local/framework.config.yaml § compliance.disabled: [compliance-statusline]`. Full spec: [`migrations/compliance-statusline.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/migrations/compliance-statusline.md).
+
 ## Iteration protocol
 
 For Phase 4 / 5 / 6 / 7 work above 15 min OR any timeframe-bounded task:

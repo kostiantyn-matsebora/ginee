@@ -262,7 +262,7 @@ skill-runner (Claude main thread)
 
 ## Compliance hooks
 
-The Claude adapter ships PreToolUse hooks under `adapters/claude/hooks/` that gate adopter edits at the tool-call layer (Class A force per #135). Tactic 2 (#138) — `Edit` / `Write` / `MultiEdit` — and tactic 3 (#139) — `Bash` — ship now; tactic 4 (statusline) lands separately.
+The Claude adapter ships PreToolUse hooks under `adapters/claude/hooks/` that gate adopter edits at the tool-call layer (Class A force per #135). Tactic 2 (#138) — `Edit` / `Write` / `MultiEdit` — and tactic 3 (#139) — `Bash` — ship now; tactic 4 (statusline) is documented in the next section.
 
 **Adopter wiring** — append to `.claude/settings.json` in your project root:
 
@@ -322,6 +322,38 @@ Each hook reads Claude Code's PreToolUse JSON from stdin and exits 2 (with stder
 **Opt out repo-wide, per tactic**: `local/framework.config.yaml § compliance.disabled: [pretooluse-edit-hook]` and / or `[pretooluse-bash-hook]`.
 
 Full specs — [`migrations/pretooluse-edit-hook.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/migrations/pretooluse-edit-hook.md) · [`migrations/pretooluse-bash-hook.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/migrations/pretooluse-bash-hook.md).
+
+## Compliance statusline (T4)
+
+Cross-platform single-line statusline at `adapters/claude/statusline.{ps1,sh}` surfaces compliance state in Claude Code's persistent status row (per parent playbook #135 tactic 4, Class G — visible state, no enforcement).
+
+**Format** (≤ 100 chars):
+
+```
+[ginee] #<N> · phase: ? · warm: ? · trailer: <ok|needed> · cap: <N>%
+```
+
+| Field | Source |
+|---|---|
+| `#<N>` | Parsed from current branch (`#<N>` token or `/t<N>` convention) |
+| `phase: ?` · `warm: ?` | Placeholders until skill-runner-side warm-registry plumbing (D43) writes state to a file the statusline can read |
+| `trailer: <ok\|needed>` | `ok` when a commit in `origin/main..HEAD` carries `Optimized-By: ai-engineer`; else `needed` |
+| `cap: <N>%` | Tightest cap-bytes headroom across hot-spec files in the branch diff |
+
+**Adopter wiring** — append to `.claude/settings.json`:
+
+```json
+{
+  "statusLine": {
+    "type": "command",
+    "command": "pwsh -NoProfile -File .agents/ginee/adapters/claude/statusline.ps1"
+  }
+}
+```
+
+Bash equivalent: `"command": "bash .agents/ginee/adapters/claude/statusline.sh"`.
+
+**Opt out**: `local/framework.config.yaml § compliance.disabled: [compliance-statusline]`. The statusline never blocks the host — every uncaught error path falls back to a bare `[ginee]` print or no output. Full spec: [`migrations/compliance-statusline.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/migrations/compliance-statusline.md).
 
 ## Updates
 
