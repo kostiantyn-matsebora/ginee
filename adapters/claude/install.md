@@ -260,6 +260,54 @@ skill-runner (Claude main thread)
 
 `local/framework.config.yaml § warm-reuse.enabled: false`. Default on Claude is `true` (capability present when the env-var prerequisite is set). With `enabled: false`, every dispatch fresh-spawns — identical to capability-less-adapter behaviour.
 
+## Compliance hooks
+
+The Claude adapter ships PreToolUse hooks under `adapters/claude/hooks/` that gate adopter edits at the tool-call layer (Class A force per #135). Tactic 2 (#138) — `Edit` / `Write` / `MultiEdit` — ships now; tactics 3 (Bash) + 4 (statusline) land separately.
+
+**Adopter wiring** — append to `.claude/settings.json` in your project root:
+
+```json
+{
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Edit|Write|MultiEdit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "pwsh -NoProfile -File .agents/ginee/adapters/claude/hooks/pre-tool-use-edit.ps1",
+            "timeout": 10
+          }
+        ]
+      }
+    ]
+  }
+}
+```
+
+Bash equivalent for adopters who prefer not to install pwsh:
+
+```json
+{
+  "command": "bash .agents/ginee/adapters/claude/hooks/pre-tool-use-edit.sh"
+}
+```
+
+The hook reads Claude Code's PreToolUse JSON from stdin, classifies the edit against `core/**` / hot-spec / always-loaded categories, and exits 2 (with stderr remediation) on a hard-gate violation. Five violation classes block:
+
+| # | Block condition | Source rule |
+|---|---|---|
+| 1 | Hot-spec edit lacking frontmatter post-edit | `core/protocols/hot-spec-format.md` |
+| 2 | File size > `cap-bytes` without `Optimized-By: ai-engineer` trailer | `core/protocols/doc-size-caps.md` + frontmatter cap |
+| 3 | Edit on `core/**` introducing a bare `D<N>` token | runtime D-free invariant |
+| 4 | New content using `always` / `never` / `binding` / `mandatory` as rule modifier | `core/protocols/rfc2119-keywords.md` |
+| 5 | Always-loaded surface bloat (> 50 lines) without `Optimized-By` trailer | context-economy gate |
+
+**Bypass per invocation** (emergency only): `SKIP_GINEE_COMPLIANCE=1` in environment.
+**Opt out repo-wide**: `local/framework.config.yaml § compliance.disabled: [pretooluse-edit-hook]`.
+
+Full spec — [`migrations/pretooluse-edit-hook.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/migrations/pretooluse-edit-hook.md).
+
 ## Updates
 
 **Recommended — `/ginee-update`** (or "update ginee" / "upgrade the framework"). The skill fetches the installer from upstream at the target ref and drives `--update-only` for you — no local installer needed. Performs all steps below automatically, including the pointer-block sync in step 5.

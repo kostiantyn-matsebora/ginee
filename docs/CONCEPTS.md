@@ -28,7 +28,14 @@ ginee ships exactly **7 cardinal roles** — every adopter project has the same 
 
 **Custom roles** live under `local/roles/` and register under `team-lead`. Use the `core/templates/role-authoring-template.md` shape.
 
-**Compliance — cardinal tools whitelist.** Each pointer subagent at `.claude/agents/<role>.md` declares a tightly-scoped `tools:` list. `solution-architect` ships without `Edit` / `Write` — the "SA never edits code" rule is enforced at the tool-call layer (Class A hard gate), not via charter text alone. `ai-engineer` ships without `Bash`. The 5 implementer roles retain full read / write / `Bash`; their path + command scopes are enforced by the T2 / T3 PreToolUse hooks (per the parent compliance playbook, [#135](https://github.com/kostiantyn-matsebora/ginee/issues/135)). Opt out repo-wide via `local/framework.config.yaml § compliance.disabled: [subagent-tools-whitelist]`. Full spec: [`migrations/cardinal-tools-whitelist.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/migrations/cardinal-tools-whitelist.md).
+## Compliance enforcement (Claude adapter)
+
+Class A action-time gates layer onto charter rules so they're enforced at the tool-call layer, not via always-loaded text alone. Two pieces ship in the parent playbook ([#135](https://github.com/kostiantyn-matsebora/ginee/issues/135)):
+
+- **Per-cardinal `tools:` whitelist** ([T1](https://github.com/kostiantyn-matsebora/ginee/issues/137)) — `solution-architect` cannot `Edit` / `Write`; `ai-engineer` cannot `Bash`. Binary tool gate at the subagent level. Spec: [`migrations/cardinal-tools-whitelist.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/migrations/cardinal-tools-whitelist.md).
+- **PreToolUse hook on `Edit` / `Write` / `MultiEdit`** ([T2](https://github.com/kostiantyn-matsebora/ginee/issues/138)) — exits 2 on hot-spec frontmatter omitted (D47) · `cap-bytes` exceeded without `Optimized-By` trailer · bare `D<N>` token introduced on `core/**` (D42) · `always` / `never` / `binding` / `mandatory` slipped past D48 · always-loaded surface bloat without trailer. Five charter rules graduate from advisory to blocking. Spec: [`migrations/pretooluse-edit-hook.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/migrations/pretooluse-edit-hook.md).
+
+Opt out per-tactic via `local/framework.config.yaml § compliance.disabled: [<tactic-id>]`. Bypass per invocation via `SKIP_GINEE_COMPLIANCE=1` (emergency only).
 
 ## Phased task lifecycle
 

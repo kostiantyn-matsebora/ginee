@@ -113,6 +113,20 @@ Full spec: [`migrations/cardinal-tools-whitelist.md`](https://github.com/kostian
 | `ginee:track:off` | **D39** — set on parent to opt out of sub-issue tracking for that issue |
 | (closed issue) | Done — implicit, no label change needed |
 
+## Compliance — PreToolUse Edit/Write hook (T2)
+
+Cross-platform hook at `adapters/claude/hooks/pre-tool-use-edit.{ps1,sh}` blocks Edit / Write / MultiEdit on:
+
+| Violation | Source |
+|---|---|
+| Hot-spec frontmatter missing post-edit | D47 |
+| `cap-bytes` exceeded without `Optimized-By: ai-engineer` trailer | D44 + D47 |
+| Bare `D<N>` token introduced on `core/**` | D42 |
+| `always` / `never` / `binding` / `mandatory` as rule modifier | D48 |
+| Always-loaded surface bloat (> 50 lines) without trailer | D21 |
+
+Wire into `.claude/settings.json` per [adapters/claude/install.md § Compliance hooks](https://github.com/kostiantyn-matsebora/ginee/blob/main/adapters/claude/install.md#compliance-hooks). Bypass per call: `SKIP_GINEE_COMPLIANCE=1`. Opt out: `local/framework.config.yaml § compliance.disabled: [pretooluse-edit-hook]`. Full spec: [`migrations/pretooluse-edit-hook.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/migrations/pretooluse-edit-hook.md).
+
 ## Sub-issue dispatch (D39)
 
 On issue-sourced tasks, team-lead creates one GitHub sub-issue per cardinal dispatch under the parent — labelled by role + phase, threading progress comments + cumulative time, closed on phase-report return. Cross-session resume reads parent + open sub-issues; no transcript replay.
