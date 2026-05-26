@@ -346,7 +346,54 @@ jobs:
                 [ -f "$ROOT/.claude/skills/${skill}/SKILL.md" ] || { echo "::error::Missing .claude/skills/${skill}/SKILL.md"; exit 1; }
               done
               grep -qF "## Engineering team framework" "$ROOT/CLAUDE.md" || { echo "::error::CLAUDE.md missing pointer sentinel"; exit 1; }
-              echo "Claude adapter footprint: OK"
+              # Compliance playbook hooks — Tier 1 (T2/T3) + Tier 2 (T5/T6/T7/T8) + statusline (T4).
+              for f in pre-tool-use-edit.ps1 pre-tool-use-edit.sh \
+                       pre-tool-use-bash.ps1 pre-tool-use-bash.sh \
+                       pre-tool-use-send-message.ps1 pre-tool-use-send-message.sh \
+                       post-tool-use-edit.ps1 post-tool-use-edit.sh \
+                       user-prompt-submit.ps1 user-prompt-submit.sh \
+                       stop.ps1 stop.sh \
+                       keyword-triggers.yaml carry-forward-rules.yaml; do
+                [ -f "$ROOT/.agents/ginee/adapters/claude/hooks/${f}" ] \
+                  || { echo "::error::Missing .agents/ginee/adapters/claude/hooks/${f}"; exit 1; }
+              done
+              for f in statusline.ps1 statusline.sh; do
+                [ -f "$ROOT/.agents/ginee/adapters/claude/${f}" ] \
+                  || { echo "::error::Missing .agents/ginee/adapters/claude/${f}"; exit 1; }
+              done
+              # sync-claude-settings.{ps1,sh} must survive install (under core/scripts/, not pruned).
+              for f in sync-claude-settings.ps1 sync-claude-settings.sh; do
+                [ -f "$ROOT/.agents/ginee/core/scripts/${f}" ] \
+                  || { echo "::error::Missing .agents/ginee/core/scripts/${f}"; exit 1; }
+              done
+              # .claude/settings.json must be auto-wired with all hook entries.
+              SETTINGS="$ROOT/.claude/settings.json"
+              [ -f "$SETTINGS" ] || { echo "::error::Missing .claude/settings.json (sync-claude-settings did not run)"; exit 1; }
+              if command -v jq >/dev/null 2>&1; then
+                # PreToolUse: 3 entries (T2 Edit/Write/MultiEdit · T3 Bash · T8 SendMessage).
+                pretu="$(jq -r '.hooks.PreToolUse | length' "$SETTINGS")"
+                [ "$pretu" = "3" ] || { echo "::error::Expected 3 PreToolUse entries, got $pretu"; exit 1; }
+                jq -e 'any(.hooks.PreToolUse[]; .matcher == "Edit|Write|MultiEdit")' "$SETTINGS" >/dev/null \
+                  || { echo "::error::Missing T2 PreToolUse Edit|Write|MultiEdit entry"; exit 1; }
+                jq -e 'any(.hooks.PreToolUse[]; .matcher == "Bash")' "$SETTINGS" >/dev/null \
+                  || { echo "::error::Missing T3 PreToolUse Bash entry"; exit 1; }
+                jq -e 'any(.hooks.PreToolUse[]; .matcher == "SendMessage")' "$SETTINGS" >/dev/null \
+                  || { echo "::error::Missing T8 PreToolUse SendMessage entry"; exit 1; }
+                # PostToolUse: T6 only (context-economy-check is framework-self-dev — not wired in adopter settings).
+                jq -e 'any(.hooks.PostToolUse[]?.hooks[]?; .command | test("post-tool-use-edit"))' "$SETTINGS" >/dev/null \
+                  || { echo "::error::Missing T6 PostToolUse post-tool-use-edit entry"; exit 1; }
+                # UserPromptSubmit + Stop hooks present.
+                [ "$(jq -r '.hooks.UserPromptSubmit | length' "$SETTINGS")" = "1" ] \
+                  || { echo "::error::Missing T5 UserPromptSubmit entry"; exit 1; }
+                [ "$(jq -r '.hooks.Stop | length' "$SETTINGS")" = "1" ] \
+                  || { echo "::error::Missing T7 Stop entry"; exit 1; }
+                # statusLine wired.
+                jq -e '.statusLine.command | test("adapters/claude/statusline")' "$SETTINGS" >/dev/null \
+                  || { echo "::error::Missing T4 statusLine entry"; exit 1; }
+              else
+                echo "jq missing — settings.json content check skipped (file presence already verified)."
+              fi
+              echo "Claude adapter footprint + hook wiring: OK"
               ;;
             copilot-cli)
               for role in team-lead solution-architect ai-engineer frontend-engineer backend-engineer devops-engineer qa-engineer; do
@@ -505,7 +552,47 @@ jobs:
               if (-not (Select-String -Path "$root\CLAUDE.md" -SimpleMatch -Quiet '## Engineering team framework')) {
                 Write-Error "CLAUDE.md missing pointer sentinel"
               }
-              Write-Host "Claude adapter footprint: OK"
+              # Compliance playbook hooks — Tier 1 (T2/T3) + Tier 2 (T5/T6/T7/T8) + statusline (T4).
+              $hookFiles = 'pre-tool-use-edit.ps1','pre-tool-use-edit.sh',
+                           'pre-tool-use-bash.ps1','pre-tool-use-bash.sh',
+                           'pre-tool-use-send-message.ps1','pre-tool-use-send-message.sh',
+                           'post-tool-use-edit.ps1','post-tool-use-edit.sh',
+                           'user-prompt-submit.ps1','user-prompt-submit.sh',
+                           'stop.ps1','stop.sh',
+                           'keyword-triggers.yaml','carry-forward-rules.yaml'
+              foreach ($f in $hookFiles) {
+                if (-not (Test-Path "$root\.agents\ginee\adapters\claude\hooks\$f")) {
+                  Write-Error "Missing .agents/ginee/adapters/claude/hooks/$f"
+                }
+              }
+              foreach ($f in 'statusline.ps1','statusline.sh') {
+                if (-not (Test-Path "$root\.agents\ginee\adapters\claude\$f")) {
+                  Write-Error "Missing .agents/ginee/adapters/claude/$f"
+                }
+              }
+              foreach ($f in 'sync-claude-settings.ps1','sync-claude-settings.sh') {
+                if (-not (Test-Path "$root\.agents\ginee\core\scripts\$f")) {
+                  Write-Error "Missing .agents/ginee/core/scripts/$f"
+                }
+              }
+              # .claude/settings.json must be auto-wired with all hook entries.
+              $settings = "$root\.claude\settings.json"
+              if (-not (Test-Path $settings)) { Write-Error "Missing .claude/settings.json (sync-claude-settings did not run)" }
+              $cfg = Get-Content -Raw $settings | ConvertFrom-Json
+              if ($cfg.hooks.PreToolUse.Count -ne 3) { Write-Error "Expected 3 PreToolUse entries, got $($cfg.hooks.PreToolUse.Count)" }
+              $matchers = @($cfg.hooks.PreToolUse | ForEach-Object { $_.matcher })
+              foreach ($m in 'Edit|Write|MultiEdit','Bash','SendMessage') {
+                if ($matchers -notcontains $m) { Write-Error "Missing PreToolUse matcher: $m" }
+              }
+              if (-not ($cfg.hooks.PostToolUse[0].hooks | Where-Object { $_.command -match 'post-tool-use-edit' })) {
+                Write-Error "Missing T6 PostToolUse post-tool-use-edit entry"
+              }
+              if ($cfg.hooks.UserPromptSubmit.Count -ne 1) { Write-Error "Missing T5 UserPromptSubmit entry" }
+              if ($cfg.hooks.Stop.Count -ne 1) { Write-Error "Missing T7 Stop entry" }
+              if ($cfg.statusLine.command -notmatch 'adapters/claude/statusline') {
+                Write-Error "Missing T4 statusLine entry"
+              }
+              Write-Host "Claude adapter footprint + hook wiring: OK"
             }
             'copilot-cli' {
               foreach ($r in $roles) {

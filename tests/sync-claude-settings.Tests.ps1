@@ -41,11 +41,12 @@ Describe 'sync-claude-settings.ps1' {
       $matchers | Should -Contain 'Edit|Write|MultiEdit'
       $matchers | Should -Contain 'Bash'
       $matchers | Should -Contain 'SendMessage'
-      # PostToolUse — single entry, two co-tenant commands (context-economy + T6).
+      # PostToolUse — T6 only (context-economy-check is framework-self-dev,
+      # not wired into adopter settings since scripts/ is pruned on install).
       $s.hooks.PostToolUse.Count | Should -Be 1
       $postCmds = @($s.hooks.PostToolUse[0].hooks | ForEach-Object { $_.command })
-      ($postCmds -match 'context-economy-check').Count | Should -Be 1
       ($postCmds -match 'post-tool-use-edit').Count       | Should -Be 1
+      ($postCmds -match 'context-economy-check').Count | Should -Be 0
       # T5 + T7 land their own event keys.
       $s.hooks.UserPromptSubmit.Count | Should -Be 1
       $s.hooks.Stop.Count             | Should -Be 1

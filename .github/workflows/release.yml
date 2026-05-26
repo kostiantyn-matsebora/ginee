@@ -101,6 +101,9 @@ jobs:
           # the released tarball ships "ready to use" — no adopter-side pruning
           # needed for tagged installs.
           mkdir -p "_stage/${PKG}"
+          # rsync --exclude 'X' is BASENAME-match — any dir named X anywhere.
+          # Anchor framework-self-dev top-levels (tests/ hooks/) with leading '/'
+          # so adopter-side adapters/claude/hooks/ and core/scripts/ survive.
           rsync -a \
             --exclude '_dist' --exclude '_stage' \
             --exclude '.git' --exclude '.github' --exclude '.claude' \
@@ -109,7 +112,7 @@ jobs:
             --exclude 'PLAN.md' --exclude 'CLAUDE.md' --exclude 'README.md' --exclude 'SECURITY.md' \
             --exclude 'docs' \
             --exclude 'migrations' --exclude 'core/MIGRATIONS' \
-            --exclude 'scripts' --exclude 'tests' --exclude 'hooks' \
+            --exclude '/tests' --exclude '/hooks' \
             --exclude 'PSScriptAnalyzerSettings.psd1' \
             --exclude 'local/*' \
             ./ "_stage/${PKG}/"
@@ -120,6 +123,36 @@ jobs:
           tar -C _stage -czf "_dist/${PKG}.tar.gz" "$PKG"
           (cd _stage && zip -qr "../_dist/${PKG}.zip" "$PKG")
           ls -lh _dist/
+
+      - name: Verify staged tarball contents
+        run: |
+          set -e
+          STAGE="_stage/ginee-${{ steps.version.outputs.tag }}"
+          # Adopter-side hook files MUST ship — regression guard for the
+          # rsync --exclude basename-match bug that stripped them in 0.20–0.22.
+          required=(
+            adapters/claude/hooks/pre-tool-use-edit.ps1
+            adapters/claude/hooks/pre-tool-use-edit.sh
+            adapters/claude/hooks/pre-tool-use-bash.ps1
+            adapters/claude/hooks/pre-tool-use-bash.sh
+            adapters/claude/statusline.ps1
+            adapters/claude/statusline.sh
+            core/scripts/sync-claude-settings.ps1
+            core/scripts/sync-claude-settings.sh
+            scripts/context-economy-check.ps1
+          )
+          missing=0
+          for f in "${required[@]}"; do
+            if [ ! -f "${STAGE}/${f}" ]; then
+              echo "::error::Staged tarball missing required adopter-side file: ${f}"
+              missing=$((missing + 1))
+            fi
+          done
+          if [ "$missing" -gt 0 ]; then
+            echo "::error::${missing} required file(s) missing from staged tarball — refusing to publish."
+            exit 1
+          fi
+          echo "Staged tarball: required adopter-side files OK"
 
       - name: Compute SHA256 sums
         run: |

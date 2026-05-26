@@ -43,7 +43,6 @@ SETTINGS="$CLAUDE_DIR/settings.json"
 EDIT_HOOK_CMD="pwsh -NoProfile -File $FRAMEWORK_REL/adapters/claude/hooks/pre-tool-use-edit.ps1"
 BASH_HOOK_CMD="pwsh -NoProfile -File $FRAMEWORK_REL/adapters/claude/hooks/pre-tool-use-bash.ps1"
 SENDMSG_HOOK_CMD="pwsh -NoProfile -File $FRAMEWORK_REL/adapters/claude/hooks/pre-tool-use-send-message.ps1"
-CE_CHECK_CMD="pwsh -NoProfile -File $FRAMEWORK_REL/scripts/context-economy-check.ps1 -ClaudeHook -Json"
 POSTEDIT_HOOK_CMD="pwsh -NoProfile -File $FRAMEWORK_REL/adapters/claude/hooks/post-tool-use-edit.ps1"
 UPSH_HOOK_CMD="pwsh -NoProfile -File $FRAMEWORK_REL/adapters/claude/hooks/user-prompt-submit.ps1"
 STOP_HOOK_CMD="pwsh -NoProfile -File $FRAMEWORK_REL/adapters/claude/hooks/stop.ps1"
@@ -52,7 +51,6 @@ STATUSLINE_CMD="pwsh -NoProfile -File $FRAMEWORK_REL/adapters/claude/statusline.
 EDIT_HOOK_MARKER="adapters/claude/hooks/pre-tool-use-edit"
 BASH_HOOK_MARKER="adapters/claude/hooks/pre-tool-use-bash"
 SENDMSG_HOOK_MARKER="adapters/claude/hooks/pre-tool-use-send-message"
-CE_CHECK_MARKER="scripts/context-economy-check.ps1"
 POSTEDIT_HOOK_MARKER="adapters/claude/hooks/post-tool-use-edit"
 UPSH_HOOK_MARKER="adapters/claude/hooks/user-prompt-submit"
 STOP_HOOK_MARKER="adapters/claude/hooks/stop"
@@ -122,38 +120,14 @@ add_entry() {
   fi
 }
 
-# Append a hook command to an existing entry whose hooks already contain the
-# sibling marker. Used to land T6 inside the existing PostToolUse entry.
-add_command_to_sibling_entry() {
-  local event="$1"; local sibling="$2"; local new_marker="$3"; local cmd="$4"; local timeout="${5:-10}"
-  local already
-  already="$(printf '%s' "$CURRENT" | jq --arg event "$event" --arg m "$new_marker" '
-    [.hooks[$event][]? | .hooks[]? | .command // "" | select(contains($m))] | length > 0
-  ')"
-  if [ "$already" = "true" ]; then return 0; fi
-
-  local matched
-  matched="$(printf '%s' "$CURRENT" | jq --arg event "$event" --arg sib "$sibling" '
-    [.hooks[$event] | to_entries[]
-      | select(.value.hooks // [] | map(.command // "") | any(contains($sib))) | .key] | first // -1
-  ')"
-  if [ "$matched" = "-1" ] || [ -z "$matched" ]; then
-    add_entry "$event" "$new_marker" "Edit|Write|MultiEdit" "$cmd" "$timeout"
-    return 0
-  fi
-  CURRENT="$(printf '%s' "$CURRENT" | jq --arg event "$event" --argjson idx "$matched" \
-    --arg cmd "$cmd" --argjson timeout "$timeout" '
-    .hooks[$event][$idx].hooks += [{ type: "command", command: $cmd, timeout: $timeout }]')"
-}
-
 # PreToolUse — T2, T3, T8.
 add_entry "PreToolUse" "$EDIT_HOOK_MARKER"    "Edit|Write|MultiEdit" "$EDIT_HOOK_CMD"
 add_entry "PreToolUse" "$BASH_HOOK_MARKER"    "Bash"                  "$BASH_HOOK_CMD"
 add_entry "PreToolUse" "$SENDMSG_HOOK_MARKER" "SendMessage"           "$SENDMSG_HOOK_CMD"
 
-# PostToolUse — context-economy + T6 (co-tenant in same entry).
-add_entry "PostToolUse" "$CE_CHECK_MARKER" "Edit|Write|MultiEdit" "$CE_CHECK_CMD" 15
-add_command_to_sibling_entry "PostToolUse" "$CE_CHECK_MARKER" "$POSTEDIT_HOOK_MARKER" "$POSTEDIT_HOOK_CMD"
+# PostToolUse — T6 only (framework-self-dev context-economy-check.ps1 is not
+# wired in adopter installs: scripts/ is pruned + the gate is framework-only).
+add_entry "PostToolUse" "$POSTEDIT_HOOK_MARKER" "Edit|Write|MultiEdit" "$POSTEDIT_HOOK_CMD"
 
 # UserPromptSubmit — T5.
 add_entry "UserPromptSubmit" "$UPSH_HOOK_MARKER" "" "$UPSH_HOOK_CMD"
