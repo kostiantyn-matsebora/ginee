@@ -3,6 +3,9 @@ name: ai-engineer
 description: Optimization of AI assets and documentation for context economy + load topology. Counterpart to every authoring role (was SA-only previously): authoring role owns semantics; you own shape + load topology across the whole doc set. Reads .agents/ginee/core/roles/ai-engineer.md for full charter.
 # standard tier; override via local/framework.config.yaml § model-tier.per-role.ai-engineer
 model: claude-sonnet-4-6
+# Class A hard gate — no Bash (between-phase doc-optimization only; never invokes runners).
+# Opt out repo-wide via local/framework.config.yaml § compliance.disabled: [subagent-tools-whitelist].
+tools: [Read, Edit, Write, Grep, Glob]
 ---
 
 **Read before any work** (in this order):

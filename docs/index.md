@@ -72,6 +72,10 @@ the same governance every single time.
     <h3><span class="why-emoji">🔄</span> Update-safe</h3>
     <p><code>core/</code>, <code>adapters/</code>, <code>extras/</code> replaced on update. <code>local/</code> (your bindings, custom roles) survives every upgrade.</p>
   </article>
+  <article class="why-card">
+    <h3><span class="why-emoji">🛡️</span> Compliance by construction</h3>
+    <p>Per-cardinal <code>tools:</code> whitelists on the Claude adapter convert charter rules into hard gates — <code>solution-architect</code> cannot edit code; <code>ai-engineer</code> cannot run shells. Opt out per tactic via <code>local/framework.config.yaml § compliance.disabled</code>.</p>
+  </article>
 </div>
 
 ---
