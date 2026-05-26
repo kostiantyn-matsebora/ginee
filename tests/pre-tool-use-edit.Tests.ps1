@@ -8,7 +8,7 @@ BeforeAll {
     $inFile  = New-TemporaryFile
     $errFile = New-TemporaryFile
     try {
-      Set-Content -LiteralPath $inFile.FullName -Value $Json -NoNewline -Encoding utf8
+      [System.IO.File]::WriteAllText($inFile.FullName, $Json)
       $p = Start-Process -FilePath 'pwsh' `
         -ArgumentList @('-NoProfile','-File',$script:hookScript,'-RepoRoot',$Root) `
         -NoNewWindow -PassThru -Wait `
@@ -22,7 +22,7 @@ BeforeAll {
     }
   }
 
-  function New-EditPayload {
+  function Get-EditPayload {
     param([string]$FilePath, [string]$OldString, [string]$NewString)
     @{
       tool_name  = 'Edit'
@@ -34,7 +34,7 @@ BeforeAll {
     } | ConvertTo-Json -Depth 4 -Compress
   }
 
-  function New-WritePayload {
+  function Get-WritePayload {
     param([string]$FilePath, [string]$Content)
     @{
       tool_name  = 'Write'
@@ -68,7 +68,7 @@ Describe 'pre-tool-use-edit.ps1' {
 
     It 'exits 0 on a benign edit outside core/' {
       $body = "Hello world.`n"
-      $json = New-WritePayload -FilePath 'README.txt' -Content $body
+      $json = Get-WritePayload -FilePath 'README.txt' -Content $body
       $r = Invoke-Hook -Json $json
       $r.ExitCode | Should -Be 0
     }
@@ -76,7 +76,7 @@ Describe 'pre-tool-use-edit.ps1' {
 
   Context 'Violation 1 — hot-spec frontmatter required (D47)' {
     It 'blocks a Write to core/process.md without frontmatter' {
-      $json = New-WritePayload -FilePath 'core/process.md' -Content "body without frontmatter`n"
+      $json = Get-WritePayload -FilePath 'core/process.md' -Content "body without frontmatter`n"
       $r = Invoke-Hook -Json $json
       $r.ExitCode | Should -Be 2
       $r.StdErr  | Should -Match 'hot-spec frontmatter required'
@@ -94,7 +94,7 @@ reads-before-applying: []
 
 Body here.
 "@
-      $json = New-WritePayload -FilePath 'core/process.md' -Content $body
+      $json = Get-WritePayload -FilePath 'core/process.md' -Content $body
       $r = Invoke-Hook -Json $json
       $r.ExitCode | Should -Be 0
     }
@@ -113,7 +113,7 @@ reads-before-applying: []
 
 This change cites D42 — should be blocked.
 "@
-      $json = New-WritePayload -FilePath 'core/protocols/new-spec.md' -Content $body
+      $json = Get-WritePayload -FilePath 'core/protocols/new-spec.md' -Content $body
       $r = Invoke-Hook -Json $json
       $r.ExitCode | Should -Be 2
       $r.StdErr  | Should -Match 'D<N> token introduction blocked'
@@ -123,7 +123,7 @@ This change cites D42 — should be blocked.
   Context 'Violation 4 — RFC 2119 keyword convention (D48)' {
     It 'blocks a Write that adds "always" as a rule modifier' {
       $body = "Lines must always include a trailing period.`n"
-      $json = New-WritePayload -FilePath 'core/protocols/style.md' -Content @"
+      $json = Get-WritePayload -FilePath 'core/protocols/style.md' -Content @"
 ---
 audience: all-cardinals
 load: on-demand
@@ -162,7 +162,7 @@ compliance:
     - pretooluse-edit-hook
 "@
       Set-Content -LiteralPath "$script:fakeRoot/local/framework.config.yaml" -Value $cfg -NoNewline
-      $json = New-WritePayload -FilePath 'core/process.md' -Content 'body without frontmatter'
+      $json = Get-WritePayload -FilePath 'core/process.md' -Content 'body without frontmatter'
       $r = Invoke-Hook -Json $json -Root $script:fakeRoot
       $r.ExitCode | Should -Be 0
     }
@@ -174,7 +174,7 @@ compliance:
     - some-other-tactic
 "@
       Set-Content -LiteralPath "$script:fakeRoot/local/framework.config.yaml" -Value $cfg -NoNewline
-      $json = New-WritePayload -FilePath 'core/process.md' -Content 'body without frontmatter'
+      $json = Get-WritePayload -FilePath 'core/process.md' -Content 'body without frontmatter'
       $r = Invoke-Hook -Json $json -Root $script:fakeRoot
       $r.ExitCode | Should -Be 2
     }
@@ -182,7 +182,7 @@ compliance:
 
   Context 'SKIP_GINEE_COMPLIANCE bypass' {
     It 'exits 0 when SKIP_GINEE_COMPLIANCE=1' {
-      $json = New-WritePayload -FilePath 'core/process.md' -Content 'no frontmatter'
+      $json = Get-WritePayload -FilePath 'core/process.md' -Content 'no frontmatter'
       $env:SKIP_GINEE_COMPLIANCE = '1'
       try {
         $exitCode = $null

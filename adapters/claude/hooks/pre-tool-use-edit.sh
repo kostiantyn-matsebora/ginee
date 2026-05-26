@@ -135,12 +135,13 @@ FILE_PATH="$(printf '%s' "$PAYLOAD" | jq -r '.tool_input.file_path // empty')"
 # Resolve absolute → repo-relative.
 case "$FILE_PATH" in
   /*|[A-Za-z]:*)
-    REL="${FILE_PATH#$ROOT/}"
-    REL="${REL#$ROOT\\}"
+    REL="${FILE_PATH#"$ROOT"/}"
+    REL="${REL#"$ROOT"\\}"
     ;;
   *) REL="$FILE_PATH" ;;
 esac
-REL="$(printf '%s' "$REL" | tr '\\' '/')"
+backslash='\'
+REL="$(printf '%s' "$REL" | tr "$backslash" '/')"
 
 # Compose proposed post-edit content.
 OLD_CONTENT=""
@@ -206,6 +207,14 @@ elif [ -n "$NEW_CONTENT" ]; then
 else
   ADDED=""
 fi
+# Strip YAML frontmatter from added body so `load: always` isn't a false hit.
+ADDED="$(printf '%s\n' "$ADDED" | awk '
+  /^---[[:space:]]*$/ {
+    if (in_fm == 0) { in_fm = 1; next }
+    if (in_fm == 1) { in_fm = 2; next }
+  }
+  in_fm == 2 || in_fm == 0 { print }
+')"
 if [ -n "$ADDED" ] && has_rfc2119_modifier_in_added "$ADDED"; then
   block 'RFC 2119 keyword convention (D48)' \
     "$REL introduces 'always' / 'never' / 'binding' / 'mandatory' as a rule modifier. Use MUST / MUST NOT / SHOULD / SHALL etc." \

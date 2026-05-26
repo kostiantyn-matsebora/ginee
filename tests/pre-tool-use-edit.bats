@@ -97,8 +97,12 @@ EOF
 }
 
 @test "fails open when jq is not on PATH (graceful degrade)" {
-  # Simulate by stripping jq from PATH for this run.
-  EMPTY_PATH="$(dirname "$(command -v bash)")"
-  PATH="$EMPTY_PATH" run invoke_hook '{"tool_name":"Write","tool_input":{"file_path":"core/process.md","content":"no frontmatter"}}'
+  # Simulate by building a minimal PATH containing only the bash binary.
+  TMP_BIN="$(mktemp -d)"
+  ln -s "$(command -v bash)" "$TMP_BIN/bash"
+  ln -s "$(command -v cat)"  "$TMP_BIN/cat"
+  ln -s "$(command -v git)"  "$TMP_BIN/git" 2>/dev/null || true
+  PATH="$TMP_BIN" run invoke_hook '{"tool_name":"Write","tool_input":{"file_path":"core/process.md","content":"no frontmatter"}}'
+  rm -rf "$TMP_BIN"
   [ "$status" -eq 0 ]
 }
