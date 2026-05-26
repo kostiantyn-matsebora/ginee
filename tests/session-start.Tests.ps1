@@ -32,6 +32,7 @@ BeforeAll {
   }
 
   function New-FakeRepo {
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseShouldProcessForStateChangingFunctions', '')]
     param([string]$Branch = 'main')
     $tmp = New-Item -ItemType Directory -Path (Join-Path ([System.IO.Path]::GetTempPath()) "ginee-sshook-$([guid]::NewGuid().Guid)")
     Push-Location $tmp.FullName

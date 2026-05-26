@@ -49,9 +49,10 @@ function Get-TranscriptText($Payload, [string]$Root, [string]$Override) {
   return ''
 }
 
-# Get the commit-message text for every commit in <range>. Returns '' if the
-# range is empty or git fails.
-function Get-RangeBodies([string]$Root, [string]$Range) {
+# Get the concatenated commit-message text for every commit in <range>. Returns
+# '' if the range is empty or git fails. (Singular Get-RangeBody by analyzer
+# convention — the return is one combined blob, not per-commit objects.)
+function Get-RangeBody([string]$Root, [string]$Range) {
   Push-Location $Root
   try {
     $out = & git log $Range --format=%B%n--END-COMMIT-- 2>$null
@@ -105,14 +106,14 @@ try {
   $range = Get-PushRange $root $RangeOverride
   if (-not $range) { exit 0 }   # No resolvable range — fail-open.
 
-  $bodies = Get-RangeBodies $root $range
+  $bodies = Get-RangeBody -Root $root -Range $range
   if (-not $bodies) { exit 0 }  # Empty range — fail-open.
 
   # No Optimized-By trailer in any commit in the range → no attestation needed.
   if ($bodies -notmatch 'Optimized-By:\s*ai-engineer') { exit 0 }
 
   # Trailer present in the range → require ai-engineer dispatch in the transcript.
-  $transcript = Get-TranscriptText $payload $root $TranscriptOverride
+  $transcript = Get-TranscriptText -Payload $payload -Root $root -Override $TranscriptOverride
   if ($transcript -and ($transcript -match '"subagent_type"\s*:\s*"ai-engineer"')) { exit 0 }
 
   # Trailer claimed in the to-be-pushed range without verifiable dispatch — ask the user.

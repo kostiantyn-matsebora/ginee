@@ -31,8 +31,9 @@ BeforeAll {
 
   # New-FakeRepo seeds a repo with a `base` ref + commits on top of it. Each commit
   # body in $CommitBodies lands as a separate commit; the range used in tests is
-  # `base..HEAD`.
+  # `base..HEAD`. Test fixture — ShouldProcess suppression is intentional.
   function New-FakeRepo {
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseShouldProcessForStateChangingFunctions', '')]
     param([string[]]$CommitBodies = @())
     $tmp = New-Item -ItemType Directory -Path (Join-Path ([System.IO.Path]::GetTempPath()) "ginee-attest-$([guid]::NewGuid().Guid)")
     Push-Location $tmp.FullName
@@ -52,6 +53,7 @@ BeforeAll {
   }
 
   function New-Transcript {
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseShouldProcessForStateChangingFunctions', '')]
     param([string]$Body)
     $f = [System.IO.Path]::GetTempFileName()
     [System.IO.File]::WriteAllText($f, $Body)
@@ -59,6 +61,7 @@ BeforeAll {
   }
 
   function New-Payload {
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseShouldProcessForStateChangingFunctions', '')]
     param([string]$Tool = 'Bash', [string]$Command = 'git push', [string]$TranscriptPath = '')
     @{
       hook_event_name = 'PreToolUse'

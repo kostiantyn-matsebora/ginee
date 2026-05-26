@@ -44,10 +44,16 @@ if [ -f "$CFG" ] && grep -q '^compliance:[[:space:]]*$' "$CFG" \
 fi
 
 # Resolve the to-be-pushed range.
+# SC2015 carve-out: `cmd 2>/dev/null || true` is the idiomatic fail-open guard
+# here under set -u — capture whatever stdout the command produced without
+# aborting on non-zero exit. shellcheck flags the pattern broadly; intent is
+# exactly "swallow failure, keep going".
+
 if [ -n "$RANGE_OVERRIDE" ]; then
   RANGE="$RANGE_OVERRIDE"
 else
   RANGE=""
+  # shellcheck disable=SC2015
   UPSTREAM="$(cd "$ROOT" && git rev-parse --abbrev-ref --symbolic-full-name '@{upstream}' 2>/dev/null || true)"
   if [ -n "$UPSTREAM" ]; then
     RANGE="${UPSTREAM}..HEAD"
@@ -62,6 +68,7 @@ else
 fi
 [ -n "$RANGE" ] || exit 0
 
+# shellcheck disable=SC2015
 BODIES="$(cd "$ROOT" && git log "$RANGE" --format=%B%n--END-COMMIT-- 2>/dev/null || true)"
 [ -n "$BODIES" ] || exit 0
 

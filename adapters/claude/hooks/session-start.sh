@@ -30,11 +30,19 @@ fi
 LINES=""
 add() { LINES="${LINES:+$LINES$'\n'}$1"; }
 
+# SC2015 carve-out: `... 2>/dev/null || true` is the idiomatic fail-open guard
+# under set -u here — capturing whatever stdout the command produced (possibly
+# empty) without aborting the script on non-zero exit. shellcheck flags the
+# pattern broadly but the intent is exactly "swallow failure, keep going".
+
 # Branch scan — only on issue/<N>-... branches.
+# shellcheck disable=SC2015
 BRANCH="$(cd "$ROOT" && git rev-parse --abbrev-ref HEAD 2>/dev/null || true)"
 if printf '%s' "$BRANCH" | grep -qE '^issue/[0-9]+'; then
+  # shellcheck disable=SC2015
   RL="$(cd "$ROOT" && git rev-list --count --left-right "origin/main...HEAD" 2>/dev/null || true)"
   AHEAD="$(printf '%s' "$RL" | awk '{print $2+0}')"
+  # shellcheck disable=SC2015
   ST="$(cd "$ROOT" && git status --porcelain 2>/dev/null || true)"
   DIRTY=""; [ -n "$ST" ] && DIRTY=" · uncommitted changes"
   add "branch: ${BRANCH} — ${AHEAD:-0} ahead of origin/main${DIRTY}"
@@ -42,6 +50,7 @@ fi
 
 # Issue scan — gh-backed; offline-safe.
 if [ "$NO_GH" = "0" ] && command -v gh >/dev/null 2>&1; then
+  # shellcheck disable=SC2015
   ISSUE_JSON="$(cd "$ROOT" && gh issue list --label ginee:in-progress --json number,title,labels --limit 20 2>/dev/null || true)"
   if [ -n "$ISSUE_JSON" ] && [ "$ISSUE_JSON" != "[]" ]; then
     HEADER=1
