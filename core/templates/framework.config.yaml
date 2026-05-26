@@ -239,6 +239,30 @@ automatic-mode:
   # ci-flake-patterns:                    # adopter-extensible; merged with framework defaults
   #   - "<additional regex>"
 
+# --- Lifecycle mode (lite / default) ---
+# `lite:` (alias `direct:`) skips Phase 1-3 and dispatches one named cardinal
+# in Phase 4. Phases 5-8 run normally. CR / ADR / Phase 7 / Phase 8 gates
+# remain in effect. Full spec: core/process/dispatch.md § Per-task prefix
+# grammar - lifecycle mode.
+#
+# Resolution (stop at first match):
+#   1. Per-task prefix  lite:  or  direct:  on the dispatch line.
+#   2. Issue-sourced - labels  complexity:low  AND exactly one
+#      ginee:role:<cardinal>  AND  label-trigger: true  below.
+#   3.  default: true  below (adopter-wide; off by default).
+#   4. Framework default - interactive Phase 1-8.
+#
+# When to use - typo / single-label tweak / single-doc-bullet. Touches 2+
+# files, introduces a new concept / contract / mockup section, or spans 2+
+# cardinals - do NOT use lite. Full triggers + forbiddens:
+# core/process/dispatch.md § Per-task prefix grammar - lifecycle mode.
+#
+# All keys optional - defaults shown.
+# lifecycle:
+#   lite-mode:
+#     default: false              # set true to opt the repo into lite by default
+#     label-trigger: false        # set true to auto-promote complexity:low + single role label to lite
+
 # --- Delivery modes ---
 # Adopter-wide default for how PM lands task results. Per-task prefix
 # (branch: / wt: / commit:) or Phase-3 user answer overrides. Full

@@ -54,6 +54,8 @@ Every non-trivial task runs through **Phases 1–8**. Specialists within a phase
 
 **Auto mode (D12)** — prefix a task with `auto:` to elide intermediate gates (Phase 3 design review, iteration check-ins, engineer "stop and confirm"). Phase 8 becomes a single **delivery handoff** with Accept / Feedback / Reject. Forced back to interactive on UX changes, repeated defects, cross-domain cycles, or destructive actions.
 
+**Lite mode** — prefix a task with `lite:` (alias `direct:`) to skip Phase 1–3 entirely for trivial scope (typo · single-label tweak · single-doc-bullet change). Phase 4 dispatches one named cardinal directly; Phases 5–8 run normally. CR / ADR / Phase 7 / Phase 8 gates remain. Composes with every other prefix — e.g. `auto: lite: fix typo in CONCEPTS.md`. Full spec — [`migrations/lite-mode.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/migrations/lite-mode.md).
+
 ## Compliance — Bash hook (T3)
 
 A second PreToolUse hook ([#139](https://github.com/kostiantyn-matsebora/ginee/issues/139)) matches the `Bash` tool and blocks four destructive shell-command patterns: `git commit --no-verify`, `git push --force` on `main` / `master`, `git reset --hard` (with `SKIP_GINEE_COMPLIANCE` bypass), and `gh pr create` without `--body` / `--draft`. Allowlist preserves common legitimate workflows (force-with-lease on feature branches, soft reset, draft PRs).

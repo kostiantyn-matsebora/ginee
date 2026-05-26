@@ -50,6 +50,21 @@ User asks "pick up X" / "work on X" / "start on X" / "begin X" where X is one of
 1. Treat the prompt as the task description.
 2. Run Phase 1–8. No per-source artefact to update.
 
+### Step 2.4 — lite-mode detection (all sources)
+
+`lite:` / `direct:` prefix on the task description elides Phase 1–3 per `.agents/ginee/core/process/dispatch.md § Per-task prefix grammar — lifecycle mode`. Skill-runner detects + records the mode; orchestration (Phase 4 cardinal selection) remains team-lead's surface.
+
+**Resolution (stop at first match):**
+
+1. Prefix `lite:` or `direct:` on the task line.
+2. GitHub issue — labels `complexity:low` AND exactly one `ginee:role:<cardinal>` AND `local/framework.config.yaml § lifecycle.lite-mode.label-trigger: true`.
+3. `local/framework.config.yaml § lifecycle.lite-mode.default: true`.
+4. None match — default lifecycle.
+
+**On lite resolved.** Hand-off payload carries `lifecycle: lite` + (tier 2) the named cardinal from the role label. Team-lead consumes the flag, skips Phase 1–3 plan drafting, dispatches the named cardinal directly into Phase 4. CR / ADR / Phase 7 / Phase 8 gates remain active.
+
+**Skill-runner never** runs the architectural-delta heuristic, drafts a Phase 4 dispatch contract, or proposes a cardinal in the hand-off brief — those stay in team-lead's resolution. Skill-runner records the flag + named cardinal (when present); team-lead enforces lite-mode forbiddens.
+
 ### Step 2.5 — sub-issue fast-path (GitHub issue only)
 
 Sub-issues carry the dispatch decision in labels + body per `core/protocols/github-integration.md § Sub-issue dispatch`; skill-runner dispatches the labelled cardinal, skipping `@team-lead` — routing artefact exists.
@@ -82,8 +97,8 @@ After Step 2 mechanical ops (label swap · sticky post · branch resolution) and
 
 | Source shape | Target | Inbound payload |
 |---|---|---|
-| Parent issue · TODO · freeform | `@team-lead` | parsed task body + scoring labels + label-swap result + (issue-sourced) branch |
-| Sub-issue · fast-path gate pass (Step 2.5) | `@<cardinal>` (from role label) | parsed dispatch body + scoring labels + label-swap result + branch |
+| Parent issue · TODO · freeform | `@team-lead` | parsed task body + scoring labels + label-swap result + (issue-sourced) branch + (when set) `lifecycle: lite` from Step 2.4 |
+| Sub-issue · fast-path gate pass (Step 2.5) | `@<cardinal>` (from role label) | parsed dispatch body + scoring labels + label-swap result + branch + (when set) `lifecycle: lite` |
 
 From here on every orchestration decision — Phase 1–8 plan drafting · specialist routing · synthesis of parallel returns · lifecycle gate text · re-dispatch · routing reconciliation · default selection — flows through team-lead (or, under the Step 2.5 fast-path, through the dispatched cardinal until any re-entry trigger fires). The skill-runner never:
 
