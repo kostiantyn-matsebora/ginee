@@ -287,6 +287,8 @@ Pre-D39, every team-lead → cardinal dispatch lived only in the chat transcript
 
 **Time-tracking.** Cardinal-reported perceived effort (not session wall-clock). Granularity — minutes. Format `time: <N>m` (under 60m) or `time: <H>h <M>m` (60m+).
 
+**Sub-issue pickup fast-path.** `/ginee-pick-up #<N>` against a sub-issue with a populated routing artefact (single `ginee:role:<cardinal>` label + dispatch-contract body) dispatches the named cardinal directly — `@team-lead` re-route skipped. Re-entry through `@team-lead` triggers on role-label gap · `## Open issues` non-empty · `## Hand-off` set · `Status: In-progress` · cross-domain bug. Parent-issue pickups unchanged. Full spec — [`migrations/sub-issue-fast-path.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/migrations/sub-issue-fast-path.md).
+
 Full spec: [`migrations/sub-issue-dispatch.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/migrations/sub-issue-dispatch.md).
 
 ## Triage scoring (D23)

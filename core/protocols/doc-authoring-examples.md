@@ -375,3 +375,35 @@ Full surface topology + self-lint checks: `core/protocols/changelog-protocol.md`
 > Cardinals MUST include the `## Source reads` section when raw sources were read. The orchestrator MUST NOT re-dispatch purely for format.
 
 LLM interpretation cycles drop — the keyword IS the binding signal; no disambiguation between emphasis (`**bold**`) and normative weight.
+
+---
+
+## 15. Sub-issue pickup — fast-path vs re-route decision
+
+Dispatch target per `core/skills/ginee-pick-up/SKILL.md § Step 2.5`.
+
+**Bad** — narrative reasoning, decision buried in prose:
+
+> Issue #M is a sub-issue of #K because the API showed parent_issue set. It has `ginee:role:backend-engineer` and the body has a Dispatch contract with Scope and Acceptance, so I think we can skip team-lead and dispatch backend-engineer. If backend-engineer comes back blocked or needs cross-domain help we'd dispatch team-lead, but for now let's go direct.
+
+Tripped: **#1** (paragraph > 2 terminators) · **#6** (narrative preamble) · re-entry triggers stated as soft "if … we'd" instead of binding conditions.
+
+**Good** — schema-bound gate decision:
+
+```
+Sub-issue check (gh api .../issues/M) — parent_issue = #K · ginee:role:backend-engineer · body has `## Scope` / `## Acceptance` / `## Spec links` / `## Phase` / `## Estimate`.
+Fast-path gate — 4 of 4 pass → dispatch @backend-engineer.
+Inbound payload — parsed dispatch body + scoring labels (value:M, complexity:L) + label-swap result + branch (issue-M-<slug>).
+Re-entry — re-load @team-lead if `## Open issues` non-empty OR `## Hand-off` set OR `Status: In-progress` OR cross-domain bug surfaced.
+```
+
+**Re-route case** — sub-issue #N, routing ambiguous:
+
+```
+Sub-issue check (gh api .../issues/N) — parent_issue = #K · ginee:role:backend-engineer · ginee:role:frontend-engineer · body has `## Scope` / `## Acceptance`.
+Fast-path gate — exactly-one-role-label FAIL (2 role labels).
+Hand-off — @team-lead (routing ambiguous).
+Inbound payload — parsed body + scoring labels + label-swap result + branch.
+```
+
+Skill-runner records the gate outcome, not narrative. Every failure path routes through `@team-lead`: parent unresolved · no role label · dispatch contract incomplete · multiple role labels.
