@@ -146,6 +146,19 @@ Cross-platform hook at `adapters/claude/hooks/pre-tool-use-edit.{ps1,sh}` blocks
 
 Wire into `.claude/settings.json` per [adapters/claude/install.md § Compliance hooks](https://github.com/kostiantyn-matsebora/ginee/blob/main/adapters/claude/install.md#compliance-hooks). Bypass per call: `SKIP_GINEE_COMPLIANCE=1`. Opt out: `local/framework.config.yaml § compliance.disabled: [pretooluse-edit-hook]`. Full spec: [`migrations/pretooluse-edit-hook.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/migrations/pretooluse-edit-hook.md).
 
+## Compliance — Tier 2 hooks (T5 / T6 / T7 / T8)
+
+Four further hooks layer prompt-time / action-time / turn-time enforcement (parent: [#135](https://github.com/kostiantyn-matsebora/ginee/issues/135)). All wire automatically via `/ginee-update`.
+
+| Tactic | Event · matcher | What it does |
+|---|---|---|
+| **T5** | UserPromptSubmit | Detects task keywords (`pick up #N` · `auto:` · `branch:` · `triage` · `@<role>`…); prepends `[ginee:context:<label>]` spec excerpts via `hookSpecificOutput.additionalContext`. Patterns in `adapters/claude/hooks/keyword-triggers.yaml`. |
+| **T6** | PostToolUse · `Edit\|Write\|MultiEdit` | On `core/**` edits, injects ≤ 6-line self-check (frontmatter · cap-bytes · D-free · lossless · always-loaded). Coexists with the structural context-economy gate. |
+| **T7** | Stop | Refuses turn-end on missing self-lint marker · `gh pr create` without acceptance · open `ginee:in-progress` issue on `<N>-` branch with no Phase-8 close. Anti-loop guard on `stop_hook_active`. |
+| **T8** | PreToolUse · `SendMessage` | Blocks warm-cardinal continuations missing the `[carry-forward] Remember: <rule>` leading anchor. Per-cardinal rules in `adapters/claude/hooks/carry-forward-rules.yaml`. Excludes first dispatches (`Agent`). |
+
+Opt-out tactic-ids: `user-prompt-submit-hook` · `posttooluse-edit-hook` · `stop-hook` · `pretooluse-send-message-hook`. Full specs: [`migrations/user-prompt-submit-hook.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/migrations/user-prompt-submit-hook.md) · [`migrations/posttooluse-edit-hook.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/migrations/posttooluse-edit-hook.md) · [`migrations/stop-hook.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/migrations/stop-hook.md) · [`migrations/carry-forward-injection.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/migrations/carry-forward-injection.md).
+
 ## Sub-issue dispatch (D39)
 
 On issue-sourced tasks, team-lead creates one GitHub sub-issue per cardinal dispatch under the parent — labelled by role + phase, threading progress comments + cumulative time, closed on phase-report return. Cross-session resume reads parent + open sub-issues; no transcript replay.

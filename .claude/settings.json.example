@@ -1,5 +1,5 @@
 {
-  "_comment": "ginee compliance — Copy this file to .claude/settings.json in your local checkout to activate. (1) statusLine (T4 #140): single-line compliance state in Claude Code's status row. (2) PreToolUse on Edit|Write|MultiEdit (T2 #138): blocks 5 violation classes per the compliance playbook. (3) PreToolUse on Bash (T3 #139): blocks 4 destructive shell-command patterns. (4) PostToolUse: context-economy gate surfaces a JSON summary after each Edit/Write/MultiEdit. Each requires pwsh 7+ on PATH. Bypass per invocation: SKIP_GINEE_COMPLIANCE=1; opt out repo-wide: local/framework.config.yaml § compliance.disabled.",
+  "_comment": "ginee compliance — Copy this file to .claude/settings.json in your local checkout to activate. T2/T3/T4 entries (Edit|Write|MultiEdit / Bash PreToolUse + statusLine + PostToolUse context-economy) remain as before. T5–T8 (playbook #135) added: UserPromptSubmit (T5) injects task-keyword spec excerpts; PostToolUse on core/** (T6) injects a self-check reminder; Stop (T7) refuses turn-end on incomplete work; PreToolUse SendMessage (T8) blocks warm-cardinal continuations missing the [carry-forward] anchor. Each requires pwsh 7+ on PATH. Bypass per invocation: SKIP_GINEE_COMPLIANCE=1; opt out repo-wide: local/framework.config.yaml § compliance.disabled.",
   "statusLine": {
     "type": "command",
     "command": "pwsh -NoProfile -File adapters/claude/statusline.ps1"
@@ -25,6 +25,16 @@
             "timeout": 10
           }
         ]
+      },
+      {
+        "matcher": "SendMessage",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "pwsh -NoProfile -File adapters/claude/hooks/pre-tool-use-send-message.ps1",
+            "timeout": 10
+          }
+        ]
       }
     ],
     "PostToolUse": [
@@ -35,6 +45,33 @@
             "type": "command",
             "command": "pwsh -NoProfile -File scripts/context-economy-check.ps1 -ClaudeHook -Json",
             "timeout": 15
+          },
+          {
+            "type": "command",
+            "command": "pwsh -NoProfile -File adapters/claude/hooks/post-tool-use-edit.ps1",
+            "timeout": 10
+          }
+        ]
+      }
+    ],
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "pwsh -NoProfile -File adapters/claude/hooks/user-prompt-submit.ps1",
+            "timeout": 10
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "pwsh -NoProfile -File adapters/claude/hooks/stop.ps1",
+            "timeout": 10
           }
         ]
       }

@@ -161,6 +161,17 @@ When ginee authors adopter markdown (architecture doc, ADRs, CRs, READMEs, runbo
 
 `.agents/ginee/adapters/claude/statusline.{ps1,sh}` surfaces compliance state in Claude Code's status row (issue # · trailer · cap headroom). Wire per [adapters/claude/install.md § Compliance statusline](https://github.com/kostiantyn-matsebora/ginee/blob/main/adapters/claude/install.md#compliance-statusline-t4). Opt out: `local/framework.config.yaml § compliance.disabled: [compliance-statusline]`.
 
+### Compliance — Tier 2 hooks (T5 / T6 / T7 / T8, opt-in)
+
+Four more hooks complete the playbook's enforcement surface:
+
+- **T5 — UserPromptSubmit** — task-keyword detection (`pick up #N` · `auto:` · `triage` · `@<role>` · …) injecting spec excerpts into the prompt before the LLM sees it. Patterns / bodies in `.agents/ginee/adapters/claude/hooks/keyword-triggers.yaml`.
+- **T6 — PostToolUse on `core/**`** — ≤ 6-line self-check reminder after every successful edit (frontmatter · cap-bytes · D-free · lossless · always-loaded). Coexists with the structural context-economy gate.
+- **T7 — Stop** — refuses turn-end on incomplete-work signals (missing `<!-- self-lint: pass -->`, PR opened without acceptance, open `ginee:in-progress` issue without Phase-8 close). Anti-loop guard prevents trapping.
+- **T8 — PreToolUse `SendMessage`** — blocks warm-cardinal continuations missing the `[carry-forward] Remember: <rule>` anchor. Per-cardinal rules in `.agents/ginee/adapters/claude/hooks/carry-forward-rules.yaml`.
+
+All four wire automatically via `/ginee-update`. Bypass per call: `SKIP_GINEE_COMPLIANCE=1`. Per-tactic opt-out IDs: `user-prompt-submit-hook`, `posttooluse-edit-hook`, `stop-hook`, `pretooluse-send-message-hook`. Full specs per [adapters/claude/install.md § Compliance hooks + statusline](https://github.com/kostiantyn-matsebora/ginee/blob/main/adapters/claude/install.md#compliance-hooks--statusline-per-playbook-135).
+
 ## 4. Update later
 
 **Preferred — `/ginee-update` skill** (tier-1; works once you have ginee 0.8.0+ installed):

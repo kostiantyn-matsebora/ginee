@@ -16,17 +16,26 @@ teardown() {
   [ "$status" -eq 0 ]
 }
 
-@test "creates settings.json with statusLine + 2 PreToolUse entries on fresh target" {
+@test "creates settings.json with statusLine + Tier1/Tier2 hook entries on fresh target" {
   run bash "$SYNC" --target "$TGT"
   [ "$status" -eq 0 ]
   [ -f "$TGT/.claude/settings.json" ]
   # statusLine present
   jq -e '.statusLine.command | test("adapters/claude/statusline.ps1$")' "$TGT/.claude/settings.json" >/dev/null
-  # 2 PreToolUse entries
+  # 3 PreToolUse entries: T2 (Edit|Write|MultiEdit), T3 (Bash), T8 (SendMessage)
   count="$(jq -r '.hooks.PreToolUse | length' "$TGT/.claude/settings.json")"
-  [ "$count" = "2" ]
+  [ "$count" = "3" ]
   jq -e 'any(.hooks.PreToolUse[]; .matcher == "Edit|Write|MultiEdit")' "$TGT/.claude/settings.json" >/dev/null
   jq -e 'any(.hooks.PreToolUse[]; .matcher == "Bash")' "$TGT/.claude/settings.json" >/dev/null
+  jq -e 'any(.hooks.PreToolUse[]; .matcher == "SendMessage")' "$TGT/.claude/settings.json" >/dev/null
+  # PostToolUse — single entry, two co-tenant commands (context-economy + T6).
+  count="$(jq -r '.hooks.PostToolUse | length' "$TGT/.claude/settings.json")"
+  [ "$count" = "1" ]
+  pc="$(jq -r '[.hooks.PostToolUse[0].hooks[].command] | length' "$TGT/.claude/settings.json")"
+  [ "$pc" = "2" ]
+  # T5 + T7 land their own event keys.
+  [ "$(jq -r '.hooks.UserPromptSubmit | length' "$TGT/.claude/settings.json")" = "1" ]
+  [ "$(jq -r '.hooks.Stop | length'             "$TGT/.claude/settings.json")" = "1" ]
 }
 
 @test "is idempotent on re-run" {
@@ -56,7 +65,7 @@ EOF
   bash "$SYNC" --target "$TGT" >/dev/null
   [ "$(jq -r '.statusLine.command' "$TGT/.claude/settings.json")" = "my-custom-status.sh" ]
   count="$(jq -r '.hooks.PreToolUse | length' "$TGT/.claude/settings.json")"
-  [ "$count" = "2" ]
+  [ "$count" = "3" ]
 }
 
 @test "refreshes a ginee-owned statusLine command when path drifts" {
