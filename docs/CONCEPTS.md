@@ -28,6 +28,12 @@ ginee ships exactly **7 cardinal roles** — every adopter project has the same 
 
 **Custom roles** live under `local/roles/` and register under `team-lead`. Use the `core/templates/role-authoring-template.md` shape.
 
+## Artefacts are written for humans + LLMs
+
+ginee artefacts on GitHub — filed bugs · feature requests · sub-issue dispatches · framework-authored comments · PR descriptions — are read by **both** audiences. A human contractor opens issue #142 and needs to grok the request cold. A cardinal LLM picks up the same issue six hours later and routes off the framework prefix. The default LLM-only voice (`[6:frontend-engineer] Stage 1 forensic — confirm Bug C/D root cause on demo-gha data (#92 iteration 1)`) fails the human; a pure marketing title (`Fix the deploy bug`) loses the framework hooks. Both audiences MUST be served.
+
+The binding ships as a 5-item audience check on `ginee-file-*` skill self-lint (title in user-facing language · 2-4 sentence human Summary · numbered repro steps on bugs · framework-internal sections after the human summary · forbidden-identifier list scrubbed from title). Full spec: [`core/protocols/doc-authoring-protocol.md § Audience check`](https://github.com/kostiantyn-matsebora/ginee/blob/main/core/protocols/doc-authoring-protocol.md). Adopters writing custom issue templates under `local/` follow the same convention.
+
 ## Compliance enforcement (Claude adapter)
 
 Class A action-time gates layer onto charter rules so they're enforced at the tool-call layer, not via always-loaded text alone. Two pieces ship in the parent playbook ([#135](https://github.com/kostiantyn-matsebora/ginee/issues/135)):
