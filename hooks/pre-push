@@ -1,33 +1,21 @@
 #!/usr/bin/env bash
-# ginee context-economy gate — git pre-push hook (Layer 2, last-mile).
-# Runs the shared pwsh check against the range being pushed.
-# Catches manual / non-pwsh edits that bypassed pre-commit.
+# ginee pre-push gate — runs two checks against the range being pushed:
+#   1. context-economy-check.ps1 — Layer 2 last-mile context-economy gate.
+#      Bypass: SKIP_CONTEXT_ECONOMY=1 git push ...
+#   2. adapter-binding-check.ps1 — every new RFC 2119 rule in core/** carries
+#      a Claude-adapter enforcement classification (hook · slash command ·
+#      subagent `tools:` whitelist · always-loaded text). Reacts on core/
+#      additions only. On gate trigger, prompts interactively via /dev/tty:
+#      "Push anyway? [y/N]" — default N blocks the push.
+#      Bypass: SKIP_ADAPTER_BINDING=1 git push ...
 #
-# Bypass: SKIP_CONTEXT_ECONOMY=1 git push ...
+# Both gates can be bypassed together: SKIP_CONTEXT_ECONOMY=1 SKIP_ADAPTER_BINDING=1 git push
 
 set -e
 
-if [ "${SKIP_CONTEXT_ECONOMY:-0}" = "1" ]; then
-  echo "context-economy: bypassed via SKIP_CONTEXT_ECONOMY=1" >&2
-  exit 0
-fi
-
 repo_root="$(git rev-parse --show-toplevel)"
-script="$repo_root/scripts/context-economy-check.ps1"
 
-if [ ! -f "$script" ]; then
-  echo "context-economy: script not found at $script — skipping gate." >&2
-  exit 0
-fi
-
-if ! command -v pwsh >/dev/null 2>&1; then
-  echo "context-economy: pwsh not on PATH — skipping (CI will enforce on PR)." >&2
-  exit 0
-fi
-
-# git feeds <local-ref> <local-sha> <remote-ref> <remote-sha> on stdin per ref.
-# We compare against the remote-tracking ref of main as the base; if not available
-# (e.g. fresh fork), fall back to working-tree check against HEAD.
+# Resolve base ref once — reused by both gates.
 base=""
 if git rev-parse --verify --quiet origin/main >/dev/null; then
   base="origin/main"
@@ -35,8 +23,89 @@ elif git rev-parse --verify --quiet main >/dev/null; then
   base="main"
 fi
 
-if [ -n "$base" ]; then
-  pwsh -NoProfile -File "$script" -BaseRef "$base"
+# --- Layer 2a: context-economy gate ---
+if [ "${SKIP_CONTEXT_ECONOMY:-0}" = "1" ]; then
+  echo "context-economy: bypassed via SKIP_CONTEXT_ECONOMY=1" >&2
 else
-  pwsh -NoProfile -File "$script" -ClaudeHook
+  script="$repo_root/scripts/context-economy-check.ps1"
+  if [ ! -f "$script" ]; then
+    echo "context-economy: script not found at $script — skipping gate." >&2
+  elif ! command -v pwsh >/dev/null 2>&1; then
+    echo "context-economy: pwsh not on PATH — skipping (CI will enforce on PR)." >&2
+  else
+    if [ -n "$base" ]; then
+      pwsh -NoProfile -File "$script" -BaseRef "$base"
+    else
+      pwsh -NoProfile -File "$script" -ClaudeHook
+    fi
+  fi
 fi
+
+# --- Layer 2b: adapter-binding gate (core/** only) ---
+if [ "${SKIP_ADAPTER_BINDING:-0}" = "1" ]; then
+  echo "adapter-binding: bypassed via SKIP_ADAPTER_BINDING=1" >&2
+  exit 0
+fi
+
+ab_script="$repo_root/scripts/adapter-binding-check.ps1"
+if [ ! -f "$ab_script" ]; then
+  echo "adapter-binding: script not found at $ab_script — skipping gate." >&2
+  exit 0
+fi
+if ! command -v pwsh >/dev/null 2>&1; then
+  echo "adapter-binding: pwsh not on PATH — skipping (CI will enforce on PR)." >&2
+  exit 0
+fi
+
+# Short-circuit if no core/** edit in range — pre-flight filter saves a pwsh
+# invocation on most pushes. Hook reacts on core directory only.
+core_changed=0
+if [ -n "$base" ]; then
+  if git diff --name-only "$base...HEAD" -- 'core/**' 2>/dev/null | grep -q .; then
+    core_changed=1
+  fi
+fi
+if [ "$core_changed" -eq 0 ]; then
+  exit 0
+fi
+
+# Run the check.
+if [ -n "$base" ]; then
+  ab_args=(-BaseRef "$base")
+else
+  ab_args=()
+fi
+
+set +e
+pwsh -NoProfile -File "$ab_script" "${ab_args[@]}"
+ab_status=$?
+set -e
+
+if [ "$ab_status" -eq 0 ]; then
+  exit 0
+fi
+
+# Gate triggered — interactive y/N prompt via /dev/tty. Defaults to N on
+# empty input / non-interactive shell.
+if [ ! -t 0 ] && [ ! -e /dev/tty ]; then
+  echo "adapter-binding: non-interactive shell + no /dev/tty — refusing push." >&2
+  echo "  Set SKIP_ADAPTER_BINDING=1 to bypass for the genuinely structural case." >&2
+  exit 1
+fi
+
+printf '\nPush anyway? [y/N] ' >/dev/tty
+read -r answer </dev/tty || answer=""
+case "$answer" in
+  [Yy]|[Yy][Ee][Ss])
+    echo "adapter-binding: user approved push — proceeding." >&2
+    exit 0
+    ;;
+  *)
+    echo "adapter-binding: push aborted (default N)." >&2
+    echo "  To proceed: classify enforcement (Claude hook / slash command /" >&2
+    echo "  subagent tools whitelist / always-loaded text) per CLAUDE.md §" >&2
+    echo "  Framework authoring — context economy § Adapter binding, OR" >&2
+    echo "  re-run with SKIP_ADAPTER_BINDING=1 for the genuinely structural case." >&2
+    exit 1
+    ;;
+esac
