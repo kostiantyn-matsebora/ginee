@@ -2,7 +2,7 @@
 audience: all-cardinals
 load: on-demand
 triggers: [cross-agent-handoff, cross-domain, handoff]
-cap-bytes: 4096
+cap-bytes: 6144
 reads-before-applying: []
 ---
 
@@ -48,4 +48,32 @@ When a specialist flags a cross-domain root cause in their final report:
 | Mockup (HTML / CSS / JS / SVG edits) | mockup-owning role |
 | Mockup (governance review only) | `solution-architect` |
 
-Engineers outside the owning domain never edit these directly.
+Engineers outside the owning domain MUST NOT edit these directly.
+
+## Peer-resolved vs team-lead-escalated exchanges
+
+Cross-cardinal exchanges fall into one of two resolution surfaces. Default surface is team-lead; peer-resolved is opt-in per exchange when ALL criteria match. Per `core/protocols/adapter-wrapper-pattern.md` — peer-resume is a host-capability of the active adapter's subagent surface.
+
+| Exchange | Resolves at |
+|---|---|
+| Single defect → owning cardinal fix → re-verify (within in-flight phase) | **Peer-direct** — owning engineer resumes via adapter-native peer-resume; team-lead skipped |
+| Contradictory parallel returns | **team-lead** (synthesis surface) |
+| Cross-domain bug (root cause spans 2+ domains) | **team-lead** per `core/protocols/cross-domain-bugs.md` |
+| Scope expansion / new acceptance criterion | **team-lead** |
+| Architectural delta surfaced by engineer | **team-lead** per `core/roles/team-lead.md § Engineer-surfaced architectural-delta gate` |
+| Phase 3 / 7 / 8 user gates | **team-lead** (no peer-direct path) |
+
+**Triggers forcing team-lead re-entry mid-exchange.** Contradictory return · second cardinal needs to enter · scope expansion · architectural delta · iteration-protocol round-trip cap tripped per `core/protocols/iteration-protocol.md § Peer round-trip pattern`.
+
+## `peer-exchange:` audit-trail discipline
+
+Peer-direct exchanges happen in subagent transcripts, not main-thread context. The owning cardinal's phase-report return surfaces the exchange so team-lead synthesis has visibility on next re-entry.
+
+| Surface | Content |
+|---|---|
+| Surfaced via | Bullet under `## Decisions made` of the *responding* cardinal's phase-report return — prefix `peer-exchange:` |
+| Body shape | `peer-exchange: <originating> → <responding> · <one-line topic> · <outcome>` |
+| Cardinality | One bullet per peer-direct round-trip; bundled rows forbidden |
+| Adapter coupling | Where the active adapter has no host-enforced peer-resume tool, exchange MUST route through team-lead and the bullet MUST NOT appear |
+
+Single audit-trail rule binds every cardinal via this protocol; no per-kernel addenda.

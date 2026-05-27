@@ -9,7 +9,8 @@ description: >-
 model: claude-sonnet-4-6
 # Class A hard gate — no Bash (between-phase doc-optimization only; never invokes runners).
 # Opt out repo-wide via local/framework.config.yaml § compliance.disabled: [subagent-tools-whitelist].
-tools: [Read, Edit, Write, Grep, Glob]
+# SendMessage added per #189 § Part 2 — warm-cardinal continuity across review cycles.
+tools: [Read, Edit, Write, Grep, Glob, SendMessage]
 ---
 
 **Read first** (in order):
