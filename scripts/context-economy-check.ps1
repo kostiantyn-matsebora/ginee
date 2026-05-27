@@ -45,6 +45,15 @@ param(
 
   [switch]$SkipStructuralLint,
 
+  # Additional trailer source — when set, Test-MarkerPresent also reads
+  # the prepared commit message at this path. Wired from the commit-msg
+  # hook (receives the message file path as $1). Used together with
+  # -StagedOnly so the in-flight `Optimized-By: ai-engineer` trailer
+  # suppresses the gate for first-commit-on-branch flows (where HEAD
+  # does not yet carry the trailer). Lives outside the parameter sets
+  # so it composes with any mode.
+  [string]$CommitMsgFile,
+
   [string]$RepoRoot
 )
 
@@ -57,6 +66,7 @@ $null = $StagedOnly
 $null = $ClaudeHook
 $null = $Json
 $null = $SkipStructuralLint
+$null = $CommitMsgFile
 
 # ----- Thresholds ---------------------------------------------------------
 $Script:Thresholds = @{
@@ -556,9 +566,15 @@ function Test-HotSpecFrontmatter {
 function Test-MarkerPresent {
   <#
     Detect an "Optimized-By: ai-engineer" trailer on any commit in the
-    relevant range. For Range mode, scans base..HEAD. For Staged / WorkingTree
-    modes, only HEAD itself can carry the trailer (since the optimization
-    must precede the next commit) — so we scan HEAD.
+    relevant range. For Range mode, scans base..HEAD. For Staged /
+    WorkingTree modes, HEAD itself can carry the trailer (from a prior
+    optimization commit). For first-commit-on-branch flows the in-flight
+    message has not yet been written into a commit object — when the
+    commit-msg hook invokes the script with -CommitMsgFile pointing at
+    the prepared message file ($1 to commit-msg), that file is read as
+    an additional trailer source. Pre-commit hook flows (no
+    -CommitMsgFile) defer the trailer enforcement to commit-msg by
+    treating gateFail as advisory.
   #>
   param([string]$Mode, [string]$Base)
 
@@ -570,10 +586,31 @@ function Test-MarkerPresent {
     }
     default {
       $log = & git log -1 --format='%(trailers:key=Optimized-By,valueonly,unfold)' HEAD 2>$null
-      if ($LASTEXITCODE -ne 0) { return $false }
-      return ($log -match '(?i)\bai-engineer\b')
+      if ($LASTEXITCODE -eq 0 -and ($log -match '(?i)\bai-engineer\b')) {
+        return $true
+      }
+      if (Test-CommitMsgFileMarker) { return $true }
+      return $false
     }
   }
+}
+
+function Test-CommitMsgFileMarker {
+  <#
+    When -CommitMsgFile was passed, read the prepared commit message and
+    check for an "Optimized-By: ai-engineer" trailer line. Used by the
+    commit-msg hook so the in-flight message carries enforcement weight.
+    Falls back to $false on absent flag or any I/O error.
+  #>
+  if (-not $Script:CommitMsgFilePath) { return $false }
+  if (-not (Test-Path -LiteralPath $Script:CommitMsgFilePath)) { return $false }
+  try {
+    $msg = Get-Content -LiteralPath $Script:CommitMsgFilePath -Raw -ErrorAction Stop
+  } catch {
+    return $false
+  }
+  if (-not $msg) { return $false }
+  return ($msg -match '(?im)^Optimized-By:\s*ai-engineer\s*$')
 }
 
 function Invoke-StructuralLint {
@@ -675,11 +712,13 @@ function Invoke-ContextEconomyCheckMain {
     [switch]$ClaudeHook,
     [switch]$Json,
     [switch]$SkipStructuralLint,
+    [string]$CommitMsgFile,
     [string]$RepoRoot
   )
 
   $null = $StagedOnly
   $null = $ClaudeHook
+  $Script:CommitMsgFilePath = $CommitMsgFile
 
   $mode = $PSCmdlet.ParameterSetName
   $repo = Resolve-RepoRoot -Hint $RepoRoot

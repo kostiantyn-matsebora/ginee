@@ -10,6 +10,18 @@ All notable changes to ginee. The format follows [Keep a Changelog](https://keep
 
 ## Unreleased
 
+### Added
+
+- **Estimation gate fires on every dispatch** ([#168](https://github.com/kostiantyn-matsebora/ginee/issues/168)). The estimation-first dispatch rule was documented across team-lead + every cardinal kernel + 5 extras roles, but trigger-circular (loaded only on >15 min, with no step ever deciding that) and missing schema slots in dispatch-prompt + phase-report — so it did not fire in practice. Six sibling surfaces close the gap:
+  - **Team-lead pre-dispatch scope-size classifier** (`core/roles/team-lead.md`). Before every cardinal dispatch, team-lead emits one of `≤15m` · `15-60m` · `>60m` + one-line signal. `≤15m` MUST be recorded explicitly; silent elision is not permitted.
+  - **Dispatch-prompt `## Scope size`** (`core/protocols/dispatch-prompt-schema.md`). Required section; pre-send self-lint grows 5 → 6 checks. For `15-60m` / `>60m`: `## Required output` carries the iteration-protocol + `## Estimate` addendum.
+  - **Phase-report `## Estimate`** (`core/templates/phase-report.md`). Required iff dispatch carried `## Scope size` ∈ `{15-60m, >60m}`; placed before `## Files touched`; sub-task decomposition + per-task minutes. Required checks grow 7 → 8.
+  - **Sub-issue `**Scope size:**` + `**Estimate:**` at create** (`core/templates/sub-issue-dispatch.md`). Both filled at create from the classifier; self-lint check 9 fails on template-literal-left-in-place.
+  - **Heavy-role-bypass classification** (`core/protocols/heavy-role-bypass.md`). TL1–TL4 emit the one-line classification before bypass approval. `lite:` prefix (`core/process/dispatch.md`) auto-classifies as `≤15m`.
+  - **Iteration-protocol explicit load trigger** (`core/protocols/iteration-protocol.md` + `role-kernel-shared.md § B`). Replaces the circular "scope > 15 min" trigger with "team-lead's classifier returned `15-60m` or `>60m`". Sizing table expanded from binary to three-tier.
+
+  Migration: [`migrations/estimation-gate-fires.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/migrations/estimation-gate-fires.md). No `local/framework.config.yaml` changes; purely additive on the dispatch surface — existing open sub-issues are not retroactively rewritten (forward-only convention upheld).
+
 ### Changed
 
 - **`solution-architect` realigned to classical-architect boundaries** ([#182](https://github.com/kostiantyn-matsebora/ginee/issues/182)). Two sibling rules close the documented gap that let SA accrete implementation content in architecture artefacts.

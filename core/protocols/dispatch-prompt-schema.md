@@ -18,9 +18,10 @@ Sister schema to `core/templates/phase-report.md` (return surface). Same machine
 |---|---|---|
 | `## Reading list` | required (else `(none)`) | Bullets — `<path> — <what the specialist needs>` |
 | `## Task` | required | One paragraph — verb-first; ≤ 4 sentences |
+| `## Scope size` | required | One line — `<class> — <signal>`; class ∈ `≤15m` · `15-60m` · `>60m` per `core/roles/team-lead.md § Scope-size classifier` |
 | `## Read discipline` | required | One paragraph citing `core/protocols/index-protocol.md § Read order` |
 | `## Deliverable` | required | Bullets — `<id> — <one-line>`; ≤ 80 chars |
-| `## Required output` | required | One line citing `core/templates/phase-report.md` + per-task addenda |
+| `## Required output` | required | One line citing `core/templates/phase-report.md` + per-task addenda. When `## Scope size` is `15-60m` / `>60m`: add `iteration-protocol loaded; ## Estimate required.` |
 | `## Forbidden` | optional | Per-task forbidden ops; cite source rule |
 | `## Capability-tool hints` | optional | Per-tool one-liner per `core/process/dispatch.md § Host capability-tool affinity injection` |
 | `## Carry-forward` | optional | Single-line reminder per `phase-report.md § Carry-forward rephrasing` |
@@ -32,6 +33,9 @@ Sister schema to `core/templates/phase-report.md` (return surface). Same machine
 - core/protocols/<spec>.md — <what the specialist needs>
 - local/index/<entry>.yaml — <which entries cover the task surface>
 
+## Scope size
+<class> — <one-line signal>            # class ∈ ≤15m · 15-60m · >60m
+
 ## Read discipline
 Index-first per core/protocols/index-protocol.md § Read order. Raw source reads
 require one-line justification per core/templates/phase-report.md § Source reads
@@ -40,10 +44,12 @@ require one-line justification per core/templates/phase-report.md § Source read
 ## Required output
 Phase-report schema per core/templates/phase-report.md. <addenda — e.g. "sub-issue
 mode: include ## Time spent">. End with <!-- self-lint: pass -->.
+                                       # add when Scope size ∈ {15-60m, >60m}:
+                                       # iteration-protocol loaded; ## Estimate required.
 
 ## Carry-forward                                    (optional — on prior violation)
 Return format: schema-bound per core/templates/phase-report.md;
-last cycle's return missed self-lint (<violation>) — apply the 6 checks + marker this cycle.
+last cycle's return missed self-lint (<violation>) — apply the 8 checks + marker this cycle.
 ```
 
 ## Forbidden patterns
@@ -64,6 +70,9 @@ last cycle's return missed self-lint (<violation>) — apply the 6 checks + mark
 ## Task
 Auto-estimate complexity for issue #131 per the auto-estimation hook on pickup;
 return H/M/L with one-line signal digest.
+
+## Scope size
+≤15m — single auto-estimation call against scoring rubric.
 
 ## Read discipline
 Index-first per core/protocols/index-protocol.md § Read order. Raw source reads
@@ -89,10 +98,11 @@ Team-lead authors the dispatch + runs the gate before sending. Different machine
 3. Reading-list entries cite a path; MUST NOT restate the rule.
 4. `## Read discipline` cites `core/protocols/index-protocol.md § Read order` verbatim.
 5. No narrative preamble — first non-header line is a `##` section header.
+6. `## Scope size` present + class ∈ `{≤15m, 15-60m, >60m}`. When class ∈ `{15-60m, >60m}`: `## Required output` carries the iteration-protocol + `## Estimate` addendum (one line, verbatim form per § Templates).
 
 **Pre-send gate:**
 
-- All 5 checks pass + marker present → send.
+- All 6 checks pass + marker present → send.
 - Any check fails OR marker absent → restructure inline; re-run gate; MUST NOT dispatch a non-compliant payload.
 - No carry-forward mechanism (no prior author to carry the rule to). The author is the orchestrator; the fix is the author's own pre-send restructure.
 - Pre-send-restructure count surfaces in the orchestrator's user-response per `core/templates/user-response.md § Synthesis from phase-report returns` — `## Notes` line: `Dispatch pre-send restructures this turn: <N>.` Tracking signal; MUST NOT auto-disable the gate.

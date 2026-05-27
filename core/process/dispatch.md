@@ -105,7 +105,7 @@ All prefixes combine freely in any order (e.g. `auto: branch: nocr: model:fast`)
 | `branch:` · `wt:` · `commit:` | delivery | Mode 1 (branch + PR) · Mode 2 (working-tree only) · Mode 3 (commit-no-push). Full spec: `core/protocols/delivery-modes.md`. |
 | `cr:` · `nocr:` | governance | Force / skip CR authorship; overrides `change-governance.cr.*` config. Skip logs `skip-reason: prefix-override`. Gate: `core/roles/team-lead.md § CR-gate`. |
 | `adr:` · `noadr:` | governance | Force / skip ADR authorship; overrides `change-governance.adr.*` config. Gate: `core/roles/solution-architect.md § ADR-gate`. |
-| `lite:` · `direct:` | lifecycle | Skip Phase 1–3; direct dispatch from pickup to one named cardinal in Phase 4; Phases 5–8 run normally. Governance gates (CR/ADR/Phase 7/Phase 8) NOT elided. |
+| `lite:` · `direct:` | lifecycle | Skip Phase 1–3; direct dispatch from pickup to one named cardinal in Phase 4; Phases 5–8 run normally. Governance gates (CR/ADR/Phase 7/Phase 8) NOT elided. **Auto-classifies as `≤15m`** per `core/roles/team-lead.md § Scope-size classifier` — iteration-protocol skipped + cardinal `## Estimate` not required; class still written to dispatch payload + sub-issue. |
 | `notrack:` | tracking | Disable sub-issue dispatch tracking for the parent task; falls back to in-context. Resolution chain: `core/protocols/github-integration.md § Sub-issue dispatch`. |
 | `fresh:` | warm-reuse | Force fresh-spawn even when warm registry would resume. |
 | `model:<tier>` | model | Override per-role default for one dispatch. `tier` ∈ `reasoning` · `standard` · `fast`. |

@@ -200,6 +200,69 @@ Optimized-By: ai-engineer" *> $null
         Remove-Item -Recurse -Force $root -ErrorAction SilentlyContinue
       }
     }
+
+    It 'passes staged threshold breach when -CommitMsgFile carries Optimized-By (commit-msg hook flow)' {
+      $root = New-SandboxRepo
+      try {
+        $bloat = (1..60 | ForEach-Object { "- bullet $_" }) -join "`n"
+        Set-Content -LiteralPath (Join-Path $root 'CLAUDE.md') -Value "baseline`n$bloat"
+        $msgFile = Join-Path ([System.IO.Path]::GetTempPath()) "ginee-cm-$([guid]::NewGuid().Guid).msg"
+        # HEAD intentionally lacks the trailer; the in-flight message carries it
+        # (mirrors `git commit -m '...Optimized-By: ai-engineer'` reaching commit-msg).
+        Set-Content -LiteralPath $msgFile -Value "feat: in-flight change`n`nbody line`n`nOptimized-By: ai-engineer`n"
+        Push-Location $root
+        try { & git add CLAUDE.md *> $null } finally { Pop-Location }
+
+        try {
+          $r = Invoke-CheckInProc -Root $root -Params @{ StagedOnly = $true; CommitMsgFile = $msgFile; Json = $true }
+          $r.Code | Should -Be 0
+          $r.Json.markerPresent | Should -BeTrue
+        } finally {
+          Remove-Item -LiteralPath $msgFile -ErrorAction SilentlyContinue
+        }
+      } finally {
+        Remove-Item -Recurse -Force $root -ErrorAction SilentlyContinue
+      }
+    }
+
+    It 'fails staged threshold breach when -CommitMsgFile lacks Optimized-By' {
+      $root = New-SandboxRepo
+      try {
+        $bloat = (1..60 | ForEach-Object { "- bullet $_" }) -join "`n"
+        Set-Content -LiteralPath (Join-Path $root 'CLAUDE.md') -Value "baseline`n$bloat"
+        $msgFile = Join-Path ([System.IO.Path]::GetTempPath()) "ginee-cm-$([guid]::NewGuid().Guid).msg"
+        Set-Content -LiteralPath $msgFile -Value "feat: in-flight change without trailer`n"
+        Push-Location $root
+        try { & git add CLAUDE.md *> $null } finally { Pop-Location }
+
+        try {
+          $r = Invoke-CheckInProc -Root $root -Params @{ StagedOnly = $true; CommitMsgFile = $msgFile; Json = $true }
+          $r.Code | Should -Be 1
+          $r.Json.markerPresent | Should -BeFalse
+        } finally {
+          Remove-Item -LiteralPath $msgFile -ErrorAction SilentlyContinue
+        }
+      } finally {
+        Remove-Item -Recurse -Force $root -ErrorAction SilentlyContinue
+      }
+    }
+
+    It 'CommitMsgFile pointing at a non-existent path is treated as no trailer (fail-safe)' {
+      $root = New-SandboxRepo
+      try {
+        $bloat = (1..60 | ForEach-Object { "- bullet $_" }) -join "`n"
+        Set-Content -LiteralPath (Join-Path $root 'CLAUDE.md') -Value "baseline`n$bloat"
+        Push-Location $root
+        try { & git add CLAUDE.md *> $null } finally { Pop-Location }
+
+        $missing = Join-Path ([System.IO.Path]::GetTempPath()) "ginee-cm-missing-$([guid]::NewGuid().Guid).msg"
+        $r = Invoke-CheckInProc -Root $root -Params @{ StagedOnly = $true; CommitMsgFile = $missing; Json = $true }
+        $r.Code | Should -Be 1
+        $r.Json.markerPresent | Should -BeFalse
+      } finally {
+        Remove-Item -Recurse -Force $root -ErrorAction SilentlyContinue
+      }
+    }
   }
 
   Context 'Range mode (CI)' {

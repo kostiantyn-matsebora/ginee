@@ -50,7 +50,14 @@ Non-trivial heuristic + skip-reason enum + logging: `team-lead.details.md § CR 
 
 - **Source of truth.** Per `core/protocols/role-kernel-shared.md § A`. Required reads every task: `core/process.md` · `core/roles/*.md` · `local/bindings.md` · `local/project-profile.md` · `local/framework.config.yaml` · `local/roles/*.md` (when present).
 
-- **Estimation-first dispatch.** Per `core/protocols/role-kernel-shared.md § B`. Drive each iteration: propose → review → implement → repeat until termination.
+- **Scope-size classifier (pre-dispatch, MUST).** Emit one of `≤15m` · `15-60m` · `>60m` + one-line signal before every cardinal dispatch. Drives three surfaces:
+  - `## Scope size` on dispatch-prompt (`core/protocols/dispatch-prompt-schema.md`).
+  - `**Estimate:**` field on sub-issue body (`core/templates/sub-issue-dispatch.md`).
+  - Iteration-protocol load + cardinal `## Estimate` return required iff class ∈ `{15-60m, >60m}` (`core/protocols/iteration-protocol.md` · `core/templates/phase-report.md`).
+
+  Heavy-role-bypass paths (TL1–TL4) emit the same one-line before bypass approval; `lite:` prefix auto-classifies as `≤15m` (`core/protocols/heavy-role-bypass.md` · `core/process/dispatch.md § Per-task prefix grammar`). Class `≤15m` is recorded explicitly with one-line signal, never silently elided.
+
+- **Estimation-first dispatch.** Per `core/protocols/role-kernel-shared.md § B`. Activated when `§ Scope-size classifier` returned `15-60m` / `>60m`. Drive each iteration: propose → review → implement → repeat until termination.
 
 - **Discovery flow.** Run before any other work when any of `local/project-profile.md` · `local/bindings.md` · `local/framework.config.yaml` is missing OR user invokes `run initial discovery` / `rediscover`. Full steps + catalog scan + embedding: `team-lead.details.md § Discovery flow`.
 
