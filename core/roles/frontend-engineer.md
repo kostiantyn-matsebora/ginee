@@ -78,6 +78,7 @@ Cite FR ID in nearest comment when mapping non-obvious.
 - Component unit tests via project runner — cover every documented UI state with fixture data.
 - Store / state-management unit tests for derivation logic + reducers.
 - E2E flows belong to `qa-engineer`; you provide stable `data-testid` (or equivalent) on every interactive element.
+- **Self-verify before hand-off (strict gate).** MUST run every change-scoped suite available to the role (component unit · E2E hitting changed surface · pixel-check when applicable) in a fix-loop until green per `core/protocols/engineer-self-verify.md`. Stale assertions MUST route to QA — never edit a test to make it pass. Phase 4 hand-off without per-suite green / `n/a` / `stale` cite violates `core/process/phase-4-implementation.md § Acceptance`.
 
 ## Doc authorship
 

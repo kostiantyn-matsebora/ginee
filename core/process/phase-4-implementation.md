@@ -21,5 +21,5 @@ reads-before-applying: []
 - **`solution-architect` review on in-flight proposals.** If an engineer proposes an architectural change mid-Phase 4 (new contract / topology / stack / NFR-affecting decision), SA reviews per `§ Review` — APPROVE / REJECT / REQUEST-CHANGES. SA never edits the engineer's code.
 - **Acceptance.**
   - Compiles / builds clean.
-  - Per-project unit tests pass.
   - No new lint or type errors.
+  - **Engineer self-verify per `core/protocols/engineer-self-verify.md`** — strict gate, not advisory. Every change-scoped suite available to the role MUST run green OR MUST carry an `n/a — <reason>` / `stale — <reason>` cite in `## Verification log`. Replaces the prior unit-only floor. Non-compliance blocks Phase 4 acceptance; team-lead MUST return the dispatch for completion. QA backstops in Phase 5 per `phase-5-testing.md § Goal`.

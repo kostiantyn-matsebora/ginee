@@ -44,3 +44,29 @@ Status: Done | In-progress | Blocked | Hand-off
 ```
 
 Run the 7 mandatory checks per `core/templates/phase-report.md § Mandatory checks before report-as-done` before writing the marker.
+
+## Engineer self-verify (frontend / backend / devops at Phase 4)
+
+Strict gate per `core/protocols/engineer-self-verify.md`. `## Verification log` MUST carry exactly one row per available-matrix suite (form: `PASS` · `n/a — <reason>` · `stale — <contract change>; QA oracle update needed`). Per-role row skeleton — fill or skip-cite for every row your change exercises:
+
+```
+## Verification log
+| Command / check | Outcome |
+|---|---|
+# frontend-engineer
+| Component unit (<runner>) | PASS / n/a — <reason> / stale — <reason> |
+| E2E hitting changed surface (<runner>) | PASS / n/a — <reason> / stale — <reason> |
+| Pixel-check (when qa.pixel-check.enabled) | PASS / n/a — <reason> / stale — <reason> |
+
+# backend-engineer
+| Unit per § Coverage obligation (<runner>) | PASS / n/a — <reason> / stale — <reason> |
+| API / functional vs real local stack (<runner>) | PASS / n/a — <reason> / stale — <reason> |
+| Integration covering touched endpoints / migrations | PASS / n/a — <reason> / stale — <reason> |
+
+# devops-engineer
+| Script lint + Pester / bats per § Script-quality obligation | PASS / n/a — <reason> / stale — <reason> |
+| Local-orchestration post-step health per § Post-step health verification | PASS / n/a — <reason> / stale — <reason> |
+| Deploy smoke against reachable environments | PASS / n/a — <reason> / stale — <reason> |
+```
+
+Stale-oracle row MUST surface `qa-engineer · <suite>` under `## Next dispatch needed`. Engineer MUST NOT edit the test to make it pass — QA owns the oracle update per `core/roles/qa-engineer.md § Independent re-execution`.

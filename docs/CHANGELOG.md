@@ -10,7 +10,12 @@ All notable changes to ginee. The format follows [Keep a Changelog](https://keep
 
 ## Unreleased
 
-## 0.25.0 — 2026-05-27
+### Added
+
+- **Engineer self-verify before QA hand-off** ([#177](https://github.com/kostiantyn-matsebora/ginee/issues/177)). Phase 4 acceptance raised from unit-only to a strict change-scoped fix-loop gate per `core/protocols/engineer-self-verify.md`. Engineers (frontend / backend / devops) MUST run every change-scoped suite available to the role (component / API / integration / E2E / pixel-check / script-quality / post-step health / deploy smoke per role) until green BEFORE hand-off; red suites triage as real defect (engineer fixes) or stale oracle (flagged for QA — engineer MUST NOT edit the test). Skip rules cite `<suite> n/a — <reason>`. QA's Phase 5 role reframed as backstop — MUST independently re-execute every reported suite + verify AC compliance; never first-pass discovery. Change-scoped only; full regression remains opt-in. Non-compliance blocks Phase 4 acceptance.
+  - **Claude-adapter enforcement** (per playbook [#135](https://github.com/kostiantyn-matsebora/ginee/issues/135)). Multi-vector force-class layering: Class H always-loaded text in phase docs + role kernels · Class D UserPromptSubmit keyword trigger (T5) injects protocol excerpt on engineer-cardinal / Phase-4 / self-verify mentions · Class D PreToolUse SendMessage carry-forward (T8) binds warm-engineer continuations to cite the rule · Class A-indirect deterministic template (T10) extends `/ginee-phase-report` with per-role Verification-log row skeleton.
+
+
 
 ### Added
 

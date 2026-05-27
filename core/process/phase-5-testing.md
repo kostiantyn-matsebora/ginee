@@ -10,7 +10,7 @@ reads-before-applying: []
 
 **Load triggers** — cardinals with `phase-participation:` including `5`. Heavy-role-bypass per `core/protocols/heavy-role-bypass.md` — SA2 NFR-oracle dip · TL2 single-cardinal verification (TL re-entry only on cross-domain bug · non-empty `## Open issues` · `## Hand-off` set · `Status: In-progress`).
 
-- **Goal.** Verify implementation against contracts: executable suites + manual smoke against the running solution.
+- **Goal.** QA backstop — QA MUST independently re-execute every change-scoped suite the engineer reported AND MUST verify AC compliance against the issue / TODO / freeform task spec AND MUST run manual smoke against the running solution. NOT first-pass discovery; the engineer's `core/protocols/engineer-self-verify.md` loop already green-gated those suites in Phase 4. Engineer's green log is paper trail, never a waiver — QA re-runs every suite.
 - **Scope — change-scoped by default.** Run only:
 
   | Layer | What runs |
