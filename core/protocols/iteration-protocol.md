@@ -72,6 +72,19 @@ Each iteration must leave the system valid + resumable:
 
 Apparent scope exceeds initial estimate by **> 2×** → specialist MUST stop at the next iteration boundary and report (Done / In-progress / Not-started). Orchestrator MUST force the same stop-and-report when observing the trigger in specialist reports OR its own in-thread work. Re-resolve scope with the user.
 
+## Peer round-trip pattern
+
+Within an in-flight phase, two cardinals MAY iterate peer-direct (no team-lead re-entry) when ALL conditions per `core/protocols/cross-agent-handoff.md § Peer-resolved vs team-lead-escalated exchanges` match. Canonical case — frontend-engineer ↔ qa-engineer Phase 5 / 6 cycles: QA surfaces failing test → owning engineer fixes → QA re-verifies; team-lead skipped on each round-trip.
+
+| Field | Value |
+|---|---|
+| Default cap | 3 round-trips per phase between the same cardinal pair |
+| Forced re-entry trigger | Cap exceeded · contradictory return surfaces · scope expansion · second cardinal needs to enter · architectural delta surfaced |
+| Adapter coupling | Claude — host-native peer-resume (SendMessage) on adapter wrappers per `core/protocols/adapter-wrapper-pattern.md`. Adapters without host-enforced peer-resume fall back to team-lead-relay. |
+| Audit-trail surface | `peer-exchange:` bullet under `## Decisions made` per `core/protocols/cross-agent-handoff.md § peer-exchange: audit-trail discipline` |
+
+Adopter override of cap: `local/framework.config.yaml § iteration.peer-roundtrip-cap` (integer; framework default 3).
+
 ## Timeframe-bounded autonomous work
 
 **Trigger.** User-supplied timeframe ("spend 30 min on X", "do as much as you can in an hour").

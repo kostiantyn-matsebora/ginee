@@ -6,7 +6,8 @@ model: claude-sonnet-4-6
 # Tightly-scoped per playbook tactic 1. Edit/Write intended for tests/** only; Bash intended
 # for test runners only. Path/command scope enforced by T2 + T3 PreToolUse hooks.
 # Opt out repo-wide via local/framework.config.yaml § compliance.disabled: [subagent-tools-whitelist].
-tools: [Read, Edit, Write, Bash, Grep, Glob]
+# SendMessage added per #189 § Part 2 — warm-cardinal continuity across review cycles.
+tools: [Read, Edit, Write, Bash, Grep, Glob, SendMessage]
 ---
 
 **Read first** (in order):

@@ -6,7 +6,8 @@ model: claude-sonnet-4-6
 # Tightly-scoped per playbook tactic 1. Bash intended for npm/yarn/vite/test runners;
 # command scope enforced by T3 PreToolUse hook.
 # Opt out repo-wide via local/framework.config.yaml § compliance.disabled: [subagent-tools-whitelist].
-tools: [Read, Edit, Write, Grep, Glob, Bash]
+# SendMessage added per #189 § Part 2 — warm-cardinal continuity across review cycles.
+tools: [Read, Edit, Write, Grep, Glob, Bash, SendMessage]
 ---
 
 **Read first** (in order):
