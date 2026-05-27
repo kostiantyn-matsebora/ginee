@@ -65,6 +65,7 @@ Slash commands `/ginee-<skill> [args]`. Natural-language phrasings also match. T
 /ginee-update                             # update framework to latest release (preserves local/)
 /ginee-update <tag|branch|sha>            # update to a named ref
 /ginee-address-review #<PR>               # ingest review comments on an open PR (D24)
+/ginee-iterate                            # relay review-cycle reply to warm cardinal — auto-engages on warm registry + in-flight reply; also "iterate on @<role>" / "forward to the warm cardinal"
 ```
 
 ## Compliance — Bash hook (T3)

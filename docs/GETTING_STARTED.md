@@ -116,7 +116,7 @@ A second PreToolUse hook at `.agents/ginee/adapters/claude/hooks/pre-tool-use-ba
 Ginee is a team — talk to *ginee*, not to a specific role. The team routes work internally per `local/bindings.md`. Two invocation paths:
 
 - **Freeform** (any tier): `Use ginee to ...` — catch-all; the team self-dispatches.
-- **Skill** (tier-1, Claude Code + Copilot CLI): `/ginee-<skill> [args]` — slash-command on the 12 framework skills. Natural-language phrasings like `Pick up #42` also match the skill description. Cheat sheet in [adapters/claude/install.md § How to invoke](https://github.com/kostiantyn-matsebora/ginee/blob/main/adapters/claude/install.md#how-to-invoke).
+- **Skill** (tier-1, Claude Code + Copilot CLI): `/ginee-<skill> [args]` — slash-command on the 13 framework skills. Natural-language phrasings like `Pick up #42` also match the skill description. Cheat sheet in [adapters/claude/install.md § How to invoke](https://github.com/kostiantyn-matsebora/ginee/blob/main/adapters/claude/install.md#how-to-invoke).
 
 Three task sources:
 
@@ -145,7 +145,10 @@ Use ginee to pick up issue #42                              # freeform
 /ginee-triage                                               # ranked by score = value / complexity (D23)
 /ginee-promote-discussion #17
 /ginee-address-review #42                                   # ingest review comments on an open PR (D24)
+/ginee-iterate                                              # auto-engages when you reply to a live cardinal — relays to the warm agent instead of editing from the main thread
 ```
+
+`/ginee-iterate` auto-engages when the warm registry holds an active cardinal AND your next reply targets files the cardinal owns — your "fix the button" / "modal flashes" replies route to the warm agent verbatim via `SendMessage`, preserving warm-reuse savings across the cycle. Hand-back to `@team-lead` on `## Open issues` / `## Hand-off` / stop-state. Full spec: [`core/skills/ginee-iterate/SKILL.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/core/skills/ginee-iterate/SKILL.md).
 
 `/ginee-triage` ranks ready work by **score = value / complexity** per [D23 triage scoring](https://github.com/kostiantyn-matsebora/ginee/blob/main/core/protocols/triage-scoring.md) — `value:high|medium|low` + `complexity:high|medium|low` labels (ATAM H/M/L, `H=3, M=2, L=1`). On pickup, missing `value` → team-lead asks you; missing `complexity` → `solution-architect` auto-estimates. Sticky `<!-- ginee:score v=1 -->` comment per issue.
 
