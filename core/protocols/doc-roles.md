@@ -45,11 +45,12 @@ Generalised from earlier SA ↔ ai-engineer two-role co-ownership: every role au
 
 ## SA architectural-coherence review
 
-Every non-SA-owned doc edit is SA-reviewed before merge (folds into `core/roles/solution-architect.md § Review`):
+Non-SA-owned doc edits touching architectural concerns route through SA — but **only at Phase 7 (conditional governance) or out-of-process Review**, never as a Phase 4 / 5 / 6 dip. Folds into `core/roles/solution-architect.md § Governance` (Phase 7) or `§ Review` (out-of-process).
 
-- **Trigger.** Engineer / team-lead / mockup-owner proposes doc edit touching architectural concern (component name · contract · stack reference · NFR-bearing claim · invariant).
-- **Outcome.** APPROVE / REJECT / REQUEST-CHANGES; no edits to engineer's doc.
-- **Out of scope.** Pure-engineering wording not touching architectural concerns (code example values · README phrasing nuance). Author judgment.
+- **Trigger.** Engineer / team-lead / mockup-owner doc edit touches architectural concern (component name · contract · stack reference · NFR-bearing claim · invariant) AND lands in a PR that also triggers Phase 7 SA dispatch (task introduced architectural changes OR `post-implementation-governance: yes`). Standalone non-architectural-change doc edits do NOT pull SA in.
+- **Outcome.** APPROVE (architecturally coherent) / RETURN-TO-author (specific findings). No edits to author's doc.
+- **Out of scope.** Pure-engineering wording not touching architectural concerns (code example values · README phrasing nuance) — author judgment, no SA review.
+- **Mid-Phase 4/5/6 architectural-coherence concerns** — engineer flags in `## Open issues` + routes through team-lead's `§ Engineer-surfaced architectural-delta gate` per `core/roles/team-lead.md`; never direct SA dispatch mid-phase.
 
 ## Lossless rule
 

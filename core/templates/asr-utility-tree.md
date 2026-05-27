@@ -69,4 +69,4 @@ The architecturally significant scenarios (`(H, H)` only) listed compactly. Each
 
 - **Requirements register** — `local/requirements.md` holds the NFRs + Constraints these ASRs derive from.
 - **ADRs** — Each `(H, H)` ASR must be addressed by ≥ 1 ADR (or an existing architecture-doc section). SA Phase-7 review verifies coverage per `core/process.md § Phase 7`.
-- **Phase 1 design dip** — SA derives this tree at Phase 1 per `core/roles/solution-architect.md § Design`. Updates land at Phase 2 (delta mode → ADR + ASR amendment) or Phase 4 (engineer proposes architectural change → SA review → ASR amendment if scope warrants).
+- **Phase 1 design dip** — SA derives this tree at Phase 1 per `core/roles/solution-architect.md § Design`. Updates land at Phase 2 (delta mode → ADR + ASR amendment). Mid-implementation architectural-delta needs route through team-lead's gate per `core/roles/team-lead.md § Engineer-surfaced architectural-delta gate` (option B re-enters Phase 1–2 with SA → fresh ASR amendment if scope warrants); SA is never dispatched mid-Phase 4/5/6.

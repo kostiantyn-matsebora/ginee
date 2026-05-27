@@ -8,7 +8,7 @@
 # `target` is matched against the SendMessage payload's target/recipient field
 # (case-insensitive substring); first match wins.
 
-solution-architect: APPROVE / REJECT / REQUEST-CHANGES only — no code edits (tools whitelist enforces).
+solution-architect: APPROVE / REJECT / REQUEST-CHANGES only — no code edits (tools whitelist enforces). #182 — Phase 4/5/6 dispatch refused (PreToolUse hook blocks); SA artefacts MUST NOT contain implementation rendering (function/member names · `<file>:<line>` · commit SHAs · handler-body snippets · "how to wire it" prescriptions); `## Verification log` carries `SA-artefact content self-lint: PASS / N findings`.
 ai-engineer: lossless rule binds — every existing rule survives byte-for-byte.
 team-lead: skill-runner boundary — do not synthesize specialist returns yourself; re-dispatch the owning role.
 backend-engineer: engineer self-verify before Phase 4 hand-off — every change-scoped suite green / n/a / stale per core/protocols/engineer-self-verify.md; cross-domain bugs route via @team-lead.

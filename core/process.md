@@ -34,7 +34,7 @@ reads-before-applying: []
 
 - 8 phases, one file each (`core/process/phase-<N>-<name>.md`) declaring Goal + Acceptance.
 - Specialists within a phase run in parallel; phases overlap wherever a contract surface decouples them.
-- Per-role loading via `phase-participation:` frontmatter — `team-lead [1-8]` · `solution-architect [1, 2, 4, 5, 6, 7]` · backend / frontend / devops [2, 4, 5, 6] · `qa-engineer [5, 6]` · `ai-engineer []` (between-phase).
+- Per-role loading via `phase-participation:` frontmatter — `team-lead [1-8]` · `solution-architect [1, 2, 7]` (Phase 7 conditional per `core/roles/solution-architect.md § Governance`; Phases 4/5/6 categorically excluded) · backend / frontend / devops [2, 4, 5, 6] · `qa-engineer [5, 6]` · `ai-engineer []` (between-phase).
 - Orchestration (`core/process/dispatch.md`) loaded by `team-lead` always + skill-runner main thread on `ginee-*` skill entry; other cardinals do NOT load.
 
 ## Engineering principles — apply across all roles

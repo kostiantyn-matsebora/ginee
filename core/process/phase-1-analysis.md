@@ -12,6 +12,6 @@ reads-before-applying: []
 
 - **Goal.** Bound scope; identify touched domains.
 - **Reads.** TODO line + relevant architecture sections + mockup + code.
-- **`solution-architect` design dip.** On any non-trivial scope, SA elicits the requirements register (FRs / NFRs / constraints in `local/requirements.md`) AND derives the ASR utility tree (`local/asr-utility-tree.md`) per `core/roles/solution-architect.md § Design`. Resolves **greenfield vs delta** mode. Output goes to Phase 2 dispatch.
-- **Output.** Phase 2 dispatch plan + requirements / ASR diff + resolved design mode + surfaced ambiguities.
-- **Acceptance.** Scope bounded enough to plan Phase 2. ≤ 1 unresolved scope question. ASR utility tree captures every quality-attribute-driver the proposed change touches.
+- **`solution-architect` design dip.** On any non-trivial scope, SA elicits the requirements register (FRs / NFRs / constraints in `local/requirements.md`) AND derives the ASR utility tree (`local/asr-utility-tree.md`) per `core/roles/solution-architect.md § Design`. Resolves **greenfield vs delta** mode. SA also resolves `post-implementation-governance: yes/no` — recorded as one row in Phase-1 `## Decisions made`; team-lead consumes this at Phase 7 to gate the conditional SA dispatch. Output goes to Phase 2 dispatch.
+- **Output.** Phase 2 dispatch plan + requirements / ASR diff + resolved design mode + `post-implementation-governance: yes/no` + surfaced ambiguities.
+- **Acceptance.** Scope bounded enough to plan Phase 2. ≤ 1 unresolved scope question. ASR utility tree captures every quality-attribute-driver the proposed change touches. `post-implementation-governance:` row present in SA's Phase-1 phase-report when SA design dip ran.

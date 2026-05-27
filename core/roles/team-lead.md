@@ -101,6 +101,25 @@ Custom roles defined under `local/roles/*.md`:
 - **Re-entry signal** — cardinal phase-report `## Open issues` / `## Hand-off` / `Status` fields; never omit when set.
 - **Failure mode** — habitual `@team-lead` dispatch absent a trigger; self-check before each Phase 4–7 dispatch.
 
+## SA dispatch — Phases 4 / 5 / 6 categorically excluded
+
+- SA `phase-participation: [1, 2, 7]`. MUST NOT dispatch SA at Phase 4 / 5 / 6 for any reason — no "governance dip" on SA-owned-file edit, no "review on engineer mid-flight proposal", no NFR-oracle dip, no architectural-fix dip. Engineer-surfaced architectural delta routes through `§ Engineer-surfaced architectural-delta gate` below.
+- **Phase 7 SA dispatch is conditional.** Fires only when at least one trigger from Phase-1 / Phase-2 returns:
+  - Task introduced architectural changes (ADR landed in Phase 2 OR architecture-doc edit in PR diff OR new component / contract / NFR-bearing claim recorded), OR
+  - SA's Phase-1 phase-report recorded `post-implementation-governance: yes`.
+- Neither trigger → skip Phase 7; proceed to Phase 8.
+
+## Engineer-surfaced architectural-delta gate
+
+Engineer flags an architectural-delta need in Phase 4 / 5 / 6 (`## Open issues` + `## Next dispatch needed: team-lead · architectural-delta gate · <reason>`). Team-lead MUST NOT dispatch SA directly; instead surface a user gate with two outcomes:
+
+| Outcome | Action |
+|---|---|
+| **Defer to next design cycle** | Current task narrows scope to stay within existing architecture. Deferred delta logged in Phase-8 `## Open issues` for fresh task pickup; team-lead offers (never auto-creates) a follow-up GitHub issue / TODO. |
+| **Stop current task and re-enter Phase 1–2** | Current task suspends at stoppable intermediate state per `core/protocols/iteration-protocol.md`. Team-lead re-enters Phase 1 with SA design dip; SA authors ADR + amends architecture doc; Phase 3 design review re-passes; original task resumes Phase 4 against the new contract. |
+
+**Auto mode** — this gate is a forced-interactive trigger per `core/protocols/automatic-mode.md § Forced-interactive triggers`. Auto mode does NOT elide the user gate.
+
 ## Lifecycle gate enforcement
 
 Three hard gates:
@@ -108,7 +127,7 @@ Three hard gates:
 | Phase | Gate | Action |
 |---|---|---|
 | 3 — Design review | User approves Phase 2 design + resolved delivery mode before Phase 4 | Surface architecture-doc diff + mockup link + API contract + work-breakdown · resolve + report delivery mode per `core/protocols/delivery-modes.md § Mode resolution` (unresolved → ask Mode 1 / 2 / 3) · wait for explicit approval of both. Without it: do not dispatch Phase 4. |
-| 7 — SA review | SA signs off on implemented result | Dispatch SA after Phase 6 (or Phase 4 if no Phase 5/6 failures); verify SA explicitly checked Phase 5 manual-smoke section. |
+| 7 — SA governance review | SA signs off on implemented result — **conditional** | Skip by default. Dispatch SA after Phase 6 (or Phase 4 if no Phase 5/6 failures) ONLY when (a) the task introduced architectural changes (ADR landed in Phase 2 OR architecture-doc edit in PR diff) OR (b) SA's Phase-1 phase-report recorded `post-implementation-governance: yes`. When dispatched, verify SA explicitly checked Phase 5 manual-smoke section. Neither trigger → proceed to Phase 8. |
 | 8 — User approval | User explicitly accepts | Surface · wait `"Yes — mark complete"` / `"No — needs more work"` · TODO-sourced: flip `☐` → `☒` on yes; GH-issue-sourced: close with final comment per `core/protocols/github-integration.md` · **run delivery finalize** per resolved mode (push branch + PR / surface diff / surface commit list) — `core/protocols/delivery-modes.md § Per-mode procedure`. |
 
 ## Delivery mode — resolve before Phase 4

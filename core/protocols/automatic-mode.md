@@ -39,7 +39,7 @@ reads-before-applying: []
 
 ## Gates respected
 
-- **Phase 7 SA review.** Runs normally; automated; no user interaction.
+- **Phase 7 SA governance review.** Conditional per `core/roles/team-lead.md § SA dispatch — Phases 4 / 5 / 6 categorically excluded` — fires only on (a) task introduced architectural changes OR (b) Phase-1 `post-implementation-governance: yes`. When fires, runs normally; automated; no user interaction.
 - **Destructive / external actions** (per `core/process.md § Executing actions with care`). Even in auto mode, never without explicit consent: push to shared branches · drop/downgrade deps · modify shared infra · send messages · contact external services. Default delivery handoff does NOT push.
 - **Full regression remains opt-in** (`core/process.md § Phase 5`). Auto mode does NOT request it; delivery report records not-run; user may request before accept.
 - **Phase 8 user-approval invariant** — preserved as the single delivery handoff.
@@ -55,6 +55,7 @@ reads-before-applying: []
 | Token-budget consumed exceeds 1.5× the Phase 4/5 estimate OR wall-clock exceeds 2× the estimate | Pause; surface burn rate; request continue-or-stop. |
 | Any planned action enters the "destructive / external" set above | Pause; surface action + reason + alternatives. |
 | Change-governance gate hits the prompt branch — `change-governance.prompt-before-create: always`, OR `prompt-before-create: non-trivial` AND the non-trivial heuristic fires (≥ 2 architectural-delta triggers OR register-diff non-empty) | Pause; surface proposed CR / ADR draft + skip-OR-author choice. Resume on explicit answer. Full gate: `core/roles/team-lead.md § CR-gate` · `core/roles/solution-architect.md § ADR-gate`. |
+| Engineer surfaces architectural-delta need mid-Phase 4/5/6 (`## Next dispatch needed: team-lead · architectural-delta gate`) | Pause; surface gate per `core/roles/team-lead.md § Engineer-surfaced architectural-delta gate`. Resume only on explicit *defer* (continue task within existing architecture) OR *stop + re-enter Phase 1–2* (suspend; SA design dip; Phase 3 re-pass). Auto mode never silently dispatches SA mid-Phase 4/5/6. |
 
 On any trigger: `team-lead` halts dispatch, presents a short interactive-fallback report, resumes auto mode only on explicit user direction.
 

@@ -23,6 +23,8 @@ reads-before-applying: []
 | 1 — Analysis | always | always (design dip) |
 | 2 — Design | always | always (architecture / ADRs) |
 | 3 — Design review | always (synchronous user gate) | n/a |
+| 4 / 5 / 6 — Implementation / testing / bug-fix | per persistence-artefact gate | **categorical refusal — never dispatched** (`core/roles/solution-architect.md § Three activities — at a glance`) |
+| 7 — Governance review | per TL4 lead-elision | **conditional** — fires only when task introduced architectural changes OR Phase-1 `post-implementation-governance: yes` |
 | 8 — User approval | always (delivery finalize) | n/a |
 
 ## Persistence-artefact table — bypass valid when artefact present
@@ -30,9 +32,10 @@ reads-before-applying: []
 | Heavy role | Persistence artefact | Bypass valid when ALL hold |
 |---|---|---|
 | `team-lead` | `ginee:role:*` label + dispatch-contract body (`core/templates/sub-issue-dispatch.md`) | Single role label · dispatch contract present · acceptance criteria unambiguous |
-| `solution-architect` | Blueprint + ADRs + acceptance criteria at Phase 2 | AC unambiguous on design intent · no `local/bindings.md`-SA-owned-file edit in diff · no NFR-oracle red |
 
-Absence of the artefact (or any condition unmet) → heavy role dispatched normally.
+`solution-architect` row REMOVED — SA is no longer invocation-gated for Phase 4/5/6 (categorical refusal). Phase 7 SA dispatch is gated by conditional triggers in `core/roles/team-lead.md § SA dispatch — Phases 4 / 5 / 6 categorically excluded`, not by a persistence-artefact bypass.
+
+Absence of the artefact (or any condition unmet) → `team-lead` dispatched normally.
 
 ## Universal re-entry trigger table — heavy role MUST be re-loaded when
 
@@ -44,10 +47,9 @@ Absence of the artefact (or any condition unmet) → heavy role dispatched norma
 | Returned `Status: In-progress` | `team-lead` | stop-state re-decision |
 | Cross-domain bug surfaced | `team-lead` | `core/protocols/cross-domain-bugs.md` |
 | Multi-cardinal PR (≥ 2 owned-path sets) | `team-lead` | Phase 7 lead-elision — see § Phase 7 |
-| PR touches `local/bindings.md` SA-owned path | `solution-architect` | `core/process/phase-4-implementation.md § governance dip` |
-| NFR-oracle red | `solution-architect` | `core/process/phase-5-testing.md § governance dip` |
-| Fix proposal crosses blueprint-diff threshold | `solution-architect` | `core/protocols/blueprint-diff-protocol.md` |
-| Engineer proposes architectural change mid-phase | `solution-architect` | `core/process/phase-4-implementation.md § review on in-flight proposals` |
+| Engineer-surfaced architectural-delta (`## Next dispatch needed: team-lead · architectural-delta gate`) | `team-lead` | `core/roles/team-lead.md § Engineer-surfaced architectural-delta gate` |
+
+SA mid-phase re-entry triggers (prior `PR touches SA-owned path` · `NFR-oracle red` · `fix proposal crosses blueprint-diff threshold` · `engineer proposes architectural change mid-phase`) REMOVED — all now route through team-lead's gate, never re-load SA in Phase 4/5/6.
 
 ## Per-phase track tables
 
@@ -58,15 +60,11 @@ Absence of the artefact (or any condition unmet) → heavy role dispatched norma
 | TL1 | Sub-issue pickup | 4 (entry) | Direct cardinal dispatch; `@team-lead` not re-routed | [#152](https://github.com/kostiantyn-matsebora/ginee/issues/152) — `migrations/sub-issue-fast-path.md` |
 | TL2 | Single-cardinal verification | 5 | `qa-engineer` runs against AC, returns to owning cardinal; `@team-lead` skipped | This protocol |
 | TL3 | Intra-domain bug-fix | 6 | Owning engineer fixes; `@team-lead` re-entered only on cross-domain bug | This protocol |
-| TL4 | Phase 7 lead-elision | 7 | Single-cardinal PR → SA → user; `@team-lead` re-entered only on multi-cardinal PR or REJECT | This protocol |
+| TL4 | Phase 7 lead-elision | 7 | Single-cardinal PR → SA → user (when Phase 7 fires); `@team-lead` re-entered only on multi-cardinal PR or REJECT | This protocol |
 
-### SA track
+### SA track — RETIRED
 
-| # | Fast-path | Phase | Default behaviour |
-|---|---|---|---|
-| SA1 | Phase 4 SA-default-skip | 4 | No SA dispatch unless owned-file edit present in diff |
-| SA2 | Phase 5 SA-default-skip on green NFR | 5 | All-green NFR run skips SA; SA fires only on red oracle |
-| SA3 | Phase 6 SA-default-skip on local fix | 6 | Engineer → engineer for non-architectural fixes; SA fires only when proposal touches blueprint-diff threshold |
+SA1 / SA2 / SA3 (Phase 4 / 5 / 6 SA-default-skip) are RETIRED. SA is no longer dispatched at Phase 4 / 5 / 6 under any condition; default-skip is replaced by categorical refusal. Phase 7 SA dispatch is conditional per `core/roles/team-lead.md § SA dispatch — Phases 4 / 5 / 6 categorically excluded`.
 
 ## Phase 7 — lead-elision detail (TL4)
 
@@ -90,7 +88,8 @@ Single-cardinal PR (exactly one owned-path set per `local/bindings.md`) — Phas
 | Grep | Purpose |
 |---|---|
 | `@team-lead` invocations in Phase 4–6 windows | Match each against re-entry trigger table. Unmatched → defensive — log advisory. |
-| `@solution-architect` dispatches outside Phase 1 / 2 / 7 | Match each against persistence-artefact table OR SA-track triggers. Unmatched → defensive. |
+| `@solution-architect` dispatches in Phase 4 / 5 / 6 | **Hard violation** — SA categorically refused at those phases. Surface advisory + flag the dispatcher. No legitimate match exists. |
+| `@solution-architect` dispatches at Phase 7 | Match against the two conditional triggers in `core/roles/team-lead.md § SA dispatch — Phases 4 / 5 / 6 categorically excluded`. Unmatched → defensive. |
 | `## Open issues\n(none)` next to `@team-lead` re-dispatch | Dispatch after a clean return — defensive. |
 | `Status: Done` + `## Hand-off` empty + `@team-lead` immediate re-entry | Same — no trigger fired. |
 

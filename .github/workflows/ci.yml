@@ -378,9 +378,9 @@ jobs:
               SETTINGS="$ROOT/.claude/settings.json"
               [ -f "$SETTINGS" ] || { echo "::error::Missing .claude/settings.json (sync-claude-settings did not run)"; exit 1; }
               if command -v jq >/dev/null 2>&1; then
-                # PreToolUse: 4 entries (T2 Edit/Write/MultiEdit · T3 Bash · T8 SendMessage · T13 Bash attest-optimized-by).
+                # PreToolUse: 6 entries (T2 Edit/Write/MultiEdit · T3 Bash · T8 SendMessage · T13 Bash attest-optimized-by · T14 Task · T15 Edit/Write/MultiEdit sa-artefact).
                 pretu="$(jq -r '.hooks.PreToolUse | length' "$SETTINGS")"
-                [ "$pretu" = "4" ] || { echo "::error::Expected 4 PreToolUse entries, got $pretu"; exit 1; }
+                [ "$pretu" = "6" ] || { echo "::error::Expected 6 PreToolUse entries, got $pretu"; exit 1; }
                 jq -e 'any(.hooks.PreToolUse[]; .matcher == "Edit|Write|MultiEdit")' "$SETTINGS" >/dev/null \
                   || { echo "::error::Missing T2 PreToolUse Edit|Write|MultiEdit entry"; exit 1; }
                 jq -e 'any(.hooks.PreToolUse[]?.hooks[]?; .command | test("pre-tool-use-bash"))' "$SETTINGS" >/dev/null \
@@ -389,6 +389,11 @@ jobs:
                   || { echo "::error::Missing T8 PreToolUse SendMessage entry"; exit 1; }
                 jq -e 'any(.hooks.PreToolUse[]?.hooks[]?; .command | test("attest-optimized-by"))' "$SETTINGS" >/dev/null \
                   || { echo "::error::Missing T13 PreToolUse attest-optimized-by entry"; exit 1; }
+                # T14 / T15 (#182) — SA boundary hard-force.
+                jq -e 'any(.hooks.PreToolUse[]; .matcher == "Task")' "$SETTINGS" >/dev/null \
+                  || { echo "::error::Missing T14 PreToolUse Task entry"; exit 1; }
+                jq -e 'any(.hooks.PreToolUse[]?.hooks[]?; .command | test("pre-tool-use-sa-artefact"))' "$SETTINGS" >/dev/null \
+                  || { echo "::error::Missing T15 PreToolUse sa-artefact entry"; exit 1; }
                 # PostToolUse: T6 only (context-economy-check is framework-self-dev — not wired in adopter settings).
                 jq -e 'any(.hooks.PostToolUse[]?.hooks[]?; .command | test("post-tool-use-edit"))' "$SETTINGS" >/dev/null \
                   || { echo "::error::Missing T6 PostToolUse post-tool-use-edit entry"; exit 1; }
@@ -599,9 +604,10 @@ jobs:
               $settings = "$root\.claude\settings.json"
               if (-not (Test-Path $settings)) { Write-Error "Missing .claude/settings.json (sync-claude-settings did not run)" }
               $cfg = Get-Content -Raw $settings | ConvertFrom-Json
-              if ($cfg.hooks.PreToolUse.Count -ne 4) { Write-Error "Expected 4 PreToolUse entries, got $($cfg.hooks.PreToolUse.Count)" }
+              if ($cfg.hooks.PreToolUse.Count -ne 6) { Write-Error "Expected 6 PreToolUse entries, got $($cfg.hooks.PreToolUse.Count)" }
               $cmds = @($cfg.hooks.PreToolUse | ForEach-Object { $_.hooks[0].command })
-              foreach ($marker in 'pre-tool-use-edit','pre-tool-use-bash','pre-tool-use-send-message','attest-optimized-by') {
+              # T2 / T3 / T8 / T13 + T14 / T15 (#182 SA boundary hard-force).
+              foreach ($marker in 'pre-tool-use-edit','pre-tool-use-bash','pre-tool-use-send-message','attest-optimized-by','pre-tool-use-task','pre-tool-use-sa-artefact') {
                 if (-not ($cmds | Where-Object { $_ -match $marker })) { Write-Error "Missing PreToolUse hook: $marker" }
               }
               if (-not ($cfg.hooks.PostToolUse[0].hooks | Where-Object { $_.command -match 'post-tool-use-edit' })) {
