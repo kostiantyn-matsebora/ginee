@@ -60,9 +60,21 @@ What problem this dispatch resolves, who notices the outcome.>
 | time | `time: 0m` · `cumulative: 0m` |
 | sub-tasks | (none started — cardinal owns decomposition per `core/protocols/iteration-protocol.md`) |
 | blockers | (none) |
+
+## Reproducer test  *(Phase 6 dispatch only; omit when defect is `testable: false`)*
+
+| Field | Value |
+|---|---|
+| Defect | `<one-line — observed vs expected>` |
+| Test file | `<path>` |
+| Test name | `<name>` |
+| Runner command | `<from local/framework.config.yaml § test-runners>` |
+| Expected end-state | Test passes locally; QA Phase-6 re-verification sweep still runs. |
+
+Per `core/process/phase-6-bug-fixing.md § Reproducer-test dispatch contract` + `core/roles/qa-engineer.md § Defect-reproducer authoring discipline`.
 ```
 
-**Section ordering.** `## Summary` is the human-facing entry point and MUST appear first under the header marker. Framework-internal sections (`## Dispatch contract` · `## Scope` · `## Acceptance` · `## Spec links` · `## Initial state`) follow. Reverse ordering fails the audience check.
+**Section ordering.** `## Summary` is the human-facing entry point and MUST appear first under the header marker. Framework-internal sections (`## Dispatch contract` · `## Scope` · `## Acceptance` · `## Spec links` · `## Initial state` · `## Reproducer test` on Phase 6 dispatches) follow. Reverse ordering fails the audience check.
 
 ## Comment cadence — cardinal-authored on the sub-issue
 
@@ -85,7 +97,7 @@ Phase-report return per `core/templates/phase-report.md` doubles as closing comm
 | Title `[<phase>:<cardinal>] <task-one-liner>` | body | Per § Title. |
 | Header marker `<!-- ginee:sub-issue-dispatch v=1 parent=#<parent> -->` | body — first line | Fixed; case-sensitive. |
 | Labels | sub-issue at create | Exactly one `ginee:role:*` + one `ginee:phase:*` + inherited scoring labels. |
-| Body sections | dispatch contract body | Dispatch contract · Scope · Acceptance · Spec links · Initial state (per § Body). |
+| Body sections | dispatch contract body | Dispatch contract · Scope · Acceptance · Spec links · Initial state (per § Body); `## Reproducer test` added on Phase 6 dispatches unless defect is `testable: false`. |
 | `time: <N>m` + `cumulative: <N>m` | every progress comment | Per § Comment cadence. |
 | `## Time spent` | closing comment | Per `core/templates/phase-report.md § Time spent`. |
 | `<!-- self-lint: pass -->` | every surface (body · progress · closing) | Last line per `core/protocols/doc-authoring-protocol.md § Enforcement for ginee-authored GitHub artefacts`. |
@@ -99,6 +111,7 @@ Phase-report return per `core/templates/phase-report.md` doubles as closing comm
 5. Closing includes `## Time spent` per `phase-report.md`.
 6. Doc-authoring 6 mandatory checks per `core/process.md § Documentation style`.
 7. **Audience check** per `core/protocols/doc-authoring-protocol.md § Audience check` — title `<task-one-liner>` outcome-shaped · forbidden-identifier list scrubbed · `## Summary` precedes framework-internal sections in body.
+8. **Phase-6 reproducer-test contract** — when `Phase: 6`, body carries `## Reproducer test` with all five fields populated OR the defect carries `testable: false` cite. Spec: `core/process/phase-6-bug-fixing.md § Reproducer-test dispatch contract`.
 
 Last line of every posted surface: `<!-- self-lint: pass -->`.
 

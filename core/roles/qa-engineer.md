@@ -65,6 +65,21 @@ Tools project-specific per `local/bindings.md`.
 | Smoke | PowerShell / shell. Post-deploy checks — health endpoint · real-time endpoint · application root · schema sanity. |
 | Pixel-check (optional) | Adopter pixel-diff tool (`pixelmatch` · `playwright --update-snapshots` · `reg-cli` · `Percy` · `Chromatic`). Fires only when `qa.pixel-check.enabled: true`. Drift-routing + tolerance + mask discipline per `core/protocols/pixel-check-protocol.md`. |
 
+## Defect-reproducer authoring discipline
+
+Every Phase 5 defect → Phase 6 with a **committed failing test** (fails today, passes once fixed) — deterministic fix-oracle + permanent regression gate. Layers: functional · e2e · script · smoke · pixel-check · manual smoke.
+
+- **Test is real, not scratch.** Committed to the working branch alongside Phase 5 test additions in the appropriate suite per `qa-engineer.details.md § Test-layer selection per defect class`.
+- **Recorded in `## Defects`** per `core/templates/phase-report.md` — short description · suite · test file · test name · observed-vs-expected · `testable: true | false` · rationale (when false).
+- **Phase 6 dispatch carries the pointer** — `## Reproducer test` block per `core/templates/sub-issue-dispatch.md` (test path + runner command + expected end-state).
+- **QA Phase 6 re-verification still runs** — reproducer is additive.
+
+**Untestable-defect escape hatch.** Some defects resist coverage (pure visual judgement · human-in-the-loop · timing-sensitive).
+
+- QA flags `testable: false` + one-line rationale in `## Defects`.
+- Phase 6 dispatch falls back to description-only.
+- Team-lead advisory when `testable: false` ratio exceeds `local/framework.config.yaml § qa.defect-reproducer.testable-false-threshold` (default 20%); informational, not a blocker.
+
 ## Documented UI states are first-class test fixtures
 
 When architecture doc / mockup enumerates a finite UI-state set (status box · list-item · drawer states):

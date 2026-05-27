@@ -146,6 +146,16 @@ automatic-mode:
 # delivery:
 #   default-mode: branch                 # branch | wt | commit
 
+# --- QA defect-reproducer test (Phase 5 → Phase 6 contract) ---
+# QA authors a failing test that reproduces every Phase 5 defect; Phase 6 dispatch carries
+# the reproducer pointer; engineer's fix-oracle = test passes locally.
+# Untestable defects flag `testable: false` + rationale. Team-lead surfaces a process-concern
+# advisory when the `testable: false` ratio exceeds the threshold (informational, not a blocker).
+# Spec: core/roles/qa-engineer.md § Defect-reproducer authoring discipline.
+# qa:
+#   defect-reproducer:
+#     testable-false-threshold: 0.20      # ratio of testable:false defects per Phase 5 return
+
 # --- QA pixel-check (optional Phase 5 visual oracle) ---
 # Visual diff app vs mockup at shared seed-state. Off by default.
 # Requires local/bindings.md § Visual oracle fields when enabled.

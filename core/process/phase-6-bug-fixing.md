@@ -16,9 +16,11 @@ reads-before-applying: []
   - QA exercises other scenarios in parallel — a fix never freezes the test run.
   - Routes back to the specific Phase 4 surface, not a full Phase 4 rerun.
   - Iteration protocol when scope > 15 min — `core/protocols/iteration-protocol.md`.
+- **Reproducer-test dispatch contract.** Phase 6 dispatch to the owning engineer carries the QA-authored reproducer test — `## Reproducer test` per `core/templates/sub-issue-dispatch.md` — with: defect description · test file path · runner command (sourced from `local/framework.config.yaml § test-runners`) · expected end-state (test passes). Engineer-fix loop: run test → confirm fails → fix → re-run → confirm passes → signal back. Untestable defects (`testable: false` flagged in Phase 5) skip the contract; dispatch falls back to description-only.
 - **SA — categorical refusal at Phase 6.** Fix proposals that cross the blueprint-diff threshold OR otherwise imply an architectural delta route through team-lead per `core/roles/team-lead.md § Engineer-surfaced architectural-delta gate` — outcomes are *defer* OR *stop current task and re-enter Phase 1–2*. Local fixes (no architectural delta) route engineer → engineer; no SA dispatch.
 - **Acceptance.**
   - Change-scoped oracles green.
+  - **Reproducer test passes locally** (when carried per `§ Reproducer-test dispatch contract`); QA's Phase 6 re-verification sweep still runs.
   - No regression in touched surfaces.
   - Manual smoke re-run if a user-visible surface was touched.
   - Opt-in full regression is part of that opt-in pass — not a Phase 6 gate.
