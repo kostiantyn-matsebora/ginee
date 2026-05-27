@@ -81,6 +81,8 @@ Verify every service in scope is in healthy steady state before claiming step do
 
 **Cloud deploy** — mirror per-service checks against deployed endpoints; never declare success on IaC-apply exit 0 alone.
 
+**Self-verify before hand-off (strict gate).** MUST run every change-scoped suite available to the role (script lint + Pester / bats · local-orchestration post-step health · deploy smoke against reachable environments) in a fix-loop until green per `core/protocols/engineer-self-verify.md`. Stale assertions MUST route to QA — never edit a test to make it pass. Phase 4 hand-off without per-suite green / `n/a` / `stale` cite violates `core/process/phase-4-implementation.md § Acceptance`.
+
 **Rules:**
 
 - Never claim complete with any container in a failing state.

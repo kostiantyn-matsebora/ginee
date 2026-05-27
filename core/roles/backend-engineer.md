@@ -67,6 +67,7 @@ When architecture doc describes derived views (computed columns · aggregates ·
 - Unit tests alongside source projects per project runner / storage.
 - Cover every documented UI state + every documented status code.
 - Functional / API tests against real database owned by `qa-engineer` — you provide deterministic logic.
+- **Self-verify before hand-off (strict gate).** MUST run every change-scoped suite available to the role (unit per `§ Coverage obligation` · API / functional against the real local stack · integration covering touched endpoints / migrations) in a fix-loop until green per `core/protocols/engineer-self-verify.md`. Stale assertions MUST route to QA — never edit a test to make it pass. Phase 4 hand-off without per-suite green / `n/a` / `stale` cite violates `core/process/phase-4-implementation.md § Acceptance`.
 
 ## Coverage obligation — every change you ship
 

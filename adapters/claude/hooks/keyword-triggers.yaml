@@ -84,3 +84,18 @@ context: |
     - Stop-state (when partial progress is acceptable)
   Schema-bound return: phase-report.md § mandatory sections — Files touched · Decisions made · Verification log · Open issues · Next dispatch needed · Source reads. Empty: `(none)`. Tail: `<!-- self-lint: pass -->`.
   Specialist role boundaries: stay-in-tier; cross-domain bugs route via @team-lead.
+
+pattern: '@(backend-engineer|frontend-engineer|devops-engineer)\b|\bphase\s*4\b|\bself-verify\b|\bbefore\s+hand-?off\b'
+label: engineer-self-verify
+context: |
+  Protocol: core/protocols/engineer-self-verify.md — strict Phase 4 gate, not advisory.
+  Engineer MUST run every change-scoped suite available to the role in a fix → re-test loop until green BEFORE Phase 4 hand-off.
+  Available-suite matrix (run when configured + exercised by the change):
+    frontend-engineer  → component unit · E2E hitting changed surface · pixel-check when enabled
+    backend-engineer   → unit per coverage obligation · API / functional vs real local stack · integration covering touched endpoints / migrations
+    devops-engineer    → script lint + Pester / bats · local-orchestration post-step health · deploy smoke against reachable envs
+  Red-suite triage (per core/process.md § Test oracles can be wrong):
+    real defect  → engineer fixes in same task; loop until green
+    stale oracle → engineer MUST NOT edit the test; flag `<suite> stale — <reason>; QA oracle update needed`; surface qa-engineer dispatch under `## Next dispatch needed`
+  Hand-off contract: every available-matrix suite carries exactly ONE `## Verification log` row — PASS · `n/a — <reason>` · `stale — <reason>`. Silent skip violates the protocol.
+  QA backstop: qa-engineer MUST independently re-execute every reported suite + verify AC compliance — never trust a green engineer log alone.

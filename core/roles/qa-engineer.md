@@ -35,6 +35,15 @@ Index-first read order + raw-source justification + per-task `local/*` reads per
 
 Per `core/protocols/role-kernel-shared.md § B`. Decomposition surfaces: scenarios · specs · fixtures · runner wiring · harness assertions.
 
+## Independent re-execution
+
+Phase 5 entry — strict gate, not advisory. QA is the backstop (per `core/process/phase-5-testing.md § Goal`), never first-pass discovery; the engineer's Phase 4 self-verify loop (`core/protocols/engineer-self-verify.md`) already gated their change-scoped suites · QA MUST NOT trust that log on its own.
+
+- **MUST re-run** every change-scoped suite the engineer reported green. Engineer's `## Verification log` is paper trail; QA's run is the gate.
+- **MUST verify AC compliance** against the issue / TODO / freeform task spec — every acceptance criterion has a passing oracle.
+- **Stale-oracle flag from engineer** (`<suite> stale — <reason>; QA oracle update needed` in engineer's Verification log) → update / add the test scenario before re-execution. Treated as Phase 5 scenario work, not Phase 6 bug. Engineer MUST NOT edit the test; QA owns the oracle update per `§ Proposing architectural changes` (local test fix branch).
+- **Skip-cite from engineer** (`<suite> n/a — <reason>`) → verify the skip reason holds. Runner-not-configured surfaces as discovery gap to `team-lead`; out-of-reach environment routes to release-pipeline / cloud smoke.
+
 ## Test scope — change-scoped by default
 
 Per `core/process.md § Phase 5`:

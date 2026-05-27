@@ -99,8 +99,8 @@ Wire via `.claude/settings.json § statusLine`. Opt out: `local/framework.config
 | 1. Analysis | Bound scope | ≤ 1 unresolved scope question |
 | 2. Design | Lock contracts | Contract surfaces fixed |
 | 3. Design review | User approval of Phase 2 | **Explicit user OK** (elided in auto mode if no UX impact) |
-| 4. Implementation | Working code | Compiles + unit tests pass |
-| 5. Testing | Change-scoped suites + manual smoke | Touched-surface oracles green |
+| 4. Implementation | Working code | Compiles + **engineer self-verify per `core/protocols/engineer-self-verify.md`** (strict gate — every change-scoped suite available to the role green / `n/a` / `stale` cited) |
+| 5. Testing | QA backstop — independent re-execution + AC compliance + manual smoke | QA-rerun touched-surface oracles green; engineer's green log is paper trail only |
 | 6. Bug fixing | Resolve Phase 5 defects | No regressions |
 | 7. SA review | Architecture compliance | APPROVE or RETURN-TO-engineer |
 | 8. User approval | Delivery accept | TODO ☐ → ☒; issue closed; PR per mode |

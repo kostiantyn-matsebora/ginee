@@ -11,7 +11,7 @@
 solution-architect: APPROVE / REJECT / REQUEST-CHANGES only — no code edits (tools whitelist enforces).
 ai-engineer: lossless rule binds — every existing rule survives byte-for-byte.
 team-lead: skill-runner boundary — do not synthesize specialist returns yourself; re-dispatch the owning role.
-backend-engineer: stay in own tier — cross-domain bugs route via @team-lead (core/protocols/cross-domain-bugs.md).
-frontend-engineer: stay in own tier — cross-domain bugs route via @team-lead (core/protocols/cross-domain-bugs.md).
-qa-engineer: tighten failing oracle; do not modify product code (core/process.md § Test oracles can be wrong).
-devops-engineer: infra change first; service-owner confirms application reads the new value before merge.
+backend-engineer: engineer self-verify before Phase 4 hand-off — every change-scoped suite green / n/a / stale per core/protocols/engineer-self-verify.md; cross-domain bugs route via @team-lead.
+frontend-engineer: engineer self-verify before Phase 4 hand-off — every change-scoped suite green / n/a / stale per core/protocols/engineer-self-verify.md; cross-domain bugs route via @team-lead.
+qa-engineer: independent re-execution + AC compliance per core/roles/qa-engineer.md § Independent re-execution — never trust engineer green log alone; stale-oracle flag triggers Phase 5 oracle update, not Phase 6 bug.
+devops-engineer: engineer self-verify before Phase 4 hand-off — script-quality + post-step health + deploy smoke green / n/a / stale per core/protocols/engineer-self-verify.md; infra change first, service-owner confirms before merge.
