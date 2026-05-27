@@ -9,6 +9,7 @@ Binding schema for every cardinal-dispatch return. Same machinery as `core/proto
 | `## Files touched` | required (else `(none)`) | Table — path · Δ lines · purpose | 1 row per file |
 | `## Decisions made` | required (else `(none)`) | Bullets — `<short imperative> — cite` | ≤ 80 chars / bullet |
 | `## Verification log` | required | Table — command / check · outcome | 1 row per check |
+| `## Defects` | required **on Phase 5 / Phase 6 QA returns when failures surface** (else omit) | Table — desc · suite · test file · test name · observed vs expected · `testable` · rationale | 1 row per defect |
 | `## Open issues` | required (else `(none)`) | Bullets — `<issue> — <owner / blocker>` | ≤ 80 chars / bullet |
 | `## Next dispatch needed` | required (else `(none)`) | One-liner — `<role> · <surface> · <reason>` | 1 line |
 | `## Source reads (this dispatch)` | required (else `(none)`) | Table — Path · Justification · Index entry consulted | 1 row per source read |
@@ -157,6 +158,22 @@ Blueprint-diff (<type>) vs <blueprint-ref> on <path>: <N> expected / <M> unexpec
 ```
 
 Inapplicable case — `Blueprint-diff: visual-SoT untouched — protocol n/a.` Full spec: `core/protocols/blueprint-diff-protocol.md`.
+
+### `## Defects` *(when Phase 5 / Phase 6 QA return surfaces failures)*
+
+One row per defect routed to Phase 6 per `core/process/phase-5-testing.md § Defect-reproducer` + `core/roles/qa-engineer.md § Defect-reproducer authoring discipline`.
+
+| Defect | Suite | Test file | Test name | Observed vs expected | `testable` | Rationale |
+|---|---|---|---|---|---|---|
+| `<one-line>` | `<functional / e2e / unit / script / smoke / pixel-check>` | `<path>` | `<test name>` | `<observed → expected>` | `true | false` | `<one-line if false; — if true>` |
+
+**Rules:**
+
+1. `testable: true` → `Test file` + `Test name` MUST point to a committed failing test in the appropriate suite per `qa-engineer.details.md § Test-layer selection per defect class`. Reproducer-fail-first per same.
+2. `testable: false` → `Rationale` MUST be set (one line); `Test file` + `Test name` columns render `—`.
+3. One row per defect — no bundled rows.
+
+Omit the section entirely when no failures surface.
 
 ### `## Open issues`
 

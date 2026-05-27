@@ -101,8 +101,8 @@ Wire via `.claude/settings.json § statusLine`. Opt out: `local/framework.config
 | 2. Design | Lock contracts | Contract surfaces fixed |
 | 3. Design review | User approval of Phase 2 | **Explicit user OK** (elided in auto mode if no UX impact) |
 | 4. Implementation | Working code | Compiles + **engineer self-verify per `core/protocols/engineer-self-verify.md`** (strict gate — every change-scoped suite available to the role green / `n/a` / `stale` cited) |
-| 5. Testing | QA backstop — independent re-execution + AC compliance + manual smoke | QA-rerun touched-surface oracles green; engineer's green log is paper trail only |
-| 6. Bug fixing | Resolve Phase 5 defects | No regressions |
+| 5. Testing | QA backstop — independent re-execution + AC compliance + manual smoke + **defect-reproducer test per #184** (every defect routed to Phase 6 carries a committed failing test OR `testable: false` + rationale) | QA-rerun touched-surface oracles green; engineer's green log is paper trail only; defects table populated per `phase-report.md` |
+| 6. Bug fixing | Resolve Phase 5 defects with **reproducer-test fix-oracle** (engineer-fix loop: run test → confirm fails → fix → re-run → confirm passes → signal back) | No regressions; reproducer test passes locally when carried |
 | 7. SA governance review (conditional, #182) | Architecture compliance — fires only on (a) task introduced architectural changes OR (b) Phase-1 `post-implementation-governance: yes` | APPROVE or RETURN-TO-engineer; skipped when neither trigger fires |
 | 8. User approval | Delivery accept | TODO ☐ → ☒; issue closed; PR per mode |
 

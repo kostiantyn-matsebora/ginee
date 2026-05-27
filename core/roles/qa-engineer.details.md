@@ -90,6 +90,23 @@ Drive from architecture-doc NFR table:
 - **Retention** — verify prune job retains documented window (insert data older than retention + run prune).
 - **Statelessness** — multi-replica E2E: 2 backend replicas behind LB · subscribe on A · write on B · assert delivery.
 
+## Test-layer selection per defect class
+
+Companion to `core/roles/qa-engineer.md § Defect-reproducer authoring discipline`. Picks the layer per defect; one defect = one test (no mega-tests bundling several reproductions).
+
+| Defect class | Default layer | Notes |
+|---|---|---|
+| API / wire-contract drift | Functional | Direct endpoint assertion against the running local stack. |
+| UI behaviour / interaction | E2E | Project's browser/device runner. `data-testid` selectors per `§ Test case scenarios`. |
+| Visual drift | Pixel-check | Only when `qa.pixel-check.enabled: true`; per `core/protocols/pixel-check-protocol.md`. |
+| Component-internal regression surfaced by Phase 5 | Unit (in engineer-owned spec file) | QA authors the spec; engineer reviews on Phase 6 receipt. Crosses ownership only here — engineer signs off before merge. |
+| Script behaviour | Script-suite (Pester · bats) | QA-owned scripts; devops-owned scripts route through `devops-engineer`. |
+| Post-deploy / environmental | Smoke | Project's smoke runner; cite the environment in `## Defects`. |
+
+**Reproducer-fail-first.** Before recording in `## Defects`, QA runs the new test once to confirm it fails against the broken state — guarantees the oracle captures the defect, not the engineer's eventual fix. Skip-cite if the failure is observable only manually (`testable: false`).
+
+**Fixture sourcing.** Reproducers use existing fixtures from the project seed file when the defect's trigger conditions are reproducible; ad-hoc fixtures inside the test stay forbidden per `core/roles/qa-engineer.md § Forbidden actions`.
+
 ## Mockup-visual harness (when project has one)
 
 You own harness (assertions · geometric oracles · runner scripts). You do NOT own the mockup — `frontend-engineer` does. Pattern per `core/protocols/cross-domain-bugs.md`: SA defines invariant in architecture doc → you encode as harness assertion (fails loudly when violated · passes only when holds) → `frontend-engineer` edits mockup CSS/JS/SVG until all-green → SA reviews coherence (no edits).

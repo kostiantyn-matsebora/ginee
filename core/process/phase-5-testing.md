@@ -32,9 +32,10 @@ reads-before-applying: []
   - Iteration protocol when scope > 15 min — `core/protocols/iteration-protocol.md`.
 - **SA — categorical refusal at Phase 5.** Red NFR-oracle is a defect routed to Phase 6 (engineer-owned fix) OR — when the failure indicates the architectural decision itself is wrong — `qa-engineer` flags an architectural-delta need in `## Open issues` + `## Next dispatch needed: team-lead · architectural-delta gate · <NFR-oracle red>`. Team-lead surfaces gate per `core/roles/team-lead.md § Engineer-surfaced architectural-delta gate`. No mid-phase SA dispatch.
 - **`qa-engineer` pixel-check (optional, off by default).** Fires when `local/framework.config.yaml § qa.pixel-check.enabled: true` AND the change diff touches the visual surface AND seed-script + mockup-snapshot + app-render are configured. Inserts between change-scoped e2e and manual smoke; routes per drift source (front-end engineer · mockup-owning role · seed-script owner · team-lead for tolerance). Full spec: `core/protocols/pixel-check-protocol.md`.
+- **Defect-reproducer — binding.** Defect routed to Phase 6 MUST carry a committed failing test OR `testable: false` + rationale. Spec: `core/roles/qa-engineer.md § Defect-reproducer authoring discipline`.
 - **Acceptance.**
   - Change-scoped suite green.
   - Oracles reflect correctness for touched surfaces.
   - Manual-smoke report recorded (caveat if not run, e.g. headless).
-  - Failures → Phase 6.
+  - Failures → Phase 6 with reproducer-test cite per `§ Defect-reproducer`.
   - Opt-in full regression is its own pass — not a precondition.
