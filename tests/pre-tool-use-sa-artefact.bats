@@ -76,7 +76,10 @@ write_payload() {
 }
 
 @test "blocks as-of <sha> on SA path" {
-  run invoke_hook "$(write_payload 'local/requirements.md' '## FR-001\nAs of 1aaa215abc, pagination wraps.')"
+  # Use $'...' ANSI-C quoting so \n becomes a real newline; otherwise the
+  # literal `\n` sits between the previous word char (`n`) and `A`s of`, which
+  # voids the leading word boundary in the SHA regex.
+  run invoke_hook "$(write_payload 'local/requirements.md' $'## FR-001\nAs of 1aaa215abc, pagination wraps.')"
   [ "$status" -eq 2 ]
   [[ "$output" == *"SHA"* ]]
 }

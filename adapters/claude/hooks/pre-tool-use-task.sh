@@ -54,6 +54,9 @@ prompt="$(printf '%s' "$payload" | jq -r '[.tool_input.prompt, .tool_input.descr
 # Phase 4/5/6 indicator (case-insensitive)
 if ! printf '%s' "$prompt" | grep -qiE '(\b(in|at|during|mid-?)?[[:space:]]*phase[[:space:]-]*[456]\b|phase-(4|5|6)-(implementation|testing|bug-?fixing))'; then exit 0; fi
 
+# shellcheck disable=SC2016
+# Single-quoted backticks below are intentional markdown citations in the
+# remediation message — not command substitution.
 block 'SA dispatch in Phase 4 / 5 / 6 — categorical refusal (#182)' \
   "Task to solution-architect carries a Phase 4 / 5 / 6 indicator. SA \`phase-participation: [1, 2, 7]\`; categorical refusal during implementation phases." \
   'Engineer-surfaced architectural delta routes through team-lead per `core/roles/team-lead.md § Engineer-surfaced architectural-delta gate` — surface user-gate (defer / stop + re-enter Phase 1–2). SA is dispatched only in Phase 1, 2, or conditional Phase 7.'

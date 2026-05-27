@@ -61,7 +61,7 @@ function Test-OptOut {
   return ($body -match $pattern)
 }
 
-function Get-SAOwnedPaths {
+function Get-SAOwnedPathTable {
   param([string]$Root, [string]$ConfigOverride)
   $paths = @{}
   # Always-included canonical paths (created by the classical-architect migration).
@@ -103,7 +103,7 @@ function Test-SAOwnedPath {
   return $false
 }
 
-function Get-FileLineCitations {
+function Get-FileLineCitationList {
   param([string]$Content)
   if (-not $Content) { return @() }
   # `<file>.<ext>:<line>` — common source extensions; word-bounded.
@@ -176,7 +176,7 @@ if ([System.IO.Path]::IsPathRooted($filePath)) {
 }
 $relPath = $relPath -replace '\\','/'
 
-$ownedPaths = Get-SAOwnedPaths -Root $root -ConfigOverride $ConfigFile
+$ownedPaths = Get-SAOwnedPathTable -Root $root -ConfigOverride $ConfigFile
 if (-not (Test-SAOwnedPath -RelPath $relPath -OwnedPaths $ownedPaths)) { exit 0 }
 
 # Compose proposed post-edit content
@@ -218,7 +218,7 @@ if ($oldContent -and $newContent) {
 }
 
 # --- Violation 1: file:line citation into the working tree ---
-$citations = @(Get-FileLineCitations -Content $addedBody)
+$citations = @(Get-FileLineCitationList -Content $addedBody)
 if ($citations.Count -gt 0) {
   $sample = ($citations | Select-Object -First 3) -join ', '
   Write-Block `

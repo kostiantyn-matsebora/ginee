@@ -146,9 +146,13 @@ if [ -n "$old_content" ]; then
   added_body="$(diff <(printf '%s' "$old_content") <(printf '%s' "$new_content") | sed -nE 's/^> //p')"
 fi
 
+# Single-quoted backticks in the remediation messages below are intentional
+# markdown citations — not shell command substitution. Silence shellcheck.
+
 # Violation 1: <file>:<line> citations into the working tree.
 if printf '%s' "$added_body" | grep -qiE '\b[A-Za-z0-9._/-]+\.(ts|tsx|js|jsx|py|cs|go|java|rb|rs|cpp|c|h|hpp|swift|kt|m|mm|scala|php|sh|ps1|psm1|sql|html|css|scss|sass|less|vue|svelte|tf|hcl|yaml|yml|toml|ini|env|conf|md|mdx):[0-9]+\b'; then
   sample="$(printf '%s' "$added_body" | grep -oiE '\b[A-Za-z0-9._/-]+\.(ts|tsx|js|jsx|py|cs|go|java|rb|rs|cpp|c|h|hpp|swift|kt|m|mm|scala|php|sh|ps1|psm1|sql|html|css|scss|sass|less|vue|svelte|tf|hcl|yaml|yml|toml|ini|env|conf|md|mdx):[0-9]+\b' | head -3 | paste -sd ', ' -)"
+  # shellcheck disable=SC2016
   block 'SA-artefact implementation rendering — <file>:<line> citation (#182)' \
     "$rel would introduce line-numbered citations into the working tree (sample: $sample). SA-owned artefacts MUST NOT cite line numbers." \
     'Replace with architectural-mechanism phrasing (cite the mechanism + rationale rooted in NFR / constraint, not the code site) OR move the content to an engineer-owned per-tier doc via `## Next dispatch needed`. Full check schema: `core/templates/phase-report.md § SA-artefact content self-lint`.'
@@ -157,6 +161,7 @@ fi
 # Violation 2: commit SHAs in evidence context.
 if printf '%s' "$added_body" | grep -qiE '\b(as of|prior to|since|at commit|at sha|commit|revision|rev)[[:space:]]+[0-9a-f]{7,40}\b'; then
   sample="$(printf '%s' "$added_body" | grep -oiE '\b(as of|prior to|since|at commit|at sha|commit|revision|rev)[[:space:]]+[0-9a-f]{7,40}\b' | head -3 | paste -sd ', ' -)"
+  # shellcheck disable=SC2016
   block 'SA-artefact implementation rendering — commit SHA as evidence (#182)' \
     "$rel would cite commit SHA(s) as evidence (sample: $sample). SA-owned artefacts MUST NOT cite commit SHAs." \
     'Commit SHAs belong in PR descriptions (`core/templates/pr-description.md`), not SA artefacts. Replace with mechanism + rationale, or move to engineer-owned doc.'

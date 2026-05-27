@@ -101,7 +101,13 @@ Neither trigger → Phase 7 skipped entirely; task closes at Phase 8 without SA 
 
 ## Engineer-surfaced architectural delta — routed through team-lead
 
-When an engineer in Phase 4 / 5 / 6 detects a need for an architectural change — contract change · topology change · stack change · NFR-affecting decision · architectural fix proposal — they MUST NOT request direct SA dispatch. Engineer flags via `## Open issues` + `## Next dispatch needed: team-lead · architectural-delta gate · <one-line reason>`; team-lead surfaces a user gate (defer to next design cycle OR stop + re-enter Phase 1–2). SA is dispatched to Phase 1–2 in the stop-and-re-enter outcome only; never to Phase 4 / 5 / 6 directly. Full procedure: `core/roles/team-lead.md § Engineer-surfaced architectural-delta gate` + `solution-architect.details.md § Architectural-change review flow § Path A`.
+Engineer in Phase 4 / 5 / 6 detecting need for architectural change (contract / topology / stack / NFR-affecting / architectural fix proposal) MUST NOT request direct SA dispatch. Flow:
+
+- Engineer flags via `## Open issues` + `## Next dispatch needed: team-lead · architectural-delta gate · <reason>`.
+- Team-lead surfaces user gate (defer to next design cycle OR stop + re-enter Phase 1–2).
+- SA dispatched to Phase 1–2 in stop-and-re-enter outcome only; never to Phase 4 / 5 / 6 directly.
+
+Full procedure: `core/roles/team-lead.md § Engineer-surfaced architectural-delta gate` + `solution-architect.details.md § Architectural-change review flow § Path A`.
 
 ## What you own (and only you edit)
 
