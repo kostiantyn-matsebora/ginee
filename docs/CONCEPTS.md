@@ -15,7 +15,7 @@ ginee ships exactly **7 cardinal roles** — every adopter project has the same 
 | Role | Concerns |
 |---|---|
 | `team-lead` | Orchestrator. Dispatch routing, lifecycle gates, discovery / rediscovery, post-acceptance hook, staleness checks. **Authors (D25)** CRs · project-instruction file · work-breakdown doc. |
-| `solution-architect` | **Classical architect (D25) — three activities.** **Design** (Phase 1 elicit FRs/NFRs/Constraints + derive ASRs via ATAM utility tree; Phase 2 target architecture). **Review** (any phase, on engineer-proposed architectural changes; APPROVE/REJECT/REQUEST-CHANGES; no code edits). **Governance** (continuous, scoped to PRs touching SA-owned files). Authors architecture doc · ADRs · diagrams · requirements register · ASR utility tree. |
+| `solution-architect` | **Classical architect (D25, refined #182) — three activities, all OUTSIDE implementation phases.** **Design** (Phase 1 elicit FRs/NFRs/Constraints + derive ASRs via ATAM utility tree; Phase 2 target architecture; Phase-1 output `post-implementation-governance: yes/no`). **Review** (out-of-process — periodic / drift / explicit user; against architecture-of-record, never engineer mid-flight proposals). **Governance** (Phase 7 only, sporadic — fires on (a) task introduced architectural changes OR (b) Phase-1 flag; default = skip). Phase 4/5/6 SA dispatch categorically refused. Authors architecture doc · ADRs · diagrams · requirements register · ASR utility tree — implementation rendering (function/member names · line numbers · commit SHAs · handler-body snippets · "how to wire it" prescriptions) forbidden in every artefact. |
 | `ai-engineer` | AI-asset + doc context economy, file-splitting, load topology, lossless restructures. **D25 counterpart generalized — was SA-only, now all-roles.** Between-phase only. |
 | `frontend-engineer` | Client / UI implementation, mockup ownership, state, styling, fetch / realtime client wiring. **Authors (D25)** frontend READMEs · component docs · style guides. |
 | `backend-engineer` | Server / API implementation, ORM entities, schema, realtime hub, auth middleware, wire contract. **Authors (D25)** backend READMEs · API docs · service docs. |
@@ -52,10 +52,10 @@ Every non-trivial task runs through **Phases 1–8**. Specialists within a phase
 | **1. Analysis** | Bound scope; identify touched domains. **(D25)** SA elicits FRs/NFRs/Constraints + derives ASRs via ATAM; resolves greenfield-vs-delta mode. | Scope clear enough to plan Phase 2; ≤ 1 unresolved scope question; ASR utility tree covers every quality-attribute-driver touched |
 | **2. Design** | Lock contracts (architecture, mockup, wire, work breakdown). **(D25)** SA authors target architecture per resolved mode. | Fixed contract surfaces; harness green; cross-refs resolved; ASRs traceable to ADRs |
 | **3. Design review** | Synchronous user-approval gate on Phase 2 | Explicit user approval |
-| **4. Implementation** | Code mirroring approved contracts. **(D25)** SA governance dip on PRs touching SA-owned files; SA review on in-flight architectural-change proposals. | Compiles; no new lint errors; engineer self-verify per `core/protocols/engineer-self-verify.md` — every change-scoped suite available to the role runs green OR carries an `n/a` / `stale` cite |
-| **5. Testing** | QA backstop — independent re-execution of every change-scoped suite the engineer reported + AC-compliance verification + manual smoke. NOT first-pass discovery; Phase 4 self-verify already gated those suites. **(D25)** SA governance dip if test surfaces architectural concern. | Touched-surface oracles green on QA re-run; AC compliance verified; manual-smoke report recorded |
-| **6. Bug fixing** | Resolve defects from Phase 5. **(D25)** SA review on architectural fixes (vs local bug fixes). | Change-scoped oracles green; no regressions in touched surfaces |
-| **7. SA review** | `solution-architect` checks invariants. **(D25)** Lighter — governance ran continuously across 4/5/6. | APPROVE or RETURN-TO-engineer with findings; ASR coverage verified |
+| **4. Implementation** | Code mirroring approved contracts. **(#182)** SA categorically refused — engineer-surfaced architectural-delta routes through team-lead gate → user picks *defer* or *re-enter Phase 1–2*. | Compiles; no new lint errors; engineer self-verify per `core/protocols/engineer-self-verify.md` — every change-scoped suite available to the role runs green OR carries an `n/a` / `stale` cite |
+| **5. Testing** | QA backstop — independent re-execution of every change-scoped suite the engineer reported + AC-compliance verification + manual smoke. NOT first-pass discovery; Phase 4 self-verify already gated those suites. **(#182)** SA categorically refused — red NFR-oracle routes to Phase 6 or team-lead gate. | Touched-surface oracles green on QA re-run; AC compliance verified; manual-smoke report recorded |
+| **6. Bug fixing** | Resolve defects from Phase 5. **(#182)** SA categorically refused — architectural-delta fixes route through team-lead gate. | Change-scoped oracles green; no regressions in touched surfaces |
+| **7. SA governance review (conditional, #182)** | `solution-architect` checks invariants — fires only on (a) task introduced architectural changes OR (b) Phase-1 `post-implementation-governance: yes`. Default = skip. | APPROVE or RETURN-TO-engineer with findings; ASR coverage verified |
 | **8. User approval** | User confirms delivered work | TODO ☐ → ☒; issue closed; delivery finalize per mode |
 
 **Auto mode (D12)** — prefix a task with `auto:` to elide intermediate gates (Phase 3 design review, iteration check-ins, engineer "stop and confirm"). Phase 8 becomes a single **delivery handoff** with Accept / Feedback / Reject. Forced back to interactive on UX changes, repeated defects, cross-domain cycles, or destructive actions.
@@ -160,17 +160,21 @@ Roles **never** read raw `docs/**` "before any work." The index is the only defa
 | Test plans · scenario docs · QA reports | `qa-engineer` |
 | Mockup | mockup-owning role (default `frontend-engineer`) |
 
-Every non-SA-owned doc edit is **SA-reviewed for architectural coherence** before merge. `ai-engineer` runs shape + load-topology passes across the whole doc set (was SA ↔ ai-engineer pre-D25; now all-roles ↔ ai-engineer).
+Every non-SA-owned doc edit touching architectural concerns is **SA-reviewed for architectural coherence** — but only at Phase 7 (conditional) or out-of-process Review, never as a Phase 4/5/6 dip (#182). `ai-engineer` runs shape + load-topology passes across the whole doc set (was SA ↔ ai-engineer pre-D25; now all-roles ↔ ai-engineer).
 
-## Classical-architect SA model (D25)
+## Classical-architect SA model (D25, refined #182)
 
-Three activities across the lifecycle:
+Three activities, all OUTSIDE implementation phases (Phase 4 / 5 / 6):
 
 | Activity | When | Output |
 |---|---|---|
-| **Design** | Phase 1 elicit + Phase 2 target architecture | `local/requirements.md` (FRs/NFRs/Constraints) · `local/asr-utility-tree.md` (ASRs derived via ATAM) · architecture doc · ADRs · diagrams |
-| **Review** | Any phase, on engineer-proposed architectural changes | APPROVE / REJECT / REQUEST-CHANGES verdict + rationale citing ADR / FR / NFR / ASR. No code edits. |
-| **Governance** | Continuous, **scoped only to PRs touching SA-owned files** | Drift-flag in PR comment + dispatch back to owning engineer. Not every Phase 4/5/6 PR — keeps SA out of the bottleneck. |
+| **Design** | Phase 1 elicit + Phase 2 target architecture | `local/requirements.md` (FRs/NFRs/Constraints) · `local/asr-utility-tree.md` (ASRs derived via ATAM) · architecture doc · ADRs · diagrams. Phase-1 also records `post-implementation-governance: yes/no` — team-lead consumes to gate Phase 7. |
+| **Review** | **Out-of-process** — periodic / accumulated drift / explicit user request. NEVER tied to a task's Phase 4/5/6. | Verdict on the architecture-of-record (does it still serve current FRs/NFRs?). APPROVE / REJECT / REQUEST-CHANGES + rationale. No code edits. |
+| **Governance** | **Phase 7 only, sporadic.** Fires on (a) task introduced architectural changes OR (b) Phase-1 `post-implementation-governance: yes`. Default = skip. | Final coherence check vs architecture invariants + ASR utility tree. Continuous PR-time governance RETIRED. |
+
+**Phase 4 / 5 / 6 — categorical refusal (#182).** SA is NOT dispatched during implementation phases. Engineer-surfaced architectural-delta needs route through team-lead's gate per `core/roles/team-lead.md § Engineer-surfaced architectural-delta gate` — user picks *defer to next design cycle* OR *stop current task and re-enter Phase 1–2* (Phase 3 design review re-passes; original task resumes Phase 4 against the new contract).
+
+**Implementation rendering — forbidden in every SA artefact (#182).** Architecture docs · ADRs · requirements register · ASR utility tree · diagrams MUST NOT contain adopter function / method / member identifiers · file paths into the working tree · line numbers · commit SHAs · handler-body code snippets · "how to wire it" prescriptions. SA's `## Verification log` carries `SA-artefact content self-lint: PASS / <N findings>` per touched artefact. ADRs cite architectural mechanisms + rationale rooted in NFR / constraint, never code sites.
 
 **Greenfield vs delta** — resolved at Phase 1. Greenfield (no architecture doc) → SA authors a complete architecture doc + initial ADRs. Delta (existing doc) → SA produces ADR/CR proposals + ASR amendments; never rewrites the doc wholesale.
 
@@ -180,8 +184,6 @@ Three activities across the lifecycle:
 - `local/asr-utility-tree.md` — Architecturally Significant Requirements derived from NFRs + Constraints via ATAM utility tree (outcomes).
 
 **Architect-to-architect** — single-architect framework default. Multi-architect projects populate optional `local/bindings.md § Architects` slot.
-
-**Engineer-proposed architectural changes** — when a fix / feature implies an architectural delta, the engineer drafts a proposal in their final report and routes to SA per § Review. Local bug fixes route engineer → engineer; no SA dispatch.
 
 Full spec: [`core/roles/solution-architect.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/core/roles/solution-architect.md). Migration: [`migrations/classical-architect.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/migrations/classical-architect.md).
 

@@ -102,7 +102,7 @@ Wire via `.claude/settings.json § statusLine`. Opt out: `local/framework.config
 | 4. Implementation | Working code | Compiles + **engineer self-verify per `core/protocols/engineer-self-verify.md`** (strict gate — every change-scoped suite available to the role green / `n/a` / `stale` cited) |
 | 5. Testing | QA backstop — independent re-execution + AC compliance + manual smoke | QA-rerun touched-surface oracles green; engineer's green log is paper trail only |
 | 6. Bug fixing | Resolve Phase 5 defects | No regressions |
-| 7. SA review | Architecture compliance | APPROVE or RETURN-TO-engineer |
+| 7. SA governance review (conditional, #182) | Architecture compliance — fires only on (a) task introduced architectural changes OR (b) Phase-1 `post-implementation-governance: yes` | APPROVE or RETURN-TO-engineer; skipped when neither trigger fires |
 | 8. User approval | Delivery accept | TODO ☐ → ☒; issue closed; PR per mode |
 
 ## Compliance — cardinal tools whitelist
@@ -229,15 +229,17 @@ score = value / complexity                # H=3, M=2, L=1 (ATAM H/M/L)
 
 `/ginee-triage` sort key: `Score DESC, Age DESC`. Unscored grouped at bottom. TODO marker `☐ [v:H c:L] Description` (case-insensitive). Sticky `<!-- ginee:score v=1 -->` comment per issue; refresh via `@team-lead recompute score #<N>`. Override formula: `local/framework.config.yaml § triage.scoring-formula`.
 
-## Classical-architect SA model (D25)
+## Classical-architect SA model (D25, refined #182)
 
-SA has **three activities** across the lifecycle:
+SA has **three activities, all OUTSIDE the implementation phases (Phase 4 / 5 / 6)**:
 
 | Activity | When | What |
 |---|---|---|
-| **Design** | Phase 1 elicit + Phase 2 architecture | Authors `local/requirements.md` (FR/NFR/Constraints) + `local/asr-utility-tree.md` (ASRs via ATAM) + architecture doc + ADRs |
-| **Review** | Any phase, on engineer-proposed arch changes | APPROVE / REJECT / REQUEST-CHANGES; never edits code |
-| **Governance** | Continuous, scoped to PRs touching SA-owned files | Drift-flag + dispatch back to owning engineer |
+| **Design** | Phase 1 elicit + Phase 2 architecture | Authors `local/requirements.md` (FR/NFR/Constraints) + `local/asr-utility-tree.md` (ASRs via ATAM) + architecture doc + ADRs. Phase-1 output: `post-implementation-governance: yes/no`. |
+| **Review** | Out-of-process — periodic / accumulated drift / explicit user request | Verdict on architecture-of-record; never on engineer mid-flight proposals. |
+| **Governance** | Phase 7 only, sporadic | Fires only when (a) task introduced architectural changes OR (b) Phase-1 `post-implementation-governance: yes`. Default = skip. |
+
+**Phase 4 / 5 / 6 — categorical refusal.** SA is NOT dispatched during implementation phases. Engineer-surfaced architectural-delta needs route through team-lead's gate → user picks *defer to next design cycle* OR *stop + re-enter Phase 1–2*.
 
 **D25 doc-ownership map** (per `core/protocols/doc-roles.md`):
 
@@ -251,7 +253,9 @@ SA has **three activities** across the lifecycle:
 | Test plans · scenario docs · QA reports | `qa-engineer` |
 | Mockup | mockup-owning role (default `frontend-engineer`) |
 
-**Engineer-proposed architectural change** (delta to contract / topology / stack / NFR-affecting): draft in final report → SA `§ Review` → APPROVE/REJECT/REQUEST-CHANGES → engineer implements after APPROVE. Local bug fixes (no architectural delta) route engineer → engineer; no SA dispatch.
+**Implementation rendering — forbidden in every SA artefact** (#182): adopter function / member identifiers · line-numbered citations into the working tree · commit SHAs · handler-body snippets · "how to wire it" prescriptions. ADRs cite mechanisms + rationale, not code sites. SA's `## Verification log` carries `SA-artefact content self-lint: PASS / <N findings>` per touched artefact.
+
+**Engineer-proposed architectural change** (delta to contract / topology / stack / NFR-affecting): flag in `## Open issues` + `## Next dispatch needed: team-lead · architectural-delta gate · <reason>`. Team-lead surfaces user gate. SA dispatched at Phase 1–2 only if user picks *stop + re-enter*. Local bug fixes (no architectural delta) route engineer → engineer.
 
 **Greenfield vs delta** — discovery detects "no architecture doc" → `greenfield: true` in `local/project-profile.md` → SA enters greenfield design on first non-trivial task. Delta mode produces ADR + ASR amendments; never rewrites the architecture doc wholesale.
 

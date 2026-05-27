@@ -65,6 +65,8 @@ $upshHookCmd       = "pwsh -NoProfile -File $FrameworkRel/adapters/claude/hooks/
 $stopHookCmd       = "pwsh -NoProfile -File $FrameworkRel/adapters/claude/hooks/stop.ps1"
 $sessionStartCmd   = "pwsh -NoProfile -File $FrameworkRel/adapters/claude/hooks/session-start.ps1"
 $attestObCmd       = "pwsh -NoProfile -File $FrameworkRel/adapters/claude/hooks/attest-optimized-by.ps1"
+$taskHookCmd       = "pwsh -NoProfile -File $FrameworkRel/adapters/claude/hooks/pre-tool-use-task.ps1"
+$saArtefactCmd     = "pwsh -NoProfile -File $FrameworkRel/adapters/claude/hooks/pre-tool-use-sa-artefact.ps1"
 $statuslineCmd     = "pwsh -NoProfile -File $FrameworkRel/adapters/claude/statusline.ps1"
 
 # Marker substrings used for idempotence — anything matching is considered
@@ -77,6 +79,8 @@ $upshHookMarker       = "adapters/claude/hooks/user-prompt-submit"
 $stopHookMarker       = "adapters/claude/hooks/stop"
 $sessionStartMarker   = "adapters/claude/hooks/session-start"
 $attestObMarker       = "adapters/claude/hooks/attest-optimized-by"
+$taskHookMarker       = "adapters/claude/hooks/pre-tool-use-task"
+$saArtefactMarker     = "adapters/claude/hooks/pre-tool-use-sa-artefact"
 $statuslineMarker     = "adapters/claude/statusline"
 
 # T11 / #147 — main-thread permission lockdown. Framework-scoped deny rules
@@ -181,6 +185,9 @@ if (Add-EventEntry -EventKey 'PreToolUse' -Marker $editHookMarker    -Matcher 'E
 if (Add-EventEntry -EventKey 'PreToolUse' -Marker $bashHookMarker    -Matcher 'Bash'                  -Cmd $bashHookCmd)    { $anyChange = $true }
 if (Add-EventEntry -EventKey 'PreToolUse' -Marker $sendMsgHookMarker -Matcher 'SendMessage'           -Cmd $sendMsgHookCmd) { $anyChange = $true }
 if (Add-EventEntry -EventKey 'PreToolUse' -Marker $attestObMarker    -Matcher 'Bash'                  -Cmd $attestObCmd)    { $anyChange = $true }
+# T14 / T15 (#182 SA boundary hard-force)
+if (Add-EventEntry -EventKey 'PreToolUse' -Marker $taskHookMarker    -Matcher 'Task'                  -Cmd $taskHookCmd)    { $anyChange = $true }
+if (Add-EventEntry -EventKey 'PreToolUse' -Marker $saArtefactMarker  -Matcher 'Edit|Write|MultiEdit' -Cmd $saArtefactCmd)  { $anyChange = $true }
 
 # --- PostToolUse entries (T6 — adopter-side self-check reminder) ---
 # Framework-self-dev context-economy-check.ps1 is NOT wired here; it lives in

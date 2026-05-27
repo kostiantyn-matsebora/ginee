@@ -49,6 +49,42 @@ The architectural decision in one paragraph. Imperative voice.
 Positive, negative, neutral. Knock-on effects on components, contracts, ops.
 ```
 
+### Per-artefact carve-out — what belongs INSIDE / OUTSIDE
+
+Companion to `solution-architect.md § Implementation rendering — out of scope`. Kernel keeps the rule; this is the per-artefact carve-out:
+
+| Artefact | Belongs INSIDE | Belongs OUTSIDE — flag in self-lint |
+|---|---|---|
+| Architecture doc | Components · data model · API / event wire contract (shape only) · infrastructure topology · security boundaries · integration surfaces · invariants | Adopter function / method / member identifiers · file paths into the working tree · line numbers · commit SHAs · handler-body code snippets · template-binding code · wiring-sequence prescriptions · signal-type implementation |
+| ADR | One architectural decision · its rationale · options considered · consequences · relationship to prior decisions | Same forbidden list as architecture doc |
+| Requirements register | FRs · NFRs · Constraints | Same |
+| ASR utility tree | ATAM utility-tree derivation of architecturally significant requirements | Same |
+| Diagrams | System / topology / sequence at architecture level | Module-internal class diagrams · engineer-file call graphs · code-level UML |
+
+### What stays OUT of every ADR — inverse-checklist
+
+Author MUST run this checklist before reporting the ADR as done. Each row red → restructure or move content to an engineer-owned per-tier doc:
+
+| Item | Forbidden in ADR | Belongs in |
+|---|---|---|
+| Adopter function / method / member identifiers | `_actualGraphHeights` · `onGraphStateChange()` · `Component.render()` | Engineer-owned per-tier doc (backend / frontend / devops README) |
+| Line-numbered citations into the working tree | `host.component.ts:142` · `<file>:<line>` | Engineer-owned per-tier doc |
+| Commit SHAs as evidence | `as of 1aaa215` · `prior to ab12cd3` | PR description (`core/templates/pr-description.md`) |
+| Handler-body code snippets | Multi-line code showing function body / event handler / template binding | Engineer-owned per-tier doc |
+| "How to wire it" instructions | Imperative steps prescribing implementation order | Work-breakdown (team-lead) OR engineer-owned per-tier doc |
+| Repeated adopter file paths as architectural evidence | Same path cited > 2× as basis for the decision | Per-tier doc; ADR cites the *contract*, not the *file* |
+
+**Allowed exception** — snippets that *illustrate a contract surface* (interface declaration · wire-shape type · event-payload type · public API signature). Bounded by ≤ 5 lines and shape-only (no body).
+
+### Architectural mechanism vs implementation rendering — worked pair
+
+| Architectural mechanism — ✅ belongs in ADR | Implementation rendering — ❌ belongs in engineer doc |
+|---|---|
+| *"Column-pinning uses dagre's `edge.minlen` because the rank attribute is whitelisted out at engine ingest. This forces vertical alignment at the rank level rather than per-node."* | *"The host component declares `_actualGraphHeights: WritableSignal<{...}>` and wires `(stateChange)` to `onGraphStateChange()` to push the heights through to `ngx-graph`."* |
+| *"Pagination uses cursor tokens because offset-based scans degrade past 1k rows on the items index; the wire shape is `{ items: T[], next?: string }`."* | *"The `ItemsController.list()` method reads `cursor` from the query string at line 47, calls `Repo.GetPage(cursor)`, and serializes the response in `Response.WriteAsJsonAsync()`."* |
+
+The architectural mechanism row cites a mechanism + a rationale rooted in NFR / constraint. The implementation rendering row names identifiers + line numbers + wires the call graph — engineer-owned content.
+
 ## ADR-gate
 
 Companion to `solution-architect.md § ADR-gate`. Kernel carries the 6-branch table + delta triggers + SA-judgment cases; this section carries the non-trivial heuristic + skip-reason enum + phase-report logging shape.
@@ -73,20 +109,22 @@ Below-threshold proposals (single trigger AND empty register-diff) stay silent u
 
 ## Architectural-change review flow
 
-Two routing paths:
+Two routing paths — both go through team-lead first; SA is never directly dispatched mid-Phase 4/5/6.
 
-**Path A — Architectural delta (SA's authority).** Engineer proposes contract / topology / stack / NFR-affecting change:
+**Path A — Architectural delta surfaced mid-implementation.** Engineer detects need for contract / topology / stack / NFR-affecting change during Phase 4 / 5 / 6:
 
-1. Read relevant section(s) + proposal.
-2. Apply § Review verdict — APPROVE / REJECT / REQUEST-CHANGES.
-3. APPROVE → author ADR (or amend architecture doc if not finalized) citing FR / NFR / ASR. List downstream dispatches (e.g. *"wire-shape revision affects service + client + qa"*).
-4. SA never edits engineer's code; engineer implements after APPROVE.
+1. Engineer flags in `## Open issues` + `## Next dispatch needed: team-lead · architectural-delta gate · <reason>`. MUST NOT request direct SA dispatch.
+2. Team-lead surfaces gate to user per `core/roles/team-lead.md § Engineer-surfaced architectural-delta gate`.
+3. User chooses:
+   - **Defer** — current task narrows scope; deferred delta logged in Phase-8 `## Open issues` for fresh task pickup.
+   - **Stop + re-enter Phase 1–2** — current task suspends; team-lead re-enters Phase 1 with SA design dip; SA authors ADR + amends architecture doc; Phase 3 design review re-passes; original task resumes Phase 4.
+4. SA never edits engineer's code; SA's authority fires only in Phase 1–2 (option B) — never as a mid-Phase 4/5/6 verdict.
 
 **Path B — Requirements / scope delta (team-lead's authority).** Engineer proposes adding / modifying / retiring FR / NFR / Constraint:
 
 1. Engineer flags in final report.
 2. team-lead drafts CR per `team-lead.details.md § CR template` → `<cr-directory>`.
-3. SA reviews CR for architectural coherence (new ASR? new ADR needed?).
+3. SA reviews CR for architectural coherence (new ASR? new ADR needed?) — out-of-process review against architecture-of-record, not as Phase 4/5/6 dip.
 4. APPROVE → CR `Accepted`; SA updates `local/requirements.md` + (if scope warrants) `asr-utility-tree.md` + new ADR.
 5. REJECT / REQUEST-CHANGES → team-lead iterates CR.
 

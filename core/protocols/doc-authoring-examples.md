@@ -286,7 +286,7 @@ Re-route case — multiple role labels → `Hand-off — @team-lead (routing amb
 
 ## 16. Heavy-role bypass — TL fast-path vs SA dip decision
 
-See `core/protocols/heavy-role-bypass.md § Transcript-grep recipes` + § Per-phase track tables — schema-bound gate decision shape (TL1–TL4 / SA1–SA3) + transcript-grep advisories. Pattern: cite the matching row from the persistence-artefact table OR re-entry trigger table; never narrate.
+See `core/protocols/heavy-role-bypass.md § Transcript-grep recipes` + § Per-phase track tables — schema-bound gate decision shape (TL1–TL4; SA1–SA3 RETIRED per [#182](https://github.com/kostiantyn-matsebora/ginee/issues/182)) + transcript-grep advisories. Pattern: cite the matching row from the persistence-artefact table OR re-entry trigger table; never narrate.
 
 ---
 

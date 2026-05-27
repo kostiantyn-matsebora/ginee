@@ -60,9 +60,9 @@ Describe 'measure-role-context.ps1 — D35 phase-participation contract' {
     }
   }
 
-  It 'solution-architect loads phases [1, 2, 4, 5, 6, 7]' {
+  It 'solution-architect loads phases [1, 2, 7] — Phase 4/5/6 categorically excluded (#182)' {
     $sa = $script:byRole['solution-architect']
-    @($sa.Phases) | Sort-Object | Should -Be @(1, 2, 4, 5, 6, 7)
+    @($sa.Phases) | Sort-Object | Should -Be @(1, 2, 7) -Because 'SA out of implementation phases — `core/roles/solution-architect.md § Three activities`'
   }
 
   It 'engineering cardinals (backend / frontend / devops) load phases [2, 4, 5, 6]' {

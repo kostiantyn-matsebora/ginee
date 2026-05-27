@@ -35,6 +35,32 @@ Same 6 as `core/process.md § Documentation style § Mandatory checks` PLUS:
 
 Run all 7 against draft before returning. Violations → restructure; un-restructurable content lifted to `## Notes` (still ≤ 200 words).
 
+## SA-artefact content self-lint
+
+**Binding for `solution-architect` returns when `## Files touched` includes any architecture-family artefact** — architecture doc · ADR · requirements register · ASR utility tree · diagrams (per `core/roles/solution-architect.md § What you own`). Adds one row per touched artefact to `## Verification log` — `SA-artefact content self-lint: PASS / <N findings>`.
+
+Per `core/roles/solution-architect.md § Forbidden actions § Content depth-bound rules`. Authored content MUST NOT contain:
+
+| Forbidden category | Pattern signal |
+|---|---|
+| Adopter function / method / member identifier | `<Name>()` · `_<name>` · `.<name>(` patterns that resolve to a working-tree symbol (not a contract surface). |
+| Line-numbered citation into the working tree | `<file>:<line>` · `at line <N>` · `lines <N>–<M>`. |
+| Commit SHA as evidence | 7+ hex chars in evidence context — `as of <sha>` · `prior to <sha>`. |
+| Handler-body / wiring code snippet | Multi-line fenced code exhibiting function body, event handler, template binding, or call sequence (vs interface declaration / wire-shape type / event-payload type — those are allowed). |
+| "How to implement" / "how to wire it" prescription | Imperative second-person steps prescribing implementation order ("declare a `<x>` signal, then call `<y>()`…"). |
+| Repeated adopter file path as architectural basis | Same working-tree path cited > 2× as the basis for an architectural claim (vs single mention for context). |
+
+**Self-lint procedure.**
+
+1. Grep the authored content for each pattern.
+2. Hit → restructure: replace with architectural-mechanism phrasing (cite the mechanism + rationale rooted in NFR / constraint, not the code site) OR move the content to an engineer-owned per-tier doc via `## Next dispatch needed`.
+3. After restructure, re-run; record `PASS` in `## Verification log`.
+4. If a finding genuinely cannot be lifted (rare), record `<N> findings — <reason>` and surface in `## Notes` (≤ 200 words). Team-lead consumes + surfaces to user at gate.
+
+**Worked architectural-mechanism vs implementation-rendering examples:** `core/roles/solution-architect.details.md § Architectural mechanism vs implementation rendering — worked pair`.
+
+**Adapter binding.** Class H (always-loaded text in `core/roles/solution-architect.md`) + Class A-indirect via `/ginee-self-lint` slash command extension (Claude adapter). Hard-force regex lint deferred — pattern-matching adopter identifiers is brittle outside controlled vocabularies. Per playbook [#135](https://github.com/kostiantyn-matsebora/ginee/issues/135).
+
 ## Marker
 
 Append literal `<!-- self-lint: pass -->` as the LAST line (fixed form · case-sensitive · after every section + `(none)` + `## Notes`). Write after running checks, never blindly. Honest-fail: un-restructurable content in `## Notes` still writes marker (cap is the legal escape hatch). Not a pass/fail gate; not a re-dispatch trigger.

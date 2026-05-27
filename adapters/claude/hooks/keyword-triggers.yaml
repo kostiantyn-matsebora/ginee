@@ -85,6 +85,25 @@ context: |
   Schema-bound return: phase-report.md § mandatory sections — Files touched · Decisions made · Verification log · Open issues · Next dispatch needed · Source reads. Empty: `(none)`. Tail: `<!-- self-lint: pass -->`.
   Specialist role boundaries: stay-in-tier; cross-domain bugs route via @team-lead.
 
+pattern: '@solution-architect\b|\bADR\b|\barchitecture[-_]doc\b|\bASR\b|\barchitecture\s+review\b'
+label: sa-boundary-and-content
+context: |
+  Protocol: core/roles/solution-architect.md (#182 boundary tightening).
+  Timing — SA OUT of Phase 4/5/6 (categorical refusal):
+    phase-participation: [1, 2, 7]; Phase 7 conditional (a) task introduced architectural changes OR (b) Phase-1 `post-implementation-governance: yes`.
+    No "governance dip", no "review on engineer mid-flight proposal", no NFR-oracle dip, no architectural-fix dip.
+    Engineer-surfaced architectural delta in Phase 4/5/6 → engineer flags `## Next dispatch needed: team-lead · architectural-delta gate · <reason>` → team-lead user-gate → *defer* OR *stop + re-enter Phase 1–2*.
+    Direct SA dispatch in Phase 4/5/6 is BLOCKED by PreToolUse hook (adapters/claude/hooks/pre-tool-use-task.ps1).
+  Content — implementation rendering FORBIDDEN in every SA artefact (architecture doc · ADR · requirements register · ASR utility tree · diagrams):
+    NO adopter function / method / member identifiers (`_x`, `onY()`).
+    NO `<file>:<line>` citations into the working tree.
+    NO commit SHAs as evidence.
+    NO handler-body / wiring code snippets (interface declarations + wire-shape types allowed; ≤ 5 lines).
+    NO "how to wire it" / "how to implement" prescriptions.
+    NO repeated adopter file paths as architectural basis.
+  Direct Edit / Write on SA-owned paths carrying these patterns is BLOCKED by PreToolUse hook (adapters/claude/hooks/pre-tool-use-sa-artefact.ps1).
+  Self-lint: SA `## Verification log` MUST carry `SA-artefact content self-lint: PASS / <N findings>` per touched artefact. Per `core/templates/phase-report.md § SA-artefact content self-lint`.
+
 pattern: '@(backend-engineer|frontend-engineer|devops-engineer)\b|\bphase\s*4\b|\bself-verify\b|\bbefore\s+hand-?off\b'
 label: engineer-self-verify
 context: |

@@ -45,15 +45,15 @@ Schema-bound per `core/templates/phase-report.md`; self-lint against the 7 manda
 
 ## §E. Proposing architectural changes
 
-When a fix / feature implies an architectural delta (new contract · topology change · stack change · NFR-affecting decision):
+When a fix / feature implies an architectural delta (new contract · topology change · stack change · NFR-affecting decision) during Phase 4 / 5 / 6:
 
-1. Draft proposal in the final report leading with impact (wire / schema / NFR / cost — role-specific).
-2. Pause; route to `solution-architect` per `core/roles/solution-architect.md § Review`.
-3. SA verdict — APPROVE / REJECT / REQUEST-CHANGES.
-4. APPROVE → SA lands ADR / CR / architecture-doc edit → engineer implements.
-5. REJECT / REQUEST-CHANGES → iterate proposal.
+1. Draft proposal in the final report leading with impact (wire / schema / NFR / cost — role-specific) under `## Open issues`.
+2. Set `## Next dispatch needed: team-lead · architectural-delta gate · <one-line reason>`. MUST NOT request direct SA dispatch — SA is categorically refused at Phase 4 / 5 / 6 per `core/roles/solution-architect.md`.
+3. Stop at stoppable intermediate state per `core/protocols/iteration-protocol.md` OR continue non-architectural work in the same dispatch (engineer judgment).
+4. Team-lead surfaces user gate per `core/roles/team-lead.md § Engineer-surfaced architectural-delta gate` — outcomes are *defer to next design cycle* OR *stop + re-enter Phase 1–2*.
+5. Option B → SA dispatched at Phase 1–2 only; new ADR / architecture-doc edit lands; Phase 3 re-passes; original task resumes Phase 4.
 
-**Local fixes** (no architectural delta) route directly engineer → engineer; no SA dispatch.
+**Local fixes** (no architectural delta) route directly engineer → engineer; no team-lead gate, no SA dispatch.
 
 ## §F. Forbidden actions — lead-in
 

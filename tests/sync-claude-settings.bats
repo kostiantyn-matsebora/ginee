@@ -22,13 +22,17 @@ teardown() {
   [ -f "$TGT/.claude/settings.json" ]
   # statusLine present
   jq -e '.statusLine.command | test("adapters/claude/statusline.ps1$")' "$TGT/.claude/settings.json" >/dev/null
-  # 4 PreToolUse entries: T2 (Edit|Write|MultiEdit), T3 (Bash), T8 (SendMessage), T13 (Bash attest-optimized-by)
+  # 6 PreToolUse entries: T2 (Edit|Write|MultiEdit), T3 (Bash), T8 (SendMessage), T13 (Bash attest-optimized-by),
+  # T14 (Task — pre-tool-use-task), T15 (Edit|Write|MultiEdit — pre-tool-use-sa-artefact)
   count="$(jq -r '.hooks.PreToolUse | length' "$TGT/.claude/settings.json")"
-  [ "$count" = "4" ]
+  [ "$count" = "6" ]
   jq -e 'any(.hooks.PreToolUse[]; .matcher == "Edit|Write|MultiEdit")' "$TGT/.claude/settings.json" >/dev/null
   jq -e 'any(.hooks.PreToolUse[]?.hooks[]?; .command | test("pre-tool-use-bash"))' "$TGT/.claude/settings.json" >/dev/null
   jq -e 'any(.hooks.PreToolUse[]; .matcher == "SendMessage")' "$TGT/.claude/settings.json" >/dev/null
   jq -e 'any(.hooks.PreToolUse[]?.hooks[]?; .command | test("attest-optimized-by"))' "$TGT/.claude/settings.json" >/dev/null
+  # T14 / T15 (#182) SA boundary hard-force
+  jq -e 'any(.hooks.PreToolUse[]; .matcher == "Task")' "$TGT/.claude/settings.json" >/dev/null
+  jq -e 'any(.hooks.PreToolUse[]?.hooks[]?; .command | test("pre-tool-use-sa-artefact"))' "$TGT/.claude/settings.json" >/dev/null
   # PostToolUse — T6 only (context-economy-check is framework-self-dev).
   count="$(jq -r '.hooks.PostToolUse | length' "$TGT/.claude/settings.json")"
   [ "$count" = "1" ]
@@ -67,7 +71,7 @@ EOF
   bash "$SYNC" --target "$TGT" >/dev/null
   [ "$(jq -r '.statusLine.command' "$TGT/.claude/settings.json")" = "my-custom-status.sh" ]
   count="$(jq -r '.hooks.PreToolUse | length' "$TGT/.claude/settings.json")"
-  [ "$count" = "4" ]
+  [ "$count" = "6" ]
 }
 
 @test "refreshes a ginee-owned statusLine command when path drifts" {

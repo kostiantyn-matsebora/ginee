@@ -35,13 +35,16 @@ Describe 'sync-claude-settings.ps1' {
       $s = Read-SettingsJson $script:tgt
       $s | Should -Not -BeNullOrEmpty
       $s.statusLine.command | Should -Match 'adapters/claude/statusline\.ps1$'
-      # T2 + T3 + T8 + T13 → 4 PreToolUse matcher entries (two on Bash — pre-tool-use-bash + attest-optimized-by).
-      $s.hooks.PreToolUse.Count | Should -Be 4
+      # T2 + T3 + T8 + T13 + T14 + T15 → 6 PreToolUse matcher entries (two on Bash — pre-tool-use-bash + attest-optimized-by; two on Edit|Write|MultiEdit — pre-tool-use-edit + pre-tool-use-sa-artefact).
+      $s.hooks.PreToolUse.Count | Should -Be 6
       $cmds = @($s.hooks.PreToolUse | ForEach-Object { $_.hooks[0].command })
       ($cmds -match 'pre-tool-use-edit').Count        | Should -Be 1
       ($cmds -match 'pre-tool-use-bash').Count        | Should -Be 1
       ($cmds -match 'pre-tool-use-send-message').Count | Should -Be 1
       ($cmds -match 'attest-optimized-by').Count       | Should -Be 1
+      # T14 / T15 (#182) — SA boundary hard-force
+      ($cmds -match 'pre-tool-use-task').Count         | Should -Be 1
+      ($cmds -match 'pre-tool-use-sa-artefact').Count  | Should -Be 1
       # PostToolUse — T6 only (context-economy-check is framework-self-dev,
       # not wired into adopter settings since scripts/ is pruned on install).
       $s.hooks.PostToolUse.Count | Should -Be 1
@@ -78,7 +81,7 @@ compliance:
       Invoke-Sync -Target $script:tgt | Should -Be 0
       $s = Read-SettingsJson $script:tgt
       # Hooks still wired (T11 only skipped).
-      $s.hooks.PreToolUse.Count | Should -Be 4
+      $s.hooks.PreToolUse.Count | Should -Be 6
       # No permissions.deny additions.
       ($s.permissions -and $s.permissions.deny -and ($s.permissions.deny | Where-Object { $_ -like 'Edit(*core/**)' }).Count) `
         | Should -Not -BeTrue
@@ -123,8 +126,8 @@ compliance:
       Invoke-Sync -Target $script:tgt | Should -Be 0
       $s = Read-SettingsJson $script:tgt
       $s.statusLine.command | Should -Be $custom
-      # T2/T3/T8/T13 PreToolUse hooks still added
-      $s.hooks.PreToolUse.Count | Should -Be 4
+      # T2/T3/T8/T13/T14/T15 PreToolUse hooks still added
+      $s.hooks.PreToolUse.Count | Should -Be 6
     }
 
     It 'refreshes a ginee-owned statusLine command if the path changed' {

@@ -4,9 +4,11 @@
 
 1. **Self-lint marker** — every cardinal return ends with `<!-- self-lint: pass -->`. No exceptions.
 2. **SA never edits** — `solution-architect` returns APPROVE / REJECT / REQUEST-CHANGES only; never `Edit` / `Write` (subagent `tools:` whitelist enforces).
-3. **Context-economy trailer** — any commit > ~50 net-added lines on `core/` · `adapters/` · `extras/` carries `Optimized-By: ai-engineer`.
-4. **Runtime stays D-free** — `core/**` · `adapters/**` · `extras/**` · migration filenames carry no `D<N>` tokens. `PLAN.md` is the sole D-log.
-5. **`local/**` only via discovery** — never edit from main thread; route to the discovery skill.
+3. **SA never dispatched in Phase 4 / 5 / 6** — categorical refusal; engineer-surfaced architectural delta routes through team-lead's gate (#182). PreToolUse hook `pre-tool-use-task.ps1` blocks the dispatch — hard gate.
+4. **SA artefacts contain no implementation rendering** — no adopter function / member identifiers · no `<file>:<line>` citations · no commit SHAs · no handler-body snippets · no "how to wire it" prescriptions in architecture doc · ADRs · requirements register · ASR utility tree · diagrams (#182). PreToolUse hook `pre-tool-use-sa-artefact.ps1` blocks Edit / Write on SA-owned paths carrying these patterns — hard gate on verifiable signals.
+5. **Context-economy trailer** — any commit > ~50 net-added lines on `core/` · `adapters/` · `extras/` carries `Optimized-By: ai-engineer`.
+6. **Runtime stays D-free** — `core/**` · `adapters/**` · `extras/**` · migration filenames carry no `D<N>` tokens. `PLAN.md` is the sole D-log.
+7. **`local/**` only via discovery** — never edit from main thread; route to the discovery skill.
 
 ## What this is
 
@@ -78,6 +80,8 @@ Every framework file (`core/` · `adapters/` · `extras/`) loads into model cont
 
 1. **Self-lint marker** — every cardinal return ends with `<!-- self-lint: pass -->`. No exceptions.
 2. **SA never edits** — `solution-architect` returns APPROVE / REJECT / REQUEST-CHANGES only; never `Edit` / `Write` (subagent `tools:` whitelist enforces).
-3. **Context-economy trailer** — any commit > ~50 net-added lines on `core/` · `adapters/` · `extras/` carries `Optimized-By: ai-engineer`.
-4. **Runtime stays D-free** — `core/**` · `adapters/**` · `extras/**` · migration filenames carry no `D<N>` tokens. `PLAN.md` is the sole D-log.
-5. **`local/**` only via discovery** — never edit from main thread; route to the discovery skill.
+3. **SA never dispatched in Phase 4 / 5 / 6** — categorical refusal; engineer-surfaced architectural delta routes through team-lead's gate (#182). PreToolUse hook `pre-tool-use-task.ps1` blocks the dispatch — hard gate.
+4. **SA artefacts contain no implementation rendering** — no adopter function / member identifiers · no `<file>:<line>` citations · no commit SHAs · no handler-body snippets · no "how to wire it" prescriptions in architecture doc · ADRs · requirements register · ASR utility tree · diagrams (#182). PreToolUse hook `pre-tool-use-sa-artefact.ps1` blocks Edit / Write on SA-owned paths carrying these patterns — hard gate on verifiable signals.
+5. **Context-economy trailer** — any commit > ~50 net-added lines on `core/` · `adapters/` · `extras/` carries `Optimized-By: ai-engineer`.
+6. **Runtime stays D-free** — `core/**` · `adapters/**` · `extras/**` · migration filenames carry no `D<N>` tokens. `PLAN.md` is the sole D-log.
+7. **`local/**` only via discovery** — never edit from main thread; route to the discovery skill.
