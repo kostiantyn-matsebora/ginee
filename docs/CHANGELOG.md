@@ -10,6 +10,25 @@ All notable changes to ginee. The format follows [Keep a Changelog](https://keep
 
 ## Unreleased
 
+## 0.25.0 — 2026-05-27
+
+### Added
+
+- **Schema enforcement + human-audience binding** ([#181](https://github.com/kostiantyn-matsebora/ginee/pull/181), closes [#170](https://github.com/kostiantyn-matsebora/ginee/issues/170) + [#175](https://github.com/kostiantyn-matsebora/ginee/issues/175)). Two sibling rules close documented-but-unenforced gaps on framework communication surfaces.
+  - **Dispatch-prompt pre-send gate** — self-lint promoted from advisory to a binding pre-send gate; any check fail or marker absent restructures the payload inline; never sends a non-compliant dispatch. Pre-send-restructure count surfaces in the user-response. Spec: `core/protocols/dispatch-prompt-schema.md`.
+  - **Phase-report return — non-compliance threshold + auto-fire carry-forward** — marker absent OR ≥ 2 missing required sections OR ≥ 1 forbidden-pattern hit auto-fires carry-forward to the same cardinal's next dispatch. Second format-only re-dispatch carve-out (bounded one-retry per task on consecutive same-cardinal non-compliance). Spec: `core/templates/phase-report.md`.
+  - **User-response schema — NEW** `core/templates/user-response.md`. Schema for every orchestrator → user surface (Phase-8 interactive · auto-mode delivery handoff · mid-task reports · forced-interactive escalations). Five required sections + two auto-mode addenda (Delivery state · Accept / Feedback / Reject) + 8 mandatory checks + marker. Bound from `core/roles/team-lead.md § Reporting` · `core/process/phase-8-user-approval.md` · `core/protocols/automatic-mode.md § Delivery handoff`.
+  - **Skill-runner mechanical-message shape** — fixed three-line shape (`Did:` · `Result:` · `Next:`) + marker in `core/process/dispatch.md`. Prose status updates forbidden on the surface boundary.
+  - **Audience check for ginee-authored GitHub artefacts** — new `core/protocols/doc-authoring-protocol.md § Audience check` with 5 binding checks (title in user-facing language · 2-4 sentence human Summary · numbered repro steps on bugs · framework-internal sections AFTER the human summary · forbidden-identifier list in title). Canonical ❌/✅ title-shape examples. Bound from the four issue templates · sub-issue-dispatch template · PR-description `## What` · five `ginee-file-*` skills + `ginee-promote-discussion`. Adopter-facing principle surfaces in `docs/CONCEPTS.md`. Spec: [`migrations/schema-enforcement-and-human-audience.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/migrations/schema-enforcement-and-human-audience.md).
+
+### Changed
+
+- **CLAUDE.md adapter-binding rule** ([#180](https://github.com/kostiantyn-matsebora/ginee/pull/180)). Every new framework rule classifies enforcement per adapter at author time — Claude: hook · slash command · subagent `tools:` whitelist · always-loaded text. Default soft-force (always-loaded); upgrade to hard-force when the rule has a verifiable signal.
+
+### Fixed
+
+- **CI regression guards for T5-T13 adopter footprint** ([#179](https://github.com/kostiantyn-matsebora/ginee/pull/179)). Release pipeline coverage extended for the adopter footprint introduced by Tier 2 + Tier 3 compliance hooks.
+
 ## 0.24.0 — 2026-05-27
 
 ### Added
