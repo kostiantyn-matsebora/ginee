@@ -21,13 +21,13 @@ Index-first per `core/protocols/index-protocol.md` (`local/index/`); two-tier lo
 
 ## §B. Estimation-first dispatch
 
-For Phase 4/5/6/7 work above the 15-min threshold per `core/protocols/iteration-protocol.md`:
+Activated when the dispatch payload's `## Scope size` is `15-60m` or `>60m` per `core/roles/team-lead.md § Scope-size classifier`. Cardinal:
 
-1. Return task decomposition + per-task minutes BEFORE editing.
+1. Returns `## Estimate` (task decomposition + per-task minutes) per `core/templates/phase-report.md § ## Estimate`, BEFORE editing, placed before `## Files touched`.
 2. Orchestrator synthesizes proposals; surfaces total + per-task to user when scope warrants.
-3. Specialist implements after approval — 3–5 min iterations, each ending in a stoppable intermediate state.
+3. Specialist implements after approval — 3–5 min iterations per `core/protocols/iteration-protocol.md`, each ending in a stoppable intermediate state.
 
-Doc edits: include lossless evidence in the propose step.
+`≤15m` dispatches skip `## Estimate` — class is recorded on the dispatch payload, never silently elided. Doc edits include lossless evidence in the propose step.
 
 ## §C. Adoption research before authoring
 

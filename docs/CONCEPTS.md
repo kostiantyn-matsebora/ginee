@@ -95,6 +95,7 @@ Opt out per-tactic: `local/framework.config.yaml § compliance.disabled: [pretoo
 | Cross-phase overlap (e.g. test authoring during implementation) | One message; each prompt names the shared contract surface |
 | Doc-only changes | `solution-architect` alone (or mockup-owning role alone for mockup-only) |
 | Infra change affecting application config | Service-owner first (confirms app reads the new value), then `devops-engineer` |
+| **Pre-dispatch scope-size classifier (#168)** | Before every cardinal dispatch, team-lead emits one of `≤15m` · `15-60m` · `>60m` + one-line signal. `15-60m` / `>60m` load `core/protocols/iteration-protocol.md` + require cardinal `## Estimate` (sub-task decomposition + per-task minutes) returned before any edit. `≤15m` skips both — class is recorded explicitly on the dispatch payload + sub-issue, not silently elided. `lite:` prefix auto-classifies as `≤15m`. Full spec — [`migrations/estimation-gate-fires.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/migrations/estimation-gate-fires.md). |
 
 **Strict-domain rule.** A bug in domain X is fixed by the engineer who owns X — never by an adjacent specialist "while they're in the area." Cross-domain bugs require collaboration, not single-specialist heroics.
 

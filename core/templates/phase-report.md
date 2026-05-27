@@ -6,6 +6,7 @@ Binding schema for every cardinal-dispatch return. Same machinery as `core/proto
 
 | Section | Cardinality | Default shape | Cap |
 |---|---|---|---|
+| `## Estimate` | required **when dispatch carried `## Scope size` ∈ `{15-60m, >60m}`** (else omit) | Table — sub-task · estimate (min); placed **before** `## Files touched` | 1 row per sub-task |
 | `## Files touched` | required (else `(none)`) | Table — path · Δ lines · purpose | 1 row per file |
 | `## Decisions made` | required (else `(none)`) | Bullets — `<short imperative> — cite` | ≤ 80 chars / bullet |
 | `## Verification log` | required | Table — command / check · outcome | 1 row per check |
@@ -33,8 +34,9 @@ Binding schema for every cardinal-dispatch return. Same machinery as `core/proto
 Same 6 as `core/process.md § Documentation style § Mandatory checks` PLUS:
 
 7. **No narrative preamble** — first non-Status line is a `##` section header.
+8. **`## Estimate` present iff dispatch carried `## Scope size` ∈ `{15-60m, >60m}`** — placed before `## Files touched`; one row per sub-task with per-task minutes; sum ≤ class upper bound (`60m` for `15-60m` class is a soft cap — overrun → scope-overrun trigger per `core/protocols/iteration-protocol.md § Scope-overrun trigger`).
 
-Run all 7 against draft before returning. Violations → restructure; un-restructurable content lifted to `## Notes` (still ≤ 200 words).
+Run all 8 against draft before returning. Violations → restructure; un-restructurable content lifted to `## Notes` (still ≤ 200 words).
 
 ## SA-artefact content self-lint
 
@@ -66,7 +68,7 @@ Per `core/roles/solution-architect.md § Forbidden actions § Content depth-boun
 
 Append literal `<!-- self-lint: pass -->` as the LAST line (fixed form · case-sensitive · after every section + `(none)` + `## Notes`). Write after running checks, never blindly. Honest-fail: un-restructurable content in `## Notes` still writes marker (cap is the legal escape hatch). Not a pass/fail gate; not a re-dispatch trigger.
 
-Without marker the 7 checks are aspirational + the orchestrator has no structural signal. Same attestation mechanism as doc-authoring `## Verification log` lines, scoped to the return envelope.
+Without marker the 8 checks are aspirational + the orchestrator has no structural signal. Same attestation mechanism as doc-authoring `## Verification log` lines, scoped to the return envelope.
 
 ## Orchestrator behaviour on non-compliant returns
 
@@ -114,7 +116,7 @@ Never re-dispatch for pure format issues outside these two carve-outs (preamble 
 <original dispatch text>
 
 Return format: schema-bound per core/templates/phase-report.md;
-last cycle's return missed self-lint (<violation>) — apply the 7 checks + marker this cycle.
+last cycle's return missed self-lint (<violation>) — apply the 8 checks + marker this cycle.
 ```
 
 **Scope.** Carry-forward applies to the *next dispatch to the same cardinal within the same task*. Cross-cardinal violations don't propagate; cross-task carry-forward is out of scope (treat each task fresh). Tracking: orchestrator counts forward-applied violations per turn; surface in `## Notes` of the user-response per `core/templates/user-response.md § Synthesis`.
@@ -126,6 +128,20 @@ last cycle's return missed self-lint (<violation>) — apply the 7 checks + mark
 ```
 Status: Done
 ```
+
+### `## Estimate` *(when dispatch carried `## Scope size` ∈ `{15-60m, >60m}`)*
+
+Returned **before any edit** + before `## Files touched`. Specialist's pre-implementation decomposition; orchestrator synthesizes to user when scope warrants per `core/protocols/iteration-protocol.md § Estimation-first dispatch`.
+
+| Sub-task | Estimate |
+|---|---|
+| `<one-line — change / where / why>` | `<N>m` |
+
+**Rules:**
+
+1. Sum of per-task minutes is the proposed total; budget against the dispatch's class upper bound (`60m` soft cap for `15-60m`; no hard cap for `>60m` — overrun → scope-overrun trigger).
+2. `15-60m` typical: 3–7 sub-tasks. `>60m` typical: 5–12 sub-tasks scoping the first iteration batch (per iteration-protocol; further batches re-propose).
+3. Omit the section entirely when dispatch was `≤15m` — class is recorded on the dispatch payload, not the return.
 
 ### `## Files touched`
 

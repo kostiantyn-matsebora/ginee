@@ -310,6 +310,7 @@ Every cardinal-dispatch return is schema-bound per `core/templates/phase-report.
 ```
 Status: Done | In-progress | Blocked | Hand-off
 
+## Estimate               # table — sub-task · estimate (min)   (required iff dispatch carried ## Scope size ∈ {15-60m, >60m}; placed BEFORE ## Files touched; #168)
 ## Files touched           # table — path · Δ lines · purpose       (required; (none) if empty)
 ## Decisions made          # bullets — imperative + cite (≤ 80 ch)  (required; (none) if empty)
 ## Verification log        # table — command · outcome              (required)
@@ -321,7 +322,9 @@ Status: Done | In-progress | Blocked | Hand-off
 ## Notes                   # free prose · ≤ 200 words                (optional escape hatch)
 ```
 
-**7 mandatory checks before report-as-done** — 6 from D22 / D26 / D48 (D48 added RFC 2119 binding-strength signal) + *no narrative preamble*. Forbidden — narrative preamble · restated dispatch context · code snippets outside the Notes carve-out · verbose rationale outside `## Notes` · parenthetical comma-soup. Target reduction vs free-form returns: ~70%.
+**8 mandatory checks before report-as-done** — 6 from D22 / D26 / D48 (D48 added RFC 2119 binding-strength signal) + *no narrative preamble* + *`## Estimate` present iff dispatch carried `## Scope size` ∈ `{15-60m, >60m}`* (#168). Forbidden — narrative preamble · restated dispatch context · code snippets outside the Notes carve-out · verbose rationale outside `## Notes` · parenthetical comma-soup. Target reduction vs free-form returns: ~70%.
+
+**Scope-size classifier (#168).** Team-lead emits `≤15m` · `15-60m` · `>60m` + one-line signal before every cardinal dispatch — written into the dispatch-prompt's `## Scope size` section and the sub-issue's `**Scope size:**` field. `15-60m` / `>60m` load iteration-protocol + require the cardinal's `## Estimate` return. `≤15m` skips both — class is recorded explicitly. `lite:` prefix auto-classifies as `≤15m`. Full spec — [`migrations/estimation-gate-fires.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/migrations/estimation-gate-fires.md).
 
 **Index-first read order** — cardinals consult `local/index/` summaries first; raw source reads are fallback + require a one-line justification in `## Source reads`. Orchestrator's single format-only re-dispatch carve-out fires when raw source appears in `## Files touched` AND `## Source reads` is missing / `(none)`. Bedrock: `core/protocols/index-protocol.md § Read order`.
 

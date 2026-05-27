@@ -10,26 +10,27 @@ reads-before-applying: []
 
 **Load-on-demand.** Activation cues:
 
-- Phase 4 / 5 / 6 / 7 dispatch with estimated total scope > 15 min.
+- Team-lead's pre-dispatch scope-size classifier returned `15-60m` or `>60m` per `core/roles/team-lead.md § Scope-size classifier` (recorded on dispatch payload as `## Scope size`).
 - Doc-roles pass between `ai-engineer` and any authoring role per `core/protocols/doc-roles.md`.
 - User-supplied timeframe ("spend 30 min on X", "do as much as you can in an hour") — see § Timeframe-bounded autonomous work.
 
-Default short tasks (≤ 15 min, no timeframe) do not load.
+Default `≤15m` dispatches (class explicit on payload, never silent) do not load. `lite:` prefix auto-classifies as `≤15m` per `core/process/dispatch.md § Per-task prefix grammar`.
 
 ## Scope
 
-All team work in Phases 4–7 (Implementation · Testing · Bug fixing · SA review) with estimated total scope > 15 min, plus `ai-engineer` ↔ authoring-role doc-roles passes. User intervention bounded to kickoff approval + final report.
+Every cardinal dispatch carrying `## Scope size` ∈ `{15-60m, >60m}` (per `core/roles/team-lead.md § Scope-size classifier`), plus `ai-engineer` ↔ authoring-role doc-roles passes. User intervention bounded to kickoff approval + final report.
 
 ## Estimation-first dispatch
 
-Before any code / tests / fixes / doc edits, each dispatched specialist returns task decomposition + per-task time estimate. Orchestrator: synthesizes proposals → surfaces total + per-task to user when scope warrants → waits for approval before any specialist enters implement.
+Before any code / tests / fixes / doc edits, the dispatched specialist returns `## Estimate` per `core/templates/phase-report.md § ## Estimate` — task decomposition + per-task time estimate, placed before `## Files touched`. Orchestrator: synthesizes proposals → surfaces total + per-task to user when scope warrants → waits for approval before any specialist enters implement.
 
 ## Sizing
 
-| Estimated scope | Approach |
+| `## Scope size` class | Approach |
 |---|---|
-| ≤ 15 min | Single iteration: specialist proposes full pass · reviewer reviews · specialist implements. |
-| > 15 min | Multiple 3–5 min iterations, each producing a visible partial result. Specialist scopes next batch (3–7 sub-tasks) at iteration start. |
+| `≤15m` | No iteration-protocol load. Single iteration: specialist proposes full pass · reviewer reviews · specialist implements. `## Estimate` not returned (class recorded on dispatch payload). |
+| `15-60m` | Iteration-protocol loads. 3–7 sub-tasks; multiple 3–5 min iterations each producing a visible partial result. `## Estimate` returned before any edit. |
+| `>60m` | Iteration-protocol loads. 5–12 sub-tasks scoping the first iteration batch; further batches re-propose. `## Estimate` returned before any edit; scope-overrun trigger (§ below) salient. |
 
 ## Each iteration
 

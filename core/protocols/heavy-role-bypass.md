@@ -77,11 +77,25 @@ Single-cardinal PR (exactly one owned-path set per `local/bindings.md`) — Phas
 | Cross-domain bug surfaced during sign-off | `team-lead` re-enters per `core/protocols/cross-domain-bugs.md` |
 | Phase 8 finalize handback in auto mode | `team-lead` re-enters at Phase 8 (separate invariant) |
 
+## Scope-size classification — required even on bypass
+
+Bypass elides team-lead from the dispatch chain; it does NOT elide the scope-size classifier (`core/roles/team-lead.md § Scope-size classifier`). Every TL1–TL4 path records one of `≤15m` · `15-60m` · `>60m` + one-line signal **before bypass approval** — written into the sub-issue body's `**Scope size:**` field per `core/templates/sub-issue-dispatch.md § Body`. Classes `15-60m` / `>60m` load iteration-protocol + require cardinal `## Estimate` return as on the non-bypass path.
+
+| Bypass path | Who classifies | When |
+|---|---|---|
+| TL1 — sub-issue pickup | skill-runner first-batch (mechanical write of class set at parent dispatch) | At sub-issue create |
+| TL2 — single-cardinal verification | Owning cardinal at verification entry | Before QA re-run |
+| TL3 — intra-domain bug-fix | Owning engineer | Before fix edit |
+| TL4 — Phase 7 lead-elision | SA at review entry | Before APPROVE / REQUEST-CHANGES |
+
+`lite:` prefix auto-classifies as `≤15m`; recorded on the dispatch payload + skipped from iteration-protocol load per `core/process/dispatch.md § Per-task prefix grammar`.
+
 ## Forbiddens — bypass does NOT mean orchestration-free
 
 - **Skill-runner.** Never synthesizes returns, reads `local/bindings.md` to settle routing, or proposes defaults. Same boundary as `core/process/dispatch.md § Skill-runner — surface boundary`.
 - **Cardinals under bypass.** Author phase-reports per `core/templates/phase-report.md` schema; `## Open issues` / `## Hand-off` / `Status` fields ARE the re-entry signal — never omit when set.
 - **Default-skip is the default.** Habitual `@team-lead` / `@solution-architect` dispatch with no trigger is the failure mode. Self-check before each Phase 4–7 heavy-role dispatch: *"Which row of the persistence-artefact table OR re-entry trigger table justifies this load?"* No match → skip.
+- **Silent scope-size elision.** Bypass paths MUST emit the one-line classification per § Scope-size classification. `≤15m` written explicitly, never omitted.
 
 ## Transcript-grep recipes
 

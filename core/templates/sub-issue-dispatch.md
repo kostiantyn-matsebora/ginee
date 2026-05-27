@@ -35,7 +35,8 @@ What problem this dispatch resolves, who notices the outcome.>
 **Cardinal:** `<role>` (alias: `<alias-if-any>`)
 **Phase:** <N> — <phase-name>
 **Parent:** #<parent-number>
-**Estimate:** <H>h <M>m (per iteration-protocol; updates as sub-tasks land)
+**Scope size:** `<class>` — `<one-line signal>` (per `core/roles/team-lead.md § Scope-size classifier`; class ∈ `≤15m` · `15-60m` · `>60m`)
+**Estimate:** `<H>h <M>m` (cardinal-decomposed per iteration-protocol when class ∈ `{15-60m, >60m}`; ≤15m records the class only — write `≤15m` here verbatim)
 **Delivery mode:** Mode <1|2|3> per `core/protocols/delivery-modes.md`
 
 ## Scope
@@ -98,6 +99,7 @@ Phase-report return per `core/templates/phase-report.md` doubles as closing comm
 | Header marker `<!-- ginee:sub-issue-dispatch v=1 parent=#<parent> -->` | body — first line | Fixed; case-sensitive. |
 | Labels | sub-issue at create | Exactly one `ginee:role:*` + one `ginee:phase:*` + inherited scoring labels. |
 | Body sections | dispatch contract body | Dispatch contract · Scope · Acceptance · Spec links · Initial state (per § Body); `## Reproducer test` added on Phase 6 dispatches unless defect is `testable: false`. |
+| `**Scope size:**` + `**Estimate:**` filled at create | dispatch contract body | Real `<class> — <signal>`; `Estimate` matches class (`≤15m` verbatim OR real `<H>h <M>m` for `15-60m` / `>60m`). Template-literal-left-in-place fails self-lint check 9. |
 | `time: <N>m` + `cumulative: <N>m` | every progress comment | Per § Comment cadence. |
 | `## Time spent` | closing comment | Per `core/templates/phase-report.md § Time spent`. |
 | `<!-- self-lint: pass -->` | every surface (body · progress · closing) | Last line per `core/protocols/doc-authoring-protocol.md § Enforcement for ginee-authored GitHub artefacts`. |
@@ -112,6 +114,7 @@ Phase-report return per `core/templates/phase-report.md` doubles as closing comm
 6. Doc-authoring 6 mandatory checks per `core/process.md § Documentation style`.
 7. **Audience check** per `core/protocols/doc-authoring-protocol.md § Audience check` — title `<task-one-liner>` outcome-shaped · forbidden-identifier list scrubbed · `## Summary` precedes framework-internal sections in body.
 8. **Phase-6 reproducer-test contract** — when `Phase: 6`, body carries `## Reproducer test` with all five fields populated OR the defect carries `testable: false` cite. Spec: `core/process/phase-6-bug-fixing.md § Reproducer-test dispatch contract`.
+9. **Scope size + Estimate populated at create** — `**Scope size:**` line carries a real `<class> — <signal>` (template literal `<class>` / `<one-line signal>` absent); `**Estimate:**` matches the class: `≤15m` records `≤15m` verbatim, `15-60m` / `>60m` carry a real `<H>h <M>m`. Failing pattern — angle-bracket placeholder text (`<H>h <M>m`, `<class>`, `(per iteration-protocol; updates as sub-tasks land)`) still present after create. Per `core/roles/team-lead.md § Scope-size classifier` + `core/protocols/iteration-protocol.md § Estimation-first dispatch`.
 
 Last line of every posted surface: `<!-- self-lint: pass -->`.
 
@@ -132,6 +135,8 @@ Last line of every posted surface: `<!-- self-lint: pass -->`.
 | Title | `[4:backend-engineer] Implement /v1/items pagination per ADR-0014-cursor-pagination` |
 | Labels | `ginee:role:backend-engineer` · `ginee:phase:4` · `value:high` · `complexity:medium` |
 | Body header | `<!-- ginee:sub-issue-dispatch v=1 parent=#142 -->` (body per § Body) |
+| `**Scope size:**` | `15-60m — net-new endpoint + cursor codec + integration test` |
+| `**Estimate:**` | `45m` (cardinal returns sub-task decomposition under `## Estimate` per `phase-report.md`) |
 | Progress 1 | `Started: cursor encode/decode. time: 0m. cumulative: 0m.` |
 | Progress 2 | `Done: cursor encode/decode. abc1234. time: 22m. cumulative: 22m.` |
 | Closing | phase-report `## Time spent`: `1h 04m perceived effort; 2 progress comments on sub-issue #198.` |
