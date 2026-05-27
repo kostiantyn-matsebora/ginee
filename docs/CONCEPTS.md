@@ -578,6 +578,8 @@ ginee skills (`/ginee-pick-up`, `/ginee-address-review`, `/ginee-triage`, `/gine
 
 **Why the rule.** Pre-D28 the skill-runner often drifted into orchestration on long sessions (issue #71): plan drafting in the main thread, synthesizing parallel returns, proposing default-selection options. The boundary is now structural — every skill carries an explicit hand-back step.
 
+**`ginee-iterate` — review-cycle relay along the boundary.** On a live cardinal task, each user reply `SendMessage`s the warm cardinal verbatim instead of editing from the main thread — the warm-reuse path (`migrations/warm-specialist-reuse.md` · `migrations/warm-reuse-claude-plumbing.md` · `migrations/warm-cardinal-default.md`) stays intact across the cycle. Skill-runner detects · forwards · passes return through; hand-back to `@team-lead` on `## Open issues` / `## Hand-off` / stop-state. Full spec: [`core/skills/ginee-iterate/SKILL.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/core/skills/ginee-iterate/SKILL.md) · migration: [`migrations/ginee-iterate-skill.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/migrations/ginee-iterate-skill.md).
+
 Full spec: [`core/process.md § Skill-runner — surface boundary`](https://github.com/kostiantyn-matsebora/ginee/blob/main/core/process.md#skill-runner--surface-boundary-d28). Migration: [`migrations/skill-runner-boundary.md`](https://github.com/kostiantyn-matsebora/ginee/blob/main/migrations/skill-runner-boundary.md).
 
 ## Framework self-update
