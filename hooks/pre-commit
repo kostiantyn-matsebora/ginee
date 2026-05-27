@@ -1,10 +1,16 @@
 #!/usr/bin/env bash
 # ginee context-economy gate — git pre-commit hook (Layer 2).
 # Installed via scripts/install-hooks.{ps1,sh}. Runs the shared pwsh check
-# against the staged set. Exits non-zero to block the commit when the gate
-# fails AND no "Optimized-By: ai-engineer" trailer is present on HEAD.
+# against the staged set.
 #
-# Bypass (use sparingly + only for genuine emergencies): SKIP_CONTEXT_ECONOMY=1 git commit ...
+# Trailer-presence enforcement is DEFERRED to the commit-msg hook (which
+# can read the in-flight message via $1). Pre-commit blocks on structural
+# lint (exit 2) and surfaces the gate report for developer visibility,
+# but exits 0 on trailer-only failures so the commit-msg hook can make
+# the final call with the message in hand.
+#
+# Bypass (use sparingly + only for genuine emergencies):
+#   SKIP_CONTEXT_ECONOMY=1 git commit ...
 
 set -e
 
@@ -18,7 +24,7 @@ script="$repo_root/scripts/context-economy-check.ps1"
 
 if [ ! -f "$script" ]; then
   # Script missing — repo isn't ginee or hooks weren't reinstalled after pull.
-  # Don't block; print a warning so the user knows.
+  # Print a warning so the user knows; exit 0 to avoid blocking.
   echo "context-economy: script not found at $script — skipping gate." >&2
   exit 0
 fi
@@ -29,4 +35,29 @@ if ! command -v pwsh >/dev/null 2>&1; then
   exit 0
 fi
 
+set +e
 pwsh -NoProfile -File "$script" -StagedOnly
+rc=$?
+set -e
+
+case "$rc" in
+  0)
+    exit 0
+    ;;
+  1)
+    # Gate failure (threshold / size-cap / hot-spec frontmatter) without
+    # a HEAD trailer. Defer enforcement to commit-msg — operator may land
+    # the trailer in the in-flight message.
+    echo "context-economy: gate would fail; trailer enforcement deferred to commit-msg." >&2
+    echo "                 Land 'Optimized-By: ai-engineer' on its own line in your commit message OR fix the breach before commit-msg fires." >&2
+    exit 0
+    ;;
+  2)
+    # Structural lint failure (prose paragraph regression). Not
+    # trailer-suppressible; hard block.
+    exit 2
+    ;;
+  *)
+    exit "$rc"
+    ;;
+esac

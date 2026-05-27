@@ -30,7 +30,7 @@ if [ ! -d "$src" ]; then
   exit 1
 fi
 
-for name in pre-commit pre-push; do
+for name in pre-commit commit-msg pre-push; do
   from="$src/$name"
   to="$hooks_dir/$name"
   [ -f "$from" ] || continue

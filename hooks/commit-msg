@@ -1,0 +1,44 @@
+#!/usr/bin/env bash
+# ginee context-economy gate — git commit-msg hook (Layer 2).
+# Installed via scripts/install-hooks.{ps1,sh}. Re-runs the shared pwsh
+# check against the staged set, this time passing the prepared commit
+# message file ($1) so an in-flight 'Optimized-By: ai-engineer' trailer
+# is recognised as a valid trailer source alongside HEAD.
+#
+# Pairs with hooks/pre-commit (which defers trailer-only failures here).
+# This split lets a first-commit-on-branch include the trailer in the
+# message and land without bypassing the gate.
+#
+# Bypass (use sparingly + only for genuine emergencies):
+#   SKIP_CONTEXT_ECONOMY=1 git commit ...
+
+set -e
+
+if [ "${SKIP_CONTEXT_ECONOMY:-0}" = "1" ]; then
+  echo "context-economy: bypassed via SKIP_CONTEXT_ECONOMY=1" >&2
+  exit 0
+fi
+
+msg_file="${1:-}"
+if [ -z "$msg_file" ] || [ ! -f "$msg_file" ]; then
+  # Git invokes commit-msg with the message file path as $1. Missing arg
+  # is anomalous — exit 0 to fail open rather than blocking the commit.
+  echo "context-economy: commit-msg hook invoked without a message file — skipping." >&2
+  exit 0
+fi
+
+repo_root="$(git rev-parse --show-toplevel)"
+script="$repo_root/scripts/context-economy-check.ps1"
+
+if [ ! -f "$script" ]; then
+  echo "context-economy: script not found at $script — skipping gate." >&2
+  exit 0
+fi
+
+if ! command -v pwsh >/dev/null 2>&1; then
+  echo "context-economy: pwsh not on PATH — install PowerShell 7+ to run the gate locally." >&2
+  echo "context-economy: skipping (CI will enforce on PR)." >&2
+  exit 0
+fi
+
+pwsh -NoProfile -File "$script" -StagedOnly -CommitMsgFile "$msg_file"

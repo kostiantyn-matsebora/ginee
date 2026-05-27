@@ -38,7 +38,7 @@ if (-not (Test-Path $src)) {
   Write-Error "Source hooks directory not found at $src"
 }
 
-foreach ($name in 'pre-commit', 'pre-push') {
+foreach ($name in 'pre-commit', 'commit-msg', 'pre-push') {
   $from = Join-Path $src $name
   $to = Join-Path $hooksDir $name
   if (-not (Test-Path $from)) { continue }
